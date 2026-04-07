@@ -292,7 +292,7 @@ body {
 <nav class="sidebar">
   <div class="sidebar-header">
     <h2>ICT Mentorship</h2>
-    <p>Index Complet — 11 Chapitres</p>
+    <p>Index Complet — 18 Chapitres</p>
   </div>
   <input type="text" class="sidebar-search" id="search" placeholder="Rechercher un concept..." oninput="filterConcepts()">
 
@@ -323,8 +323,23 @@ body {
   </div>
 
   <div class="nav-group">
+    <div class="nav-group-title">Macros & Ranges</div>
+    <div class="nav-item" onclick="goTo('macros')"><div class="nav-dot" style="background:#f08044"></div>Macros Detaillees<span class="nav-count">6</span></div>
+    <div class="nav-item" onclick="goTo('ranges')"><div class="nav-dot" style="background:#38c9b0"></div>Ranges & Sessions<span class="nav-count">9</span></div>
+    <div class="nav-item" onclick="goTo('profils')"><div class="nav-dot" style="background:#e9b84c"></div>Profils Hebdo<span class="nav-count">7</span></div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title">Avance</div>
+    <div class="nav-item" onclick="goTo('avances')"><div class="nav-dot" style="background:#9b6cf0"></div>Concepts Avances<span class="nav-count">14</span></div>
+    <div class="nav-item" onclick="goTo('conditions')"><div class="nav-dot" style="background:#f04545"></div>Conditions Trading<span class="nav-count">5</span></div>
+    <div class="nav-item" onclick="goTo('setups')"><div class="nav-dot" style="background:#2dd67a"></div>Setups Haute Proba<span class="nav-count">4</span></div>
+    <div class="nav-item" onclick="goTo('psycho')"><div class="nav-dot" style="background:#4a7cff"></div>Psychologie<span class="nav-count">4</span></div>
+  </div>
+
+  <div class="nav-group">
     <div class="nav-group-title">Reference</div>
-    <div class="nav-item" onclick="goTo('glossary')"><div class="nav-dot" style="background:#e9b84c"></div>Glossaire A-Z<span class="nav-count">60+</span></div>
+    <div class="nav-item" onclick="goTo('glossary')"><div class="nav-dot" style="background:#e9b84c"></div>Glossaire A-Z<span class="nav-count">70+</span></div>
   </div>
 </nav>
 
@@ -1307,6 +1322,838 @@ body {
 </div>
 
 <!-- ═══════════════════════════════════════ -->
+<!-- 12. MACROS DETAILLEES -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="macros">
+  <div class="section-badge" style="background:rgba(240,128,68,0.1);color:#f08044;">Chapitre 12</div>
+  <h2>Macros Detaillees</h2>
+  <p class="section-intro">Les macros sont des fenetres de 20 minutes ou l'algorithme active des mouvements specifiques (sweep, MSS, spooling). Le temps precede toujours le prix — connaitre chaque macro minute par minute est essentiel.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="london macros 01:50 02:10 02:50 03:10 03:20 03:40 03:50 04:10 04:20 04:40">
+      <div class="concept-header">
+        <span class="concept-name">London Macros</span>
+        <span class="concept-abbr">01:50 — 04:40 ET</span>
+      </div>
+      <div class="concept-body">
+        Les macros de la session London sont les premieres fenetres algorithmiques de la journee. Elles servent a creer la manipulation initiale (Judas Swing) et a poser le low ou high du jour.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">01:50 — 02:10</span> Premiere macro London — sweep initial, debut de la manipulation</li>
+          <li><span class="rule-label key">02:50 — 03:10</span> Deuxieme macro — continuation ou extension du mouvement initial</li>
+          <li><span class="rule-label key">03:20 — 03:40</span> Troisieme macro — souvent le point de retournement apres le Judas</li>
+          <li><span class="rule-label key">03:50 — 04:10</span> Quatrieme macro — confirmation de la direction London</li>
+          <li><span class="rule-label key">04:20 — 04:40</span> Cinquieme macro — derniere fenetre London, expansion ou consolidation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="early ny macros 06:50 07:10 07:50 08:10 pre market">
+      <div class="concept-header">
+        <span class="concept-name">Early NY Macros</span>
+        <span class="concept-abbr">06:50 — 08:10 ET</span>
+      </div>
+      <div class="concept-body">
+        Les macros de pre-marche NY. Elles preparent le terrain pour la session principale.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">06:50 — 07:10</span> Pre-market macro — premiers mouvements institutionnels NY</li>
+          <li><span class="rule-label key">07:50 — 08:10</span> Pre-CME Open macro — positionnement avant le CME Open a 08:20</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="ny am macros 08:20 08:40 09:20 09:40 10:20 10:40 high probability mss">
+      <div class="concept-header">
+        <span class="concept-name">NY AM Macros</span>
+        <span class="concept-abbr">08:20 — 11:10 ET</span>
+      </div>
+      <div class="concept-body">
+        Les macros de la session NY AM sont les plus importantes de la journee. C'est ici que le low ou high du jour est souvent forme.
+        <ul class="concept-rules">
+          <li><span class="rule-label warning">08:20 — 08:40</span> CME Open — SOUVENT un MSS se forme ici, algo fait du spooling</li>
+          <li><span class="rule-label key">08:50 — 09:10</span> Low probability — mouvement souvent indecis, eviter les entrees</li>
+          <li><span class="rule-label bullish">09:20 — 09:40</span> <strong>HIGH PROBABILITY</strong> — Silver Bullet AM, setup optimal</li>
+          <li><span class="rule-label key">09:50 — 10:10</span> Continuation macro — extension du mouvement AM</li>
+          <li><span class="rule-label bullish">10:20 — 10:40</span> <strong>HIGH PROBABILITY</strong> — deuxieme fenetre Silver Bullet, souvent le vrai mouvement</li>
+          <li><span class="rule-label key">10:50 — 11:10</span> Derniere macro AM — fin de la fenetre de trading optimale du matin</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="ny lunch macros 11:20 12:40 13:10 dead zone">
+      <div class="concept-header">
+        <span class="concept-name">NY Lunch Macros</span>
+        <span class="concept-abbr">11:20 — 13:10 ET</span>
+      </div>
+      <div class="concept-body">
+        Les macros du lunch sont generalement a eviter pour le trading. Le volume chute et les mouvements sont erratiques. Zone de consolidation et de manipulation sans suivi.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">11:20 — 11:40</span> Debut lunch — volume en baisse, eviter</li>
+          <li><span class="rule-label key">11:50 — 12:10</span> Mid lunch — zone morte, pas de trading</li>
+          <li><span class="rule-label key">12:20 — 12:40</span> Late lunch — debut de repositionnement</li>
+          <li><span class="rule-label key">12:50 — 13:10</span> Fin lunch — preparation de la session PM</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="ny pm macros 13:20 13:40 15:15 15:40 16:10 high probability spooling final hour">
+      <div class="concept-header">
+        <span class="concept-name">NY PM Macros</span>
+        <span class="concept-abbr">13:20 — 16:10 ET</span>
+      </div>
+      <div class="concept-body">
+        Les macros PM offrent des opportunites de continuation ou de reversal apres le lunch. Plusieurs fenetres haute probabilite.
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">13:20 — 13:40</span> <strong>HIGH PROBABILITY</strong> — Silver Bullet PM, premier setup de l'apres-midi</li>
+          <li><span class="rule-label key">13:50 — 14:10</span> Continuation PM — extension ou retracement</li>
+          <li><span class="rule-label key">14:20 — 14:40</span> Mid PM macro — mouvement secondaire</li>
+          <li><span class="rule-label key">14:50 — 15:10</span> Pre-close macro — debut de positionnement fin de journee</li>
+          <li><span class="rule-label bullish">15:15 — 15:40</span> <strong>HIGH PROBABILITY</strong> — spooling, algo positionne pour la cloture</li>
+          <li><span class="rule-label bullish">15:50 — 16:10</span> <strong>Final Hour HIGH PROBABILITY</strong> — derniere macro, mouvement de cloture</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="regle macro time precedes price spooling 08:30">
+      <div class="concept-header">
+        <span class="concept-name">Regles Fondamentales des Macros</span>
+      </div>
+      <div class="concept-body">
+        <ul class="concept-rules">
+          <li><span class="rule-label warning">Regle #1</span> <strong>Le temps precede toujours le prix</strong> — attendre la fenetre macro avant d'entrer</li>
+          <li><span class="rule-label warning">Regle #2</span> A 08:30 ET l'algo fait du <strong>spooling</strong> quoi qu'il arrive — mouvement automatique</li>
+          <li><span class="rule-label key">Regle #3</span> 1 macro = 1 trade maximum — ne pas re-entrer dans la meme fenetre</li>
+          <li><span class="rule-label key">Regle #4</span> Les macros HIGH PROB sont les seules fenetres pour les debutants</li>
+          <li><span class="rule-label key">Regle #5</span> Un setup hors macro est un setup invalide, meme si tout le reste est parfait</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 13. RANGES & SESSIONS CLES -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="ranges">
+  <div class="section-badge" style="background:rgba(56,201,176,0.1);color:#38c9b0;">Chapitre 13</div>
+  <h2>Ranges & Sessions Cles</h2>
+  <p class="section-intro">Les ranges de session definissent le cadre dans lequel l'algorithme opere. Chaque range a des regles de taille, de projection et d'utilisation specifiques pour anticiper les mouvements du jour.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="cbdr central bank dealer range 14:00 20:00 standard deviation judas">
+      <div class="concept-header">
+        <span class="concept-name">Central Bank Dealer Range</span>
+        <span class="concept-abbr">CBDR</span>
+      </div>
+      <div class="concept-body">
+        Le <strong>CBDR</strong> est le range forme entre 14:00 et 20:00 NY. C'est la base de reference pour les projections de Standard Deviation de la session London.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Horaire</span> 14:00 — 20:00 NY (heure de New York)</li>
+          <li><span class="rule-label key">Taille ideale</span> Inferieur a 40 pips — plus le CBDR est petit, meilleure est la projection</li>
+          <li><span class="rule-label key">Utilisation</span> Projeter 1, 2, 2.5, 3, 4 Standard Deviations depuis le range</li>
+          <li><span class="rule-label warning">Judas London</span> Le Judas Swing de London fait generalement 1 a 2 STDV du CBDR</li>
+          <li><span class="rule-label warning">Si CBDR large</span> Si le CBDR depasse 40 pips → les projections sont moins fiables, prudence</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="asian range 20:00 00:00 consolidation">
+      <div class="concept-header">
+        <span class="concept-name">Asian Range</span>
+        <span class="concept-abbr">20:00 — 00:00 ET</span>
+      </div>
+      <div class="concept-body">
+        Le range de la session asiatique. Zone de consolidation qui definit les niveaux de liquidite pour London.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Horaire</span> 20:00 — 00:00 NY</li>
+          <li><span class="rule-label key">Taille ideale</span> 20 a 30 pips — consolidation serree = meilleur signal</li>
+          <li><span class="rule-label key">Utilisation</span> Asian High/Low = pools de liquidite pour le sweep London</li>
+          <li><span class="rule-label warning">Si large</span> Asian Range large = le marche a deja fait son mouvement, London sera moins directionnel</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="overnight range 00:00 05:00 quadrants ranging">
+      <div class="concept-header">
+        <span class="concept-name">Overnight Range</span>
+        <span class="concept-abbr">00:00 — 05:00 ET</span>
+      </div>
+      <div class="concept-body">
+        Le range overnight couvre la periode entre minuit et le debut de la session pre-London. Utilise principalement quand le Daily est en range.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Horaire</span> 00:00 — 05:00 NY</li>
+          <li><span class="rule-label key">Quadrants</span> Diviser le range en 4 quadrants pour identifier les zones de reaction</li>
+          <li><span class="rule-label warning">Condition</span> N'utiliser l'Overnight Range QUE quand le marche Daily est en ranging</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="pre market range 07:00 07:30">
+      <div class="concept-header">
+        <span class="concept-name">Pre-market Range</span>
+        <span class="concept-abbr">07:00 — 07:30 ET</span>
+      </div>
+      <div class="concept-body">
+        Le range de pre-market avant l'ouverture officielle. Definit les premiers niveaux de reference pour la session NY.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Horaire</span> 07:00 — 07:30 NY</li>
+          <li><span class="rule-label key">Utilisation</span> Les extremes du Pre-market Range sont des niveaux de liquidite pour le CME Open</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="opening range 07:30 08:00">
+      <div class="concept-header">
+        <span class="concept-name">Opening Range</span>
+        <span class="concept-abbr">07:30 — 08:00 ET</span>
+      </div>
+      <div class="concept-body">
+        Le range de la premiere demi-heure apres le pre-market. Zone de positionnement initial avant le CME Open.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Horaire</span> 07:30 — 08:00 NY</li>
+          <li><span class="rule-label key">Utilisation</span> Break au-dessus ou en-dessous de ce range = premier signal directionnel NY</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="opening bell pre market 09:00 09:30 cash open">
+      <div class="concept-header">
+        <span class="concept-name">Opening Bell Pre-market</span>
+        <span class="concept-abbr">09:00 — 09:30 ET</span>
+      </div>
+      <div class="concept-body">
+        La demi-heure avant l'ouverture cash a 09:30. Zone de manipulation intense ou l'algo positionne les ordres avant le flux des particuliers.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Horaire</span> 09:00 — 09:30 NY</li>
+          <li><span class="rule-label warning">Attention</span> Mouvement souvent trompeur — sweep avant le vrai mouvement a 09:30</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="pm opening range 13:30 14:00 afternoon">
+      <div class="concept-header">
+        <span class="concept-name">PM Opening Range</span>
+        <span class="concept-abbr">13:30 — 14:00 ET</span>
+      </div>
+      <div class="concept-body">
+        Le range d'ouverture de la session PM. Definit le cadre pour les mouvements de l'apres-midi apres le lunch.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Horaire</span> 13:30 — 14:00 NY</li>
+          <li><span class="rule-label key">Utilisation</span> Les extremes de ce range sont les niveaux de reference pour le Silver Bullet PM</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="standard deviation projection cbdr asian stdv extension">
+      <div class="concept-header">
+        <span class="concept-name">Standard Deviation Projections</span>
+        <span class="concept-abbr">STDV</span>
+      </div>
+      <div class="concept-body">
+        Les projections de Standard Deviation sont calculees a partir du CBDR ou de l'Asian Range. Elles definissent les objectifs de prix potentiels.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">1 STDV</span> Mouvement egal a la taille du range — premier objectif / Judas typique</li>
+          <li><span class="rule-label key">2 STDV</span> Double de la taille du range — objectif standard de la session</li>
+          <li><span class="rule-label key">2.5 STDV</span> Objectif etendu — souvent atteint les jours de forte tendance</li>
+          <li><span class="rule-label key">3 STDV</span> Extension majeure — jours de news ou de forte volatilite</li>
+          <li><span class="rule-label key">4 STDV</span> Extension extreme — rare, uniquement les jours exceptionels (NFP, FOMC)</li>
+          <li><span class="rule-label warning">Base</span> Toujours mesurer depuis le high ou low du range de reference (CBDR ou Asian)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="rth gap regular trading hours quadrants ath 250pts">
+      <div class="concept-header">
+        <span class="concept-name">RTH Gap</span>
+        <span class="concept-abbr">Regular Trading Hours Gap</span>
+      </div>
+      <div class="concept-body">
+        Le gap entre la cloture RTH de la veille et l'ouverture RTH du jour. Un outil puissant de reference pour la direction du marche.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Garder les 3 derniers RTH Gaps + celui du jour sur le graphique</li>
+          <li><span class="rule-label key">Quadrants</span> Si le gap depasse 250 points → le diviser en quadrants pour les zones de reaction</li>
+          <li><span class="rule-label warning">ATH</span> Un RTH Gap proche d'un All-Time High est extremement significatif — zone de decision majeure</li>
+          <li><span class="rule-label key">Traitement</span> Le gap agit comme un FVG — le 50% (Consequent Encroachment) est le niveau cle</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 14. PROFILS HEBDOMADAIRES -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="profils">
+  <div class="section-badge" style="background:rgba(233,184,76,0.1);color:#e9b84c;">Chapitre 14</div>
+  <h2>Profils Hebdomadaires</h2>
+  <p class="section-intro">Chaque semaine suit un profil type. Comprendre quel jour tend a creer le high ou le low de la semaine permet de se positionner avec l'algorithme et non contre lui.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="classic tuesday low week bullish 70%">
+      <div class="concept-header">
+        <span class="concept-name">Classic Tuesday Low of Week (Bullish)</span>
+      </div>
+      <div class="concept-body">
+        Le profil le plus frequent en semaine haussiere. Le low de la semaine est forme le <strong>mardi pendant London</strong> dans environ 70% des cas.
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">Schema</span> Lundi = range/consolidation → Mardi London = sweep du low → expansion haussiere mercredi-jeudi</li>
+          <li><span class="rule-label key">Probabilite</span> ~70% des semaines haussiere forment le low le mardi</li>
+          <li><span class="rule-label key">Confirmation</span> Le low doit etre accompagne d'un sweep de SSL + reaction sur un PD Array HTF</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="classic tuesday high week bearish">
+      <div class="concept-header">
+        <span class="concept-name">Classic Tuesday High of Week (Bearish)</span>
+      </div>
+      <div class="concept-body">
+        Le miroir du profil precedent pour les semaines baissieres. Le high de la semaine est forme le <strong>mardi</strong>, suivi d'une expansion baissiere.
+        <ul class="concept-rules">
+          <li><span class="rule-label bearish">Schema</span> Lundi = range → Mardi = sweep du high → expansion baissiere mercredi-jeudi</li>
+          <li><span class="rule-label key">Confirmation</span> Le high doit etre accompagne d'un sweep de BSL + reaction sur un PD Array HTF premium</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="classic wednesday low high week mid-week">
+      <div class="concept-header">
+        <span class="concept-name">Classic Wednesday Low/High of Week</span>
+      </div>
+      <div class="concept-body">
+        Parfois le low ou high de la semaine est decale au mercredi. Ce profil est plus frequent lors des semaines avec des news importants en debut de semaine.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Condition</span> Quand le mardi ne produit pas de sweep clair, le mouvement se decale au mercredi</li>
+          <li><span class="rule-label key">Schema</span> Lundi-Mardi = consolidation → Mercredi = sweep + reversal → Jeudi = expansion</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="consolidation reversal thursday fomc">
+      <div class="concept-header">
+        <span class="concept-name">Consolidation + Reversal Thursday</span>
+      </div>
+      <div class="concept-body">
+        Profil des semaines FOMC. Le marche consolide en debut de semaine, fait un mouvement violent sur l'annonce (mercredi), puis <strong>reverse le jeudi</strong>.
+        <ul class="concept-rules">
+          <li><span class="rule-label warning">FOMC</span> Lundi-Mardi-Mercredi matin = range → Mercredi PM = spike sur la news → Jeudi = reversal</li>
+          <li><span class="rule-label warning">Piege</span> Le mouvement initial post-FOMC est souvent une fausse direction — attendre le jeudi pour le vrai biais</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="seek destroy friday nfp">
+      <div class="concept-header">
+        <span class="concept-name">Seek & Destroy Friday</span>
+      </div>
+      <div class="concept-body">
+        Les vendredis NFP sont des journees de <strong>Seek & Destroy</strong>. Le marche balaye les deux cotes avant de finir de facon imprevisible.
+        <ul class="concept-rules">
+          <li><span class="rule-label warning">NFP</span> Ne pas trader le jour du NFP sauf traders tres experimentes</li>
+          <li><span class="rule-label warning">Schema</span> Sweep haut → sweep bas → direction finale impredictible</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="tgif retracement weekly range friday profit taking">
+      <div class="concept-header">
+        <span class="concept-name">TGIF — Thank God It's Friday</span>
+        <span class="concept-abbr">TGIF</span>
+      </div>
+      <div class="concept-body">
+        Le vendredi, le marche tend a <strong>retracer dans le range hebdomadaire</strong>. Les institutions prennent leurs profits et le mouvement de la semaine ralentit.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Le vendredi retrace souvent 20-30% du range de la semaine</li>
+          <li><span class="rule-label key">Utilisation</span> Si vous avez des positions ouvertes, prendre des profits partiels avant vendredi PM</li>
+          <li><span class="rule-label warning">Pas de nouveau trade</span> Eviter d'ouvrir de nouvelles positions le vendredi apres-midi</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="jour par jour lundi mardi mercredi jeudi vendredi caracteristiques">
+      <div class="concept-header">
+        <span class="concept-name">Caracteristiques Jour par Jour</span>
+      </div>
+      <div class="concept-body">
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Lundi</span> Range petit, consolidation, pose du cadre de la semaine — eviter de trader</li>
+          <li><span class="rule-label bullish">Mardi</span> <strong>70% du temps forme le LOW de la semaine</strong> (bullish) ou le HIGH (bearish) — MEILLEUR jour pour l'entree</li>
+          <li><span class="rule-label bullish">Mercredi</span> <strong>MEILLEUR jour pour le trading</strong> — expansion maximale, continuation du mouvement</li>
+          <li><span class="rule-label warning">Jeudi</span> Risque de reversal — si le mouvement a deja ete fait mardi-mercredi, jeudi peut retourner</li>
+          <li><span class="rule-label warning">Vendredi</span> Range petit, prise de profits, TGIF — eviter ou trader seulement le matin</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 15. CONCEPTS AVANCES -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="avances">
+  <div class="section-badge" style="background:rgba(155,108,240,0.1);color:#9b6cf0;">Chapitre 15</div>
+  <h2>Concepts Avances</h2>
+  <p class="section-intro">Les concepts avances affinent la lecture du prix et permettent de distinguer les zones haute probabilite des pieges. Chaque concept a des regles strictes de validation.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="propulsion block 50% hold aggressive response wick">
+      <div class="concept-header">
+        <span class="concept-name">Propulsion Block</span>
+        <span class="concept-abbr">PB</span>
+      </div>
+      <div class="concept-body">
+        Un Order Block special ou le <strong>50% DOIT tenir</strong>. Le prix doit montrer une reaction agressive et immediate au contact. Si le 50% est casse, le block est invalide.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle #1</span> Le 50% (Mean Threshold) du Propulsion Block doit tenir — pas de cloture au-dela</li>
+          <li><span class="rule-label key">Regle #2</span> La reaction doit etre <strong>immediate et agressive</strong> — pas de consolidation</li>
+          <li><span class="rule-label key">Regle #3</span> Les meches comptent — un wick qui penetre au-dela du 50% sans cloture reste valide</li>
+          <li><span class="rule-label warning">Invalidation</span> Toute cloture au-dela du 50% = Propulsion Block invalide, ne plus utiliser</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="reclaimed order block reintegrated trend direction">
+      <div class="concept-header">
+        <span class="concept-name">Reclaimed Order Block</span>
+      </div>
+      <div class="concept-body">
+        Un Order Block qui a ete <strong>traverse puis reintegre</strong> dans la direction de la tendance. Le prix casse l'OB dans le sens oppose, puis revient a l'interieur et l'utilise comme support/resistance.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Condition</span> L'OB doit etre reintegre dans la direction du biais HTF</li>
+          <li><span class="rule-label key">Force</span> Un Reclaimed OB est plus fort qu'un OB classique car il a deja piege des traders</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="vacuum block gap volatility event candle open close 50%">
+      <div class="concept-header">
+        <span class="concept-name">Vacuum Block</span>
+      </div>
+      <div class="concept-body">
+        Un gap cree par un evenement de volatilite (news, ouverture). Traiter comme une bougie avec <strong>open, close et 50%</strong>.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Structure</span> Le haut du gap = open, le bas = close (ou inversement selon la direction)</li>
+          <li><span class="rule-label key">50%</span> Le milieu du Vacuum Block est le Consequent Encroachment — niveau cle de reaction</li>
+          <li><span class="rule-label key">Traitement</span> Agit comme un FVG mais cree par un gap de prix pur, sans livraison de prix</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="breakaway gap confirms direction fast market">
+      <div class="concept-header">
+        <span class="concept-name">Breakaway Gap</span>
+      </div>
+      <div class="concept-body">
+        Un gap qui <strong>confirme la direction</strong> du marche. Quand un Breakaway Gap apparait, le marche va vite et fort dans cette direction. Ne pas attendre un retracement — il n'y en aura pas.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Signal</span> Confirme un mouvement directionnel fort — le marche ne revient pas combler ce gap</li>
+          <li><span class="rule-label warning">Ne pas fader</span> Ne jamais trader contre un Breakaway Gap — il confirme la force institutionnelle</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="volume imbalance vi fvg wick overlap candle body">
+      <div class="concept-header">
+        <span class="concept-name">Volume Imbalance vs FVG</span>
+        <span class="concept-abbr">VI</span>
+      </div>
+      <div class="concept-body">
+        La <strong>Volume Imbalance</strong> est differente du FVG : il y a seulement un <strong>chevauchement de meches</strong> entre deux bougies consecutives, sans chevauchement de corps. Le gap existe entre le close d'une bougie et l'open de la suivante.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Difference</span> FVG = gap entre 3 bougies | VI = gap entre 2 bougies (close/open)</li>
+          <li><span class="rule-label key">Lecture</span> Les meches se chevauchent mais les corps non — c'est un desequilibre de volume</li>
+          <li><span class="rule-label key">Regle</span> Si un VI se trouve sous un FVG → les incorporer ensemble comme une seule zone</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="gap imbalance gi true price gap no delivery">
+      <div class="concept-header">
+        <span class="concept-name">Gap Imbalance</span>
+        <span class="concept-abbr">GI</span>
+      </div>
+      <div class="concept-body">
+        Un <strong>vrai gap de prix</strong> ou il n'y a eu aucune livraison. Aucun chevauchement de meches ni de corps — un vide total. Plus puissant qu'un FVG ou un VI.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Definition</span> Aucune livraison de prix du tout — gap pur entre deux bougies</li>
+          <li><span class="rule-label key">Force</span> Niveau magnetique tres puissant — le prix tend a revenir combler au moins le 50%</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="smart money staging distribution accumulation multi step">
+      <div class="concept-header">
+        <span class="concept-name">Smart Money Staging</span>
+      </div>
+      <div class="concept-body">
+        Processus en <strong>plusieurs etapes</strong> ou les institutions accumulent ou distribuent des positions. Ce n'est pas un seul evenement mais une sequence planifiee.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Accumulation</span> Les institutions construisent des positions acheteuses en plusieurs vagues dans des zones de discount</li>
+          <li><span class="rule-label key">Distribution</span> Les institutions vendent progressivement dans des zones de premium en plusieurs etapes</li>
+          <li><span class="rule-label key">Detection</span> Plusieurs sweeps de liquidite dans la meme zone avec des reactions de plus en plus fortes</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="market maker trap trendlines diagonal 3rd touch ob turtle soup">
+      <div class="concept-header">
+        <span class="concept-name">Market Maker Trap Trendlines</span>
+      </div>
+      <div class="concept-body">
+        Les <strong>trendlines diagonales sont des pieges</strong>. Les Market Makers les utilisent pour attirer les traders retail. Apres le 3eme touch, chercher un OB ou un Turtle Soup.
+        <ul class="concept-rules">
+          <li><span class="rule-label warning">Piege</span> Les trendlines diagonales ne sont PAS des niveaux institutionnels — ce sont des leurres</li>
+          <li><span class="rule-label key">Regle</span> Apres le 3eme touch d'une trendline → chercher un Order Block ou un setup Turtle Soup</li>
+          <li><span class="rule-label key">Logique</span> Les institutions savent que le retail trade les trendlines → ils les utilisent pour pieger</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="mohawk slight pierce invalidation wick">
+      <div class="concept-header">
+        <span class="concept-name">Mohawk</span>
+      </div>
+      <div class="concept-body">
+        Un <strong>leger percement</strong> d'un niveau sans invalidation. La meche depasse legerement le niveau mais le corps cloture en-deca. Le niveau reste valide.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Definition</span> Wick qui depasse legerement un OB, FVG ou niveau de liquidite sans le casser reellement</li>
+          <li><span class="rule-label key">Validite</span> Le niveau n'est PAS invalide — il a ete teste et a tenu</li>
+          <li><span class="rule-label warning">Distinction</span> Un Mohawk n'est pas un sweep — c'est un test qui confirme la zone</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="1st presented fvg first fair value gap reference inversion">
+      <div class="concept-header">
+        <span class="concept-name">1st Presented FVG</span>
+      </div>
+      <div class="concept-body">
+        Le <strong>premier FVG</strong> forme apres un mouvement est la reference principale. C'est le FVG le plus significatif car il represente le premier desequilibre cree par l'algo.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Reference</span> Le 1er FVG apres un MSS ou un displacement est le point de reference pour l'inversion</li>
+          <li><span class="rule-label key">Inversion</span> Si ce FVG est traverse, il devient un IFVG et change de polarite — utiliser comme entree opposee</li>
+          <li><span class="rule-label key">Priorite</span> Toujours privilegier le 1er FVG presente sur les suivants</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="premium discount wick analysis corps body">
+      <div class="concept-header">
+        <span class="concept-name">Premium/Discount Wick Analysis</span>
+      </div>
+      <div class="concept-body">
+        L'analyse des meches en <strong>zone premium vs discount</strong>. Les meches longues en premium indiquent du selling pressure. Les meches longues en discount indiquent du buying pressure.
+        <ul class="concept-rules">
+          <li><span class="rule-label bearish">Premium</span> Longues meches hautes = les institutions vendent agressivement dans la zone premium</li>
+          <li><span class="rule-label bullish">Discount</span> Longues meches basses = les institutions achetent agressivement dans la zone discount</li>
+          <li><span class="rule-label key">Confirmation</span> Les meches confirment la pression institutionnelle invisible dans les corps</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="ob quality rules validating candle 2x 3x size equilibrium volume bodies">
+      <div class="concept-header">
+        <span class="concept-name">OB Quality Rules</span>
+      </div>
+      <div class="concept-body">
+        Tous les Order Blocks ne se valent pas. Des regles strictes determinent la qualite et la probabilite de reaction.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Taille</span> La bougie de validation (celle qui suit l'OB) doit faire <strong>2 a 3 fois la taille</strong> de l'OB</li>
+          <li><span class="rule-label key">Position</span> Les OB autour de l'<strong>equilibrium</strong> (50% du dealing range) ont la plus haute probabilite</li>
+          <li><span class="rule-label key">Volume</span> Le volume institutionnel est dans les <strong>corps</strong>, pas dans les meches</li>
+          <li><span class="rule-label warning">Faible qualite</span> Un OB sans displacement significatif ou avec une bougie de validation trop petite = faible probabilite</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="fvg advanced rules 3rd return low probability vi incorporate">
+      <div class="concept-header">
+        <span class="concept-name">FVG Advanced Rules</span>
+      </div>
+      <div class="concept-body">
+        Regles avancees pour l'utilisation des FVG au-dela des bases.
+        <ul class="concept-rules">
+          <li><span class="rule-label warning">3eme retour</span> Le 3eme retour dans un FVG = <strong>basse probabilite</strong> — le FVG est "use"</li>
+          <li><span class="rule-label key">VI + FVG</span> Si un Volume Imbalance se trouve en-dessous d'un FVG → les <strong>incorporer</strong> comme une seule zone</li>
+          <li><span class="rule-label key">1er FVG</span> Le premier FVG apres un displacement est toujours le plus puissant</li>
+          <li><span class="rule-label key">IFVG</span> Un FVG traverse qui tient comme support/resistance inverse = IFVG, trade dans la nouvelle direction</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="immediate rebalance detailed big candle completely covered next">
+      <div class="concept-header">
+        <span class="concept-name">Immediate Rebalance — Detail</span>
+      </div>
+      <div class="concept-body">
+        Quand une grosse bougie de displacement est <strong>completement couverte</strong> par la bougie suivante. Cela signifie que le desequilibre a ete immediatement reequilibre.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Definition</span> Grande bougie suivie d'une bougie qui couvre 100% de son range (open a close)</li>
+          <li><span class="rule-label key">Signal</span> Le prix a immediatement rebalance — pas besoin d'attendre un retour futur sur cette zone</li>
+          <li><span class="rule-label warning">Consequence</span> Le FVG de cette zone n'est plus valide comme point d'entree — il a deja ete rempli</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 16. CONDITIONS DE TRADING -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="conditions">
+  <div class="section-badge" style="background:rgba(240,69,69,0.1);color:#f04545;">Chapitre 16</div>
+  <h2>Conditions de Trading</h2>
+  <p class="section-intro">Savoir QUAND trader est aussi important que savoir COMMENT. Ces checklists et conditions filtrent les jours favorables des jours a eviter, eliminant les pertes evitables.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="quand trader london conditions favorables pd array adr cbdr asian">
+      <div class="concept-header">
+        <span class="concept-name">Quand Trader London — Conditions Favorables</span>
+      </div>
+      <div class="concept-body">
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">1</span> Le Daily respecte les PD Arrays — reaction visible sur les OB/FVG HTF</li>
+          <li><span class="rule-label bullish">2</span> Reaction depuis une zone de discount (haussier) ou premium (baissier) sur le HTF</li>
+          <li><span class="rule-label bullish">3</span> L'ADR (Average Daily Range) n'a PAS ete depasse — il reste de la marge pour le mouvement</li>
+          <li><span class="rule-label bullish">4</span> Le CBDR et l'Asian Range montrent une bonne consolidation (petits ranges)</li>
+          <li><span class="rule-label bullish">5</span> Le biais hebdomadaire est clair et aligné avec le setup</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="quand ne pas trader london conditions defavorables expansion fomc nfp holiday">
+      <div class="concept-header">
+        <span class="concept-name">Quand NE PAS Trader London</span>
+      </div>
+      <div class="concept-body">
+        <ul class="concept-rules">
+          <li><span class="rule-label warning">1</span> Expansion superieure a 2x l'ADR — le mouvement est deja fait</li>
+          <li><span class="rule-label warning">2</span> 3 bougies Daily consecutives dans la meme direction — momentum epuise</li>
+          <li><span class="rule-label warning">3</span> Le jour apres un FOMC — volatilite residuelle imprevisible</li>
+          <li><span class="rule-label warning">4</span> Le jour avant un NFP — marche en attente, faux mouvements</li>
+          <li><span class="rule-label warning">5</span> Jour ferie (bank holiday) — liquidite reduite, mouvements erratiques</li>
+          <li><span class="rule-label warning">6</span> Trop de news a fort impact dans la journee — mouvements impossibles a lire</li>
+          <li><span class="rule-label warning">7</span> CBDR ou Asian Range trop large — la consolidation n'a pas eu lieu</li>
+          <li><span class="rule-label warning">8</span> Le marche est deja en expansion depuis 20:00 — le mouvement a commence sans vous</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="checklist london 7 etapes weekly open asian cbdr jour semaine">
+      <div class="concept-header">
+        <span class="concept-name">Checklist London — 7 Etapes</span>
+      </div>
+      <div class="concept-body">
+        <ul class="concept-rules">
+          <li><span class="rule-label key">1</span> Identifier le <strong>Weekly Open</strong> — ou a ouvert la semaine ?</li>
+          <li><span class="rule-label key">2</span> Mesurer l'<strong>Asian Range</strong> — taille et position relative</li>
+          <li><span class="rule-label key">3</span> Mesurer le <strong>CBDR</strong> — taille et projections STDV</li>
+          <li><span class="rule-label key">4</span> Ou est le prix par rapport au <strong>Weekly Open</strong> ? Au-dessus = potentiel baissier, en-dessous = potentiel haussier</li>
+          <li><span class="rule-label key">5</span> Quel <strong>jour de la semaine</strong> ? Mardi-Mercredi = optimal, Lundi-Vendredi = eviter</li>
+          <li><span class="rule-label key">6</span> Le <strong>London high ou low</strong> a-t-il deja ete cree ? Si oui, attendre NY</li>
+          <li><span class="rule-label key">7</span> Decision finale : <strong>acheter ou vendre ?</strong> Si pas de reponse claire → pas de trade</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="checklist ny 6 etapes cme open london high low osok liquidity">
+      <div class="concept-header">
+        <span class="concept-name">Checklist NY — 6 Etapes</span>
+      </div>
+      <div class="concept-body">
+        <ul class="concept-rules">
+          <li><span class="rule-label key">1</span> Le <strong>CME Open 08:20</strong> — observer le comportement a l'ouverture</li>
+          <li><span class="rule-label key">2</span> Le prix retourne-t-il en <strong>discount</strong> (achat) ou <strong>premium</strong> (vente) ?</li>
+          <li><span class="rule-label key">3</span> Les <strong>London High/Low</strong> servent de reference — ont-ils ete sweeps ?</li>
+          <li><span class="rule-label key">4</span> Y a-t-il un setup apres la <strong>manipulation London</strong> ? (Judas reverse, continuation NY)</li>
+          <li><span class="rule-label key">5</span> Un <strong>OSOK</strong> (One Shot One Kill) est-il possible ? (un seul trade, un seul objectif)</li>
+          <li><span class="rule-label key">6</span> Y a-t-il de la <strong>liquidite</strong> au-dessus et/ou en-dessous a cibler ?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="breaker quality checklist macro first eqh eql pd array">
+      <div class="concept-header">
+        <span class="concept-name">Breaker Quality Checklist</span>
+      </div>
+      <div class="concept-body">
+        Un Breaker Block n'est haute probabilite que s'il remplit ces criteres :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">1</span> Le Breaker se forme <strong>a l'interieur d'une macro</strong> — jamais hors macro</li>
+          <li><span class="rule-label key">2</span> Utiliser uniquement le <strong>premier Breaker</strong> — les suivants sont de plus en plus faibles</li>
+          <li><span class="rule-label key">3</span> Pas de <strong>EQH/EQL</strong> a proximite — ceux-ci attirent le prix et invalident le setup</li>
+          <li><span class="rule-label key">4</span> Un <strong>PD Array a l'interieur</strong> du Breaker (FVG, OB) = plus puissant</li>
+          <li><span class="rule-label warning">Regle absolue</span> 1 macro = 1 trade — ne pas re-entrer sur un 2eme Breaker dans la meme macro</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 17. SETUPS HAUTE PROBABILITE -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="setups">
+  <div class="section-badge" style="background:rgba(45,214,122,0.1);color:#2dd67a;">Chapitre 17</div>
+  <h2>Setups Haute Probabilite</h2>
+  <p class="section-intro">Les setups haute probabilite combinent plusieurs confluences (temps, prix, structure) pour maximiser le taux de reussite. Chaque setup a des regles strictes d'entree, de stop et de gestion.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="buy setups stdv asian discount pd array london kz ob fvg stl judas turtle soup nwog">
+      <div class="concept-header">
+        <span class="concept-name">Buy Setups — Confluences</span>
+      </div>
+      <div class="concept-body">
+        Les meilleurs setups d'achat combinent plusieurs elements :
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">Setup 1</span> 1 STDV sous l'Asian Range + PD Array en discount pendant la London KZ</li>
+          <li><span class="rule-label bullish">Setup 2</span> Bullish OB m15/m5 en-dessous d'un STL qui a ete sweep → entree sur le retour</li>
+          <li><span class="rule-label bullish">Setup 3</span> FVG haussier en-dessous d'un STL sweep → le prix revient combler le FVG et repart</li>
+          <li><span class="rule-label bullish">Setup 4</span> Judas London entre 00:00 et 02:00 + prix en discount → attendre le MSS pour entrer</li>
+          <li><span class="rule-label bullish">Setup 5</span> Expansion apres minuit → acheter le 1er retracement sur un OB m15/m5 entre 02:00 et 04:00</li>
+          <li><span class="rule-label bullish">Setup 6</span> Turtle Soup si le STL a ete pris 2 fois → haute probabilite de reversal</li>
+          <li><span class="rule-label bullish">Setup 7</span> Confluence avec un NWOG en-dessous du prix = support additionnel puissant</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="position management sl stop loss be breakeven 40% daily range turtle soup 15 30pts ob 10pts">
+      <div class="concept-header">
+        <span class="concept-name">Position Management — Stop Loss</span>
+      </div>
+      <div class="concept-body">
+        La gestion du stop loss suit des regles precises selon le type de setup :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle generale</span> SL sur le <strong>point d'invalidation</strong> — pas un chiffre rond arbitraire</li>
+          <li><span class="rule-label warning">Pas de BE premature</span> Ne PAS deplacer le SL a breakeven avant que le prix ait parcouru <strong>40% du daily range</strong></li>
+          <li><span class="rule-label key">Turtle Soup</span> SL = <strong>15 a 30 points</strong> en-dessous du point d'entree</li>
+          <li><span class="rule-label key">1er Retracement OB</span> SL = <strong>10 points</strong> en-dessous du lowest low de la zone d'entree</li>
+          <li><span class="rule-label key">Invalidation</span> Si le prix casse le PD Array d'entree en cloture → sortir immediatement</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="profit taking levels 30pts stdv pdh pwh pmh 50% h1 adr 80% 05:00 07:00 10:00 11:00">
+      <div class="concept-header">
+        <span class="concept-name">Profit Taking Levels</span>
+      </div>
+      <div class="concept-body">
+        Les niveaux de prise de profits sont hierarchises par importance :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">1er partial</span> <strong>30 points</strong> de profit — petit partial pour securiser</li>
+          <li><span class="rule-label key">2eme partial</span> <strong>2 STDV</strong> de l'Asian Range ou du CBDR</li>
+          <li><span class="rule-label key">Objectifs cles</span> PDH/PWH/PMH (Previous Day/Week/Month High) = niveaux magnetiques</li>
+          <li><span class="rule-label key">Range H1</span> <strong>50% du range H1</strong> = objectif intermediaire</li>
+          <li><span class="rule-label key">ADR</span> Cloture quand le prix atteint <strong>80% minimum de l'ADR</strong></li>
+          <li><span class="rule-label key">Heures cles</span> Prendre des profits autour de <strong>05:00, 07:00 et 10:00-11:00 ET</strong> — changement de macro/session</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="swing method 0 gmt open 19:00 20:00 adr 5 jours limit entry 40pts rr">
+      <div class="concept-header">
+        <span class="concept-name">Swing Method — 0 GMT Open</span>
+      </div>
+      <div class="concept-body">
+        Methode swing basee sur le <strong>0 GMT Open</strong> (19:00 ou 20:00 NY selon l'heure d'ete/hiver). Approche position avec un meilleur R:R.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Reference</span> Le prix d'ouverture a 0 GMT (19:00 ou 20:00 NY) sert de reference directionnelle</li>
+          <li><span class="rule-label key">Stop Loss</span> SL = prix du 0 GMT Open - ADR des 5 derniers jours (pour un long)</li>
+          <li><span class="rule-label key">Entree Limit</span> Placer un ordre limite <strong>40 points en-dessous</strong> pour un meilleur R:R</li>
+          <li><span class="rule-label key">Avantage</span> Permet de capturer des swings de plusieurs jours avec un risque mesure par l'ADR</li>
+          <li><span class="rule-label warning">Condition</span> Le biais Weekly doit etre clair et confirme avant d'utiliser cette methode</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 18. PSYCHOLOGIE & JOURNALING -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="psycho">
+  <div class="section-badge" style="background:rgba(74,124,255,0.1);color:#4a7cff;">Chapitre 18</div>
+  <h2>Psychologie & Journaling</h2>
+  <p class="section-intro">La psychologie represente 80% du succes en trading. Sans discipline mentale, meme le meilleur setup est inutile. Le journaling est l'outil de progression numero 1.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="a-game b-game c-game matrix technique psycho errors">
+      <div class="concept-header">
+        <span class="concept-name">A-Game / B-Game / C-Game Matrix</span>
+      </div>
+      <div class="concept-body">
+        Evaluer votre etat a chaque session pour savoir si vous devez trader ou non :
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">A-Game</span> <strong>Technique</strong> : analyse claire, confluences alignees | <strong>Psycho</strong> : calme, patient, detache du resultat | <strong>Erreurs</strong> : zero erreurs de processus → TRADER</li>
+          <li><span class="rule-label key">B-Game</span> <strong>Technique</strong> : analyse correcte mais pas ideale | <strong>Psycho</strong> : un peu presse ou fatigue | <strong>Erreurs</strong> : 1-2 erreurs mineures → REDUIRE LA TAILLE</li>
+          <li><span class="rule-label bearish">C-Game</span> <strong>Technique</strong> : pas d'analyse ou analyse forcee | <strong>Psycho</strong> : frustre, revenge trading, FOMO | <strong>Erreurs</strong> : erreurs repetees → NE PAS TRADER</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="pattern sheet before during after physical emotions thoughts trigger reaction decision tilt recovery">
+      <div class="concept-header">
+        <span class="concept-name">Pattern Sheet — Fiche de Comportement</span>
+      </div>
+      <div class="concept-body">
+        Un outil d'auto-analyse en 3 phases pour chaque trade :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">AVANT</span> Etat physique (sommeil, alimentation) | Emotions dominantes | Pensees recurrentes | Objectif realiste de la session</li>
+          <li><span class="rule-label key">PENDANT</span> Quel a ete le trigger d'entree ? | Premiere pensee apres l'entree ? | Emotions ressenties | Reaction corporelle (tension, respiration) | Action prise | Qualite de la decision (1-10)</li>
+          <li><span class="rule-label key">APRES</span> Erreurs commises | Lecon principale | Pattern recurrent identifie | Comment voyais-je le marche pendant le tilt ? | Strategie de recuperation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="daily self evaluation score 50 0-30 31-40 41-50 correct progress excellent">
+      <div class="concept-header">
+        <span class="concept-name">Auto-evaluation Quotidienne</span>
+      </div>
+      <div class="concept-body">
+        Systeme de score quotidien sur 50 points pour mesurer la qualite de votre trading (independamment du P&L) :
+        <ul class="concept-rules">
+          <li><span class="rule-label bearish">0 — 30 pts</span> Zone CORRECTE — processus non respecte, erreurs majeures, besoin de revoir les bases</li>
+          <li><span class="rule-label key">31 — 40 pts</span> Zone PROGRES — processus partiellement respecte, quelques erreurs, en voie d'amelioration</li>
+          <li><span class="rule-label bullish">41 — 50 pts</span> Zone EXCELLENTE — processus suivi a la lettre, decisions de qualite, discipline exemplaire</li>
+          <li><span class="rule-label key">Criteres</span> Respect du plan, patience, gestion du risque, qualite de l'analyse, etat emotionnel, journaling</li>
+          <li><span class="rule-label warning">Regle</span> Un jour a 50/50 avec un trade perdant est MIEUX qu'un jour a 15/50 avec un trade gagnant</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="mindset rules process practice competence micro contract done capacity nothing">
+      <div class="concept-header">
+        <span class="concept-name">Regles de Mindset</span>
+      </div>
+      <div class="concept-body">
+        Les principes psychologiques fondamentaux qui separent les traders rentables des autres :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Progression</span> <strong>Process → Practice → Competence</strong> — dans cet ordre, sans raccourcis</li>
+          <li><span class="rule-label key">Debut</span> Commencer avec <strong>1 micro contrat</strong> — prouver la methode avant d'augmenter la taille</li>
+          <li><span class="rule-label warning">OSOK</span> Prendre un bon trade et c'est FINI → <strong>YOU ARE DONE</strong> — ne pas surtrader</li>
+          <li><span class="rule-label key">Patience</span> La <strong>capacite a ne rien faire</strong> est la competence la plus difficile et la plus rentable</li>
+          <li><span class="rule-label key">Detachement</span> Le resultat d'un trade unique est irrelevant — seule la serie de 100+ trades compte</li>
+          <li><span class="rule-label warning">Revenge</span> Apres une perte, le SEUL bon reflexe est de FERMER la plateforme — jamais re-entrer</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
 <!-- 11. GLOSSAIRE A-Z -->
 <!-- ═══════════════════════════════════════ -->
 <div class="section" id="glossary">
@@ -1315,17 +2162,21 @@ body {
   <p class="section-intro">Tous les termes et acronymes ICT en un seul endroit.</p>
 
   <div class="glossary-grid">
+    <div class="gloss-item"><span class="gloss-term">ADR</span><span class="gloss-def">Average Daily Range — range moyen journalier sur 5/10/20 jours</span></div>
     <div class="gloss-item"><span class="gloss-term">AMD</span><span class="gloss-def">Accumulation, Manipulation, Distribution — cycle en 3 phases</span></div>
     <div class="gloss-item"><span class="gloss-term">BISI</span><span class="gloss-def">Buy-side Imbalance, Sell-side Inefficiency — FVG haussier</span></div>
     <div class="gloss-item"><span class="gloss-term">BOS</span><span class="gloss-def">Break of Structure — cassure dans le sens de la tendance</span></div>
     <div class="gloss-item"><span class="gloss-term">BPR</span><span class="gloss-def">Balanced Price Range — chevauchement SIBI + BISI</span></div>
     <div class="gloss-item"><span class="gloss-term">BSL</span><span class="gloss-def">Buy Side Liquidity — liquidite au-dessus des highs</span></div>
+    <div class="gloss-item"><span class="gloss-term">CBDR</span><span class="gloss-def">Central Bank Dealer Range — range 14:00-20:00 NY, base des projections STDV</span></div>
     <div class="gloss-item"><span class="gloss-term">CE</span><span class="gloss-def">Consequent Encroachment — 50% d'un FVG</span></div>
+    <div class="gloss-item"><span class="gloss-term">COT</span><span class="gloss-def">Commitment of Traders — rapport hebdomadaire des positions institutionnelles</span></div>
     <div class="gloss-item"><span class="gloss-term">ChoCh</span><span class="gloss-def">Change of Character — premier signe de retournement</span></div>
     <div class="gloss-item"><span class="gloss-term">CSD</span><span class="gloss-def">Change in State of Delivery — changement de programme</span></div>
     <div class="gloss-item"><span class="gloss-term">DOL</span><span class="gloss-def">Draw on Liquidity — objectif de prix cible</span></div>
     <div class="gloss-item"><span class="gloss-term">DR</span><span class="gloss-def">Dealing Range — range entre swing high et swing low</span></div>
     <div class="gloss-item"><span class="gloss-term">EQH</span><span class="gloss-def">Equal Highs — sommets au meme niveau = liquidite</span></div>
+    <div class="gloss-item"><span class="gloss-term">GI</span><span class="gloss-def">Gap Imbalance — vrai gap de prix sans aucune livraison</span></div>
     <div class="gloss-item"><span class="gloss-term">EQL</span><span class="gloss-def">Equal Lows — creux au meme niveau = liquidite</span></div>
     <div class="gloss-item"><span class="gloss-term">ERL</span><span class="gloss-def">External Range Liquidity — liquidite aux extremes du range</span></div>
     <div class="gloss-item"><span class="gloss-term">FVG</span><span class="gloss-def">Fair Value Gap — zone de desequilibre entre 3 bougies</span></div>
@@ -1349,9 +2200,10 @@ body {
     <div class="gloss-item"><span class="gloss-term">MMSM</span><span class="gloss-def">Market Maker Sell Model — modele baissier en 7 phases</span></div>
     <div class="gloss-item"><span class="gloss-term">MSS</span><span class="gloss-def">Market Structure Shift — cassure + displacement</span></div>
     <div class="gloss-item"><span class="gloss-term">MT</span><span class="gloss-def">Mean Threshold — 50% d'un Order Block</span></div>
-    <div class="gloss-item"><span class="gloss-term">NDOG</span><span class="gloss-def">New Day Opening Gap — gap entre cloture et ouverture du jour</span></div>
+    <div class="gloss-item"><span class="gloss-term">NDOG</span><span class="gloss-def">New Day Opening Gap — gap entre cloture et ouverture du jour suivant</span></div>
     <div class="gloss-item"><span class="gloss-term">NWOG</span><span class="gloss-def">New Week Opening Gap — gap entre vendredi et dimanche</span></div>
     <div class="gloss-item"><span class="gloss-term">OB</span><span class="gloss-def">Order Block — derniere bougie opposee avant displacement</span></div>
+    <div class="gloss-item"><span class="gloss-term">OSOK</span><span class="gloss-def">One Shot One Kill — un seul trade par session, objectif unique</span></div>
     <div class="gloss-item"><span class="gloss-term">OTE</span><span class="gloss-def">Optimal Trade Entry — zone Fibonacci 62-79%</span></div>
     <div class="gloss-item"><span class="gloss-term">PD</span><span class="gloss-def">Premium / Discount — au-dessus ou en-dessous de 50% du range</span></div>
     <div class="gloss-item"><span class="gloss-term">PDH/PDL</span><span class="gloss-def">Previous Day High/Low — extremes du jour precedent</span></div>
@@ -1360,16 +2212,19 @@ body {
     <div class="gloss-item"><span class="gloss-term">PWH/PWL</span><span class="gloss-def">Previous Week High/Low — extremes de la semaine precedente</span></div>
     <div class="gloss-item"><span class="gloss-term">QT</span><span class="gloss-def">Quarterly Theory — division en 4 quarters fractals</span></div>
     <div class="gloss-item"><span class="gloss-term">RB</span><span class="gloss-def">Rejection Block — zone de rejet par les meches</span></div>
+    <div class="gloss-item"><span class="gloss-term">RTH</span><span class="gloss-def">Regular Trading Hours — heures de marche regulieres (09:30-16:00 NY)</span></div>
     <div class="gloss-item"><span class="gloss-term">SB</span><span class="gloss-def">Silver Bullet — setup sur fenetre horaire precise</span></div>
     <div class="gloss-item"><span class="gloss-term">SD</span><span class="gloss-def">Standard Deviation — extension mesurable du range</span></div>
     <div class="gloss-item"><span class="gloss-term">SIBI</span><span class="gloss-def">Sell-side Imbalance, Buy-side Inefficiency — FVG baissier</span></div>
     <div class="gloss-item"><span class="gloss-term">SMT</span><span class="gloss-def">Smart Money Technique — divergence entre actifs correles</span></div>
     <div class="gloss-item"><span class="gloss-term">SSMT</span><span class="gloss-def">Sequential SMT — divergence sequentielle dans le temps</span></div>
     <div class="gloss-item"><span class="gloss-term">SSL</span><span class="gloss-def">Sell Side Liquidity — liquidite en-dessous des lows</span></div>
+    <div class="gloss-item"><span class="gloss-term">STDV</span><span class="gloss-def">Standard Deviation — projection de range depuis CBDR/Asian</span></div>
     <div class="gloss-item"><span class="gloss-term">STH</span><span class="gloss-def">Short Term High — sommet a court terme</span></div>
     <div class="gloss-item"><span class="gloss-term">STL</span><span class="gloss-def">Short Term Low — creux a court terme</span></div>
     <div class="gloss-item"><span class="gloss-term">TCISD</span><span class="gloss-def">True CiSD — vrai changement de programme en 6 etapes</span></div>
     <div class="gloss-item"><span class="gloss-term">TDO</span><span class="gloss-def">True Daily Open — ouverture a minuit ET</span></div>
+    <div class="gloss-item"><span class="gloss-term">TGIF</span><span class="gloss-def">Thank God It's Friday — retracement dans le range hebdomadaire le vendredi</span></div>
     <div class="gloss-item"><span class="gloss-term">TMO</span><span class="gloss-def">True Monthly Open — ouverture mensuelle</span></div>
     <div class="gloss-item"><span class="gloss-term">TWO</span><span class="gloss-def">True Weekly Open — ouverture hebdomadaire</span></div>
     <div class="gloss-item"><span class="gloss-term">TYO</span><span class="gloss-def">True Yearly Open — ouverture annuelle</span></div>
