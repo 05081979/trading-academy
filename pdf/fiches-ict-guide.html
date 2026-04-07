@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiches Concepts ICT/SMC — Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+@page { size: A4; margin: 20mm 18mm; }
+@media print {
+  .no-print { display:none !important; }
+  body { background:#fff !important; color:#1a1a2e !important; }
+  .card, .mini-card { background:#f8f9fa !important; border-color:#ddd !important; color:#1a1a2e !important; }
+  .card h3, .mini-card h3 { color:#1a1a2e !important; }
+  .card p, .card li, .mini-card p, .mini-card li { color:#333 !important; }
+  table { border-color:#ccc !important; }
+  th { background:#e8e8e8 !important; color:#1a1a2e !important; }
+  td { color:#1a1a2e !important; border-color:#ccc !important; }
+  .section-title { color:#1a1a2e !important; border-color:#c8a228 !important; }
+  .num { background:#c8a228 !important; color:#fff !important; }
+  header { background:#1a1a2e !important; }
+  header h1, header p { color:#fff !important; }
+  .step-num { background:#c8a228 !important; color:#fff !important; }
+  footer { color:#666 !important; border-color:#ccc !important; }
+  .highlight-box { background:#f0ead6 !important; border-color:#c8a228 !important; color:#1a1a2e !important; }
+}
+body {
+  font-family: 'Inter', sans-serif;
+  background: #0a0d14;
+  color: #cdd5e2;
+  font-size: 13px;
+  line-height: 1.7;
+  margin: 0;
+  padding: 0;
+}
+* { box-sizing: border-box; }
+.container { max-width: 900px; margin: 0 auto; padding: 20px 24px 60px; }
+
+/* Print button */
+.print-btn {
+  position: fixed;
+  top: 18px;
+  right: 24px;
+  z-index: 1000;
+  background: transparent;
+  color: #c8a228;
+  border: 2px solid #c8a228;
+  padding: 10px 22px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.print-btn:hover { background: #c8a228; color: #0a0d14; }
+
+/* Header */
+header {
+  background: linear-gradient(135deg, #10131a 0%, #161b27 100%);
+  border: 1px solid #1e2536;
+  border-radius: 12px;
+  padding: 36px 32px;
+  margin-bottom: 32px;
+  text-align: center;
+  border-top: 4px solid #c8a228;
+}
+header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #c8a228;
+  margin: 0 0 8px;
+  letter-spacing: -0.5px;
+}
+header p {
+  color: #8a92a6;
+  font-size: 14px;
+  margin: 0;
+  font-weight: 400;
+}
+header .badge {
+  display: inline-block;
+  background: rgba(200,162,40,0.12);
+  color: #c8a228;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 12px;
+  letter-spacing: 0.5px;
+}
+
+/* Section titles */
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin: 40px 0 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #c8a228;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #c8a228;
+  color: #0a0d14;
+  font-weight: 800;
+  font-size: 15px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+/* Cards */
+.card {
+  background: #11151e;
+  border: 1px solid #1e2536;
+  border-radius: 10px;
+  padding: 22px 24px;
+  margin-bottom: 16px;
+}
+.card h3 {
+  color: #c8a228;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+.card p, .card li {
+  color: #b0b8c8;
+  margin: 6px 0;
+}
+.card ul, .card ol {
+  padding-left: 20px;
+  margin: 8px 0;
+}
+
+.mini-card {
+  background: #0e1219;
+  border: 1px solid #1a1f2e;
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  border-left: 3px solid #c8a228;
+}
+.mini-card h3 {
+  color: #d4dae6;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+.mini-card p {
+  color: #8a92a6;
+  margin: 4px 0;
+  font-size: 12.5px;
+}
+
+/* Highlight box */
+.highlight-box {
+  background: rgba(200,162,40,0.07);
+  border: 1px solid rgba(200,162,40,0.25);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 14px 0;
+  font-size: 13px;
+  color: #d4c97a;
+}
+.highlight-box strong { color: #c8a228; }
+
+/* Steps */
+.steps { counter-reset: step; }
+.step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(200,162,40,0.15);
+  color: #c8a228;
+  font-weight: 700;
+  font-size: 13px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-content { flex: 1; }
+.step-content strong { color: #e2e8f0; }
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 13px;
+}
+th {
+  background: #161b27;
+  color: #c8a228;
+  font-weight: 700;
+  text-align: left;
+  padding: 10px 14px;
+  border: 1px solid #1e2536;
+}
+td {
+  padding: 9px 14px;
+  border: 1px solid #1e2536;
+  color: #b0b8c8;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+}
+tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+/* Grid */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 680px) { .grid-2 { grid-template-columns: 1fr; } }
+
+/* Checklist */
+.checklist li {
+  list-style: none;
+  position: relative;
+  padding-left: 6px;
+}
+.checklist li::before {
+  content: "\2713";
+  color: #c8a228;
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+/* Arrows / flow */
+.flow-arrow {
+  text-align: center;
+  color: #c8a228;
+  font-size: 20px;
+  margin: 8px 0;
+  letter-spacing: 4px;
+}
+
+/* Code/key terms */
+code, .mono {
+  font-family: 'IBM Plex Mono', monospace;
+  background: rgba(200,162,40,0.08);
+  color: #c8a228;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* Page break */
+.page-break {
+  page-break-after: always;
+  break-after: page;
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 24px 0 12px;
+  color: #4a5168;
+  font-size: 12px;
+  border-top: 1px solid #1e2536;
+  margin-top: 40px;
+}
+footer strong { color: #c8a228; }
+</style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">Imprimer / Sauvegarder en PDF</button>
+
+<div class="container">
+
+<!-- HEADER -->
+<header>
+  <h1>Fiches Concepts ICT/SMC</h1>
+  <p>6 Fiches &mdash; Trade Plan, IRL/ERL, Suspension Block, Repricing, DOL, Order Blocks</p>
+  <div class="badge">ALGORITHMIC ACADEMY &bull; GUIDE DE REFERENCE</div>
+</header>
+
+<!-- ============================================================ -->
+<!-- SECTION 1 -->
+<!-- ============================================================ -->
+<div class="section-title"><span class="num">1</span> Trade Plan &mdash; Arbre de D&eacute;cision</div>
+
+<div class="card">
+  <h3>Processus de D&eacute;cision Complet</h3>
+  <p>Chaque trade doit passer par cet arbre de d&eacute;cision. Si une &eacute;tape &eacute;choue, <strong>ne pas forcer le trade</strong>.</p>
+
+  <div class="steps">
+    <div class="step">
+      <span class="step-num">1</span>
+      <div class="step-content"><strong>V&eacute;rifier le calendrier &eacute;conomique</strong> &mdash; Pas de news red dans les 30 minutes. Les news haute importance cr&eacute;ent de la volatilit&eacute; impr&eacute;visible qui invalide les setups techniques.</div>
+    </div>
+    <div class="step">
+      <span class="step-num">2</span>
+      <div class="step-content"><strong>Confirmer les conditions IPDA</strong> &mdash; Alignment des timeframes. L'Inter-Bank Price Delivery Algorithm doit montrer une coh&eacute;rence dans la direction sur les niveaux cl&eacute;s.</div>
+    </div>
+    <div class="step">
+      <span class="step-num">3</span>
+      <div class="step-content"><strong>&Eacute;tablir le biais W/D/H4</strong> &mdash; D&eacute;terminer la direction dominante sur les timeframes sup&eacute;rieurs (Weekly, Daily, H4). Le biais HTF dicte la direction du trade.</div>
+    </div>
+    <div class="step">
+      <span class="step-num">4</span>
+      <div class="step-content"><strong>Si pas de biais clair &rarr; PAS DE TRADE</strong> &mdash; L'absence de direction claire est un signal de rester en dehors du march&eacute;. La patience est une strat&eacute;gie.</div>
+    </div>
+    <div class="step">
+      <span class="step-num">5</span>
+      <div class="step-content"><strong>Chercher un retour dans un PDA Array (H1/H4) dans le DRT</strong> &mdash; Identifier les zones PDA (FVG, OB, Breaker) o&ugrave; le prix pourrait r&eacute;agir &agrave; l'int&eacute;rieur du Dealing Range.</div>
+    </div>
+    <div class="step">
+      <span class="step-num">6</span>
+      <div class="step-content"><strong>V&eacute;rifier: prise de liquidit&eacute;? &Eacute;chec de structure? Mitigation?</strong> &mdash; Le prix doit montrer au moins un de ces &eacute;l&eacute;ments pour confirmer l'intention directionnelle.</div>
+    </div>
+    <div class="step">
+      <span class="step-num">7</span>
+      <div class="step-content"><strong>Si oui &rarr; chercher une entr&eacute;e LTF (Inversion, CISD, Breaker)</strong> &mdash; Descendre en timeframe pour trouver le point d'entr&eacute;e pr&eacute;cis via un mod&egrave;le de confirmation.</div>
+    </div>
+    <div class="step">
+      <span class="step-num">8</span>
+      <div class="step-content"><strong>Si confirmation &rarr; EXECUTION</strong> &mdash; Tous les crit&egrave;res sont valid&eacute;s. Placer le trade avec un stop loss d&eacute;fini et un ratio R:R minimum de 2:1.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>MMXM Timeframe Alignment</h3>
+  <p>Le MMXM (Market Maker Exchange Model) s'aligne sur des paires de timeframes sp&eacute;cifiques. Le biais est &eacute;tabli sur le TF sup&eacute;rieur, l'ex&eacute;cution se fait sur le TF inf&eacute;rieur.</p>
+  <table>
+    <thead>
+      <tr><th>BIAS (Timeframe Sup&eacute;rieur)</th><th>MMXM (Timeframe d'Ex&eacute;cution)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>W (Weekly)</td><td>4H</td></tr>
+      <tr><td>D (Daily)</td><td>1H</td></tr>
+      <tr><td>4H</td><td>M15</td></tr>
+      <tr><td>1H</td><td>M5</td></tr>
+      <tr><td>M15</td><td>M1</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="highlight-box">
+  <strong>R&egrave;gle d'or :</strong> Ne jamais trader contre le biais HTF. Si le Weekly est haussier, ne chercher que des longs sur les TF inf&eacute;rieurs. Le MMXM alignment est la cl&eacute; de la coh&eacute;rence.
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ -->
+<!-- SECTION 2 -->
+<!-- ============================================================ -->
+<div class="section-title"><span class="num">2</span> IRL vers ERL &mdash; Liquidit&eacute; Interne &amp; Externe</div>
+
+<div class="grid-2">
+  <div class="card">
+    <h3>ERL &mdash; External Range Liquidity</h3>
+    <p>Sommets et creux o&ugrave; se trouvent les <strong>bassins de liquidit&eacute;</strong> (stop-losses, buy/sell stops). Ce sont les extr&ecirc;mes du range &mdash; les points que le march&eacute; cherche &agrave; atteindre pour collecter la liquidit&eacute; accumul&eacute;e.</p>
+    <ul>
+      <li>Buy-Side Liquidity (BSL) au-dessus des swing highs</li>
+      <li>Sell-Side Liquidity (SSL) en dessous des swing lows</li>
+      <li>Equal highs/lows = bassins concentr&eacute;s</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>IRL &mdash; Internal Range Liquidity</h3>
+    <p>D&eacute;s&eacute;quilibres <strong>&agrave; l'int&eacute;rieur du range</strong> (FVG, imbalances). Ce sont les zones d'inefficience que le prix doit combler pour r&eacute;&eacute;quilibrer la structure du march&eacute;.</p>
+    <ul>
+      <li>Fair Value Gaps (FVG)</li>
+      <li>Imbalances / Voids</li>
+      <li>Zones non-test&eacute;es entre les extr&ecirc;mes</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Le Cycle IRL &harr; ERL</h3>
+  <p>Le prix oscille constamment entre liquidit&eacute; externe et liquidit&eacute; interne :</p>
+  <div class="highlight-box">
+    <strong>ERL pris</strong> &rarr; le prix se d&eacute;place vers <strong>IRL</strong> (combler les inefficiences)<br>
+    <strong>IRL combl&eacute;</strong> &rarr; le prix se d&eacute;place vers <strong>ERL</strong> (chercher la liquidit&eacute;)
+  </div>
+  <p><strong>Le prix fait TOUJOURS une de deux choses :</strong> chercher la liquidit&eacute; (ERL) ou chercher la juste valeur (IRL). Comprendre o&ugrave; le prix se trouve dans ce cycle est fondamental pour anticiper le prochain mouvement.</p>
+</div>
+
+<div class="grid-2">
+  <div class="mini-card">
+    <h3>DRT &mdash; Dealing Range Theory</h3>
+    <p>Identifier le swing high et le swing low les plus r&eacute;cents. Le Dealing Range d&eacute;finit le terrain de jeu actuel du prix. Tout se passe &agrave; l'int&eacute;rieur de ce range jusqu'&agrave; ce qu'un extr&ecirc;me soit cass&eacute;.</p>
+  </div>
+  <div class="mini-card">
+    <h3>Fractalit&eacute;</h3>
+    <p>Le cycle IRL/ERL fonctionne sur <strong>tous les timeframes</strong>. Il est mieux respect&eacute; sur les HTF (H4, Daily, Weekly) car les volumes institutionnels y sont plus importants.</p>
+  </div>
+</div>
+
+<div class="card">
+  <h3>FVG Invalidation &mdash; Inverted FVG</h3>
+  <p>Quand l'IRL &eacute;choue (le FVG ne tient pas), le point haut/bas qui l'a cr&eacute;&eacute; devient le nouveau <em>draw on liquidity</em>. Un FVG invalid&eacute; devient un <strong>Inverted FVG</strong> : ce qui &eacute;tait support devient r&eacute;sistance, et inversement. C'est un signal puissant de retournement de la dynamique locale.</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ -->
+<!-- SECTION 3 -->
+<!-- ============================================================ -->
+<div class="section-title"><span class="num">3</span> Suspension Block</div>
+
+<div class="card">
+  <h3>D&eacute;finition</h3>
+  <p>Une <strong>seule bougie</strong> avec des d&eacute;s&eacute;quilibres de volume en haut ET en bas. Elle &laquo; suspend &raquo; le prix dans sa plage. Plus puissant que le FVG classique &agrave; 3 bougies car toute l'inefficience est concentr&eacute;e dans un seul &eacute;l&eacute;ment.</p>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <h3>Caract&eacute;ristiques</h3>
+    <ul>
+      <li>Prix pi&eacute;g&eacute; entre les d&eacute;s&eacute;quilibres (haut et bas de la bougie)</li>
+      <li>M&egrave;ches pr&eacute;c&eacute;dentes sans importance &mdash; seul le corps et les d&eacute;s&eacute;quilibres comptent</li>
+      <li>Zone de r&eacute;f&eacute;rence forte pour les retours futurs du prix</li>
+      <li>Souvent visible apr&egrave;s un mouvement directionnel fort</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Pourquoi si puissant ?</h3>
+    <ul>
+      <li><strong>Haute probabilit&eacute;</strong> &mdash; r&eacute;actions tr&egrave;s fr&eacute;quentes</li>
+      <li><strong>Aimant &agrave; prix</strong> &mdash; le prix est attir&eacute; vers cette zone</li>
+      <li><strong>Inversion ou reprise</strong> &mdash; la zone peut servir de pivot</li>
+      <li><strong>R&eacute;actions propres</strong> &mdash; rejet net au contact</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Comment utiliser le Suspension Block</h3>
+  <div class="steps">
+    <div class="step">
+      <span class="step-num">1</span>
+      <div class="step-content"><strong>Identifier la bougie</strong> &mdash; Chercher une bougie unique avec des gaps de volume (imbalances) au-dessus ET en dessous de son corps.</div>
+    </div>
+    <div class="step">
+      <span class="step-num">2</span>
+      <div class="step-content"><strong>Marquer high/low</strong> &mdash; D&eacute;limiter la zone entre le haut et le bas de la bougie. C'est votre zone de r&eacute;f&eacute;rence.</div>
+    </div>
+    <div class="step">
+      <span class="step-num">3</span>
+      <div class="step-content"><strong>Observer le retour du prix</strong> &mdash; Attendre que le prix revienne dans cette zone. Le Suspension Block agit comme un aimant.</div>
+    </div>
+    <div class="step">
+      <span class="step-num">4</span>
+      <div class="step-content"><strong>Ignorer les m&egrave;ches qui chevauchent</strong> &mdash; Seul le d&eacute;s&eacute;quilibre autour du corps compte, pas les m&egrave;ches des bougies adjacentes.</div>
+    </div>
+  </div>
+</div>
+
+<div class="highlight-box">
+  <strong>Suspension Block invers&eacute; :</strong> Une fois travers&eacute;, le Suspension Block peut servir de zone invers&eacute;e (ancien support &rarr; r&eacute;sistance). Int&eacute;grer dans le narratif IPDA et lier au DRT pour une utilisation optimale.
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4 -->
+<!-- ============================================================ -->
+<div class="section-title"><span class="num">4</span> Repricing &amp; Rebalancing</div>
+
+<div class="grid-2">
+  <div class="card">
+    <h3>Repricing</h3>
+    <p>R&eacute;ajustement <strong>brutal</strong> du prix vers sa juste valeur.</p>
+    <ul>
+      <li><strong>Premium trop haut</strong> &rarr; correction vers le bas</li>
+      <li><strong>Discount trop bas</strong> &rarr; correction vers le haut</li>
+      <li>Mouvement rapide, souvent d&eacute;clench&eacute; par des news</li>
+      <li>Les traders avis&eacute;s attendent le retour &agrave; l'&eacute;quilibre</li>
+    </ul>
+    <div class="highlight-box">
+      <strong>Nature :</strong> Ajustement brutal et directionnel vers la juste valeur. Le march&eacute; &laquo; corrige &raquo; un exc&egrave;s de prix.
+    </div>
+  </div>
+  <div class="card">
+    <h3>Rebalancing</h3>
+    <p>Retour du prix dans une zone d'<strong>inefficience</strong> (FVG/Imbalance) pour r&eacute;&eacute;quilibrer la distribution.</p>
+    <ul>
+      <li>Les algorithmes comblent les inefficiences</li>
+      <li>Rebalancing rapide = forte intention directionnelle</li>
+      <li>Le prix revient dans le FVG puis reprend la tendance</li>
+      <li>Cl&eacute; pour les entr&eacute;es sur pullback</li>
+    </ul>
+    <div class="highlight-box">
+      <strong>Nature :</strong> Remplissage d'une inefficience pour r&eacute;&eacute;quilibrer la structure. Le march&eacute; &laquo; comble &raquo; un vide.
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Diff&eacute;rence Cl&eacute;</h3>
+  <table>
+    <thead>
+      <tr><th>Crit&egrave;re</th><th>Repricing</th><th>Rebalancing</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Action</td><td>Ajustement brutal vers juste valeur</td><td>Remplissage d'une inefficience</td></tr>
+      <tr><td>D&eacute;clencheur</td><td>Exc&egrave;s de prix (premium/discount)</td><td>FVG / Imbalance non combl&eacute;</td></tr>
+      <tr><td>Vitesse</td><td>Rapide, souvent sur news</td><td>Variable, algorithmique</td></tr>
+      <tr><td>Objectif</td><td>Retour &agrave; l'&eacute;quilibre global</td><td>R&eacute;&eacute;quilibrage structurel local</td></tr>
+      <tr><td>Signal</td><td>Attendre la fin du mouvement</td><td>Entrer dans la zone d'inefficience</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ -->
+<!-- SECTION 5 -->
+<!-- ============================================================ -->
+<div class="section-title"><span class="num">5</span> DOL &mdash; Draw on Liquidity</div>
+
+<div class="card">
+  <h3>Principe Fondamental</h3>
+  <p>Le prix est <strong>attir&eacute; vers la liquidit&eacute;</strong>. Les bassins de liquidit&eacute; (BSL/SSL) situ&eacute;s aux swing highs et swing lows agissent comme des aimants pour le prix. Apr&egrave;s avoir pris un c&ocirc;t&eacute; de liquidit&eacute;, le prix est attir&eacute; vers l'autre c&ocirc;t&eacute;.</p>
+</div>
+
+<div class="grid-2">
+  <div class="mini-card">
+    <h3>BSL (Buy-Side Liquidity)</h3>
+    <p>Au-dessus des swing highs. Contient les stop-losses des vendeurs et les ordres d'achat en breakout. Le prix monte pour collecter cette liquidit&eacute;.</p>
+  </div>
+  <div class="mini-card">
+    <h3>SSL (Sell-Side Liquidity)</h3>
+    <p>En dessous des swing lows. Contient les stop-losses des acheteurs et les ordres de vente en breakdown. Le prix descend pour collecter cette liquidit&eacute;.</p>
+  </div>
+</div>
+
+<div class="card">
+  <h3>R&ocirc;le du DOL</h3>
+  <ul>
+    <li><strong>D&eacute;terminer le biais directionnel</strong> &mdash; Le DOL indique o&ugrave; le prix veut aller. Si le DOL est au-dessus, le biais est haussier.</li>
+    <li><strong>Le DOL HTF pr&eacute;vaut sur le LTF</strong> &mdash; Un DOL Daily est plus significatif qu'un DOL M15. Toujours privil&eacute;gier la direction du DOL sup&eacute;rieur.</li>
+    <li><strong>Lien avec IRL/ERL</strong> &mdash; Apr&egrave;s ERL pris &rarr; draw vers IRL (FVG). Apr&egrave;s IRL combl&eacute; &rarr; draw vers ERL. Le DOL s'int&egrave;gre dans le cycle.</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3>Utilisation Pratique</h3>
+  <div class="steps">
+    <div class="step">
+      <span class="step-num">1</span>
+      <div class="step-content"><strong>Identifier le DOL du jour</strong> &mdash; O&ugrave; se trouvent les bassins de liquidit&eacute; les plus proches ? BSL au-dessus ou SSL en dessous ? Quel c&ocirc;t&eacute; est le plus &laquo; attractif &raquo; ?</div>
+    </div>
+    <div class="step">
+      <span class="step-num">2</span>
+      <div class="step-content"><strong>Trader dans la direction du DOL</strong> &mdash; Ne jamais aller contre le draw principal. Si le DOL est au-dessus, chercher des longs. Si en dessous, chercher des shorts.</div>
+    </div>
+    <div class="step">
+      <span class="step-num">3</span>
+      <div class="step-content"><strong>Utiliser les sessions pour timer</strong> &mdash; London et New York sont les sessions o&ugrave; les prises de liquidit&eacute; majeures se produisent. London prend souvent la liquidit&eacute; d'un c&ocirc;t&eacute;, NY continue ou inverse.</div>
+    </div>
+  </div>
+</div>
+
+<div class="highlight-box">
+  <strong>Astuce :</strong> Le DOL le plus &eacute;vident est souvent le bon. Si tout le monde voit les equal highs/lows, les market makers aussi &mdash; et le prix ira les chercher.
+</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================================ -->
+<!-- SECTION 6 -->
+<!-- ============================================================ -->
+<div class="section-title"><span class="num">6</span> Order Blocks &mdash; Identification &amp; Validation</div>
+
+<div class="card">
+  <h3>D&eacute;finition</h3>
+  <p>Derni&egrave;re bougie (ou s&eacute;rie de bougies) d'un swing high/low structurel qui initie un <strong>mouvement directionnel net</strong>. C'est l'empreinte de l'activit&eacute; institutionnelle &mdash; la zone o&ugrave; les &laquo; smart money &raquo; ont plac&eacute; leurs ordres.</p>
+</div>
+
+<div class="card">
+  <h3>Caract&eacute;ristiques d'un Order Block</h3>
+  <ul>
+    <li><strong>Bougie engulfing/dominante</strong> &mdash; Gros corps qui englobe la bougie pr&eacute;c&eacute;dente</li>
+    <li><strong>Pr&eacute;c&eacute;d&eacute; d'un d&eacute;s&eacute;quilibre</strong> &mdash; Le prix montre de l'inefficience avant l'OB</li>
+    <li><strong>Displacement</strong> &mdash; Le prix s'&eacute;loigne rapidement apr&egrave;s l'OB (preuve d'intention)</li>
+  </ul>
+</div>
+
+<div class="grid-2">
+  <div class="mini-card">
+    <h3>Bullish OB</h3>
+    <p>Achats institutionnels. Derni&egrave;re bougie baissi&egrave;re avant le mouvement haussier. Agit comme <strong>support</strong>. Zone de rechargement pour les longs.</p>
+  </div>
+  <div class="mini-card">
+    <h3>Bearish OB</h3>
+    <p>Ventes institutionnelles. Derni&egrave;re bougie haussi&egrave;re avant le mouvement baissier. Agit comme <strong>r&eacute;sistance</strong>. Zone de rechargement pour les shorts.</p>
+  </div>
+  <div class="mini-card" style="grid-column: 1 / -1;">
+    <h3>Mitigation / Breaker Block</h3>
+    <p>Un Order Block invalid&eacute; devient une <strong>zone invers&eacute;e</strong>. Un ancien support OB travers&eacute; devient r&eacute;sistance (Breaker). Tr&egrave;s utile pour les retournements de structure.</p>
+  </div>
+</div>
+
+<div class="card">
+  <h3>M&eacute;thode pas-&agrave;-pas : Identifier un OB haute probabilit&eacute;</h3>
+  <div class="steps">
+    <div class="step">
+      <span class="step-num">1</span>
+      <div class="step-content"><strong>Structure HTF (swing H/L sur H4/Daily)</strong> &mdash; Commencer par identifier les points structurels cl&eacute;s sur les timeframes sup&eacute;rieurs.</div>
+    </div>
+    <div class="step">
+      <span class="step-num">2</span>
+      <div class="step-content"><strong>Bougie m&egrave;re</strong> &mdash; Chercher une bougie avec un gros corps et une cl&ocirc;ture &eacute;loign&eacute;e de l'ouverture. C'est la &laquo; bougie d'initiation &raquo;.</div>
+    </div>
+    <div class="step">
+      <span class="step-num">3</span>
+      <div class="step-content"><strong>Zone OB = corps de la bougie</strong> &mdash; Utiliser le corps (open-close) de la bougie, PAS les m&egrave;ches. Les m&egrave;ches sont du bruit.</div>
+    </div>
+    <div class="step">
+      <span class="step-num">4</span>
+      <div class="step-content"><strong>V&eacute;rifier le displacement</strong> &mdash; Le prix doit s'&eacute;loigner avec force de la zone OB. Un mouvement faible apr&egrave;s l'OB = faible probabilit&eacute;.</div>
+    </div>
+    <div class="step">
+      <span class="step-num">5</span>
+      <div class="step-content"><strong>Confluences (2+ &eacute;l&eacute;ments)</strong> &mdash; L'OB doit &ecirc;tre renforc&eacute; par d'autres &eacute;l&eacute;ments : FVG adjacent, niveau de structure, premium/discount.</div>
+    </div>
+    <div class="step">
+      <span class="step-num">6</span>
+      <div class="step-content"><strong>Attendre le retest</strong> &mdash; Ne jamais entrer au moment de la cr&eacute;ation de l'OB. Attendre que le prix revienne tester la zone.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Checklist Haute Probabilit&eacute;</h3>
+  <ul class="checklist">
+    <li>OB sur un timeframe HTF (H4/Daily minimum pour le contexte)</li>
+    <li>Displacement visible et puissant apr&egrave;s l'OB</li>
+    <li>Corps net &mdash; bougie dominante avec cl&ocirc;ture forte</li>
+    <li>Peu re-test&eacute; &mdash; premier retour = meilleure probabilit&eacute;</li>
+    <li>2+ confluences (FVG, structure, session, premium/discount)</li>
+    <li>Structure align&eacute;e &mdash; l'OB va dans le sens du biais HTF</li>
+    <li>TF sup&eacute;rieur pour le contexte OB / TF inf&eacute;rieur pour l'entr&eacute;e</li>
+  </ul>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <h3>Facteurs de Confluence</h3>
+    <ul>
+      <li><strong>Structure</strong> &mdash; Swing H/L, BOS, CHoCH</li>
+      <li><strong>FVG adjacent</strong> &mdash; Inefficience juste &agrave; c&ocirc;t&eacute; de l'OB</li>
+      <li><strong>Volume</strong> &mdash; Pic de volume sur la bougie OB</li>
+      <li><strong>Session</strong> &mdash; London/NY open pour le timing</li>
+      <li><strong>Premium/Discount</strong> &mdash; OB en zone favorable</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Validation vs Invalidation</h3>
+    <p><strong>Valid&eacute; :</strong> Rejection avec momentum/volume + maintien apr&egrave;s cl&ocirc;tures LTF. Le prix touche l'OB et rebondit avec conviction.</p>
+    <p><strong>Invalid&eacute; :</strong> Cl&ocirc;ture ferme au-del&agrave; avec momentum + retournement de structure HTF. L'OB est travers&eacute; et devient un Breaker Block.</p>
+  </div>
+</div>
+
+<div class="highlight-box">
+  <strong>Rappel :</strong> Un Order Block n'est pas juste &laquo; une bougie avant un mouvement &raquo;. C'est une zone institutionnelle valid&eacute;e par la structure, le displacement, et les confluences. Sans ces &eacute;l&eacute;ments, c'est juste du bruit.
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>Algorithmic Academy</strong> &mdash; Fiches Concepts ICT/SMC
+</footer>
+
+</div><!-- .container -->
+</body>
+</html>
