@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICT Trainer — Lumi Traders</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c10;
+    --bg2: #0d1117;
+    --bg3: #131920;
+    --green: #00ff88;
+    --green2: #00cc6a;
+    --red: #ff4060;
+    --gold: #f5c542;
+    --blue: #4da6ff;
+    --purple: #a855f7;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: #1e2d3d;
+    --card: #0f1923;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* SCANLINE EFFECT */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.015) 2px, rgba(0,255,136,0.015) 4px);
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* HEADER */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.05rem;
+    color: var(--green);
+    letter-spacing: 0.1em;
+  }
+  .logo span { color: var(--muted); }
+  .score-bar {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+  }
+  .score-item { color: var(--muted); }
+  .score-item strong { color: var(--green); }
+  .progress-total {
+    width: 140px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .progress-total-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--blue));
+    transition: width 0.5s;
+  }
+
+  /* LAYOUT */
+  .app { display: flex; min-height: calc(100vh - 60px); }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 0;
+    overflow-y: auto;
+  }
+  .sidebar-section {
+    padding: 0.4rem 1.5rem 0.3rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.8rem;
+    font-family: 'Space Mono', monospace;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.65rem 1.5rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--muted);
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+    position: relative;
+  }
+  .nav-item:hover { background: rgba(0,255,136,0.04); color: var(--text); }
+  .nav-item.active {
+    color: var(--green);
+    background: rgba(0,255,136,0.07);
+    border-left-color: var(--green);
+  }
+  .nav-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--border);
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .nav-item.done .nav-dot { background: var(--green); }
+  .nav-item.active .nav-dot { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .nav-badge {
+    margin-left: auto;
+    font-size: 0.65rem;
+    font-family: 'Space Mono', monospace;
+    background: var(--border);
+    color: var(--muted);
+    border-radius: 3px;
+    padding: 1px 5px;
+  }
+
+  /* MAIN CONTENT */
+  .main { flex: 1; overflow-y: auto; }
+
+  /* HOME */
+  .home-hero {
+    padding: 4rem 3rem 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .home-hero h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 0.8rem;
+  }
+  .home-hero h1 em {
+    font-style: normal;
+    color: var(--green);
+    text-shadow: 0 0 40px rgba(0,255,136,0.3);
+  }
+  .home-hero p {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 560px;
+    line-height: 1.6;
+  }
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.2rem;
+    padding: 2.5rem 3rem;
+  }
+  .module-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .module-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent, var(--green)), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .module-card:hover { border-color: var(--accent, var(--green)); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+  .module-card:hover::before { opacity: 1; }
+  .module-tag {
+    font-size: 0.65rem;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin-bottom: 0.8rem;
+    display: inline-block;
+  }
+  .module-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .module-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+  .module-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.75rem;
+    font-family: 'Space Mono', monospace;
+    color: var(--muted);
+  }
+
+  /* LESSON PAGE */
+  .lesson-page { display: none; padding: 2.5rem 3rem; }
+  .lesson-page.active { display: block; }
+  .lesson-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .lesson-tag {
+    font-size: 0.65rem;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+  .lesson-header h2 { font-size: 2rem; font-weight: 800; }
+  .lesson-header p { color: var(--muted); margin-top: 0.5rem; font-size: 0.9rem; line-height: 1.6; }
+
+  /* CONCEPT CARDS */
+  .concept-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.2rem;
+  }
+  .concept-card h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .concept-card h4 .icon {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  .concept-card p, .concept-card li {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .concept-card ul { padding-left: 1.2rem; }
+  .concept-card li { margin-bottom: 0.3rem; }
+  .concept-card li strong { color: var(--text); }
+  .highlight-box {
+    background: rgba(0,255,136,0.04);
+    border: 1px solid rgba(0,255,136,0.15);
+    border-radius: 7px;
+    padding: 1rem 1.2rem;
+    margin-top: 0.8rem;
+    font-size: 0.83rem;
+    color: var(--green2);
+    line-height: 1.6;
+  }
+  .warning-box {
+    background: rgba(255,64,96,0.05);
+    border: 1px solid rgba(255,64,96,0.2);
+    border-radius: 7px;
+    padding: 0.8rem 1.2rem;
+    margin-top: 0.8rem;
+    font-size: 0.82rem;
+    color: #ff8099;
+    line-height: 1.6;
+  }
+  .info-box {
+    background: rgba(77,166,255,0.05);
+    border: 1px solid rgba(77,166,255,0.2);
+    border-radius: 7px;
+    padding: 0.8rem 1.2rem;
+    margin-top: 0.8rem;
+    font-size: 0.82rem;
+    color: #8dc8ff;
+    line-height: 1.6;
+  }
+  .steps-list {
+    counter-reset: step;
+    list-style: none;
+    padding: 0;
+  }
+  .steps-list li {
+    counter-increment: step;
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.9rem;
+    align-items: flex-start;
+  }
+  .steps-list li::before {
+    content: counter(step);
+    min-width: 26px; height: 26px;
+    background: rgba(0,255,136,0.12);
+    border: 1px solid rgba(0,255,136,0.3);
+    color: var(--green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* SVG CHARTS */
+  .chart-container {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 0.8rem;
+    text-align: center;
+  }
+  svg text { font-family: 'Space Mono', monospace; }
+
+  /* QUIZ */
+  .quiz-section {
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+  }
+  .quiz-section h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gold);
+  }
+  .quiz-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .quiz-card.correct { border-color: var(--green); background: rgba(0,255,136,0.04); }
+  .quiz-card.incorrect { border-color: var(--red); background: rgba(255,64,96,0.04); }
+  .quiz-question {
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    line-height: 1.5;
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 0.6rem; }
+  .quiz-option {
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 0.83rem;
+    transition: all 0.15s;
+    background: var(--bg);
+    color: var(--text);
+    text-align: left;
+  }
+  .quiz-option:hover:not(:disabled) { border-color: var(--blue); background: rgba(77,166,255,0.05); }
+  .quiz-option.correct-ans { border-color: var(--green) !important; background: rgba(0,255,136,0.1) !important; color: var(--green); }
+  .quiz-option.wrong-ans { border-color: var(--red) !important; background: rgba(255,64,96,0.08) !important; color: var(--red); }
+  .quiz-option:disabled { cursor: default; }
+  .quiz-feedback {
+    margin-top: 0.8rem;
+    padding: 0.7rem 1rem;
+    border-radius: 7px;
+    font-size: 0.82rem;
+    display: none;
+    line-height: 1.5;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.ok { background: rgba(0,255,136,0.07); color: var(--green2); border: 1px solid rgba(0,255,136,0.2); }
+  .quiz-feedback.nok { background: rgba(255,64,96,0.07); color: #ff8099; border: 1px solid rgba(255,64,96,0.2); }
+
+  /* FLASHCARDS */
+  .flashcard-wrapper { perspective: 1000px; margin: 1.5rem 0; }
+  .flashcard {
+    width: 100%; min-height: 180px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+    cursor: pointer;
+  }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .flashcard-face {
+    position: absolute; inset: 0;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .flashcard-front { background: var(--card); }
+  .flashcard-back {
+    background: rgba(0,255,136,0.04);
+    border-color: rgba(0,255,136,0.2);
+    transform: rotateY(180deg);
+  }
+  .flashcard-face .label {
+    font-size: 0.65rem;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .flashcard-face .question { font-size: 1.1rem; font-weight: 700; line-height: 1.4; }
+  .flashcard-face .answer { font-size: 0.9rem; color: var(--green2); line-height: 1.6; }
+  .flashcard-hint { font-size: 0.75rem; color: var(--muted); margin-top: 1.5rem; font-family: 'Space Mono', monospace; }
+  .flashcard-nav { display: flex; gap: 0.8rem; margin-top: 0.8rem; }
+  .btn {
+    padding: 0.55rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid;
+    font-family: 'Syne', sans-serif;
+  }
+  .btn-primary { background: var(--green); color: var(--bg); border-color: var(--green); }
+  .btn-primary:hover { background: var(--green2); border-color: var(--green2); }
+  .btn-outline { background: transparent; color: var(--text); border-color: var(--border); }
+  .btn-outline:hover { border-color: var(--text); }
+  .btn-ghost { background: transparent; color: var(--muted); border-color: transparent; }
+  .btn-ghost:hover { color: var(--text); }
+
+  /* TABS */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+  .tab {
+    padding: 0.7rem 1.3rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    margin-bottom: -1px;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--green); border-bottom-color: var(--green); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* GRID DEFINITIONS */
+  .tag-green { background: rgba(0,255,136,0.1); color: var(--green); }
+  .tag-blue { background: rgba(77,166,255,0.1); color: var(--blue); }
+  .tag-red { background: rgba(255,64,96,0.1); color: var(--red); }
+  .tag-gold { background: rgba(245,197,66,0.1); color: var(--gold); }
+  .tag-purple { background: rgba(168,85,247,0.1); color: var(--purple); }
+  .icon-green { background: rgba(0,255,136,0.12); color: var(--green); }
+  .icon-red { background: rgba(255,64,96,0.12); color: var(--red); }
+  .icon-blue { background: rgba(77,166,255,0.12); color: var(--blue); }
+  .icon-gold { background: rgba(245,197,66,0.12); color: var(--gold); }
+  .icon-purple { background: rgba(168,85,247,0.12); color: var(--purple); }
+
+  /* RESPONSIVE NAV */
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .modules-grid { grid-template-columns: 1fr; padding: 1.5rem; }
+    .lesson-page { padding: 1.5rem; }
+    header { padding: 1rem 1.5rem; }
+    .home-hero { padding: 2rem 1.5rem 1.5rem; }
+    .home-hero h1 { font-size: 1.8rem; }
+    .score-bar { display: none; }
+  }
+
+  /* SECTION separator */
+  .sep { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+  /* MODEL STEPS */
+  .model-step {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 0.8rem;
+    background: var(--bg);
+    transition: border-color 0.2s;
+  }
+  .model-step:hover { border-color: var(--green); }
+  .step-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--green);
+    min-width: 32px;
+  }
+  .step-content h5 { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .step-content p { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+  /* GLOSSARY */
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.7rem;
+    margin-top: 1rem;
+  }
+  .glossary-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .glossary-item:hover { border-color: var(--blue); transform: translateY(-1px); }
+  .glossary-item dt { font-size: 0.82rem; font-weight: 700; color: var(--blue); margin-bottom: 0.2rem; }
+  .glossary-item dd { font-size: 0.75rem; color: var(--muted); }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; padding: 0; }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.5rem 0;
+    font-size: 0.84rem;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li .check {
+    width: 18px; height: 18px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    transition: all 0.15s;
+    margin-top: 1px;
+  }
+  .checklist li.checked .check { background: var(--green); border-color: var(--green); color: var(--bg); }
+  .checklist li.checked { color: var(--muted); text-decoration: line-through; }
+
+  .page-home { display: block; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">ICT<span>/</span>TRAINER <span style="margin-left:8px;font-size:0.75em;color:var(--muted)">— Lumi Traders</span></div>
+  <div class="score-bar">
+    <div class="score-item">Quiz : <strong id="quizScore">0/0</strong></div>
+    <div class="score-item">Progression : <strong id="progressPct">0%</strong></div>
+    <div class="progress-total"><div class="progress-total-fill" id="progressBar" style="width:0%"></div></div>
+  </div>
+</header>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-section">Vue d'ensemble</div>
+    <div class="nav-item active" onclick="showPage('home')" id="nav-home">
+      <span class="nav-dot"></span> Accueil
+    </div>
+    <div class="nav-item" onclick="showPage('glossaire')" id="nav-glossaire">
+      <span class="nav-dot"></span> Glossaire <span class="nav-badge">25+</span>
+    </div>
+
+    <div class="sidebar-section">Structure &amp; Liquidité</div>
+    <div class="nav-item" onclick="showPage('structure')" id="nav-structure">
+      <span class="nav-dot"></span> Market Structure
+    </div>
+    <div class="nav-item" onclick="showPage('liquidite')" id="nav-liquidite">
+      <span class="nav-dot"></span> Liquidité &amp; DOL
+    </div>
+    <div class="nav-item" onclick="showPage('bias')" id="nav-bias">
+      <span class="nav-dot"></span> Biais Daily / Intraday
+    </div>
+
+    <div class="sidebar-section">Concepts ICT</div>
+    <div class="nav-item" onclick="showPage('judas')" id="nav-judas">
+      <span class="nav-dot"></span> Judas Swing
+    </div>
+    <div class="nav-item" onclick="showPage('ote')" id="nav-ote">
+      <span class="nav-dot"></span> OTE (Optimal Trade Entry)
+    </div>
+    <div class="nav-item" onclick="showPage('smt')" id="nav-smt">
+      <span class="nav-dot"></span> SMT Divergence
+    </div>
+    <div class="nav-item" onclick="showPage('turtle')" id="nav-turtle">
+      <span class="nav-dot"></span> Turtle Soup
+    </div>
+
+    <div class="sidebar-section">Blocs de Prix</div>
+    <div class="nav-item" onclick="showPage('ob')" id="nav-ob">
+      <span class="nav-dot"></span> Order Block
+    </div>
+    <div class="nav-item" onclick="showPage('breaker')" id="nav-breaker">
+      <span class="nav-dot"></span> Breaker Block
+    </div>
+    <div class="nav-item" onclick="showPage('mitigation')" id="nav-mitigation">
+      <span class="nav-dot"></span> Mitigation Block
+    </div>
+    <div class="nav-item" onclick="showPage('rejection')" id="nav-rejection">
+      <span class="nav-dot"></span> Rejection / Propulsion
+    </div>
+
+    <div class="sidebar-section">Modèles</div>
+    <div class="nav-item" onclick="showPage('model2022')" id="nav-model2022">
+      <span class="nav-dot"></span> Modèle 2022 ICT
+    </div>
+    <div class="nav-item" onclick="showPage('algo')" id="nav-algo">
+      <span class="nav-dot"></span> Algorithme IPDA
+    </div>
+    <div class="nav-item" onclick="showPage('calendar')" id="nav-calendar">
+      <span class="nav-dot"></span> Calendrier Éco.
+    </div>
+
+    <div class="sidebar-section">Entraînement</div>
+    <div class="nav-item" onclick="showPage('flashcards')" id="nav-flashcards">
+      <span class="nav-dot"></span> Flashcards <span class="nav-badge">20</span>
+    </div>
+    <div class="nav-item" onclick="showPage('quiz')" id="nav-quiz">
+      <span class="nav-dot"></span> Quiz Complet <span class="nav-badge">15Q</span>
+    </div>
+    <div class="nav-item" onclick="showPage('checklist')" id="nav-checklist">
+      <span class="nav-dot"></span> Checklist Trade
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HOME -->
+    <div id="page-home" class="page-home">
+      <div class="home-hero">
+        <h1>Maîtrisez<br><em>l'analyse ICT</em><br>comme un institutionnel.</h1>
+        <p>Trainer interactif basé sur les ressources Lumi Traders. Apprenez la structure de marché, la liquidité, et les modèles d'entrée ICT step-by-step.</p>
+      </div>
+      <div class="modules-grid">
+        <div class="module-card" style="--accent:var(--green)" onclick="showPage('structure')">
+          <span class="module-tag tag-green">Foundation</span>
+          <h3>Market Structure</h3>
+          <p>STL, STH, ITL, ITH, LTH — lecture de structure comme un interbank trader.</p>
+          <div class="module-footer"><span>7 concepts</span><span style="color:var(--green)">→</span></div>
+        </div>
+        <div class="module-card" style="--accent:var(--blue)" onclick="showPage('liquidite')">
+          <span class="module-tag tag-blue">Core</span>
+          <h3>Liquidité &amp; DOL</h3>
+          <p>BSL, SSL, Draw on Liquidity, Internal vs External Range Liquidity.</p>
+          <div class="module-footer"><span>6 concepts</span><span style="color:var(--blue)">→</span></div>
+        </div>
+        <div class="module-card" style="--accent:var(--gold)" onclick="showPage('judas')">
+          <span class="module-tag tag-gold">Manipulation</span>
+          <h3>Judas Swing</h3>
+          <p>Le faux mouvement institutionnel qui piège les retail traders avant l'inversion réelle.</p>
+          <div class="module-footer"><span>4 concepts</span><span style="color:var(--gold)">→</span></div>
+        </div>
+        <div class="module-card" style="--accent:var(--purple)" onclick="showPage('ote')">
+          <span class="module-tag tag-purple">Entrée</span>
+          <h3>OTE — Optimal Trade Entry</h3>
+          <p>Retracements Fibonacci 62–79% pour entrer dans la zone optimale du big money.</p>
+          <div class="module-footer"><span>5 concepts</span><span style="color:var(--purple)">→</span></div>
+        </div>
+        <div class="module-card" style="--accent:var(--red)" onclick="showPage('ob')">
+          <span class="module-tag tag-red">Blocs</span>
+          <h3>Order Block</h3>
+          <p>Identifier les zones d'ordres institutionnels — bullish &amp; bearish OB, reclaimed, propulsion.</p>
+          <div class="module-footer"><span>6 types</span><span style="color:var(--red)">→</span></div>
+        </div>
+        <div class="module-card" style="--accent:var(--green)" onclick="showPage('model2022')">
+          <span class="module-tag tag-green">Modèle</span>
+          <h3>Modèle ICT 2022</h3>
+          <p>Les 6 étapes complètes du setup : liquidité → displacement → MSS → FVG → entrée.</p>
+          <div class="module-footer"><span>6 étapes</span><span style="color:var(--green)">→</span></div>
+        </div>
+        <div class="module-card" style="--accent:var(--gold)" onclick="showPage('flashcards')">
+          <span class="module-tag tag-gold">Quiz</span>
+          <h3>Flashcards</h3>
+          <p>20 cartes pour tester votre maîtrise des termes et concepts ICT essentiels.</p>
+          <div class="module-footer"><span>20 cartes</span><span style="color:var(--gold)">→</span></div>
+        </div>
+        <div class="module-card" style="--accent:var(--blue)" onclick="showPage('quiz')">
+          <span class="module-tag tag-blue">Évaluation</span>
+          <h3>Quiz Complet</h3>
+          <p>15 questions couvrant l'ensemble des modules. Évaluez votre niveau réel.</p>
+          <div class="module-footer"><span>15 questions</span><span style="color:var(--blue)">→</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GLOSSAIRE -->
+    <div id="page-glossaire" class="lesson-page">
+      <div class="lesson-header">
+        <span class="lesson-tag" style="color:var(--blue)">● Référence</span>
+        <h2>Glossaire ICT</h2>
+        <p>Tous les termes essentiels de l'Inner Circle Trader en un seul endroit.</p>
+      </div>
+      <div class="glossary-grid">
+        <dl class="glossary-item"><dt>BSL</dt><dd>Buy Side Liquidity — stops d'achat au-dessus des hauts</dd></dl>
+        <dl class="glossary-item"><dt>SSL</dt><dd>Sell Side Liquidity — stops de vente sous les bas</dd></dl>
+        <dl class="glossary-item"><dt>FVG</dt><dd>Fair Value Gap — déséquilibre entre 3 bougies</dd></dl>
+        <dl class="glossary-item"><dt>IFVG</dt><dd>Inversion Fair Value Gap — FVG retourné</dd></dl>
+        <dl class="glossary-item"><dt>OB</dt><dd>Order Block — bougie initiatrice d'un mouvement</dd></dl>
+        <dl class="glossary-item"><dt>BB</dt><dd>Breaker Block — OB invalidé qui devient support/résistance</dd></dl>
+        <dl class="glossary-item"><dt>MSS</dt><dd>Market Structure Shift — cassure de structure clé</dd></dl>
+        <dl class="glossary-item"><dt>OTE</dt><dd>Optimal Trade Entry — zone 62-79% Fibonacci</dd></dl>
+        <dl class="glossary-item"><dt>DOL</dt><dd>Draw on Liquidity — objectif de prix suivant</dd></dl>
+        <dl class="glossary-item"><dt>HTF</dt><dd>Higher Time Frame — unité de temps supérieure</dd></dl>
+        <dl class="glossary-item"><dt>LTF</dt><dd>Lower Time Frame — unité de temps inférieure</dd></dl>
+        <dl class="glossary-item"><dt>PDH/PDL</dt><dd>Previous Day High / Low</dd></dl>
+        <dl class="glossary-item"><dt>PWH/PWL</dt><dd>Previous Week High / Low</dd></dl>
+        <dl class="glossary-item"><dt>EQH/EQL</dt><dd>Equal Highs / Equal Lows</dd></dl>
+        <dl class="glossary-item"><dt>SMT</dt><dd>Smart Money Tool — divergence entre corrélés</dd></dl>
+        <dl class="glossary-item"><dt>AMD</dt><dd>Accumulation, Manipulation, Distribution</dd></dl>
+        <dl class="glossary-item"><dt>STL/STH</dt><dd>Short Term Low / High</dd></dl>
+        <dl class="glossary-item"><dt>ITL/ITH</dt><dd>Intermediate Term Low / High</dd></dl>
+        <dl class="glossary-item"><dt>LTL/LTH</dt><dd>Long Term Low / High</dd></dl>
+        <dl class="glossary-item"><dt>PDA</dt><dd>Premium / Discount Array</dd></dl>
+        <dl class="glossary-item"><dt>SIBI</dt><dd>Sell-side Imbalance, Buyside Inefficiency</dd></dl>
+        <dl class="glossary-item"><dt>BISI</dt><dd>Buyside Imbalance, Sellside Inefficiency</dd></dl>
+        <dl class="glossary-item"><dt>HRLR</dt><dd>High Resistance Liquidity Run</dd></dl>
+        <dl class="glossary-item"><dt>LRLR</dt><dd>Low Resistance Liquidity Run</dd></dl>
+        <dl class="glossary-item"><dt>IPDA</dt><dd>Interbank Price Delivery Algorithm</dd></dl>
+      </div>
+    </div>
+
+    <!-- MARKET STRUCTURE -->
+    <div id="page-structure" class="lesson-page">
+      <div class="lesson-header">
+        <span class="lesson-tag" style="color:var(--green)">● Foundation</span>
+        <h2>Market Structure Avancée</h2>
+        <p>La structure de marché ICT repose sur la liquidité et les déséquilibres — pas sur les méthodes retail.</p>
+      </div>
+      <div class="warning-box" style="margin-bottom:1.5rem">⚡ Les interbank traders ne lisent pas la structure comme le retail. Ils voient le marché en termes de <strong>liquidité et d'imbalances</strong>.</div>
+
+      <div class="two-col">
+        <div class="concept-card">
+          <h4><span class="icon icon-green">📈</span> Les niveaux de structure</h4>
+          <ul>
+            <li><strong>STL/STH</strong> — Short Term Low/High : points de retournement courts</li>
+            <li><strong>ITL/ITH</strong> — Intermediate Term : STL entouré de STL plus hauts des deux côtés</li>
+            <li><strong>LTL/LTH</strong> — Long Term : ITL entouré d'ITL plus hauts des deux côtés</li>
+          </ul>
+          <div class="info-box">Un STH ayant des STH plus bas de chaque côté est un ITH. Un ITH ayant des ITH plus bas de chaque côté est un LTH.</div>
+        </div>
+        <div class="concept-card">
+          <h4><span class="icon icon-blue">🔄</span> Market Structure Shift (MSS)</h4>
+          <p>Un MSS apparaît quand le marché casse un niveau STL/STH important après un mouvement impulsif. C'est le signal que la tendance peut changer.</p>
+          <div class="highlight-box">Si vous observez un Intermediate Term High (ITH) rebalancé (Rebalanced ITH), cela signale une faiblesse significative. Ne forcez pas le trade — attendez que la structure se réaligne.</div>
+        </div>
+      </div>
+
+      <div class="concept-card" style="margin-top:1.2rem">
+        <h4><span class="icon icon-gold">⏱</span> Timeframes selon le style de trading</h4>
+        <div class="two-col" style="margin-top:0.8rem">
+          <div>
+            <p style="margin-bottom:0.5rem"><strong style="color:var(--gold)">Day Trading</strong></p>
+            <p>Long-term: 1h | Intermediate: 15m | Short-term: 5m</p>
+          </div>
+          <div>
+            <p style="margin-bottom:0.5rem"><strong style="color:var(--blue)">Swing Trading</strong></p>
+            <p>Long-term: Daily | Intermediate: 4h | Short-term: 1h</p>
+          </div>
+          <div>
+            <p style="margin-bottom:0.5rem"><strong style="color:var(--green)">Short-term Trading</strong></p>
+            <p>Long-term: 4h | Intermediate: 1h | Short-term: 15m</p>
+          </div>
+          <div>
+            <p style="margin-bottom:0.5rem"><strong style="color:var(--purple)">Position Trading</strong></p>
+            <p>Long-term: Monthly | Intermediate: Weekly | Short-term: Daily</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-section">
+        <h3>🧠 Quiz — Market Structure</h3>
+        <div class="quiz-card" id="qms1">
+          <div class="quiz-question">Qu'est-ce qu'un Intermediate Term High (ITH) ?</div>
+          <div class="quiz-options">
+            <button class="quiz-option" onclick="answerQuiz('qms1',0,2)">Un haut avec un volume très élevé</button>
+            <button class="quiz-option" onclick="answerQuiz('qms1',1,2)">Un haut formé exclusivement en session de New York</button>
+            <button class="quiz-option" onclick="answerQuiz('qms1',2,2)">Un STH entouré de STH plus bas de chaque côté</button>
+            <button class="quiz-option" onclick="answerQuiz('qms1',3,2)">La cassure d'une résistance sur le daily</button>
+          </div>
+          <div class="quiz-feedback" id="qms1-fb"></div>
+        </div>
+        <div class="quiz-card" id="qms2">
+          <div class="quiz-question">Quelle est la principale erreur du retail trader face à la structure de marché ?</div>
+          <div class="quiz-options">
+            <button class="quiz-option" onclick="answerQuiz('qms2',0,0)">Lire le marché en termes de liquidité et d'imbalances</button>
+            <button class="quiz-option" onclick="answerQuiz('qms2',1,0)">Utiliser trop de timeframes différents</button>
+            <button class="quiz-option" onclick="answerQuiz('qms2',2,0)">Ne pas utiliser les indicateurs techniques classiques</button>
+            <button class="quiz-option" onclick="answerQuiz('qms2',3,0)">Analyser avec des méthodes retail au lieu de voir liquidité/imbalances</button>
+          </div>
+          <div class="quiz-feedback" id="qms2-fb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIQUIDITE -->
+    <div id="page-liquidite" class="lesson-page">
+      <div class="lesson-header">
+        <span class="lesson-tag" style="color:var(--blue)">● Core</span>
+        <h2>Liquidité &amp; Draw on Liquidity</h2>
+        <p>La liquidité est le carburant du marché. Les big players la chassent en permanence.</p>
+      </div>
+
+      <div class="two-col">
+        <div class="concept-card">
+          <h4><span class="icon icon-green">🟢</span> BSL — Buy Side Liquidity</h4>
+          <p>Ordres d'achat (buy stops) situés <strong>au-dessus du prix courant</strong>, notamment au-dessus des hauts précédents. Le marché y monte pour les déclencher.</p>
+          <div class="highlight-box">Si biais bullish → cherchez d'abord un sweep de SSL avant la montée vers la BSL.</div>
+        </div>
+        <div class="concept-card">
+          <h4><span class="icon icon-red">🔴</span> SSL — Sell Side Liquidity</h4>
+          <p>Ordres de vente (sell stops) situés <strong>sous le prix courant</strong>, notamment sous les bas précédents. Le marché y descend pour les déclencher.</p>
+          <div class="highlight-box">Si biais bearish → cherchez d'abord un sweep de BSL avant la descente vers la SSL.</div>
+        </div>
+      </div>
+
+      <div class="concept-card" style="margin-top:1.2rem">
+        <h4><span class="icon icon-blue">🎯</span> Draw on Liquidity (DOL)</h4>
+        <p>Le DOL est le <strong>prochain objectif de prix</strong>. Pour l'identifier en intraday :</p>
+        <ul style="margin-top:0.7rem">
+          <li><strong>PDH/PDL</strong> — Previous Day High/Low</li>
+          <li><strong>PWH/PWL</strong> — Previous Week High/Low</li>
+          <li><strong>EQH/EQL</strong> — Equal Highs/Lows (pools de liquidité importants)</li>
+          <li><strong>Hauts/Bas de session</strong> — Asia, London, New York</li>
+        </ul>
+        <div class="info-box">Commencez chaque journée par : <em>"Est-ce qu'on monte pour prendre la BSL ou on redescend vers la SSL ?"</em></div>
+      </div>
+
+      <div class="two-col" style="margin-top:1.2rem">
+        <div class="concept-card">
+          <h4><span class="icon icon-gold">📊</span> External Range Liquidity</h4>
+          <p>Liquidité <strong>en dehors</strong> du range courant — au-dessus du range high (BSL) et sous le range low (SSL). Le prix cherche à capturer cette liquidité externe.</p>
+        </div>
+        <div class="concept-card">
+          <h4><span class="icon icon-purple">📊</span> Internal Range Liquidity</h4>
+          <p>Liquidité <strong>à l'intérieur</strong> du range défini — FVG, OB, BB etc. Ce sont les references institutionnelles pour les entrées.</p>
+          <div class="info-box">L'Internal devient External une fois que le External Range High est cassé.</div>
+        </div>
+      </div>
+
+      <div class="two-col" style="margin-top:1.2rem">
+        <div class="concept-card">
+          <h4><span class="icon icon-green">⬆️</span> HRLR — High Resistance Liquidity Run</h4>
+          <p>Un bas qui prend un bas précédent et est rejeté = High Resistance Low. On évite ce type de run car le mouvement est difficile.</p>
+        </div>
+        <div class="concept-card">
+          <h4><span class="icon icon-red">⬇️</span> LRLR — Low Resistance Liquidity Run</h4>
+          <p>Un haut (en haussier) qui <strong>échoue</strong> à prendre le haut précédent = Low Resistance High. <strong>C'est ici qu'on veut trader</strong> — peu de résistance dans le chemin.</p>
+        </div>
+      </div>
+
+      <div class="quiz-section">
+        <h3>🧠 Quiz — Liquidité</h3>
+        <div class="quiz-card" id="qliq1">
+          <div class="quiz-question">Qu'est-ce que le "Draw on Liquidity" (DOL) ?</div>
+          <div class="quiz-options">
+            <button class="quiz-option" onclick="answerQuiz('qliq1',0,1)">Le volume total d'une séance</button>
+            <button class="quiz-option" onclick="answerQuiz('qliq1',1,1)">Le prochain niveau de prix que le marché cherche à atteindre</button>
+            <button class="quiz-option" onclick="answerQuiz('qliq1',2,1)">L'indicateur de liquidité sur TradingView</button>
+            <button class="quiz-option" onclick="answerQuiz('qliq1',3,1)">La zone de prix équilibrée à 50%</button>
+          </div>
+          <div class="quiz-feedback" id="qliq1-fb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BIAS -->
+    <div id="page-bias" class="lesson-page">
+      <div class="lesson-header">
+        <span class="lesson-tag" style="color:var(--gold)">● Analyse</span>
+        <h2>Biais Daily &amp; Intraday</h2>
+        <p>Déterminer le biais n'est pas une conviction figée — il évolue en fonction des conditions du marché.</p>
+      </div>
+      <div class="warning-box" style="margin-bottom:1.5rem">⚠️ Être bullish ne signifie pas acheter chaque jour. Être bearish ne signifie pas vendre chaque jour. Attendez que les conditions spécifiques soient réunies.</div>
+
+      <div class="two-col">
+        <div class="concept-card">
+          <h4><span class="icon icon-gold">1️⃣</span> PDH/PDL — Référence 1</h4>
+          <p>Le Previous Day High &amp; Low sont les niveaux clés pour jauger la force de la tendance. Si le prix atteint le PDH mais échoue à le dépasser → potentielle inversion. Même logique pour le PDL.</p>
+        </div>
+        <div class="concept-card">
+          <h4><span class="icon icon-blue">2️⃣</span> PWH/PWL — Référence 2</h4>
+          <p>Les Previous Week High &amp; Low sont des pools de liquidité utilisables comme <strong>Draw on Liquidity</strong> ou pour cadrer une inversion ou continuation.</p>
+        </div>
+      </div>
+
+      <div class="concept-card" style="margin-top:1.2rem">
+        <h4><span class="icon icon-green">3️⃣</span> Swing Points</h4>
+        <p>Les swing points (points de retournement) peuvent servir de DOL ou cadrer une inversion. Un <strong>échec à déplacer</strong> au-dessus des hauts ou bas passés peut générer une inversion.</p>
+        <div class="highlight-box">Next Candle Model : si une bougie échoue à clore en dehors d'un range, anticipez que la bougie suivante tentera de revenir dans ce range.</div>
+      </div>
+
+      <div class="concept-card" style="margin-top:1.2rem">
+        <h4><span class="icon icon-purple">🗓</span> Structure Journalière — AMD</h4>
+        <ul>
+          <li><strong>Lundi</strong> — Accumulation. Weekly open, range étroit, Judas swing depuis le Weekly Open. Pas idéal pour trader.</li>
+          <li><strong>Mardi</strong> — Manipulation. High/Low de la semaine souvent formé. Judas Swing / raid du HL lundi.</li>
+          <li><strong>Mercredi-Jeudi</strong> — Expansion. Trading vers le DOL hebdomadaire. Meilleurs jours pour trader.</li>
+          <li><strong>Vendredi</strong> — Retour dans le range. Distribution. Pas idéal.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- JUDAS SWING -->
+    <div id="page-judas" class="lesson-page">
+      <div class="lesson-header">
+        <span class="lesson-tag" style="color:var(--gold)">● Manipulation</span>
+        <h2>Judas Swing</h2>
+        <p>Un faux mouvement institutionnel conçu pour piéger les retail traders avant l'inversion réelle.</p>
+      </div>
+
+      <div class="concept-card">
+        <h4><span class="icon icon-gold">⚔️</span> Définition</h4>
+        <p>Le Judas Swing est un <strong>stop raid déguisé</strong> — un mouvement trompeur qui prend les stops retail avant que le marché parte dans la direction réelle. Il s'attaque à :</p>
+        <ul style="margin-top:0.7rem">
+          <li>Key Support &amp; Resistance</li>
+          <li>Previous High/Low</li>
+          <li>Counter-Swing pour former un OTE</li>
+          <li>Previous Week High/Low</li>
+          <li>Previous Session Stops (BSL/SSL)</li>
+        </ul>
+      </div>
+
+      <div class="two-col" style="margin-top:1.2rem">
+        <div class="concept-card">
+          <h4><span class="icon icon-blue">🌅</span> London Judas Swing</h4>
+          <p>Look for an Asian range in a <strong>tight consolidation</strong>.</p>
+          <ul style="margin-top:0.5rem">
+            <li>Initial run-up/down qui piège les traders</li>
+            <li>Buy/Sell stops se déclenchent</li>
+            <li>Le marché trade en dessous/au-dessus du range asiatique</li>
+            <li>Sweep de 5-10pts (ES) / 20-25pts (NQ) / 10-20 pips</li>
+            <li>Le move crée le low/high du jour à l'intérieur de la session London</li>
+          </ul>
+        </div>
+        <div class="concept-card">
+          <h4><span class="icon icon-green">🗽</span> NY Judas Swing</h4>
+          <p>Deux scénarios :</p>
+          <ul style="margin-top:0.5rem">
+            <li><strong>Scénario 1 — 9h30 EST</strong> : chercher un SSL/BSL court terme à prendre, suivi d'une inversion immédiate</li>
+            <li><strong>Scénario 2 — News 10h00</strong> : si news à 10h, attendre entre 10h et 10h10 pour le sweep de liquidité → inversion. Target = liquidité opposée</li>
+          </ul>
+          <div class="warning-box">Si news importante à 8h30, souvent pas de Judas Swing à 9h30.</div>
+        </div>
+      </div>
+
+      <div class="concept-card" style="margin-top:1.2rem">
+        <h4><span class="icon icon-gold">⏰</span> Sessions &amp; Templates NY</h4>
+        <div class="two-col" style="margin-top:0.8rem">
+          <div>
+            <p style="color:var(--gold);font-size:0.82rem;margin-bottom:0.4rem"><strong>London Reversal → NY Continuation</strong></p>
+            <p style="font-size:0.8rem;color:var(--muted)">Si London monte et inverse → attendre Judas Swing 9h30 vers le bas, continuation baissière en NY</p>
+          </div>
+          <div>
+            <p style="color:var(--blue);font-size:0.82rem;margin-bottom:0.4rem"><strong>London Continuation → NY Reversal</strong></p>
+            <p style="font-size:0.8rem;color:var(--muted)">Si London continue sans inversion → attendre Judas Swing 9h30 dans la direction opposée en NY</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-section">
+        <h3>🧠 Quiz — Judas Swing</h3>
+        <div class="quiz-card" id="qjs1">
+          <div class="quiz-question">Quel est le "trading window" standard pour le Judas Swing NY ?</div>
+          <div class="quiz-options">
+            <button class="quiz-option" onclick="answerQuiz('qjs1',0,2)">8h00 – 9h00 EST</button>
+            <button class="quiz-option" onclick="answerQuiz('qjs1',1,2)">11h30 – 12h30 EST</button>
+            <button class="quiz-option" onclick="answerQuiz('qjs1',2,2)">9h30 – 10h00 EST</button>
+            <button class="quiz-option" onclick="answerQuiz('qjs1',3,2)">14h30 – 15h30 EST</button>
+          </div>
+          <div class="quiz-feedback" id="qjs1-fb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OTE -->
+    <div id="page-ote" class="lesson-page">
+      <div class="lesson-header">
+        <span class="lesson-tag" style="color:var(--purple)">● Entrée</span>
+        <h2>OTE — Optimal Trade Entry</h2>
+        <p>La zone d'entrée optimale utilisée par les institutionnels, basée sur les retracements Fibonacci.</p>
+      </div>
+
+      <div class="concept-card">
+        <h4><span class="icon icon-purple">📐</span> Niveaux Fibonacci Clés</h4>
+        <div class="two-col" style="margin-top:0.8rem">
+          <div>
+            <ul>
+              <li><strong style="color:var(--green)">0.62 – 0.79%</strong> → Zone OTE principale (meilleure entrée)</li>
+              <li><strong style="color:var(--blue)">0.5 (50%)</strong> → Équilibre — possible entrée</li>
+              <li><strong style="color:var(--gold)">0.705 – 0.705</strong> → Entrée #2 — très bonne</li>
+              <li><strong style="color:var(--muted)">0.79 – 79%</strong> → Entrée #3</li>
+            </ul>
+          </div>
+          <div>
+            <ul>
+              <li><strong style="color:var(--red)">-0.27 – -27%</strong> → Target 1</li>
+              <li><strong style="color:var(--red)">-0.62 – -62%</strong> → Target 2</li>
+              <li><strong style="color:var(--muted)">-1 → -100%</strong> → Symmetrical Swing</li>
+              <li><strong style="color:var(--muted)">-2 → -200%</strong> → Final Target</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col" style="margin-top:1.2rem">
+        <div class="concept-card">
+          <h4><span class="icon icon-green">📈</span> Zone Premium</h4>
+          <p>Au-dessus du niveau 0.5 (50%) dans un contexte de baisse. On cherche à <strong>vendre</strong> dans cette zone.</p>
+        </div>
+        <div class="concept-card">
+          <h4><span class="icon icon-red">📉</span> Zone Discount</h4>
+          <p>En dessous du niveau 0.5 (50%) dans un contexte de hausse. On cherche à <strong>acheter</strong> dans cette zone.</p>
+        </div>
+      </div>
+
+      <div class="concept-card" style="margin-top:1.2rem">
+        <h4><span class="icon icon-blue">🔫</span> Silver Bullet + OTE</h4>
+        <p>Après identification du MSS, dessinez un retracement OTE du Swing Low au Swing High (ou inversement). La première cible est au <strong>-27%</strong> et la seconde au <strong>-62%</strong>.</p>
+        <div class="info-box">Attendez que le prix rentre dans la FVG puis reprend la direction de la FVG vers le pool de liquidité ciblé. Souvent les FVG s'alignent au niveau 62%.</div>
+      </div>
+
+      <div class="concept-card" style="margin-top:1.2rem">
+        <h4><span class="icon icon-gold">📝</span> Comment sélectionner les Swing Points</h4>
+        <ol class="steps-list" style="margin-top:0.8rem">
+          <li>Lancez le Fib du plus haut au plus bas du dealing range</li>
+          <li>Repérez les zones de consolidation pour aligner avec le Fib</li>
+          <li>Le high le plus proche du niveau 50% = high point du dealing range</li>
+          <li>Le low le plus bas = low point du dealing range</li>
+        </ol>
+      </div>
+
+      <div class="quiz-section">
+        <h3>🧠 Quiz — OTE</h3>
+        <div class="quiz-card" id="qote1">
+          <div class="quiz-question">Dans la zone OTE, quel est le niveau Fibonacci considéré comme le meilleur point d'entrée ?</div>
+          <div class="quiz-options">
+            <button class="quiz-option" onclick="answerQuiz('qote1',0,1)">Le niveau 0.5 (50%)</button>
+            <button class="quiz-option" onclick="answerQuiz('qote1',1,1)">Le niveau 0.62 – 0.79%</button>
+            <button class="quiz-option" onclick="answerQuiz('qote1',2,1)">Le niveau 0.382</button>
+            <button class="quiz-option" onclick="answerQuiz('qote1',3,1)">Le niveau -0.27</button>
+          </div>
+          <div class="quiz-feedback" id="qote1-fb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SMT -->
+    <div id="page-smt" class="lesson-page">
+      <div class="lesson-header">
+        <span class="lesson-tag" style="color:var(--blue)">● Confirmation</span>
+        <h2>SMT Divergence</h2>
+        <p>Smart Money Tool — outil de confirmation pour les phases d'accumulation/distribution.</p>
+      </div>
+
+      <div class="concept-card">
+        <h4><span class="icon icon-blue">↔️</span> Principe</h4>
+        <p>SMT est un <strong>outil de confirmation</strong>, pas un setup d'entrée seul. En observant la divergence entre instruments corrélés, on détecte des Stop Hunts potentiels et les intentions du Smart Money.</p>
+        <div class="warning-box">La logique : des paires proches se déplacent de façon symétrique. Si l'une montre de la force ou faiblesse pendant que l'autre non → SMT Divergence → volatilité à venir.</div>
+      </div>
+
+      <div class="two-col" style="margin-top:1.2rem">
+        <div class="concept-card">
+          <h4><span class="icon icon-green">🔗</span> Corrélation Symétrique</h4>
+          <ul>
+            <li>Crypto : BTC — ETH</li>
+            <li>Forex : EUR — GBP</li>
+            <li>DXY — USD/XXX</li>
+            <li>Indices : ES — NQ — YM</li>
+          </ul>
+          <div class="highlight-box">Ces paires se déplacent dans le <strong>même sens</strong>.</div>
+        </div>
+        <div class="concept-card">
+          <h4><span class="icon icon-red">↕️</span> Corrélation Inverse</h4>
+          <ul>
+            <li>Crypto : BTC — DXY</li>
+            <li>Forex : DXY — EUR/USD</li>
+            <li>DXY — XXX/USD</li>
+          </ul>
+          <div class="highlight-box">Ces paires se déplacent en sens <strong>opposé</strong>.</div>
+        </div>
+      </div>
+
+      <div class="concept-card" style="margin-top:1.2rem">
+        <h4><span class="icon icon-gold">🎯</span> Exemple pratique</h4>
+        <p>Si <strong>ES</strong> fait un nouveau haut mais que <strong>YM ou NQ</strong> échoue à faire de même (faiblesse) → potentielle opportunité short sur YM/NQ. La divergence signale un Stop Hunt imminent.</p>
+        <div class="info-box">Fenêtre SMT : 05h00 – 09h30 (AM Session) | 13h00 – 15h00 (PM Session)</div>
+      </div>
+    </div>
+
+    <!-- TURTLE SOUP -->
+    <div id="page-turtle" class="lesson-page">
+      <div class="lesson-header">
+        <span class="lesson-tag" style="color:var(--green)">● Pattern</span>
+        <h2>ICT Turtle Soup</h2>
+        <p>Un pattern d'inversion après fausse cassure — trading la liquidité externe sans attendre un MSS.</p>
+      </div>
+
+      <div class="concept-card">
+        <h4><span class="icon icon-green">🐢</span> Concept</h4>
+        <p>Le Turtle Soup : le prix casse un <strong>short-term high/low</strong> donnant l'impression d'une continuation, puis s'inverse immédiatement. Les traders n'ont <strong>pas besoin d'un MSS</strong> — ils tradent la liquidité externe.</p>
+      </div>
+
+      <div class="two-col" style="margin-top:1.2rem">
+        <div class="concept-card">
+          <h4><span class="icon icon-blue">📋</span> Pour identifier les Highs à haute liquidité</h4>
+          <ol class="steps-list" style="margin-top:0.5rem">
+            <li>Cherchez des <strong>Order Blocks</strong> — concentrations d'ordres importants</li>
+            <li>Identifiez les <strong>Fair Value Gaps</strong> — prix vs. fair value</li>
+            <li>Analysez des <strong>TF supérieures</strong> (15m, 1h) pour la confluence</li>
+            <li>Repérez les <strong>relative equal lows/highs</strong> — support potentiel</li>
+          </ol>
+        </div>
+        <div class="concept-card">
+          <h4><span class="icon icon-gold">✅</span> Checklist Turtle Soup</h4>
+          <ul>
+            <li>Higher Time Frame PDA</li>
+            <li>In A Premium/Discount of Dealing Range</li>
+            <li>Runs Equal highs/lows or Daily high/low</li>
+            <li>Immediately Rejection of price</li>
+            <li>Above/below Midnight Open</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="concept-card" style="margin-top:1.2rem">
+        <h4><span class="icon icon-purple">🔄</span> HTF → LTF Workflow</h4>
+        <ol class="steps-list" style="margin-top:0.5rem">
+          <li>Sur HTF (4h) : identifier Bullish Order Flow et le HTF POI</li>
+          <li>Switcher sur LTF (15m) : chercher sell stops à prendre</li>
+          <li>Attendre le pattern Turtle Soup (inversion après breakout)</li>
+          <li>Attendre le MSS + retracement vers BB/FVG/OB</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- ORDER BLOCK -->
+    <div id="page-ob" class="lesson-page">
+      <div class="lesson-header">
+        <span class="lesson-tag" style="color:var(--red)">● Blocs de Prix</span>
+        <h2>Order Blocks</h2>
+        <p>Zones où les market makers ont placé leurs ordres institutionnels. Prix revient souvent les revisiter.</p>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('ob','ob-bullish')">Bullish OB</div>
+        <div class="tab" onclick="switchTab('ob','ob-bearish')">Bearish OB</div>
+        <div class="tab" onclick="switchTab('ob','ob-reclaimed')">Reclaimed</div>
+        <div class="tab" onclick="switchTab('ob','ob-mitigation')">Mitigation</div>
+      </div>
+
+      <div id="ob-bullish" class="tab-panel active">
+        <div class="concept-card">
+          <h4><span class="icon icon-green">📈</span> Bullish Order Block</h4>
+          <p>Un OB bullish est déterminé par un <strong>mouvement à la baisse suivi d'un mouvement à la hausse</strong>. C'est la bougie qui a initié le mouvement grâce à la manipulation du market maker.</p>
+          <ul style="margin-top:0.7rem">
+            <li>La <strong>bougie UP</strong> doit trader à travers la bougie Bullish OB</li>
+            <li>Le prix peut fortement réagir — soyez patient pour le retest</li>
+            <li><strong>Mean Threshold</strong> = niveau 50% du range total de l'OB — le prix doit le respecter</li>
+          </ul>
+          <div class="highlight-box">Si le prix trade sous le mean threshold (50% du corps), l'OB est potentiellement invalidé.</div>
+        </div>
+      </div>
+
+      <div id="ob-bearish" class="tab-panel">
+        <div class="concept-card">
+          <h4><span class="icon icon-red">📉</span> Bearish Order Block</h4>
+          <p>Un OB bearish est déterminé par un <strong>mouvement à la hausse suivi d'un mouvement à la baisse</strong>.</p>
+          <ul style="margin-top:0.7rem">
+            <li>La <strong>bougie DOWN</strong> doit trader à travers la bougie Bearish OB</li>
+            <li>L'OB est validé quand le haut de la plus basse bougie down-close est tradé</li>
+            <li>Idéalement, le prix ne doit pas descendre sous le <strong>mean threshold</strong> (50% du corps)</li>
+          </ul>
+          <div class="warning-box">Plus le prix tarde à revenir sur l'OB, plus celui-ci perd de son pouvoir. Privilégiez les OB frais.</div>
+        </div>
+      </div>
+
+      <div id="ob-reclaimed" class="tab-panel">
+        <div class="concept-card">
+          <h4><span class="icon icon-blue">🔁</span> Reclaimed Order Block</h4>
+          <p>Un OB reclaimed est une bougie <strong>précédemment utilisée</strong> qui reprend son rôle de support/résistance.</p>
+          <ul style="margin-top:0.7rem">
+            <li><strong>Bullish Reclaimed OB</strong> : bougie qui avait acheté le prix, un rebond court terme confirme un petit displacement. Sur le Buy Side of Curve → reclaimed longs</li>
+            <li><strong>Bearish Reclaimed OB</strong> : bougie qui avait vendu le prix, déclin court terme confirme. Sur le Sell Side of Curve → reclaimed shorts</li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="ob-mitigation" class="tab-panel">
+        <div class="concept-card">
+          <h4><span class="icon icon-gold">🎯</span> Bullish Mitigation Block</h4>
+          <p>Apparaît quand il y a un <strong>échec de collecte de SSL</strong> aux bas précédents du marché. Le prix forme un higher low, puis monte chercher la BSL (higher high). Ensuite retracement pour remplir le liquidity void à <strong>50%</strong>.</p>
+        </div>
+        <div class="concept-card" style="margin-top:1rem">
+          <h4><span class="icon icon-red">🎯</span> Bearish Mitigation Block</h4>
+          <p>Failure swing → lower high formé après échec de collecte BSL. Après le lower low, le prix remonte pour remplir le liquidity void à <strong>50%</strong> avant de continuer baissier.</p>
+        </div>
+      </div>
+
+      <div class="quiz-section">
+        <h3>🧠 Quiz — Order Blocks</h3>
+        <div class="quiz-card" id="qob1">
+          <div class="quiz-question">Qu'est-ce que le "Mean Threshold" d'un Order Block ?</div>
+          <div class="quiz-options">
+            <button class="quiz-option" onclick="answerQuiz('qob1',0,2)">Le haut du corps de la bougie OB</button>
+            <button class="quiz-option" onclick="answerQuiz('qob1',1,2)">Le point d'ouverture de la bougie OB</button>
+            <button class="quiz-option" onclick="answerQuiz('qob1',2,2)">Le niveau 50% du range total du corps de l'OB</button>
+            <button class="quiz-option" onclick="answerQuiz('qob1',3,2)">Le volume moyen de l'OB sur 20 périodes</button>
+          </div>
+          <div class="quiz-feedback" id="qob1-fb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BREAKER -->
+    <div id="page-breaker" class="lesson-page">
+      <div class="lesson-header">
+        <span class="lesson-tag" style="color:var(--purple)">● Blocs de Prix</span>
+        <h2>Breaker Block</h2>
+        <p>Un Order Block invalidé qui se transforme en zone de support/résistance inversée.</p>
+      </div>
+
+      <div class="two-col">
+        <div class="concept-card">
+          <h4><span class="icon icon-red">🐻</span> Bearish Breaker</h4>
+          <p>Bougie <strong>bearish range</strong> (down-close) dans le swing low le plus récent avant qu'un ancien High soit violé. Il devient valide quand :</p>
+          <ul style="margin-top:0.5rem">
+            <li>Les stops sont pris au-dessus d'un High précédent (Higher High)</li>
+            <li>Le prix casse sous le swing low qui contient la bougie breaker (Lower Low)</li>
+          </ul>
+          <div class="info-box">Key Elements : High → Low → Higher High → Lower Low</div>
+        </div>
+        <div class="concept-card">
+          <h4><span class="icon icon-green">🐂</span> Bullish Breaker</h4>
+          <p>Bougie <strong>bullish range</strong> (up-close) dans le swing high le plus récent avant qu'un ancien Low soit violé. Il devient valide quand :</p>
+          <ul style="margin-top:0.5rem">
+            <li>Les stops sont pris sous un Low précédent (Lower Low)</li>
+            <li>Le prix casse au-dessus du swing high qui contient la bougie breaker (Higher High)</li>
+          </ul>
+          <div class="info-box">Key Elements : Low → High → Lower Low → Higher High</div>
+        </div>
+      </div>
+
+      <div class="concept-card" style="margin-top:1.2rem">
+        <h4><span class="icon icon-gold">💡</span> Rappel clé</h4>
+        <p>Le <strong>Higher High</strong> est un stop run → indique que le prix veut aller plus bas (bearish). Le <strong>Lower Low</strong> est un stop run → indique que le prix veut aller plus haut (bullish). La clôture confirme la direction.</p>
+      </div>
+    </div>
+
+    <!-- MITIGATION/REJECTION/PROPULSION -->
+    <div id="page-rejection" class="lesson-page">
+      <div class="lesson-header">
+        <span class="lesson-tag" style="color:var(--blue)">● Blocs de Prix</span>
+        <h2>Rejection Block &amp; Propulsion Block</h2>
+        <p>Deux types de blocs spéciaux identifiés par les wicks et les retours dans les OB.</p>
+      </div>
+
+      <div class="two-col">
+        <div class="concept-card">
+          <h4><span class="icon icon-red">🚫</span> Bearish Rejection Block</h4>
+          <p>Un Price High avec de <strong>longs wicks en haut</strong> des bougies. Le prix monte au-dessus du corps pour prendre la Buy Side Liquidity avant de décliner. La clé : ce doit être un swing high avec wick(s).</p>
+        </div>
+        <div class="concept-card">
+          <h4><span class="icon icon-green">✅</span> Bullish Rejection Block</h4>
+          <p>Un Price Low avec de <strong>longs wicks en bas</strong> des bougies. Le prix descend sous le corps pour prendre la Sell Side Liquidity avant de monter. La clé : ce doit être un swing low avec wick(s).</p>
+        </div>
+      </div>
+
+      <div class="concept-card" style="margin-top:1.2rem">
+        <h4><span class="icon icon-purple">⚡</span> Propulsion Block</h4>
+        <p>Une bougie qui a précédemment tradé dans un OB bullish/bearish et qui prend maintenant le rôle de <strong>support pour un mouvement plus haut/bas</strong>.</p>
+        <ul style="margin-top:0.7rem">
+          <li>Une bougie descendante qui montre la volonté du prix de monter, tradant directement dans l'OB</li>
+          <li>Cette bougie devient le Propulsion Block</li>
+          <li>Le mean threshold (50% du corps) <strong>ne doit jamais être dépassé</strong></li>
+          <li>Le plus souvent, le prix revient au high de la bougie puis réagit immédiatement</li>
+        </ul>
+        <div class="warning-box">Ce nouvel "OB" est très sensible. Tout dépassement du mean threshold l'invalide.</div>
+      </div>
+
+      <div class="concept-card" style="margin-top:1.2rem">
+        <h4><span class="icon icon-gold">🔍</span> Comment identifier les Rejection Blocks</h4>
+        <ol class="steps-list" style="margin-top:0.5rem">
+          <li>Analyser en HTF (daily, 4h) les zones où le prix rebondit régulièrement</li>
+          <li>Identifier les key support/resistance levels</li>
+          <li>Descendre en LTF (1h, 15m) pour les points d'entrée/sortie précis</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- MODEL 2022 -->
+    <div id="page-model2022" class="lesson-page">
+      <div class="lesson-header">
+        <span class="lesson-tag" style="color:var(--green)">● Modèle</span>
+        <h2>Modèle ICT 2022</h2>
+        <p>Le setup complet en 6 étapes — du sweep de liquidité à l'entrée en FVG.</p>
+      </div>
+
+      <div class="concept-card">
+        <h4><span class="icon icon-green">📋</span> Les 6 étapes</h4>
+        <div style="margin-top:1rem">
+          <div class="model-step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h5>Liquidity Grab</h5>
+              <p>Le prix trade à travers une BSL ou SSL majeure (Asian High/Low, London High/Low, Previous Day(s) High/Low, etc.)</p>
+            </div>
+          </div>
+          <div class="model-step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h5>Displacement + FVG</h5>
+              <p>Le prix inverse et crée un <strong>Fair Value Gap avec Displacement</strong>. Le displacement DOIT exister — il signifie qu'il y a un sponsorship institutionnel.</p>
+            </div>
+          </div>
+          <div class="model-step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h5>Market Structure Shift (MSS)</h5>
+              <p>Un swing (high ou low) doit être exactement horizontal à l'une des 3 bougies du FVG. Ce swing devient le MSS. Il peut apparaître AVANT ou APRÈS le liquidity grab.</p>
+            </div>
+          </div>
+          <div class="model-step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <h5>Fibonacci 50%</h5>
+              <p>Option A : du swing qui a pris la liquidité à un swing de l'autre côté du FVG. Option B : d'un swing proéminent post-liquidity taken au swing de l'autre côté du FVG.</p>
+            </div>
+          </div>
+          <div class="model-step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+              <h5>Validation du FVG</h5>
+              <p>Le gap des bougies FVG doit être au niveau de l'<strong>Equilibrium (50%)</strong> ou du côté de la liquidité (le meilleur côté).</p>
+            </div>
+          </div>
+          <div class="model-step">
+            <div class="step-num">6</div>
+            <div class="step-content">
+              <h5>Limit Order</h5>
+              <p>Placer un ordre limite <strong>à l'intérieur du FVG</strong> à l'Equilibrium ou du meilleur côté. Stop loss sous le plus bas (pour buy) ou au-dessus du plus haut (pour sell).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-card" style="margin-top:1.2rem">
+        <h4><span class="icon icon-gold">💡</span> Choisir le bon FVG</h4>
+        <p>Si plusieurs FVG disponibles : privilégiez le FVG en <strong>Discount/Premium</strong> qui s'aligne avec un retracement OTE. Pas de FVG ? Utilisez un IFVG (Inversion FVG) aligné avec l'OTE.</p>
+        <div class="highlight-box">Le Displacement Range = range entre le displacement high (low) et le displacement low (high). Le FVG/OB doit être au-dessus ou en dessous du 50% Fib de ce range.</div>
+      </div>
+
+      <div class="concept-card" style="margin-top:1.2rem">
+        <h4><span class="icon icon-blue">⚠️</span> Points de vigilance</h4>
+        <div class="warning-box" style="margin-top:0;background:transparent;border:none;padding:0">
+          <ul style="color:var(--muted)">
+            <li style="margin-bottom:0.5rem">🔴 Si gros mouvement overnight (2h-5h du matin) → s'attendre à de la consolidation. Ne pas trader l'AM session.</li>
+            <li style="margin-bottom:0.5rem">🔴 Si le setup attendu ne se forme pas → opportunité manquée, pas une perte. Pas de vengeance trade.</li>
+            <li>🟢 Vérifiez toujours votre liste d'intérêts principaux : PDH/PDL, London BSL/SSL, Equal H/L, etc.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="quiz-section">
+        <h3>🧠 Quiz — Modèle 2022</h3>
+        <div class="quiz-card" id="qm22-1">
+          <div class="quiz-question">Dans le modèle 2022, que doit confirmer le "Displacement" ?</div>
+          <div class="quiz-options">
+            <button class="quiz-option" onclick="answerQuiz('qm22-1',0,1)">Un volume anormalement élevé sur la bougie</button>
+            <button class="quiz-option" onclick="answerQuiz('qm22-1',1,1)">Un sponsorship institutionnel derrière le mouvement</button>
+            <button class="quiz-option" onclick="answerQuiz('qm22-1',2,1)">Une cassure d'une moyenne mobile</button>
+            <button class="quiz-option" onclick="answerQuiz('qm22-1',3,1)">Un pattern en étoile du matin ou du soir</button>
+          </div>
+          <div class="quiz-feedback" id="qm22-1-fb"></div>
+        </div>
+        <div class="quiz-card" id="qm22-2">
+          <div class="quiz-question">Où place-t-on l'ordre limite dans le modèle 2022 ?</div>
+          <div class="quiz-options">
+            <button class="quiz-option" onclick="answerQuiz('qm22-2',0,2)">Au-dessus du FVG</button>
+            <button class="quiz-option" onclick="answerQuiz('qm22-2',1,2)">Sur le premier OB visible</button>
+            <button class="quiz-option" onclick="answerQuiz('qm22-2',2,2)">À l'intérieur du FVG, à l'Equilibrium ou du meilleur côté</button>
+            <button class="quiz-option" onclick="answerQuiz('qm22-2',3,2)">Sur le niveau de cassure du MSS exactement</button>
+          </div>
+          <div class="quiz-feedback" id="qm22-2-fb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALGO IPDA -->
+    <div id="page-algo" class="lesson-page">
+      <div class="lesson-header">
+        <span class="lesson-tag" style="color:var(--blue)">● Algorithme</span>
+        <h2>Interbank Price Delivery Algorithm (IPDA)</h2>
+        <p>Le cycle perpétuel du prix — Consolidation → Expansion → Retracement → Reversal.</p>
+      </div>
+
+      <div class="concept-card">
+        <h4><span class="icon icon-blue">🔄</span> Le Cycle IPDA</h4>
+        <p>Tout commence par une <strong>Consolidation</strong>. Depuis la Consolidation, le prix ne peut pas aller directement en Retracement ou en Reversal — il DOIT passer par l'Expansion d'abord.</p>
+        <div class="two-col" style="margin-top:1rem">
+          <div>
+            <p style="color:var(--green);font-size:0.82rem;font-weight:700;margin-bottom:0.5rem">📈 EXPANSION</p>
+            <p style="font-size:0.8rem;color:var(--muted)">Mouvement rapide depuis l'équilibre. Market Makers veulent reprendre la prochaine cible. Un Order Block se forme à l'équilibre de la consolidation précédente.</p>
+          </div>
+          <div>
+            <p style="color:var(--gold);font-size:0.82rem;font-weight:700;margin-bottom:0.5rem">↩️ RETRACEMENT</p>
+            <p style="font-size:0.8rem;color:var(--muted)">Le prix revient dans le range du Displacement. Les FVG et Imbalances montrent les zones non-tradées. → Pensez instantanément à FVG/Imbalances.</p>
+          </div>
+          <div>
+            <p style="color:var(--red);font-size:0.82rem;font-weight:700;margin-bottom:0.5rem">🔁 REVERSAL</p>
+            <p style="font-size:0.8rem;color:var(--muted)">Le prix inverse complètement la tendance. Se produit aux Liquidity Pools. Bullish LP → sous les vieux bas. Bearish LP → au-dessus des vieux hauts.</p>
+          </div>
+          <div>
+            <p style="color:var(--purple);font-size:0.82rem;font-weight:700;margin-bottom:0.5rem">⏸ CONSOLIDATION</p>
+            <p style="font-size:0.8rem;color:var(--muted)">Prix confiné dans un range — pas de volonté de breakout. Market Makers construisent la liquidité. Anticiper une Expansion après la Consolidation.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-card" style="margin-top:1.2rem">
+        <h4><span class="icon icon-gold">📅</span> Macro Algorithmique</h4>
+        <p>Après 13h30, marquez le premier swing low ou swing high important. Les algos s'activent à ce moment. C'est souvent un Judas Swing. Cherchez un swing high/low puis un stop hunt.</p>
+        <div class="highlight-box">Si pas de swing low qui se casse → cherchez un mouvement soudain à la hausse (DISPLACEMENT HIGHER) + FVG. Si le prix revient dans le FVG → tradez-le.</div>
+        <div class="warning-box">Le volume n'a pas d'importance ici. Le prix est manipulé par les algorithmes.</div>
+      </div>
+    </div>
+
+    <!-- CALENDRIER -->
+    <div id="page-calendar" class="lesson-page">
+      <div class="lesson-header">
+        <span class="lesson-tag" style="color:var(--gold)">● Fondamentaux</span>
+        <h2>Calendrier Économique</h2>
+        <p>Utiliser les news pour anticiper la manipulation et l'expansion — alignées sur le HTF PD Array.</p>
+      </div>
+
+      <div class="concept-card">
+        <h4><span class="icon icon-gold">📊</span> Niveaux d'impact</h4>
+        <div class="two-col" style="margin-top:0.8rem">
+          <div>
+            <p><span style="color:var(--red)">🔴 Rouge</span> — High Impact → Forte volatilité attendue</p>
+            <p style="margin-top:0.5rem"><span style="color:orange">🟠 Orange</span> — Medium Impact → Volatilité modérée</p>
+            <p style="margin-top:0.5rem"><span style="color:var(--gold)">🟡 Jaune</span> — Low Impact → Moins significatif</p>
+          </div>
+          <div>
+            <div class="info-box">Focus sur les <strong>High et Medium Impact</strong>. Pairer avec le HTF PD Array pour établir le biais. High-impact news = volatilité = opportunité.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-card" style="margin-top:1.2rem">
+        <h4><span class="icon icon-blue">📆</span> Structure hebdomadaire AMD</h4>
+        <ul>
+          <li style="padding:0.5rem 0;border-bottom:1px solid var(--border)"><strong style="color:var(--muted)">LUNDI</strong> — Accumulation. Weekly open. Range étroit. Pas idéal. Si bearish : raid PWH/HTF POI.</li>
+          <li style="padding:0.5rem 0;border-bottom:1px solid var(--border)"><strong style="color:var(--red)">MARDI</strong> — Manipulation. High/Low de la semaine souvent formé. Judas Swing / raid Monday HL. London Open/Close/Fix Pivotal.</li>
+          <li style="padding:0.5rem 0;border-bottom:1px solid var(--border)"><strong style="color:var(--green)">MERCREDI</strong> — Expansion. Si au-dessus Weekly Open + PW Range EQ → longs. Surveillance Premium/Discount + BSL/SSL raid.</li>
+          <li style="padding:0.5rem 0;border-bottom:1px solid var(--border)"><strong style="color:var(--green)">JEUDI</strong> — Continuation. Trend distribution. Take profit à 10h00 EST ou une fois le DOL atteint. High/Low de la semaine souvent formé.</li>
+          <li style="padding:0.5rem 0"><strong style="color:var(--muted)">VENDREDI</strong> — Retour dans le range (20-30%). Distribution. Profit taking. Pas idéal pour trader.</li>
+        </ul>
+      </div>
+
+      <div class="concept-card" style="margin-top:1.2rem">
+        <h4><span class="icon icon-green">🗺</span> ICT Weekly Routine (Inner Circle Trader)</h4>
+        <ol class="steps-list" style="margin-top:0.5rem">
+          <li>Identifier le <strong>Weekly DOL</strong> (Draw on Liquidity hebdomadaire)</li>
+          <li>Vérifier le <strong>calendrier économique</strong> du jour</li>
+          <li>Attendre l'<strong>Opposing Price Delivery</strong></li>
+          <li>Attendre le <strong>Displacement</strong> dans la direction du Weekly DOL</li>
+          <li>Trouver le <strong>FVG</strong> dans le Displacement Price Swing</li>
+          <li>Entrer à <strong>3-4h, 10-11h ou 14h-15h</strong></li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- FLASHCARDS -->
+    <div id="page-flashcards" class="lesson-page">
+      <div class="lesson-header">
+        <span class="lesson-tag" style="color:var(--gold)">● Entraînement</span>
+        <h2>Flashcards ICT</h2>
+        <p>Cliquez sur la carte pour révéler la réponse. Naviguez avec les boutons.</p>
+      </div>
+      <div style="font-family:'Space Mono',monospace;font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Carte <span id="fc-current">1</span> / <span id="fc-total">20</span></div>
+
+      <div class="flashcard-wrapper">
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+          <div class="flashcard-face flashcard-front">
+            <div class="label">Question</div>
+            <div class="question" id="fc-question">Qu'est-ce que le Judas Swing ?</div>
+            <div class="flashcard-hint">← cliquez pour révéler</div>
+          </div>
+          <div class="flashcard-face flashcard-back">
+            <div class="label">Réponse</div>
+            <div class="answer" id="fc-answer">Un faux mouvement institutionnel (stop raid) conçu pour piéger les retail traders avant que le marché parte dans la vraie direction.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flashcard-nav">
+        <button class="btn btn-outline" onclick="prevCard()">← Précédente</button>
+        <button class="btn btn-ghost" onclick="flipCard()">🔄 Retourner</button>
+        <button class="btn btn-primary" onclick="nextCard()">Suivante →</button>
+      </div>
+    </div>
+
+    <!-- QUIZ COMPLET -->
+    <div id="page-quiz" class="lesson-page">
+      <div class="lesson-header">
+        <span class="lesson-tag" style="color:var(--blue)">● Évaluation</span>
+        <h2>Quiz Complet — 15 Questions</h2>
+        <p>Testez votre maîtrise de l'ensemble des concepts ICT. Score affiché en temps réel.</p>
+      </div>
+      <div id="quiz-full-container"></div>
+    </div>
+
+    <!-- CHECKLIST -->
+    <div id="page-checklist" class="lesson-page">
+      <div class="lesson-header">
+        <span class="lesson-tag" style="color:var(--green)">● Outil</span>
+        <h2>Checklist de Trade ICT</h2>
+        <p>Cochez chaque condition avant d'entrer un trade. Cliquez pour cocher/décocher.</p>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <div class="concept-card">
+            <h4><span class="icon icon-blue">📋</span> Analyse HTF (Higher Time Frame)</h4>
+            <ul class="checklist" id="checklist-htf">
+              <li onclick="toggleCheck(this)"><span class="check"></span> Weekly bias identifié (haussier / baissier)</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> HTF Draw on Liquidity identifié</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> PWH/PWL marqués sur le chart</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> PDH/PDL marqués sur le chart</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> EQH/EQL identifiés sur HTF</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> Order Flow HTF confirmé (bullish/bearish)</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> Calendrier économique vérifié</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="concept-card">
+            <h4><span class="icon icon-green">🎯</span> Setup ICT 2022</h4>
+            <ul class="checklist" id="checklist-setup">
+              <li onclick="toggleCheck(this)"><span class="check"></span> Liquidity grab confirmé (BSL ou SSL)</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> Displacement présent (institutionnel)</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> FVG identifié avec displacement</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> MSS confirmé (swing horizontal à FVG)</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> Fibonacci 50% tracé</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> FVG au niveau EQ ou du bon côté</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> R:R ratio solide calculé</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="concept-card">
+            <h4><span class="icon icon-gold">⏰</span> Timing &amp; Session</h4>
+            <ul class="checklist" id="checklist-timing">
+              <li onclick="toggleCheck(this)"><span class="check"></span> Dans la fenêtre de trading (8h30 – 11h EST)</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> Pas de news majeure à 8h30 (si Judas)</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> Jour favorable (Mardi/Mercredi/Jeudi)</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> Pas de gros move overnight (2h-5h)</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="concept-card">
+            <h4><span class="icon icon-red">🛡</span> Gestion du Risque</h4>
+            <ul class="checklist" id="checklist-risk">
+              <li onclick="toggleCheck(this)"><span class="check"></span> Stop loss placé logiquement (sous lowest low)</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> Target = liquidité opposée identifiée</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> Position size calculée selon le risque max</li>
+              <li onclick="toggleCheck(this)"><span class="check"></span> Pas de trade après une bonne journée (dopamine)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem;text-align:center">
+        <button class="btn btn-outline" onclick="resetChecklist()">🔄 Réinitialiser la checklist</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ===================== DATA =====================
+const flashcards = [
+  { q: "Qu'est-ce que le Judas Swing ?", a: "Un faux mouvement institutionnel (stop raid) conçu pour piéger les retail traders avant que le marché parte dans la vraie direction." },
+  { q: "Qu'est-ce que le BSL ?", a: "Buy Side Liquidity — ordres d'achat (buy stops) situés au-dessus du prix courant, notamment au-dessus des hauts précédents." },
+  { q: "Qu'est-ce que le SSL ?", a: "Sell Side Liquidity — ordres de vente (sell stops) situés sous le prix courant, notamment sous les bas précédents." },
+  { q: "Que signifie FVG ?", a: "Fair Value Gap — déséquilibre entre 3 bougies consécutives où la première et troisième bougie ne se chevauchent pas." },
+  { q: "Qu'est-ce qu'un MSS (Market Structure Shift) ?", a: "Cassure d'un niveau de structure clé signalant un changement de tendance potentiel. Dans le modèle 2022, un swing horizontal à l'une des 3 bougies du FVG." },
+  { q: "Quelle est la zone OTE optimale sur le Fibonacci ?", a: "Le niveau 62% – 79% est la zone Optimal Trade Entry (OTE) — là où les institutionnels entrent généralement en position." },
+  { q: "Qu'est-ce qu'un Order Block Bullish ?", a: "Une bougie down-close (baissière) qui a initié un mouvement à la hausse. Le prix revient souvent sur cette zone pour trouver du support." },
+  { q: "Qu'est-ce que le Mean Threshold d'un OB ?", a: "Le niveau 50% du range total du corps de l'Order Block. Le prix est attendu pour le respecter. Si dépassé, l'OB est potentiellement invalidé." },
+  { q: "Qu'est-ce qu'un Bearish Breaker Block ?", a: "Bougie down-close dans le dernier swing low avant qu'un ancien High soit violé. Valide quand les stops sont pris au HH et que le prix casse sous le swing low (LL)." },
+  { q: "Qu'est-ce que la SMT Divergence ?", a: "Smart Money Tool — divergence entre instruments corrélés (ex: ES vs NQ). L'un fait un nouveau high mais l'autre échoue → signal d'un potentiel Stop Hunt et inversion." },
+  { q: "Quel est le cycle IPDA ?", a: "Consolidation → Expansion → Retracement ou Reversal → Consolidation. Tout commence par Consolidation. On ne peut pas aller directement de Consolidation à Retracement." },
+  { q: "Qu'est-ce que le DOL (Draw on Liquidity) ?", a: "Le prochain niveau de prix que le marché cherche à atteindre — PDH/PDL, PWH/PWL, EQH/EQL, ou hauts/bas de session." },
+  { q: "Qu'est-ce que le Turtle Soup ?", a: "Pattern d'inversion après fausse cassure d'un short-term high/low. Les traders n'ont pas besoin d'un MSS — ils tradent la liquidité externe directement." },
+  { q: "Qu'est-ce qu'un Bullish Mitigation Block ?", a: "Apparaît quand le prix échoue à collecter la SSL aux bas précédents. Forme un higher low, monte chercher la BSL (HH), puis retrace vers 50% du liquidity void." },
+  { q: "Quels jours de la semaine sont les meilleurs pour trader selon ICT ?", a: "Mardi, Mercredi et Jeudi. Lundi = accumulation, Vendredi = retour dans le range. Mercredi-Jeudi = expansion principale." },
+  { q: "Qu'est-ce qu'un Rejection Block Bullish ?", a: "Un Price Low avec de longs wicks en bas des bougies. Le prix descend sous le corps pour prendre la SSL avant de monter. Doit être un swing low avec wick(s)." },
+  { q: "Que signifie HRLR ?", a: "High Resistance Liquidity Run — un bas qui prend un bas précédent et est rejeté. Mouvement difficile, à éviter comme trade." },
+  { q: "Que signifie LRLR ?", a: "Low Resistance Liquidity Run — un haut (en haussier) qui échoue à prendre le haut précédent. Peu de résistance dans le chemin → trade idéal." },
+  { q: "Qu'est-ce qu'un Propulsion Block ?", a: "Bougie qui a précédemment tradé dans un OB et prend le rôle de support pour un mouvement directif. Le mean threshold (50%) ne doit jamais être dépassé." },
+  { q: "Dans le modèle 2022, où place-t-on l'ordre limite ?", a: "À l'intérieur du FVG, à l'Equilibrium (50%) ou du meilleur côté (côté de la liquidité). Stop loss sous le plus bas pour un buy." }
+];
+
+const fullQuizData = [
+  { q: "Qu'est-ce que le Judas Swing exactement ?", opts: ["Un indicateur de volume", "Un faux mouvement institutionnel pour piéger les retail", "Une pattern de continuation", "Un niveau de support Fibonacci"], a: 1, exp: "Le Judas Swing est un stop raid déguisé qui prend les stops retail avant que le marché parte dans la vraie direction institutionnelle." },
+  { q: "Dans quel ordre se déroule le cycle IPDA ?", opts: ["Expansion → Consolidation → Retracement", "Consolidation → Retracement → Expansion", "Consolidation → Expansion → Retracement ou Reversal", "Reversal → Expansion → Consolidation"], a: 2, exp: "Le cycle commence TOUJOURS par la Consolidation, puis l'Expansion. Jamais de Retracement ou Reversal directement depuis Consolidation." },
+  { q: "Le FVG (Fair Value Gap) est valide dans le modèle 2022 si :", opts: ["Il est au-dessus du niveau 79% Fibonacci", "Le gap est au niveau de l'Equilibrium (50%) ou du côté liquidité", "Il y a eu 5 bougies consécutives dans la même direction", "Il coïncide avec un niveau round number"], a: 1, exp: "Dans le modèle 2022, le gap du FVG doit être au niveau de l'Equilibrium (50%) ou du côté de la liquidité (meilleur côté)." },
+  { q: "Quel est le Mean Threshold d'un Order Block ?", opts: ["Le haut du corps de l'OB", "Le niveau 38% du range de l'OB", "Le niveau 50% du range total du corps de l'OB", "L'ouverture de la bougie OB"], a: 2, exp: "Le Mean Threshold est le niveau 50% du range total du corps de l'OB. Si le prix le dépasse, l'OB est potentiellement invalidé." },
+  { q: "Que signifie SMT Divergence entre ES et NQ ?", opts: ["Les deux font des nouveaux hauts en même temps", "ES fait un nouveau haut mais NQ échoue à en faire un → signal de faiblesse", "NQ a plus de volume que ES", "La corrélation entre les deux est cassée définitivement"], a: 1, exp: "SMT = divergence entre instruments corrélés. Si ES fait un HH mais NQ non → faiblesse sur NQ → opportunité de short." },
+  { q: "Quel jour de la semaine est le plus favorable pour les trades en expansion ?", opts: ["Lundi", "Vendredi", "Mercredi et Jeudi", "Samedi"], a: 2, exp: "Mercredi et Jeudi sont les jours d'expansion. Lundi = accumulation, Mardi = manipulation/high/low de semaine, Vendredi = retour dans range." },
+  { q: "Dans un setup ICT 2022, qu'est-ce que le 'Displacement' confirme ?", opts: ["Un fort volume d'achat ou vente", "Une sponsorship institutionnelle derrière le mouvement", "La cassure d'un niveau Fibonacci", "Un pattern de chandeliers japonais"], a: 1, exp: "Le Displacement doit TOUJOURS exister dans le modèle 2022. Il signifie qu'il y a un sponsorship institutionnel derrière le mouvement de prix." },
+  { q: "La zone OTE bullish se trouve entre quels niveaux Fibonacci ?", opts: ["23% – 38%", "38% – 50%", "62% – 79%", "79% – 100%"], a: 2, exp: "L'OTE (Optimal Trade Entry) est la zone 62% – 79% sur le retracement Fibonacci. C'est là que les institutionnels entrent généralement en position." },
+  { q: "Qu'est-ce qu'un Bullish Breaker Block ?", opts: ["Un OB bullish sur le daily", "Bougie up-close dans le swing high récent avant violation d'un ancien Low ; valide quand HH formé après LL", "Un FVG haussier au-dessus du prix", "Un break de structure sur le 4h"], a: 1, exp: "Bullish Breaker = bougie up-close dans le swing high récent avant qu'un ancien low soit violé. Key elements: Low → High → Lower Low → Higher High." },
+  { q: "Qu'est-ce que le Draw on Liquidity (DOL) ?", opts: ["Un indicateur sur TradingView", "Le volume total d'une session", "Le prochain niveau de prix que le marché cherche à atteindre", "Un ordre stop institutionnel"], a: 2, exp: "Le DOL est le prochain objectif de prix — PDH/PDL, PWH/PWL, EQH/EQL, ou hauts/bas de session. C'est la direction du marché." },
+  { q: "Quel est le Turtle Soup pattern ?", opts: ["Continuité après un breakout confirmé", "Inversion après fausse cassure d'un short-term H/L — trading la liquidité externe sans MSS", "Pattern de consolidation en triangle", "Une divergence RSI classique"], a: 1, exp: "Turtle Soup = inversion après fausse cassure. Le prix semble continuer mais inverse immédiatement. Pas besoin de MSS car on trade la liquidité externe." },
+  { q: "Que faire si on a un gros mouvement overnight (2h-5h du matin) ?", opts: ["Entrer dès l'ouverture New York en direction du move", "Attendre la session London pour confirmer", "Eviter l'AM session — s'attendre à de la consolidation (seek and destroy)", "Tripler la taille de position"], a: 2, exp: "Un gros move overnight signifie que les algo ont déjà fait le travail. L'AM session sera probablement chaotique (seek and destroy). Ne pas trader." },
+  { q: "HRLR signifie :", opts: ["High Resistance Liquidity Run — mouvement difficile, à éviter", "High Return Low Risk — setup favorable", "Higher Range Lower Range — structure de prix", "Hourly Range Level Run"], a: 0, exp: "HRLR = High Resistance Liquidity Run. Un bas qui prend un bas précédent et est rejeté = High Resistance Low. Mouvement difficile, à éviter." },
+  { q: "Dans le Propulsion Block, que ne doit jamais faire le prix ?", opts: ["Clore au-dessus du high de la bougie", "Dépasser le Mean Threshold (50% du corps)", "Revenir sur la zone dans les 5 bougies suivantes", "Former un nouveau high avant le retest"], a: 1, exp: "Le Propulsion Block est très sensible — si le Mean Threshold (50% du corps) est dépassé, le bloc est invalidé. Le prix doit réagir avant d'y arriver." },
+  { q: "Selon ICT, comment 'affûter son edge' en trading ?", opts: ["Prendre le plus de trades possible chaque jour", "Pousser son edge à chaque opportunité", "Savoir quand entrer ET quand sortir — ne pas dépasser son quota", "Utiliser plus de levier pour maximiser les profits"], a: 2, exp: "ICT dit : 'Si tu continues à pousser ton edge, tu vas l'émousser. Tu l'affûtes en sachant quand entrer et quand sortir.' — Discipline > Fréquence." }
+];
+
+// ===================== STATE =====================
+let currentPage = 'home';
+let fcIndex = 0;
+let fcFlipped = false;
+let quizCorrect = 0;
+let quizTotal = 0;
+let visitedPages = new Set();
+let fullQuizAnswered = 0;
+
+// ===================== NAVIGATION =====================
+function showPage(page) {
+  document.querySelectorAll('.lesson-page, .page-home').forEach(p => p.style.display = 'none');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const el = document.getElementById('page-' + page);
+  if (el) {
+    el.style.display = 'block';
+    el.classList.add('active');
+  }
+  const nav = document.getElementById('nav-' + page);
+  if (nav) {
+    nav.classList.add('active');
+    if (!nav.classList.contains('done')) {
+      nav.classList.add('done');
+    }
+  }
+
+  visitedPages.add(page);
+  updateProgress();
+  currentPage = page;
+  window.scrollTo(0, 0);
+}
+
+function updateProgress() {
+  const total = document.querySelectorAll('.nav-item').length;
+  const done = visitedPages.size;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+// ===================== TABS =====================
+function switchTab(pageId, tabId) {
+  const panels = document.querySelectorAll(`#page-${pageId} .tab-panel`);
+  const tabs = document.querySelectorAll(`#page-${pageId} .tab`);
+  panels.forEach(p => p.classList.remove('active'));
+  tabs.forEach(t => t.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ===================== QUIZ =====================
+function answerQuiz(cardId, optIndex, correctIndex) {
+  const card = document.getElementById(cardId);
+  const opts = card.querySelectorAll('.quiz-option');
+  const fb = document.getElementById(cardId + '-fb');
+  if (opts[0].disabled) return;
+
+  opts.forEach(o => o.disabled = true);
+  opts[correctIndex].classList.add('correct-ans');
+
+  quizTotal++;
+  if (optIndex === correctIndex) {
+    quizCorrect++;
+    opts[optIndex].classList.add('correct-ans');
+    fb.textContent = '✅ Correct ! Bien joué.';
+    fb.className = 'quiz-feedback show ok';
+    card.classList.add('correct');
+  } else {
+    opts[optIndex].classList.add('wrong-ans');
+    fb.className = 'quiz-feedback show nok';
+    card.classList.add('incorrect');
+    fb.textContent = '❌ Pas tout à fait. La bonne réponse est surlignée en vert.';
+  }
+  updateScoreDisplay();
+}
+
+function updateScoreDisplay() {
+  document.getElementById('quizScore').textContent = quizCorrect + '/' + quizTotal;
+}
+
+// ===================== FLASHCARDS =====================
+function renderCard() {
+  const card = flashcards[fcIndex];
+  document.getElementById('fc-question').textContent = card.q;
+  document.getElementById('fc-answer').textContent = card.a;
+  document.getElementById('fc-current').textContent = fcIndex + 1;
+  document.getElementById('fc-total').textContent = flashcards.length;
+  document.getElementById('flashcard').classList.remove('flipped');
+  fcFlipped = false;
+}
+
+function flipCard() {
+  fcFlipped = !fcFlipped;
+  document.getElementById('flashcard').classList.toggle('flipped', fcFlipped);
+}
+
+function nextCard() {
+  fcIndex = (fcIndex + 1) % flashcards.length;
+  renderCard();
+}
+
+function prevCard() {
+  fcIndex = (fcIndex - 1 + flashcards.length) % flashcards.length;
+  renderCard();
+}
+
+// ===================== FULL QUIZ =====================
+function buildFullQuiz() {
+  const container = document.getElementById('quiz-full-container');
+  container.innerHTML = '';
+  fullQuizData.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    card.id = 'fq-' + i;
+    card.innerHTML = `
+      <div class="quiz-question">${i+1}. ${item.q}</div>
+      <div class="quiz-options">
+        ${item.opts.map((o, j) => `<button class="quiz-option" onclick="answerFQ(${i},${j})">${o}</button>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="fq-${i}-fb"></div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function answerFQ(qIndex, optIndex) {
+  const card = document.getElementById('fq-' + qIndex);
+  const opts = card.querySelectorAll('.quiz-option');
+  const fb = document.getElementById('fq-' + qIndex + '-fb');
+  if (opts[0].disabled) return;
+
+  const correct = fullQuizData[qIndex].a;
+  opts.forEach(o => o.disabled = true);
+  opts[correct].classList.add('correct-ans');
+
+  quizTotal++;
+  fullQuizAnswered++;
+  if (optIndex === correct) {
+    quizCorrect++;
+    card.classList.add('correct');
+    fb.textContent = '✅ Correct ! ' + fullQuizData[qIndex].exp;
+    fb.className = 'quiz-feedback show ok';
+  } else {
+    opts[optIndex].classList.add('wrong-ans');
+    card.classList.add('incorrect');
+    fb.textContent = '❌ ' + fullQuizData[qIndex].exp;
+    fb.className = 'quiz-feedback show nok';
+  }
+  updateScoreDisplay();
+
+  if (fullQuizAnswered === fullQuizData.length) {
+    const pct = Math.round((quizCorrect / fullQuizData.length) * 100);
+    const summary = document.createElement('div');
+    summary.style.cssText = 'background:var(--card);border:1px solid var(--green);border-radius:10px;padding:2rem;margin-top:2rem;text-align:center;';
+    summary.innerHTML = `
+      <div style="font-size:2.5rem;margin-bottom:0.5rem">${pct >= 80 ? '🏆' : pct >= 60 ? '📈' : '📚'}</div>
+      <div style="font-size:1.5rem;font-weight:800;color:var(--green)">${pct}%</div>
+      <div style="color:var(--muted);margin-top:0.5rem;font-size:0.9rem">${quizCorrect}/${fullQuizData.length} bonnes réponses</div>
+      <div style="color:var(--text);margin-top:1rem;font-size:0.85rem">${pct>=80?'Excellent ! Vous maîtrisez bien les concepts ICT.':pct>=60?'Bon travail ! Revoyez les modules où vous avez échoué.':'Continuez à étudier — repassez les leçons et revenez !'}</div>
+    `;
+    document.getElementById('quiz-full-container').appendChild(summary);
+  }
+}
+
+// ===================== CHECKLIST =====================
+function toggleCheck(li) {
+  li.classList.toggle('checked');
+  const check = li.querySelector('.check');
+  check.textContent = li.classList.contains('checked') ? '✓' : '';
+}
+
+function resetChecklist() {
+  document.querySelectorAll('.checklist li').forEach(li => {
+    li.classList.remove('checked');
+    li.querySelector('.check').textContent = '';
+  });
+}
+
+// ===================== INIT =====================
+document.addEventListener('DOMContentLoaded', function() {
+  renderCard();
+  buildFullQuiz();
+
+  // Show all pages initially hidden
+  document.querySelectorAll('.lesson-page').forEach(p => p.style.display = 'none');
+  document.getElementById('page-home').style.display = 'block';
+});
+</script>
+<script src="../nav.js"></script>
+</body>
+</html>

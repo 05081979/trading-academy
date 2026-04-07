@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trading Academy — Hub de Formation</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #05070a;
+    --bg2: #0a0d14;
+    --bg3: #0f1520;
+    --border: #141c2a;
+    --border2: #1e2d44;
+    --gold: #e9b84c;
+    --gold2: #c49b2e;
+    --gold-dim: rgba(233,184,76,0.08);
+    --blue: #4b9cf4;
+    --green: #2dd67a;
+    --red: #f04545;
+    --purple: #9b6cf0;
+    --orange: #f08044;
+    --text: #cdd6f4;
+    --text2: #6c7a9c;
+    --text3: #2e3d5c;
+    --font: 'Syne', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+    --body: 'DM Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% -20%, rgba(233,184,76,0.06), transparent),
+      radial-gradient(ellipse 50% 40% at 80% 60%, rgba(75,156,244,0.03), transparent);
+    pointer-events: none;
+  }
+
+  /* ── NAV ── */
+  nav {
+    display: flex;
+    align-items: center;
+    padding: 18px 40px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(5,7,10,0.8);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-logo {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 800;
+    color: #0a0d14;
+  }
+
+  .nav-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+  }
+
+  .nav-sub {
+    font-size: 11px;
+    color: var(--text2);
+    font-family: var(--mono);
+  }
+
+  .nav-links {
+    margin-left: auto;
+    display: flex;
+    gap: 6px;
+  }
+
+  .nav-links a {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text2);
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: all 0.15s;
+  }
+  .nav-links a:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+  .nav-links a.active { background: var(--gold-dim); color: var(--gold); }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 80px 40px 60px;
+    position: relative;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gold);
+    background: var(--gold-dim);
+    border: 1px solid rgba(233,184,76,0.2);
+    border-radius: 20px;
+    padding: 6px 16px;
+    margin-bottom: 24px;
+  }
+
+  .hero-badge .dot {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 span { color: var(--gold); }
+
+  .hero p {
+    font-family: var(--body);
+    font-size: 16px;
+    color: var(--text2);
+    max-width: 560px;
+    margin: 0 auto 32px;
+    line-height: 1.7;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    font-family: var(--mono);
+  }
+
+  .hero-stat .num {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--gold);
+  }
+
+  .hero-stat .lbl {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+
+  /* ── CATEGORIES ── */
+  .section {
+    padding: 40px 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .section-header .line {
+    height: 1px;
+    flex: 1;
+    background: var(--border);
+  }
+
+  .section-header h2 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text2);
+    white-space: nowrap;
+  }
+
+  /* ── CARDS GRID ── */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--card-color, var(--gold));
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .card:hover {
+    background: var(--bg3);
+    border-color: var(--border2);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+
+  .card:hover::before { opacity: 1; }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .card-icon {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    background: var(--card-bg, var(--gold-dim));
+    border: 1px solid var(--card-border, rgba(233,184,76,0.15));
+  }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    transition: color 0.2s;
+  }
+
+  .card:hover .card-title { color: var(--gold); }
+
+  .card-subtitle {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text3);
+  }
+
+  .card-desc {
+    font-family: var(--body);
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .card-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: auto;
+  }
+
+  .tag {
+    font-size: 10px;
+    font-family: var(--mono);
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    color: var(--text2);
+  }
+
+  .card-arrow {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    font-size: 18px;
+    color: var(--text3);
+    transition: all 0.2s;
+  }
+
+  .card:hover .card-arrow { color: var(--gold); transform: translateX(4px); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 40px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  footer p {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  footer span { color: var(--gold); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    nav { padding: 14px 20px; }
+    .hero { padding: 50px 20px 40px; }
+    .section { padding: 30px 20px 16px; }
+    .cards { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .hero-stats { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <div class="nav-logo">TA</div>
+    <div>
+      <div class="nav-title">TRADING ACADEMY</div>
+      <div class="nav-sub">Hub de Formation</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="#cours" class="active">Cours</a>
+    <a href="#outils">Outils</a>
+    <a href="#methodologie">Methodologie</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><div class="dot"></div>Formation Complete</div>
+  <h1>Votre <span>Trading</span><br>Academy</h1>
+  <p>Tous vos modules de formation, outils d'analyse et methodologies reunis dans une interface unique.</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="num">10</div>
+      <div class="lbl">MODULES</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">3</div>
+      <div class="lbl">CATEGORIES</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">&#x221E;</div>
+      <div class="lbl">REVISION</div>
+    </div>
+  </div>
+</section>
+
+<!-- COURS & TRAINERS -->
+<section class="section" id="cours">
+  <div class="section-header">
+    <h2>Cours & Trainers Interactifs</h2>
+    <div class="line"></div>
+  </div>
+  <div class="cards">
+
+    <a href="modules/hub-cours.html" class="card" style="--card-color:#e9b84c; --card-bg:rgba(233,184,76,0.08); --card-border:rgba(233,184,76,0.15)">
+      <div class="card-arrow">&rarr;</div>
+      <div class="card-top">
+        <div class="card-icon">&#x1F3DB;</div>
+        <div>
+          <div class="card-title">Hub de Cours Trading</div>
+          <div class="card-subtitle">Trading Institutionnel</div>
+        </div>
+      </div>
+      <div class="card-desc">Formation complete sur les concepts du trading institutionnel : Order Blocks, FVG, Liquidity, structure de marche.</div>
+      <div class="card-tags">
+        <span class="tag">ICT</span>
+        <span class="tag">SMC</span>
+        <span class="tag">Institutionnel</span>
+      </div>
+    </a>
+
+    <a href="modules/ict-trainer.html" class="card" style="--card-color:#2dd67a; --card-bg:rgba(45,214,122,0.08); --card-border:rgba(45,214,122,0.15)">
+      <div class="card-arrow">&rarr;</div>
+      <div class="card-top">
+        <div class="card-icon">&#x1F3AF;</div>
+        <div>
+          <div class="card-title">ICT Trainer</div>
+          <div class="card-subtitle">Lumi Traders</div>
+        </div>
+      </div>
+      <div class="card-desc">Entrainement interactif sur les concepts ICT : Displacement, OTE, Breaker, Mitigation, CISD.</div>
+      <div class="card-tags">
+        <span class="tag">Trainer</span>
+        <span class="tag">ICT</span>
+        <span class="tag">Interactif</span>
+      </div>
+    </a>
+
+    <a href="modules/ipda-trainer.html" class="card" style="--card-color:#9b6cf0; --card-bg:rgba(155,108,240,0.08); --card-border:rgba(155,108,240,0.15)">
+      <div class="card-arrow">&rarr;</div>
+      <div class="card-top">
+        <div class="card-icon">&#x1F9E0;</div>
+        <div>
+          <div class="card-title">IPDA Trainer</div>
+          <div class="card-subtitle">Zeussy — Algorithmic Framework</div>
+        </div>
+      </div>
+      <div class="card-desc">IPDA Algorithmic Framework : Data Ranges, Quarterly Shifts, Liquidity Pools, Time-based delivery.</div>
+      <div class="card-tags">
+        <span class="tag">IPDA</span>
+        <span class="tag">Zeussy</span>
+        <span class="tag">Algorithmic</span>
+      </div>
+    </a>
+
+    <a href="modules/time-price.html" class="card" style="--card-color:#4b9cf4; --card-bg:rgba(75,156,244,0.08); --card-border:rgba(75,156,244,0.15)">
+      <div class="card-arrow">&rarr;</div>
+      <div class="card-top">
+        <div class="card-icon">&#x23F0;</div>
+        <div>
+          <div class="card-title">Time x Price</div>
+          <div class="card-subtitle">Training Hub</div>
+        </div>
+      </div>
+      <div class="card-desc">Theorie Time & Price : Killzones, Macro Times, Silver Bullet, Sessions, alignement temporel.</div>
+      <div class="card-tags">
+        <span class="tag">Time</span>
+        <span class="tag">Sessions</span>
+        <span class="tag">Killzones</span>
+      </div>
+    </a>
+
+    <a href="modules/modules-interactifs.html" class="card" style="--card-color:#f08044; --card-bg:rgba(240,128,68,0.08); --card-border:rgba(240,128,68,0.15)">
+      <div class="card-arrow">&rarr;</div>
+      <div class="card-top">
+        <div class="card-icon">&#x1F4DA;</div>
+        <div>
+          <div class="card-title">Modules Interactifs</div>
+          <div class="card-subtitle">Trading Interactif</div>
+        </div>
+      </div>
+      <div class="card-desc">Ensemble de modules interactifs couvrant tous les aspects du trading institutionnel.</div>
+      <div class="card-tags">
+        <span class="tag">Modules</span>
+        <span class="tag">Interactif</span>
+        <span class="tag">Complet</span>
+      </div>
+    </a>
+
+    <a href="modules/inducement-theorem.html" class="card" style="--card-color:#f04545; --card-bg:rgba(240,69,69,0.08); --card-border:rgba(240,69,69,0.15)">
+      <div class="card-arrow">&rarr;</div>
+      <div class="card-top">
+        <div class="card-icon">&#x1F4A5;</div>
+        <div>
+          <div class="card-title">Inducement Theorem</div>
+          <div class="card-subtitle">2-Phase Trap — Cours Complet</div>
+        </div>
+      </div>
+      <div class="card-desc">Theorie du piege en 2 phases : Inducement, Trap, Liquidity Engineering, faux breakouts.</div>
+      <div class="card-tags">
+        <span class="tag">Inducement</span>
+        <span class="tag">Trap</span>
+        <span class="tag">Liquidity</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- OUTILS & ANALYSE -->
+<section class="section" id="outils">
+  <div class="section-header">
+    <h2>Outils & Analyse</h2>
+    <div class="line"></div>
+  </div>
+  <div class="cards">
+
+    <a href="modules/trading-hub-v8.html" class="card" style="--card-color:#4b9cf4; --card-bg:rgba(75,156,244,0.08); --card-border:rgba(75,156,244,0.15)">
+      <div class="card-arrow">&rarr;</div>
+      <div class="card-top">
+        <div class="card-icon">&#x1F4CA;</div>
+        <div>
+          <div class="card-title">Trading Hub NQ v8</div>
+          <div class="card-subtitle">NQ Intelligence Unified</div>
+        </div>
+      </div>
+      <div class="card-desc">Hub d'analyse unifie pour le Nasdaq : sentiment, levels, economic calendar, technicals, tout en un.</div>
+      <div class="card-tags">
+        <span class="tag">NQ</span>
+        <span class="tag">Dashboard</span>
+        <span class="tag">Intelligence</span>
+      </div>
+    </a>
+
+    <a href="modules/financial-juice.html" class="card" style="--card-color:#2dd67a; --card-bg:rgba(45,214,122,0.08); --card-border:rgba(45,214,122,0.15)">
+      <div class="card-arrow">&rarr;</div>
+      <div class="card-top">
+        <div class="card-icon">&#x1F4F0;</div>
+        <div>
+          <div class="card-title">Financial Juice</div>
+          <div class="card-subtitle">News & Calendar Live</div>
+        </div>
+      </div>
+      <div class="card-desc">Flux de news en temps reel et calendrier economique. Restez informe des catalyseurs du marche.</div>
+      <div class="card-tags">
+        <span class="tag">News</span>
+        <span class="tag">Calendar</span>
+        <span class="tag">Live</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- METHODOLOGIE -->
+<section class="section" id="methodologie">
+  <div class="section-header">
+    <h2>Methodologie & Protocole</h2>
+    <div class="line"></div>
+  </div>
+  <div class="cards">
+
+    <a href="modules/methodologie.html" class="card" style="--card-color:#e9b84c; --card-bg:rgba(233,184,76,0.08); --card-border:rgba(233,184,76,0.15)">
+      <div class="card-arrow">&rarr;</div>
+      <div class="card-top">
+        <div class="card-icon">&#x1F4CB;</div>
+        <div>
+          <div class="card-title">Methodologie Trading</div>
+          <div class="card-subtitle">Trading Institutionnel</div>
+        </div>
+      </div>
+      <div class="card-desc">Methodologie complete : plan de trading, analyse multi-timeframe, criteres d'entree et de gestion.</div>
+      <div class="card-tags">
+        <span class="tag">Methode</span>
+        <span class="tag">Plan</span>
+        <span class="tag">HTF/LTF</span>
+      </div>
+    </a>
+
+    <a href="modules/role-outils.html" class="card" style="--card-color:#f08044; --card-bg:rgba(240,128,68,0.08); --card-border:rgba(240,128,68,0.15)">
+      <div class="card-arrow">&rarr;</div>
+      <div class="card-top">
+        <div class="card-icon">&#x1F527;</div>
+        <div>
+          <div class="card-title">Role Unique Outils</div>
+          <div class="card-subtitle">Chaque Outil, Une Utilite</div>
+        </div>
+      </div>
+      <div class="card-desc">Reference de chaque outil et indicateur : quand l'utiliser, pourquoi, et comment l'integrer dans votre routine.</div>
+      <div class="card-tags">
+        <span class="tag">Outils</span>
+        <span class="tag">Reference</span>
+        <span class="tag">Workflow</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<footer>
+  <p><span>TRADING ACADEMY</span> &mdash; Formation Trading Institutionnel &mdash; 10 Modules</p>
+</footer>
+
+<!-- Smooth scroll for anchor links -->
+<script>
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Update active nav
+      document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+      a.classList.add('active');
+    });
+  });
+
+  // Highlight nav on scroll
+  const sections = document.querySelectorAll('.section');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    navLinks.forEach(l => {
+      l.classList.remove('active');
+      if (l.getAttribute('href') === '#' + current) l.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

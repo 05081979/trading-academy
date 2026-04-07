@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2-Phase Inducement Trap Theorem — Cours Complet</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #1a1a24;
+    --bg4: #22222f;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8e8f0;
+    --text2: #9090a8;
+    --text3: #5a5a72;
+    --accent: #6c63ff;
+    --accent2: #8b84ff;
+    --gold: #f0c040;
+    --gold2: #ffe082;
+    --teal: #2dd4bf;
+    --rose: #fb7185;
+    --green: #4ade80;
+    --orange: #fb923c;
+    --font-title: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.7;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+    padding: 0 0 40px;
+  }
+
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .sidebar-header {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+
+  .sidebar-logo {
+    font-family: var(--font-title);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .sidebar-title {
+    font-family: var(--font-title);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .nav-group { margin-bottom: 4px; }
+
+  .nav-group-label {
+    font-family: var(--font-title);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 14px 24px 4px;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 24px;
+    font-size: 13px;
+    color: var(--text2);
+    text-decoration: none;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+
+  .nav-link:hover { color: var(--text); background: var(--bg3); }
+  .nav-link.active { color: var(--accent2); border-left-color: var(--accent); background: rgba(108,99,255,0.08); }
+
+  .nav-link .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.5;
+    flex-shrink: 0;
+  }
+
+  /* MAIN */
+  .main {
+    flex: 1;
+    min-width: 0;
+    padding: 60px 80px 100px;
+    max-width: 900px;
+  }
+
+  /* SECTIONS */
+  section {
+    margin-bottom: 80px;
+    scroll-margin-top: 40px;
+  }
+
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-title);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    background: rgba(108,99,255,0.12);
+    border: 1px solid rgba(108,99,255,0.25);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+
+  h1.section-title {
+    font-family: var(--font-title);
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  h2.section-title {
+    font-family: var(--font-title);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 14px;
+  }
+
+  h3 {
+    font-family: var(--font-title);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 28px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  h3::before {
+    content: '';
+    width: 3px; height: 16px;
+    background: var(--accent);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  p { color: var(--text2); margin-bottom: 14px; }
+  p strong { color: var(--text); font-weight: 500; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, var(--bg3) 0%, var(--bg2) 100%);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    padding: 48px;
+    margin-bottom: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, rgba(108,99,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    font-family: var(--font-title);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .hero h1 {
+    font-family: var(--font-title);
+    font-size: 44px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 span { color: var(--accent2); }
+
+  .hero p {
+    font-size: 16px;
+    color: var(--text2);
+    max-width: 560px;
+    margin: 0;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 24px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .hero-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  .hero-meta-item span { color: var(--text2); }
+
+  /* CALLOUT BOXES */
+  .box {
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    border: 1px solid;
+  }
+
+  .box-title {
+    font-family: var(--font-title);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .box p { margin: 0; font-size: 14px; }
+
+  .box-key { background: rgba(108,99,255,0.08); border-color: rgba(108,99,255,0.25); }
+  .box-key .box-title { color: var(--accent2); }
+  .box-key p { color: #b0a8ff; }
+
+  .box-warning { background: rgba(240,192,64,0.07); border-color: rgba(240,192,64,0.25); }
+  .box-warning .box-title { color: var(--gold); }
+  .box-warning p { color: #d4aa50; }
+
+  .box-success { background: rgba(74,222,128,0.07); border-color: rgba(74,222,128,0.2); }
+  .box-success .box-title { color: var(--green); }
+  .box-success p { color: #6bcc8a; }
+
+  .box-danger { background: rgba(251,113,133,0.07); border-color: rgba(251,113,133,0.2); }
+  .box-danger .box-title { color: var(--rose); }
+  .box-danger p { color: #e07080; }
+
+  .box-info { background: rgba(45,212,191,0.07); border-color: rgba(45,212,191,0.2); }
+  .box-info .box-title { color: var(--teal); }
+  .box-info p { color: #50b8ac; }
+
+  /* RULE LIST */
+  .rules { list-style: none; margin: 12px 0 20px; }
+  .rules li {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--text2);
+    align-items: flex-start;
+  }
+  .rules li:last-child { border-bottom: none; }
+  .rules li::before {
+    content: '→';
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-size: 13px;
+  }
+  .rules li strong { color: var(--text); font-weight: 500; }
+
+  /* GRID CARDS */
+  .grid { display: grid; gap: 12px; margin: 16px 0 24px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  .card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--border2); }
+
+  .card-badge {
+    display: inline-block;
+    font-family: var(--font-title);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+
+  .card h4 {
+    font-family: var(--font-title);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .card p { font-size: 13px; margin: 0; line-height: 1.6; }
+
+  .badge-purple { background: rgba(108,99,255,0.15); color: var(--accent2); }
+  .badge-gold { background: rgba(240,192,64,0.12); color: var(--gold); }
+  .badge-teal { background: rgba(45,212,191,0.12); color: var(--teal); }
+  .badge-rose { background: rgba(251,113,133,0.12); color: var(--rose); }
+  .badge-green { background: rgba(74,222,128,0.12); color: var(--green); }
+  .badge-orange { background: rgba(251,146,60,0.12); color: var(--orange); }
+
+  /* PHASE BLOCKS */
+  .phase-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+
+  .phase {
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid;
+  }
+
+  .phase-label {
+    font-family: var(--font-title);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .phase h4 {
+    font-family: var(--font-title);
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .phase p { font-size: 13px; margin: 0; line-height: 1.6; }
+
+  .phase-1 { background: rgba(251,146,60,0.07); border-color: rgba(251,146,60,0.25); }
+  .phase-1 .phase-label { color: var(--orange); }
+  .phase-1 h4 { color: #fba050; }
+  .phase-1 p { color: #c08050; }
+
+  .phase-2 { background: rgba(108,99,255,0.08); border-color: rgba(108,99,255,0.25); }
+  .phase-2 .phase-label { color: var(--accent2); }
+  .phase-2 h4 { color: var(--accent2); }
+  .phase-2 p { color: #8878dd; }
+
+  /* STEPS */
+  .steps { margin: 16px 0 24px; }
+  .step {
+    display: flex;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(108,99,255,0.15);
+    border: 1px solid rgba(108,99,255,0.3);
+    color: var(--accent2);
+    font-family: var(--font-title);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-content strong {
+    display: block;
+    font-family: var(--font-title);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .step-content span { font-size: 13px; color: var(--text2); }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; margin: 16px 0 24px; border-radius: 12px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    font-family: var(--font-title);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 12px 16px;
+    text-align: left;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    font-size: 13px;
+    color: var(--text2);
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  td.ok { color: var(--green); }
+  td.no { color: var(--rose); }
+  td strong { color: var(--text); font-weight: 500; }
+
+  /* SESSION ROWS */
+  .sessions { margin: 16px 0; }
+  .session-item {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .session-item:last-child { border-bottom: none; }
+  .session-tag {
+    font-family: var(--font-title);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 90px;
+    text-align: center;
+  }
+  .s-asia { background: rgba(108,99,255,0.15); color: var(--accent2); }
+  .s-ff { background: rgba(240,192,64,0.12); color: var(--gold); }
+  .s-ldn { background: rgba(45,212,191,0.12); color: var(--teal); }
+  .s-ny { background: rgba(251,113,133,0.12); color: var(--rose); }
+  .session-text { flex: 1; }
+  .session-text strong { color: var(--text); font-size: 14px; display: block; margin-bottom: 4px; }
+  .session-text p { font-size: 13px; margin: 0; }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border2), transparent);
+    margin: 48px 0;
+  }
+
+  /* INLINE TAGS */
+  .tag {
+    display: inline-block;
+    font-family: var(--font-title);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin: 0 2px;
+  }
+  .tag-valid { background: rgba(74,222,128,0.12); color: var(--green); }
+  .tag-invalid { background: rgba(251,113,133,0.12); color: var(--rose); }
+  .tag-p1 { background: rgba(251,146,60,0.12); color: var(--orange); }
+  .tag-p2 { background: rgba(108,99,255,0.15); color: var(--accent2); }
+
+  /* GLOSSAIRE */
+  .glos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 16px 0; }
+  .glos-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+  }
+  .glos-item dt {
+    font-family: var(--font-title);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent2);
+    margin-bottom: 3px;
+  }
+  .glos-item dd { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+  /* CYCLE TABLE */
+  .cycle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+  .cycle-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .cycle-card .c-num {
+    font-family: var(--font-title);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .cycle-card h4 {
+    font-family: var(--font-title);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .cycle-card p { font-size: 13px; margin: 0; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { padding: 32px 24px 60px; max-width: 100%; }
+    .grid-2, .grid-3, .phase-container, .cycle-grid, .glos-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">VectorFX</div>
+    <div class="sidebar-title">2-Phase Inducement<br>Trap Theorem</div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Introduction</div>
+    <a href="#intro" class="nav-link"><span class="dot"></span>Philosophie & Bases</a>
+    <a href="#sessions" class="nav-link"><span class="dot"></span>Sessions de Trading</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Théorie Centrale</div>
+    <a href="#inducement" class="nav-link"><span class="dot"></span>L'Inducement</a>
+    <a href="#phase1" class="nav-link"><span class="dot"></span>Phase 1</a>
+    <a href="#phase2" class="nav-link"><span class="dot"></span>Phase 2 (4 types)</a>
+    <a href="#orderblocks" class="nav-link"><span class="dot"></span>Orderblocks Valides</a>
+    <a href="#vector" class="nav-link"><span class="dot"></span>Vector Level</a>
+    <a href="#mss" class="nav-link"><span class="dot"></span>MSS & ChoCh</a>
+    <a href="#ipb" class="nav-link"><span class="dot"></span>Reversal vs IPB</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Application</div>
+    <a href="#daily-cycle" class="nav-link"><span class="dot"></span>Daily Cycle</a>
+    <a href="#amd" class="nav-link"><span class="dot"></span>AMD — Power of 3</a>
+    <a href="#markup" class="nav-link"><span class="dot"></span>8-Step Markup</a>
+    <a href="#entries" class="nav-link"><span class="dot"></span>Processus d'Entrée</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Concepts Clés</div>
+    <a href="#vsr" class="nav-link"><span class="dot"></span>V-SR</a>
+    <a href="#evil" class="nav-link"><span class="dot"></span>Evil Candle</a>
+    <a href="#premium" class="nav-link"><span class="dot"></span>Premium & Discount</a>
+    <a href="#corrective" class="nav-link"><span class="dot"></span>Corrective Leg</a>
+    <a href="#pingpong" class="nav-link"><span class="dot"></span>Ping-Pong</a>
+    <a href="#smt" class="nav-link"><span class="dot"></span>SMT / Invalid ChoCh</a>
+    <a href="#sweeps" class="nav-link"><span class="dot"></span>Small vs Big Sweep</a>
+    <a href="#divergence" class="nav-link"><span class="dot"></span>Divergence</a>
+    <a href="#glos" class="nav-link"><span class="dot"></span>Glossaire</a>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">Niveau Intermédiaire — Avancé</div>
+    <h1>2-Phase Inducement<br><span>Trap Theorem</span></h1>
+    <p>La stratégie complète pour comprendre comment les institutions manipulent les marchés et comment en tirer profit à travers la théorie de l'inducement en deux phases.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">Auteur : <span>VectorFX</span></div>
+      <div class="hero-meta-item">Source : <span>tradesmint.com</span></div>
+      <div class="hero-meta-item">Prérequis : <span>Market Structure, S&D, Liquidité</span></div>
+    </div>
+  </div>
+
+  <!-- ==================== INTRODUCTION ==================== -->
+  <section id="intro">
+    <div class="section-badge">Fondements</div>
+    <h2 class="section-title">Philosophie & Bases</h2>
+
+    <p>La stratégie repose sur une vérité centrale : <strong>le marché est manipulé par des institutions</strong> (market makers, grosses mains). Leur objectif est de piéger les traders retail pour prendre leur liquidité avant de lancer le vrai mouvement. On ne trade pas la direction — on trade <strong>la manipulation elle-même</strong>.</p>
+
+    <div class="box box-key">
+      <div class="box-title">Principe Fondateur</div>
+      <p>Le marché ne fait que 3 choses : <strong>Liquidity Build-Up</strong> (on n'entre pas), <strong>Reversal</strong> (on trade via la 2-Phase), <strong>Continuation</strong> (on trade via l'IPB). Tout le reste est bruit.</p>
+    </div>
+
+    <h3>Psychologie du Trader</h3>
+    <ul class="rules">
+      <li>Ne pas trader si les émotions ne s'alignent pas avec ce que l'on voit à l'écran</li>
+      <li>Si on n'accepte pas pleinement la perte potentielle avant d'entrer, <strong>ne pas prendre le trade</strong></li>
+      <li>Ne jamais forcer un setup qui ne se présente pas clairement</li>
+      <li>Marquer les zones en cherchant autant les achats que les ventes — cela élimine le biais mental</li>
+      <li>Ne pas stacker des trades contre-tendance</li>
+    </ul>
+
+    <h3>Principes Techniques Essentiels</h3>
+    <ul class="rules">
+      <li><strong>La Cause</strong> est le facteur le plus important — trouver ce qui a injecté le volume ("follow the money"). La zone d'ordres a-t-elle été efficacement mitigée ? A-t-elle laissé de l'imbalance ?</li>
+      <li>Plus l'inducement est respecté avant d'être sweepé, plus la liquidité collectée est grande, et plus le mouvement résultant sera fort et impulsif</li>
+      <li>Les zones à trader doivent avoir des ordres en attente à mitigater, avec de l'inducement au-dessus/en dessous (ou à créer)</li>
+      <li>Toujours commencer l'analyse sur le Daily — trouver l'intention du prix et la suivre</li>
+      <li>Marquer les niveaux S/R car le niveau sera liquidé pour atteindre l'orderblock au-dessus ou en dessous</li>
+      <li>Le prix a besoin d'une <strong>raison</strong> pour bouger vers certains niveaux : l'imbalance non comblée</li>
+      <li>Si on ne repère pas les acheteurs/vendeurs qui ont été sweepés avant d'entrer, on sera à leur place et on sera liquidé</li>
+      <li>Toujours attendre la réaction du timeframe correspondant à la zone (ne pas chercher un reversal 1m depuis une zone 4h)</li>
+      <li><strong>Manipulation = Grand mouvement.</strong> Toujours trader les niveaux de pure manipulation</li>
+    </ul>
+
+    <h3>Concepts & Découvertes</h3>
+    <ul class="rules">
+      <li>La supply/demand qui a pris la Phase 1 puis se fait casser confirme un shift de structure. Si elle est respectée → on trade une continuation</li>
+      <li>Un "slight mitigation" = prix sweep dans une range mais ne mitigue pas proprement l'OB. Peut y revenir en utilisant ce niveau comme inducement</li>
+      <li>Si une phase d'inducement est petite ou ne sweep qu'une petite range → une autre opportunité viendra car plus de manipulation est nécessaire pour alimenter un plus grand mouvement</li>
+      <li>Les news candles peuvent être des H/L ciblés car ils ne possèdent pas d'inducement propre</li>
+      <li>Les highs et lows faibles sont déterminés après qu'une jambe a été proprement mitigée — le TF 5-15m est le meilleur pour identifier une zone active</li>
+      <li>Un H/L est susceptible d'être ciblé quand il wick l'autre côté (sweep) plutôt qu'avoir une bougie qui close au-delà (BoS)</li>
+      <li>Raffiner les zones en excluant l'inducement qu'elles ont sweepé avant — tracer une ligne à travers l'OB depuis l'inducement sweepé</li>
+    </ul>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== SESSIONS ==================== -->
+  <section id="sessions">
+    <div class="section-badge">Fondements</div>
+    <h2 class="section-title">Sessions de Trading</h2>
+
+    <p>Le flux de liquidité suit toujours l'ordre <strong>Asia → Frankfurt → Londres → New York</strong>. Comprendre le rôle de chaque session dans le cycle de manipulation est essentiel pour anticiper les mouvements intraday.</p>
+
+    <div class="sessions">
+      <div class="session-item">
+        <span class="session-tag s-asia">Asia</span>
+        <div class="session-text">
+          <strong>Crée la range & la liquidité</strong>
+          <p>Son rôle est de construire de la liquidité (stops) au-dessus et en dessous de sa session. Marquer le bas, le haut et la midline. Toujours une inducement mineure. Si Asia prend une forme de liquidité de façon impulsive → on peut jouer une continuation. <strong>Amplitude ≥40 pips</strong> → crée généralement un OB de continuation pour London. <strong>Amplitude &lt;40 pips</strong> → signifie un liquidity build-up sur un côté (ou les deux) pour un sweep puis reversal. Asia peut soit servir de source de liquidité pour London/NY, soit sweeper et mitigater des ordres haut volume pour créer un OB de continuation.</p>
+        </div>
+      </div>
+      <div class="session-item">
+        <span class="session-tag s-ff">Frankfurt</span>
+        <div class="session-text">
+          <strong>Prépare Londres pour son mouvement principal</strong>
+          <p>Frankfurt prépare London soit en prenant le haut ou bas d'Asia pour créer une mitigation d'OB pour London, soit en créant plus de Phase 1 d'inducement pour London à prendre, soit en aidant le prix à se déplacer vers un OB valide déjà formé. Elle déclenche souvent les buy/sell stops d'Asia, puis reverse.</p>
+        </div>
+      </div>
+      <div class="session-item">
+        <span class="session-tag s-ldn">Londres</span>
+        <div class="session-text">
+          <strong>Session principale — attaque la liquidité Asia</strong>
+          <p>Spike de volatilité à l'ouverture. Attaque la liquidité créée pendant Asia. Souvent, London crée une mitigation de continuation après 1h30, mais peut aussi contribuer à un plus grand liquidity build-up pour New York. Les entrées qui induisent + mitigent peuvent être prises à l'ouverture (+30min). Après 2h d'ouverture → on voit souvent un changement de direction. <strong>London Close</strong> : mitigue le pic de NY open puis reversal pour continuation dans la direction NY.</p>
+        </div>
+      </div>
+      <div class="session-item">
+        <span class="session-tag s-ny">New York</span>
+        <div class="session-text">
+          <strong>Attaque la liquidité londonienne ou continue London</strong>
+          <p>Ouverture avec un shift volatile de momentum. <strong>NY Trap</strong> : démarre généralement 1h après l'ouverture et reverse. Après 1h30 (MMM) → on voit souvent une mitigation propre de l'OB "correct" et une liquidation du mouvement d'ouverture. Parfois NY open peut directement mitigater les ordres haut volume et continuer dans la bonne direction du jour. Pre-NY : souvent un mouvement impulsif qui contribue directement à la session NY.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box box-info">
+      <div class="box-title">Magic Minute Mitigations (MMM)</div>
+      <p>Les MMM sont des fenêtres temporelles haute probabilité qui mitigent les OBs de continuation actifs. Elles se produisent <strong>30min OU 1h30 après</strong> l'ouverture de London et New York (rarement à 3h30 à la place). Ces moments précis offrent les meilleures entrées de continuation.</p>
+    </div>
+
+    <h3>Niveaux d'Inducement par Timeframe</h3>
+    <div class="grid grid-3">
+      <div class="card"><span class="card-badge badge-purple">Mineur</span><h4>M1/M5</h4><p>Cassure d'un point structurel qui ne fait rien à gauche. <strong>Asia est toujours mineure.</strong></p></div>
+      <div class="card"><span class="card-badge badge-gold">Moyen</span><h4>M5/M15</h4><p>Cassure d'un point structurel qui fait quelque chose à gauche (impact structurel).</p></div>
+      <div class="card"><span class="card-badge badge-rose">Majeur</span><h4>M15/H1</h4><p>Cassure d'un point structurel fort — niveau d'inducement le plus significatif.</p></div>
+    </div>
+
+    <h3>7 Cas de Manipulation Asia</h3>
+    <div class="cycle-grid">
+      <div class="cycle-card"><div class="c-num">Cas 1</div><h4>Asian Whipsaw (AWS)</h4><p>London prend un côté d'Asia, NY prend l'autre côté puis reverse. Le cas le plus commun dans un contexte "Within a Range".</p></div>
+      <div class="cycle-card"><div class="c-num">Cas 2</div><h4>Asian High/Low</h4><p>London prend le haut ou le bas d'Asia comme inducement, puis NY continue dans cette direction.</p></div>
+      <div class="cycle-card"><div class="c-num">Cas 3</div><h4>Asian Continuation</h4><p>Asia impulse impulsive sur un côté, London/Frankfurt continuent dans la même direction en mitigeant l'OB créé.</p></div>
+      <div class="cycle-card"><div class="c-num">Cas 4</div><h4>Midline Mitigation</h4><p>London induit vers la midline d'Asia, puis NY continue dans la direction établie par London.</p></div>
+      <div class="cycle-card"><div class="c-num">Cas 5</div><h4>Impulsive Asian Range</h4><p>Range impulsive pendant Asia. La Phase 1 se trouve souvent à l'extrême de la range, prête à être sweepée à London Open.</p></div>
+      <div class="cycle-card"><div class="c-num">Cas 6</div><h4>Asia + London Phase 1 Build-Up</h4><p>Les deux sessions accumulent et construisent la Phase 1 inducement pour que New York la sweepée et parte dans la vraie direction.</p></div>
+      <div class="cycle-card"><div class="c-num">Cas 7</div><h4>Completely Range-bound</h4><p>Induit des highs et lows en continu sans vraie intention ni direction. Accumulation quotidienne pouvant être manipulée le/les jours suivants.</p></div>
+    </div>
+
+    <h3>Weekly Cycle</h3>
+    <ul class="rules">
+      <li><strong>Lundi (+ parfois Mardi) :</strong> Souvent le "faux mouvement" de la semaine pour continuer vers une zone HTF plus forte et devenir future liquidité en fin de semaine</li>
+      <li><strong>Mardi - Jeudi :</strong> Souvent le "vrai mouvement" de la semaine avec des continuations après un large grab de liquidité de manipulation</li>
+      <li><strong>Vendredi :</strong> Généralement une continuation à faible volatilité ou une accumulation de renversement à utiliser comme liquidité pour la semaine suivante. Parfois le Jeudi entame le renversement</li>
+    </ul>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== INDUCEMENT ==================== -->
+  <section id="inducement">
+    <div class="section-badge">Théorie Centrale</div>
+    <h2 class="section-title">L'Inducement — La Clé de Tout</h2>
+
+    <p>L'inducement est un <strong>piège de liquidité fractal</strong> qui prend place au-dessus ou en dessous d'orderblocks valides pour alimenter de grands mouvements. C'est le moteur fondamental de toute la stratégie.</p>
+
+    <div class="box box-warning">
+      <div class="box-title">Définition Essentielle</div>
+      <p>L'inducement crée des réactions similaires à la mitigation pour agir comme supply & demand. Il fait cela pour compiler plus d'ordres qui seront ensuite liquidés. <strong>L'inducement appartient aux zones</strong> — il leur est intrinsèquement lié.</p>
+    </div>
+
+    <h3>Fonctionnement</h3>
+    <ul class="rules">
+      <li>Les institutions créent des niveaux de supply/demand artificiels (inducement) pour attirer les traders dans de mauvaises positions</li>
+      <li>Une fois suffisamment d'ordres compilés au niveau d'inducement, les institutions sweepent ces positions pour prendre leur liquidité</li>
+      <li>Ce sweep alimente l'OB institutionnel sous-jacent qui possède les vrais ordres à haut volume</li>
+      <li>Quand le prix pousse dans l'imbalance après la jambe de faible mitigation qui crée le sweep Phase 1 → il prend l'inducement opposé de la prochaine zone adversaire</li>
+      <li>Si on crée de l'inducement de renversement (Phase 2) après ce sweep → cela confirme notre manipulation</li>
+    </ul>
+
+    <div class="phase-container">
+      <div class="phase phase-1">
+        <div class="phase-label">Phase 1</div>
+        <h4>Mitigation-Inducement</h4>
+        <p>Premier piège. Derniers acheteurs/vendeurs avant l'OB. Chaîne de supply/demand détachée de l'OB réel. Sweep de leurs stops = carburant pour le vrai mouvement.</p>
+      </div>
+      <div class="phase phase-2">
+        <div class="phase-label">Phase 2</div>
+        <h4>Validation</h4>
+        <p>Deuxième couche d'inducement. Valide que la manipulation a eu lieu. Donne le feu vert pour entrer en position dans la direction institutionnelle.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== PHASE 1 ==================== -->
+  <section id="phase1">
+    <div class="section-badge">Théorie Centrale</div>
+    <h2 class="section-title">Phase 1 — Mitigation-Inducement</h2>
+
+    <p>La Phase 1 est le <strong>premier stade des early sellers/buyers</strong> avant un orderblock 5m+. On mitigue cet inducement pour construire plus de liquidité qui sera ensuite sweepée. C'est le dernier niveau de prix avant l'imbalance d'un orderblock valide.</p>
+
+    <div class="box box-warning">
+      <div class="box-title">Définition Précise</div>
+      <p>La Phase 1 mitigue comme une chaîne de supply/demand <strong>détachée et courte</strong> d'un OB valide à haut volume — c'est pourquoi tous les types de traders peuvent se faire induire. Les early sellers ont leurs stop-losses sous la vraie zone et se font liquider quand la mitigation des ordres les liquide comme inducement de l'OB.</p>
+    </div>
+
+    <h3>Comment l'Identifier</h3>
+    <ul class="rules">
+      <li>Prix mitigé sous/au-dessus d'une imbalance sans utiliser la vraie zone raffinée → finit par se faire sweeper</li>
+      <li>Représente les early buyers/sellers dont les stops sont sous/au-dessus de la vraie zone (True Zone)</li>
+      <li>La Phase 1 ne doit pas forcément être le high/low d'une jambe — peut être sous/au-dessus d'un OB valide</li>
+      <li>Les previous daily/weekly H/L peuvent être de fortes Phase 1 structurelles</li>
+      <li>Les news candles peuvent être des H/L ciblés car ils n'ont pas d'inducement propre</li>
+      <li>Si une Phase 1 est peu propre ou ne sweep qu'une petite range → une autre opportunité viendra car plus de manipulation est nécessaire pour alimenter un plus grand mouvement</li>
+    </ul>
+
+    <h3>Règle de Décision Post-Phase 1</h3>
+    <div class="grid grid-2">
+      <div class="card">
+        <span class="card-badge badge-green">✓ Renversement</span>
+        <h4>La jambe est cassée</h4>
+        <p>Si la jambe qui a créé le sweep de la Phase 1 est <strong>cassée</strong> → Phase 1 confirmée → jouer la Phase 2 depuis la manipulation. On a un MSS pour aller vers la Phase 1 opposée comme cible.</p>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-teal">≡ Continuation</span>
+        <h4>La jambe est respectée</h4>
+        <p>Si la jambe qui a créé le sweep Phase 1 est <strong>respectée</strong> avec les 3 règles OB valides → jouer une continuation (IPB) vers la cible de Phase 1 opposée (mitigation-inducement).</p>
+      </div>
+    </div>
+
+    <h3>Prise de Profit</h3>
+    <ul class="rules">
+      <li>Achat : TP au sommet du niveau horizontal d'inducement-mitigation Phase 1</li>
+      <li>Vente : TP au bas du niveau horizontal d'inducement-mitigation Phase 1</li>
+      <li>Le premier TP est souvent la fin de la jambe "B" car elle n'a pas d'imbalance de zone claire</li>
+    </ul>
+
+    <h3>Nature Fractale</h3>
+    <div class="box box-key">
+      <div class="box-title">Timeframes</div>
+      <p>La 2-Phase se joue sur chaque timeframe jusqu'à l'entrée 1m. Si on voit les deux phases se jouer sur H1, H4 ou Daily → attendre une mitigation vers le TF &gt;15m pour trader. Fractal : <strong>Daily→4h → 4h→1h → 1h→15m/5m → 15m/5m→1m → 1m→15s/5s</strong></p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== PHASE 2 ==================== -->
+  <section id="phase2">
+    <div class="section-badge">Théorie Centrale</div>
+    <h2 class="section-title">Phase 2 — Les 4 Types</h2>
+
+    <p>La Phase 2 est une <strong>deuxième couche d'inducement</strong> pour valider la mitigation de l'OB original. Elle se forme avant ou après le tap-in. Si elle se forme avant → entrer agressivement dès la mitigation. Si elle se forme après → attendre une nouvelle zone 1m créée et sweepée.</p>
+
+    <div class="grid grid-2" style="margin-top:20px;">
+      <div class="card">
+        <span class="card-badge badge-purple">Type 1 — Le plus Passif</span>
+        <h4>ChoCh Inducement</h4>
+        <p>Après sweep Phase 1 + tap OB : le prix brise ou mitigue le Vector Level, créant un Change of Character (ChoCh). Ce ChoCh forme un nouvel OB 1m avec de l'inducement en dessous (si achat)/dessus (si vente). On entre <strong>uniquement quand cet inducement est sweepé</strong>. Entrée : 5-15s supply/demand fail ou limit sur la mitigation. Une entrée de jambe corrective est aussi possible après le LPOD/S.</p>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-gold">Type 2 — Semi-Agressif</span>
+        <h4>Resting Liquidity / Smart Money Trap</h4>
+        <p>Pool d'ordres sous/au-dessus de l'OB sans inducement propre. Le prix les run (piège les traders SMC) puis continue vers la vraie zone. L'accumulation de petite range après la réaction à cette liquidité constitue notre Phase 2. <strong>Si grande accumulation avant la vraie zone</strong> → parfois aucune confirmation post-tap. Le SMT est une mitigation faible. Entrée : 5s demand/supply fail ou limit depuis la dernière mitigation 1m.</p>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-teal">Type 3 — Agressif</span>
+        <h4>Two Phase 1's / One Long Phase 1</h4>
+        <p>Avant d'atteindre la zone raffinée : deux mitigation-inducements OU une longue chaîne de mitigation avec imbalance se forment. Beaucoup d'ordres compilés → tap-in très impulsif, minimal à nul post-confirmation. <strong>Meilleur à London/NY open ou news</strong> en fort mouvement pro-trend. Limits sur la zone raffinée sont une bonne stratégie. Souvent vu lors d'une forte run directionnelle.</p>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-rose">Type 4 — Agressif</span>
+        <h4>Second Miss of the Refinement</h4>
+        <p>Après Phase 1, le prix rate à nouveau la zone raffinée, impulse et casse la structure interne. Ce second raté est sweepé comme deuxième inducement, puis rallye depuis la vraie zone. Plus le break de structure du second miss est impulsif → moins de confirmation nécessaire post-tap. Parfois une seule opportunité d'entrée si assez d'inducement a été pris.</p>
+      </div>
+    </div>
+
+    <h3>Facteurs d'Entrée 1m Post Phase 1</h3>
+    <ul class="rules">
+      <li>Plus de liquidité chassée = mouvement plus impulsif → moins de confirmation nécessaire</li>
+      <li>Une jambe corrective ne donnera pas beaucoup de confirmation après avoir tapé sa zone</li>
+      <li>Les types de Phase 2 évoluent selon leurs mitigations dans les timeframes inférieurs</li>
+      <li><strong>Second Miss + Two Phase 1's</strong> sont les seuls types où jouer un limit order qui ne part pas d'une zone 1m</li>
+      <li>Si la Phase 2 a suffisamment drainé la liquidité → parfois aucune confirmation post-tap nécessaire</li>
+    </ul>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== ORDERBLOCKS ==================== -->
+  <section id="orderblocks">
+    <div class="section-badge">Théorie Centrale</div>
+    <h2 class="section-title">Orderblocks Valides</h2>
+
+    <p>Un orderblock n'est pas simplement une zone supply/demand. C'est une <strong>zone de réaction tradable à haut volume d'argent</strong>, après avoir sweepé de la liquidité mitigée (Phase 1).</p>
+
+    <h3>Les 3 Règles de Validité (toutes obligatoires)</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>Imbalance (Inefficacité)</strong>
+          <span>Crée une inefficacité dans le marché due à sa nature impulsive — visible sur le TF 1m. Le prix part si vite qu'il laisse un gap d'ordres non exécutés (FVG). Sans imbalance, pas d'OB valide.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>Impulsivité (Cause dans le marché)</strong>
+          <span>L'OB doit créer ou mitigater efficacement un flux d'ordres à haut volume — il doit avoir une cause. Le candle IFC qui pousse le prix est le signe visible de cette force institutionnelle. Un OB sans cause n'a pas de raison de tenir.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>Inducement (Phase 1 au-dessus/en dessous)</strong>
+          <span>Au-dessus (si vente) ou en dessous (si achat) de l'OB doit exister une Phase 1 de mitigation-inducement dans le TF de référence. On peut avoir la Phase 2 avant la mitigation, ou la créer après avoir tapé dans l'OB.</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>Les 5 Types d'Orderblocks</h3>
+    <div class="grid grid-2">
+      <div class="card">
+        <span class="card-badge badge-green">Type 1</span>
+        <h4>Engulfed Orderblock</h4>
+        <p>Bougie buy/sell avant un gros drop/montée avec un inducement clair au-dessus/en dessous. <strong>Le plus propre</strong> — les institutions cherchent toujours à transférer l'argent et effacer l'imbalance laissée derrière.</p>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-teal">Type 2</span>
+        <h4>Imbalance Orderblock</h4>
+        <p>Gros V-SR sans zone claire mais avec imbalance. Zone valide = après sweep du top/bottom Phase 1 et sweep de la dernière bougie pour mitigater le V-SR. L'inducement ne doit pas être proche de l'extrême. On peut souvent trouver une zone LTF dans l'imbalance.</p>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-purple">Type 3</span>
+        <h4>Wick / Hammer Orderblock</h4>
+        <p>Si 50% d'une wick d'une IFC est non-mitigée, elle peut servir d'OB surtout si plus de liquidité doit être prise. <strong>Haute probabilité</strong> — montre que les institutions transportent l'argent en frappant la zone puis partent rapidement dans l'autre direction.</p>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-gold">Type 4</span>
+        <h4>Complex (SMT) Orderblock</h4>
+        <p>OB propre au-dessus/en dessous d'un V-SR (créant de l'imbalance) mais <strong>sans inducement</strong>. Le prix run ce bloc puis repart — Smart Money Trap. Marquer avec un carré pour signifier l'absence d'inducement.</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:0">
+      <span class="card-badge badge-rose">Type 5</span>
+      <h4>Phase 1 Inducement Reaction-Sweep</h4>
+      <p>Parfois le prix reverse juste après avoir sweepé la mitigation-inducement Phase 1 dans une grande range avec imbalance. Pour les institutions, le job est "fait" — la chaîne de liquidité buy/sell est prise. On peut parfois trouver un OB LTF après le sweep, sinon réaction à l'imbalance si pas de zone propre. <strong>Illustre l'idée centrale du inducement-liquidity trap trading.</strong></p>
+    </div>
+
+    <h3>Conseils Pratiques</h3>
+    <ul class="rules">
+      <li>Les OBs qui sweepent de la liquidité sont souvent à plus haute probabilité (ou qui mitigent quelque chose qui a sweepé)</li>
+      <li>Raffiner jusqu'au 1m en superposant les boîtes supply/demand. Ne pas sur-raffiner</li>
+      <li>Si le prix entre légèrement dans votre OB lors du raffinement → c'est une mitigation ratée → sera sweepé</li>
+      <li>Hiérarchie de raffinement : Daily→4h, 4h→15m, 15m→5m/1m, 5m→1m, 1m→15s/5s</li>
+    </ul>
+
+    <h3>Identifier les OBs Non-Évidents via les Range Boxes</h3>
+    <div class="box box-key">
+      <div class="box-title">Technique Range Box</div>
+      <p>Utiliser des boîtes pour englober les ranges avant un setup d'OB et analyser ce qu'elles font. Regarder à gauche pour voir avec quoi le prix va interférer et pourquoi. Les range boxes aident à interconnecter le flux d'ordres via la mitigation et à identifier la manipulation IFC (sweeps). Permet de comprendre où l'injection de volume a été mitigée et où elle induit.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== VECTOR LEVEL ==================== -->
+  <section id="vector">
+    <div class="section-badge">Théorie Centrale</div>
+    <h2 class="section-title">Le Vector Level</h2>
+
+    <p>Le Vector Level est la clé pour confirmer un renversement. C'est une <strong>zone valide créée avant la poussée vers l'OB d'intérêt</strong>, responsable du sweep de la Phase 1.</p>
+
+    <div class="box box-key">
+      <div class="box-title">Définition</div>
+      <p>Le Vector Level est un OB valide (qui suit les 3 règles, surtout l'imbalance) qui est responsable du sweep de la Phase 1, mais <strong>échoue à créer un nouveau bas</strong> (si achat) ou un <strong>nouveau haut</strong> (si vente). On DOIT y réagir d'une façon ou d'une autre pour confirmer objectivement le renversement.</p>
+    </div>
+
+    <h3>Comportement Post Vector Level</h3>
+    <ul class="rules">
+      <li>Souvent une petite mitigation se forme après ce niveau. On doit sweeper cette petite cycle de mitigation (souvent dans l'imbalance du Vector Level) pour transférer les ordres de notre niveau vers le prix actuel</li>
+      <li>On peut soit <strong>mitigater</strong> le Vector Level vers le bas (achat) / vers le haut (vente) → puis créer de l'inducement de renversement</li>
+      <li>Ou on peut <strong>casser directement</strong> le Vector Level → puis créer de l'inducement de renversement</li>
+      <li>Dans les deux cas, si inducement de renversement créé → le MSS est valide</li>
+    </ul>
+
+    <h3>Les Vecteurs (IFC — Institutionally Funded Candles)</h3>
+    <p>Les <strong>Vectors</strong> sont de grandes bougies impulsives créées pour pousser le prix vers son objectif ciblé. Elles utilisent le price action structurel faible pour manipuler les early traders (Phase 1) avant de taper dans la vraie zone. Ces bougies créent de l'espace pour que la force de renversement pousse à travers en se servant de la structure de prix faible.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== MSS ==================== -->
+  <section id="mss">
+    <div class="section-badge">Théorie Centrale</div>
+    <h2 class="section-title">Market Structure Shift (MSS)</h2>
+
+    <p>Le MSS est un <strong>changement confirmé de direction du marché</strong> vers la prochaine zone de renversement. Pour confirmer un renversement, on a besoin de deux éléments : 2-Phase Inducement + Market Structure Shift.</p>
+
+    <h3>Conditions pour un MSS Valide</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Condition</th><th>VALIDE ✓</th><th>INVALIDE ✗</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Vector Level</strong></td><td class="ok">Atteint ET mitigé ou cassé</td><td class="no">Non atteint ou simplement respecté</td></tr>
+          <tr><td><strong>Inducement créé</strong></td><td class="ok">Phase 2 ChoCh formée après</td><td class="no">Pas d'inducement de renversement</td></tr>
+          <tr><td><strong>Ce qui est sweepé</strong></td><td class="ok">Une Phase 1 légitime</td><td class="no">Seulement un IPB (pullback) level</td></tr>
+          <tr><td><strong>Volume de la zone</strong></td><td class="ok">Moyen/fort volume d'ordres</td><td class="no">Zone de pullback faible</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>ChoCh vs BoS</h3>
+    <div class="grid grid-2">
+      <div class="card">
+        <span class="card-badge badge-purple">ChoCh</span>
+        <h4>Change of Character</h4>
+        <p>Sweep de liquidité <strong>PUIS</strong> cassure de structure. Signal d'un potentiel renversement. Ex : prix sweep un low puis casse un high → ChoCh haussier potentiel.</p>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-teal">BoS</span>
+        <h4>Break of Structure</h4>
+        <p>Cassure de structure (échec de supply/demand créant une cassure de jambe). Confirme la continuation. Dans le contexte IPB, le BoS a la même fonction que le niveau IPB.</p>
+      </div>
+    </div>
+
+    <div class="box box-warning">
+      <div class="box-title">Astuce ChoCh</div>
+      <p>La première partie d'un ChoCh est souvent formée à partir d'une Phase 1 qui se fait sweeper, créant un léger pullback, puis la Phase 1 se fait casser à nouveau pour atteindre le raffinement (true zone).</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== REVERSAL VS IPB ==================== -->
+  <section id="ipb">
+    <div class="section-badge">Théorie Centrale</div>
+    <h2 class="section-title">Phase 1 Reversal vs Inducement Pullback (IPB)</h2>
+
+    <p>C'est la <strong>distinction la plus importante</strong> de la stratégie — savoir si on est face à un renversement majeur ou une simple continuation.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Critère</th><th>Phase 1 Reversal</th><th>Inducement Pullback (IPB)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Structure cassée ?</strong></td><td class="ok">La jambe qui a sweepé la Phase 1 est cassée</td><td class="no">La jambe n'est pas cassée</td></tr>
+          <tr><td><strong>Volume de la zone</strong></td><td>Zone à moyen/fort volume d'ordres</td><td>Zone à faible/moyen volume</td></tr>
+          <tr><td><strong>MSS confirmé ?</strong></td><td class="ok">Oui — MSS valide</td><td class="no">Non — pas de MSS</td></tr>
+          <tr><td><strong>Phase 2 requise ?</strong></td><td class="ok">Obligatoire</td><td>Sweeps simples suffisent (sauf HTF 1h+)</td></tr>
+          <tr><td><strong>Amplitude du mouvement</strong></td><td>Grand mouvement</td><td>Mouvement plus petit</td></tr>
+          <tr><td><strong>Entrée depuis</strong></td><td>Zone de manipulation (au-dessus/dessous du sweep Phase 1)</td><td>Zone qui a créé le sweep du niveau IPB</td></tr>
+          <tr><td><strong>TP principal</strong></td><td>Phase 1 opposée mitigée</td><td>Prochaine zone imbalance (fin Phase 1 opposée)</td></tr>
+          <tr><td><strong>Jambe "B"</strong></td><td>Price action correctif pour être liquidé facilement</td><td>Crée de la manipulation structurelle (petits sweeps)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Valider une Phase 1 Reversal</h3>
+    <ul class="rules">
+      <li>Casser la supply/demand de la jambe qui a créé le sweep Phase 1 (pour jouer Phase 2 depuis manipulation)</li>
+      <li>Le prix doit réagir à une zone de moyen/fort volume (pas seulement un pullback faible)</li>
+      <li>Le prix doit entrer dans un OB 3-règles depuis la manipulation pour reverser après le sweep Phase 1</li>
+      <li>La jambe "B" doit utiliser un price action correctif pour pouvoir être liquidée sans grand pullback depuis une zone non-mitigée ouverte</li>
+      <li>Souvent, le premier TP est la fin de la jambe B car elle n'a pas d'imbalance de zone claire</li>
+    </ul>
+
+    <h3>Valider un IPB Continuation</h3>
+    <ul class="rules">
+      <li>Créer un OB valide avec une petite inducement en dessous (achat) / au-dessus (vente) de la ligne IPB. On échouera à casser cette zone et l'utiliser pour la continuation pro-trend après le pullback</li>
+      <li>La réaction vient d'une zone plus faible qui ne peut pas créer de renversement (faible/moyen volume)</li>
+      <li>Avant le sweep IPB : jambe "B" crée de la manipulation structurelle (petits sweeps) tandis que jambe "C" devient un piège à renversement</li>
+      <li>TP souvent jusqu'à la prochaine zone d'imbalance (fin de la Phase 1 opposée)</li>
+      <li>L'IPB peut aussi être vu comme un BoS car ils ont la même fonction</li>
+    </ul>
+
+    <div class="box box-success">
+      <div class="box-title">Règle Fondamentale</div>
+      <p>On doit avoir un renversement 2-Phase <strong>AVANT</strong> de pouvoir trader des IPBs. Ensuite on peut trader des sweeps simples jusqu'à la prochaine zone de renversement opposée, en restant dans les 50% de la jambe (premium/discount).</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== DAILY CYCLE ==================== -->
+  <section id="daily-cycle">
+    <div class="section-badge">Application</div>
+    <h2 class="section-title">Le Daily Cycle</h2>
+
+    <p>Le Daily Cycle permet de comprendre l'intention du market maker pour la journée. L'algorithme a un objectif HTF prédéterminé — notre travail est d'assembler le puzzle en utilisant la momentum actuelle et les facteurs intraday.</p>
+
+    <div class="box box-key">
+      <div class="box-title">Processus</div>
+      <p>1. Déterminer la momentum actuelle en analysant depuis où le prix réagit sur un TF supérieur (ex: dans une Phase 1 HTF ou allant vers un OB H1 adversaire). 2. Matcher le variant Daily Cycle avec le PA d'aujourd'hui. 3. Utiliser la théorie 2-Phase pour chaque trade de renversement avant les continuations.</p>
+    </div>
+
+    <h3>Les 4 Variants Principaux</h3>
+    <div class="cycle-grid">
+      <div class="cycle-card">
+        <div class="c-num">Variant 1 — Forte directionnelle</div>
+        <h4>Down/Uptrend Run Continuation</h4>
+        <p>Forte momentum. La zone HTF à haut volume reste respectée. Peu de chance de renversement dans la journée. NY donne souvent le plus grand mouvement si Asia et London contribuent à la Phase 1 sans mitigater la zone. Seulement des zones de pullback faibles à gauche. <strong>Contre-tendance : très rarement tradable.</strong></p>
+      </div>
+      <div class="cycle-card">
+        <div class="c-num">Variant 2 — Momentum moyen</div>
+        <h4>Slight Down/Uptrend Continuation</h4>
+        <p>Momentum directionnelle avec supply/demand opposée significative. Le manque de momentum peut signaler un build-up pour un renversement si l'OB principal est cassé. NY est souvent le plus grand mouvement car il faut plus de liquidité pour soutenir la direction. <strong>Contre-tendance : tradable (les deux sens).</strong></p>
+      </div>
+      <div class="cycle-card">
+        <div class="c-num">Variant 3 — Pas de biais</div>
+        <h4>Within a Range</h4>
+        <p>Supply et demand internalisées dans une range. On trade dans les extrêmes. Asian Whipsaw très commun. NY casse souvent bas/haut selon HTF. Prix sans biais haussier/baissier clair → accumulation quotidienne parfois manipulée le lendemain. <strong>Contra-tendance : tradable (pas de biais).</strong></p>
+      </div>
+      <div class="cycle-card">
+        <div class="c-num">Variant 4 — Forte momentum de renversement</div>
+        <h4>Trend-Reversal Top/Bottom</h4>
+        <p>Fort changement de direction après une réaction HTF (V-SR créant un MSS + sweep liquidité HTF). On trade la continuation depuis l'origine du mouvement (après la V-SR qui a créé le premier mouvement impulsif). <strong>Contre-tendance : NON.</strong></p>
+      </div>
+    </div>
+
+    <h3>Comportement Asia selon le Variant</h3>
+    <ul class="rules">
+      <li>Si Asia ne mitigue pas les ordres pro-trend → consolide et crée plus de Phase 1 pour NY/London</li>
+      <li>Si Asia impulse et mitigue des ordres haut volume → crée un OB tradable pour London ou New York</li>
+      <li>Si Asia commence haut (si achat) ou bas (si vente) sur la jambe d'hier → Asia et London peuvent contribuer à créer plus de Phase 1</li>
+      <li>Pour le variant Range : Asia crée souvent son haut et bas au centre de la jambe en range, consolide</li>
+    </ul>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== AMD ==================== -->
+  <section id="amd">
+    <div class="section-badge">Application</div>
+    <h2 class="section-title">AMD — Power of 3</h2>
+
+    <p>Le Power of 3 (Accumulation, Manipulation, Distribution) s'intègre naturellement à la théorie 2-Phase : <strong>Phase 1 = Accumulation</strong> (confirme l'OB) | <strong>Phase 2 = Mitigation de la Manipulation</strong> (Distribution/Expansion).</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num" style="background:rgba(74,222,128,0.15);border-color:rgba(74,222,128,0.3);color:var(--green)">A</div>
+        <div class="step-content">
+          <strong>Accumulation Phase</strong>
+          <span>Le prix est piégé dans une range retail créant de la liquidité buy-side et sell-side. Cette phase fractale se produit au-dessus (si achat) et en dessous (si vente) d'un OB 3-règles valide. La Phase 1 est le bas de cette box (si achat) ou le haut (si vente) — c'est le dernier point de mitigation-inducement sweepé avant de taper l'OB. Les stop-losses des early sellers seront sous la true zone et se feront liquider comme inducement de l'OB.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:rgba(251,146,60,0.15);border-color:rgba(251,146,60,0.3);color:var(--orange)">M</div>
+        <div class="step-content">
+          <strong>Manipulation Phase</strong>
+          <span>Le sweep de la liquidité accumulée (Phase 1) dans l'OB valide. Prix entre et sort rapidement pour prendre les ordres puis reverse. La manipulation est confirmée si on casse le niveau qui avait sweepé la Phase 1 → création du MSS. C'est depuis cette manipulation qu'on cherche la Phase 2 (sauf Second Miss et Two Phase 1's). Entre la mitigation et le tap, on peut trouver l'entrée Phase 2 — sa volatilité dépendra du type de Phase 2.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:rgba(108,99,255,0.15);border-color:rgba(108,99,255,0.3);color:var(--accent2)">D</div>
+        <div class="step-content">
+          <strong>Distribution / Expansion Phase</strong>
+          <span>La continuation après la manipulation. Pour les achats : expansion haussière depuis le mouvement de manipulation, suivie d'une distribution. Pour les ventes : la distribution démarre quand le prix mitigue avec succès la phase de manipulation. On prend des trades de continuation vers le prochain OB actif dans le premium/discount. On peut prendre des continuations après l'origine du mouvement (V-SR), mais pas forcément un renversement complet.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== 8-STEP MARKUP ==================== -->
+  <section id="markup">
+    <div class="section-badge">Application</div>
+    <h2 class="section-title">8-Step Daily Markup Process</h2>
+
+    <p>Processus complet à exécuter chaque jour avant de trader : <strong>Build-up → Inducement → Manipulation → Mitigation</strong></p>
+
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Biais Directionnel (Daily/4h)</strong><span>Utiliser le Daily ou 4h pour établir le biais et comprendre où le prix est ciblé. Comprendre l'influence globale sur le PA d'aujourd'hui. C'est la fondation de tout le markup.</span></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Zones à Haut Volume Non-Mitigées</strong><span>Trouver les zones non-mitigées que le PA actuel va rencontrer. Si mitigées → connecter le flux d'ordres à haut volume à la dernière zone active ouverte. Ces OBs doivent suivre le système 3-règles et être sur TF 5m+.</span></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-content"><strong>Marquer les Inducements</strong><span>Dessiner tous les niveaux d'inducement indéterminés au-dessus/en dessous des zones intraday (5m-1h, raffinable au 1m imbalance). Les labelliser comme "x" (indéterminés). On aura soit un IPB, soit une Phase 1. La 2-Phase Theory peut aussi être jouée en TF inférieur pour les entrées IPB.</span></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-content"><strong>Daily Cycle & Direction</strong><span>Utiliser la méthode de direction entrante (Daily Cycle) pour exploiter la momentum actuelle du prix. Cela ajuste notre respect pour les achats et ventes en faveur de la direction institutionnelle.</span></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-content"><strong>Confluences Clés</strong><span>Premium/discount 50% pour l'équilibre. Targeted/retail liquidity. Protected & targeted H/L. Price targets (points de renversement Phase 1). Asia Manipulation setups pour validation des zones. Time &amp; Price. Appliquer les autres mouvements/concepts clés pertinents.</span></div></div>
+      <div class="step"><div class="step-num">6</div><div class="step-content"><strong>Identifier le Type de Mouvement</strong><span>Si la jambe créant le sweep du niveau d'inducement est cassée → Phase 1 confirmée → Phase 2 depuis la manipulation (MSS vers la Phase 1 opposée comme cible). Si la jambe est respectée avec les 3 règles → continuation IPB vers la cible Phase 1 mitigation-inducement opposée — aller jusqu'à créer une zone 1m pour entrer.</span></div></div>
+      <div class="step"><div class="step-num">7</div><div class="step-content"><strong>Targets & Ping-Pong</strong><span>Des targets plus petites permettent plus de mouvement pour trader buys et sells dans une plus grande jambe (Ping-Pong), en suivant les règles. Avant chaque trade, jouer le 2-Phase Theorem, même depuis un IPB.</span></div></div>
+      <div class="step"><div class="step-num">8</div><div class="step-content"><strong>Gestion des Risques</strong><span>Partiels sur trades incertains ou à risque plus élevé. SL à break-even si on crée une sweeping mitigation après l'entrée de manipulation. Voir le marché comme 2 choses uniquement : continuation ou renversement. Toujours trader les niveaux de pure manipulation. Manipulation = grand mouvement.</span></div></div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== ENTRY PROCESS ==================== -->
+  <section id="entries">
+    <div class="section-badge">Application</div>
+    <h2 class="section-title">Processus d'Entrée Complet</h2>
+
+    <h3>Trader un Renversement (2-Phase)</h3>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-content"><strong>Markup Process + Biais HTF</strong><span>Exécuter les 8 étapes, établir l'objectif global et la direction institutionnelle.</span></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-content"><strong>Dessiner les zones 5/15m+</strong><span>Connecter le flux d'ordres à haut volume. Marquer les niveaux d'inducement comme "x" (indéterminés). Si zone 15m+ → attendre plus de cycles sweep+mitigation pour avoir une zone &lt;15m.</span></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-content"><strong>Vérifier le Volume de l'OB</strong><span>S'assurer que l'OB portera assez d'ordres pour atteindre les targets. Zones à haut volume uniquement pour les reversals. Voir le build-up avant les vector candles qui pushent la Phase 1.</span></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-content"><strong>Confluences Importantes</strong><span>Premium/discount 50% de la jambe 15m+. Protected &amp; Targeted H/L. Time &amp; Price. Mitigation (suivre où le prix emmène les ordres). Corrective Legs &amp; LPOD/S. Smart Money Traps + Invalid ChoChs.</span></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-content"><strong>Confirmation Post-Tap (1m)</strong><span>DOIT avoir un MSS pour confirmer le renversement après mitigation OB 5/15m. Vector candles créent le Vector Level avec imbalance → DOIT être atteint et mitigé (ou cassé) + créer l'inducement de renversement. Phase 2 confirme le tout.</span></div></div>
+      <div class="step"><div class="step-num">6</div><div class="step-content"><strong>SL Placement</strong><span>SL le plus sûr à la fin des sweeps de manipulation confirmés. Le déplacer pour sécuriser les profits avec les continuations IPB, tant qu'on mitigue efficacement les ordres haut volume. SL après 1m BoS post-entrée pour les reversals.</span></div></div>
+    </div>
+
+    <h3>Trader une Continuation (IPB)</h3>
+    <ul class="rules">
+      <li>Après un renversement 2-Phase confirmé → trader des IPBs jusqu'à la zone de renversement opposée</li>
+      <li>Seulement si les ordres haut volume du reversal sont mitigés efficacement, ou si le prix réagit d'une zone faible et crée de l'inducement pour une nouvelle zone de continuation</li>
+      <li>Sweeps simples pour IPBs (pas besoin de 2 phases sauf HTF 1h+, où des confirmations LTF se présenteront)</li>
+      <li>Ne pas dépasser le 50% de la jambe HTF (premium/discount)</li>
+      <li>Si zone IPB 5m+ → utiliser un reversal 2-Phase 1m dans cette range. Si &lt;5m → limit trade direct depuis la zone</li>
+      <li>SL après 1m BoS post-entrée pour les continuations</li>
+    </ul>
+
+    <h3>Targets</h3>
+    <ul class="rules">
+      <li>Renversements : TP au niveau Phase 1 opposé mitigé (grand mouvement attendu)</li>
+      <li>Continuations IPB : TP jusqu'à la prochaine zone d'imbalance / fin de Phase 1 opposée</li>
+      <li>Partiels sur les zones incertaines ou à risque plus élevé</li>
+      <li>SL à break-even si sweeping mitigation créée après l'entrée de manipulation</li>
+    </ul>
+
+    <h3>Pro-Trend vs Counter-Trend Entry</h3>
+    <div class="grid grid-2">
+      <div class="card">
+        <span class="card-badge badge-green">Pro-Trend</span>
+        <h4>Momentum de notre côté</h4>
+        <p>Zone formée depuis la mitigation d'un flux d'ordres pro-trend (fort BoS ou sweeping IFC). Zone avec Phase 1 au-dessus/en dessous. Respect visible depuis la zone. Tap → Phase 2 ChoCh ou FR interne. SL après 1m BoS.</p>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-rose">Counter-Trend</span>
+        <h4>Momentum contre nous</h4>
+        <p>Requiert un spike d'intention haussier/baissier (pullback IFC haute momentum ou respect counter qui casse structure interne depuis une zone HTF). Attendre le respect (mitigation) et créer une zone FR. Phase 1 au-dessus/en dessous. Targets plus prudentes. Ne pas cibler la fin d'une jambe contre le flux.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== V-SR ==================== -->
+  <section id="vsr">
+    <div class="section-badge">Concepts Clés</div>
+    <h2 class="section-title">V-SR (V-Shaped Recovery)</h2>
+
+    <p>Un V-SR est une <strong>récupération en forme de V</strong> — le prix entre et sort très rapidement d'un certain point du marché. Sur un TF supérieur, il ressemble à une bougie normale.</p>
+
+    <div class="box box-info">
+      <div class="box-title">Définition</div>
+      <p>Souvent dû aux institutions qui sweepent puis mitigent rapidement une zone d'ordres à haut volume. Labellisés comme IFC (Institutionally Funded Candles) — créés pour prendre l'inducement (early sellers/buyers). Souvent vus au début des renversements, ou pour mitigater/sweeper rapidement une zone en haute volatilité.</p>
+    </div>
+
+    <h3>Comment l'Utiliser</h3>
+    <ul class="rules">
+      <li>Comprendre ce que les institutions essaient de faire avec ce mouvement rapide</li>
+      <li>Si créé comme signe de force (haute intention) pour acheteurs ou vendeurs → le trader comme un imbalance orderblock</li>
+      <li>Attendre la création d'inducement au-dessus/en dessous, puis jouer le respect si une zone se crée</li>
+      <li>Les V-SR sont souvent la base des setups Trend-Reversal Bottom/Top dans le Daily Cycle</li>
+      <li>Un V-SR est le "first impulsive move" qui crée la base pour les continuation trades</li>
+    </ul>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== EVIL CANDLE ==================== -->
+  <section id="evil">
+    <div class="section-badge">Concepts Clés</div>
+    <h2 class="section-title">Evil Candle</h2>
+
+    <p>L'Evil Candle est la <strong>première bougie qui rate les zones d'ordres à haut volume</strong> puis mitigue, créant ainsi une chaîne de liquidité artificielle. C'est une autre façon de définir le top/bottom de la Phase 1 Inducement. On les marque avec un cercle.</p>
+
+    <div class="box box-danger">
+      <div class="box-title">Ne pas trader ce niveau !</div>
+      <p>La dernière zone proprement mitigée doit être marquée comme active et valide, mais la bougie extrême qui a créé la mitigation-inducement juste en deçà de la vraie zone est l'Evil Candle. <strong>Attendre que le prix la casse</strong>, puis chercher la Phase 2 pour créer un trade.</p>
+    </div>
+
+    <h3>Comment les Trouver</h3>
+    <ul class="rules">
+      <li>Utiliser l'imbalance : trouver une range HTF qui se fait casser puis rallye, laissant de l'imbalance derrière elle</li>
+      <li>La dernière bougie avant l'imbalance qui a "essayé" de mitigater la vraie zone = Evil Candle</li>
+      <li>Marquer la liquidité mitigée que l'Evil Candle a créée → ne pas la trader</li>
+      <li>Attendre qu'elle soit sweepée → c'est votre Phase 1 Inducement</li>
+      <li>Repérer ces bougies assure de ne pas se faire liquider en tradant depuis un niveau d'inducement</li>
+    </ul>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== PREMIUM/DISCOUNT ==================== -->
+  <section id="premium">
+    <div class="section-badge">Concepts Clés</div>
+    <h2 class="section-title">Premium & Discount</h2>
+
+    <p>Le premium et discount est un <strong>principe d'équilibre du marché</strong>. La pricing du marché se rééquilibre (rebalance) avant de créer sa continuation. Concept fractal applicable à tous les timeframes.</p>
+
+    <div class="phase-container">
+      <div class="phase" style="background:rgba(251,113,133,0.07);border-color:rgba(251,113,133,0.2);">
+        <div class="phase-label" style="color:var(--rose)">Au-dessus du 50%</div>
+        <h4 style="color:#fb7185">Zone Premium</h4>
+        <p style="color:#c05060">Acheter dans le premium = payer "trop cher". Zone idéale pour chercher des <strong>ventes</strong>. Les acheteurs en zone premium seront liquidés.</p>
+      </div>
+      <div class="phase phase-2">
+        <div class="phase-label">En dessous du 50%</div>
+        <h4>Zone Discount</h4>
+        <p>Acheter dans le discount = "prix soldé". Zone idéale pour chercher des <strong>achats</strong>. Le marché s'est rééquilibré → achats valides.</p>
+      </div>
+    </div>
+
+    <h3>Comment l'Utiliser</h3>
+    <ul class="rules">
+      <li>Marquer l'équilibre (midpoint 50%) d'une grande jambe de prix</li>
+      <li>Ne <strong>pas</strong> prendre de continuations pro-trend une fois le 50% de la jambe HTF dépassé</li>
+      <li>Attendre que le prix entre du bon côté avant de chercher des setups — s'asseoir sur les mains sinon</li>
+      <li>Combiner avec les OBs : chercher les OBs valides dans le discount si acheteur, dans le premium si vendeur</li>
+      <li>C'est une confluence, pas une zone de trade en elle-même — besoin d'un OB valide + 2-Phase</li>
+    </ul>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== CORRECTIVE LEG ==================== -->
+  <section id="corrective">
+    <div class="section-badge">Concepts Clés</div>
+    <h2 class="section-title">Corrective Leg (Jambe Corrective)</h2>
+
+    <p>Une jambe corrective est quand le prix fait <strong>un dernier mouvement avant un rallye</strong> en mitigeant le Last Point of Demand/Supply (LPOD/S). C'est le trade le plus sûr et le dernier disponible dans une jambe.</p>
+
+    <div class="box box-success">
+      <div class="box-title">Pourquoi c'est le trade le plus sûr</div>
+      <p>Si le prix a tout mitigé jusqu'au LPOD/S → il va run toute cette mitigation. C'est la Phase 1 inducement. La jambe corrective est le dernier pullback avant que toute la mitigation-inducement soit prise. Après ça, plus aucune zone ne peut arrêter le prix.</p>
+    </div>
+
+    <h3>LPOD/S (Last Point of Demand/Supply)</h3>
+    <p>Le LPOD/S est la <strong>dernière zone ouverte</strong> depuis laquelle le prix peut réagir dans une jambe de n'importe quel TF. Si elle échoue à devenir une continuation et à créer de nouveaux H/L → elle rend l'extrême de la jambe un targeted low/high.</p>
+
+    <h3>Aspect Technique Spécial</h3>
+    <ul class="rules">
+      <li>Dans une jambe corrective, on a seulement besoin d'un <strong>échec 15s/5s après une seule Phase 1</strong> inducement</li>
+      <li><strong>Pas de Phase 2 nécessaire</strong> — plus d'inducement requis car il n'y a plus de demand (si vente) ou supply (si achat) restant dans la chaîne de mitigation</li>
+      <li>La zone de réaction est souvent une zone déjà mitigée mais qui réagit encore car elle tient un OB propre, ou une zone avec imbalance sans beaucoup de volume d'ordres</li>
+    </ul>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <span class="card-badge badge-rose">Structure Faible</span>
+        <h4>Corrective Leg</h4>
+        <p>Toutes les demand zones mitigées dans la jambe. LPOD cassé → bas ciblé. Mouvement lent, sans force, price action correctif. Bougies petites et hésitantes.</p>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-green">Structure Forte</span>
+        <h4>Normal Leg</h4>
+        <p>Mouvements impulsifs + manipulation structurelle. High ciblé mais protégé. Bougies impulsives de conviction. La structure est intacte avec des zones valides actives.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== PING-PONG ==================== -->
+  <section id="pingpong">
+    <div class="section-badge">Concepts Clés</div>
+    <h2 class="section-title">Ping-Pong Ranging</h2>
+
+    <p>Le Ping-Pong permet de trader des <strong>achats ET des ventes</strong> à l'intérieur d'une grande jambe HTF, sans biais lourd dans un sens. C'est le setup "Within a Range" du Daily Cycle appliqué à la pratique.</p>
+
+    <div class="box box-key">
+      <div class="box-title">Principe</div>
+      <p>Pas de biais fort haussier/baissier — si joué correctement, on peut faire des ventes et achats réussis pendant que le prix est dans sa range. Le HTF guide l'orientation globale, mais en intraday on trade dans les deux sens entre les extrêmes.</p>
+    </div>
+
+    <h3>Comment l'Utiliser</h3>
+    <ul class="rules">
+      <li>Attendre le théorème 2-Phase avant <strong>chaque</strong> point de renversement (achat ou vente)</li>
+      <li>Trader les IPB continuations jusqu'au prochain point de renversement et répéter</li>
+      <li>Utiliser le HTF pour comprendre le biais directionnel global et les extrêmes de la range</li>
+      <li>TP aux Phase 1 inducements opposés (evil candles de l'autre côté)</li>
+      <li>Ne jamais stacker des trades contre-tendance</li>
+    </ul>
+
+    <div class="box box-warning">
+      <div class="box-title">Règle Importante</div>
+      <p>Le Ping-Pong ne libère pas des règles — on doit voir le théorème 2-Phase se jouer avant chaque point de renversement. La limite du ping-pong est définie par le premium (chercher des ventes) et le discount (chercher des achats).</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== SMT ==================== -->
+  <section id="smt">
+    <div class="section-badge">Concepts Clés</div>
+    <h2 class="section-title">SMT / Invalid ChoCh</h2>
+
+    <p>Un Invalid ChoCh, aussi appelé <strong>Smart Money Trap</strong>, est la façon dont le marché induit les traders "smart money" — ceux qui ont appris le concept du ChoCh mais pas ses règles de validité.</p>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <span class="card-badge badge-rose">SMT — Invalide</span>
+        <h4>ChoCh INVALIDE</h4>
+        <p>Le prix monte et tape dans la zone de supply valide EN PREMIER, puis revient créer le ChoCh pour simuler un mouvement induisant les vendeurs. La demand n'a pas construit de liquidité au-dessus → pas d'inducement → pas de raison pour que cette demand soit mitigée plus haut. C'est un piège.</p>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-green">Valid — Tradable</span>
+        <h4>ChoCh VALIDE</h4>
+        <p>Le prix casse le high du ChoCh EN PREMIER, puis redescend pour manufacurer/réagir, puis casse l'inducement de la zone demand. Le ChoCh crée de l'inducement → signale une vraie intention de monter plus haut → valide pour entrer.</p>
+      </div>
+    </div>
+
+    <h3>Comment les Distinguer</h3>
+    <ul class="rules">
+      <li>Marquer les zones de pullback à gauche → elles créeront probablement des SMTs (pullbacks court terme sans vraie force)</li>
+      <li>Marquer les OBs valides à gauche → ils créeront probablement des ChoCh valides (fortes zones de renversement)</li>
+      <li>Analyser si la réaction ChoCh crée de l'inducement. Si non → pas d'intention de casser le supply/protected high</li>
+      <li>On a besoin d'un sweep propre avant chaque zone tradable</li>
+      <li>Quand le prix casse le top du ChoCh et ne revient pas mitigater la demand (SMT) ni créer de l'inducement avant de taper la supply → c'est une SMT</li>
+    </ul>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== SWEEPS ==================== -->
+  <section id="sweeps">
+    <div class="section-badge">Concepts Clés</div>
+    <h2 class="section-title">Small vs Big Sweep</h2>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <span class="card-badge badge-orange">Small Sweep</span>
+        <h4>Renversement Court Terme</h4>
+        <p>Le prix cherche à reverser mais seulement pour une courte durée. Sera liquidé beaucoup plus vite qu'un large sweep. Peut ressembler à des Equal Highs/Lows si on zoom out → ciblé plutôt que tradable. Marquer comme <strong>liquidity target potentielle</strong> à court terme.</p>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-purple">Big Sweep</span>
+        <h4>Renversement Fort</h4>
+        <p>Le prix cherche à reverser avec force. Souvent vu sur le 4h, Daily ou Weekly comme une grande wick liquidant des H/L et cassant la structure dans l'autre direction. Crée des <strong>protected highs/lows</strong> tradables dans la direction du renversement après le sweep.</p>
+      </div>
+    </div>
+
+    <h3>Application Pratique</h3>
+    <ul class="rules">
+      <li>Marquer les small sweeps comme potentielles liquidity targets dans le futur proche</li>
+      <li>Marquer les big sweeps comme protected highs/lows qui mitigent des zones 4h/daily/weekly et sweepent</li>
+      <li>Les big sweeps créent des V-SR visibles sur les TF supérieurs et sont la base des setups Trend-Reversal</li>
+    </ul>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== DIVERGENCE ==================== -->
+  <section id="divergence">
+    <div class="section-badge">Concepts Clés</div>
+    <h2 class="section-title">Divergence</h2>
+
+    <p>La divergence est une confluence où <strong>l'indicateur (oscillateur) et la paire de devises vont dans des directions opposées</strong>. L'implication est que le prix perd de la momentum et est susceptible de reverser bientôt.</p>
+
+    <div class="box box-danger">
+      <div class="box-title">Avertissement d'Usage</div>
+      <p>Ce concept doit seulement être utilisé comme <strong>confluence</strong> — jamais comme signal principal. Beaucoup d'autres facteurs sont nécessaires pour confirmer le mouvement. N'utiliser qu'en HTF pro-trend scenario. La divergence peut montrer la manipulation overbought/oversold pour atteindre une zone plus profonde.</p>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <span class="card-badge badge-rose">Bearish</span>
+        <h4>Divergence Baissière Standard</h4>
+        <p>Le prix fait des highs plus hauts mais l'indicateur fait des highs plus bas. Signal de perte de momentum haussière. Potentiel renversement baissier si confirmé par la structure et les zones.</p>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-green">Bullish</span>
+        <h4>Divergence Haussière Standard</h4>
+        <p>Le prix fait des lows plus bas mais l'indicateur fait des lows plus hauts. Signal de perte de momentum baissière. Potentiel renversement haussier si confirmé par la structure et les zones.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ==================== GLOSSAIRE ==================== -->
+  <section id="glos">
+    <div class="section-badge">Référence</div>
+    <h2 class="section-title">Glossaire Complet</h2>
+
+    <dl class="glos-grid">
+      <div class="glos-item"><dt>LPOD/S</dt><dd>Last Point of Demand/Supply — dernière zone dans laquelle le prix peut réagir dans une jambe</dd></div>
+      <div class="glos-item"><dt>ChoCh</dt><dd>Change of Character — sweep de liquidité PUIS cassure de structure signalant un potentiel renversement</dd></div>
+      <div class="glos-item"><dt>BoS</dt><dd>Break of Structure — échec de supply/demand créant une cassure de jambe de prix, confirme la continuation</dd></div>
+      <div class="glos-item"><dt>OB</dt><dd>Orderblock — zone valide à trader respectant les 3 règles : imbalance, impulsivité, inducement</dd></div>
+      <div class="glos-item"><dt>FVG</dt><dd>Fair Value Gap — forme d'inefficacité/gap de prix dans le marché (= IMB = IPA)</dd></div>
+      <div class="glos-item"><dt>IMB / IPA</dt><dd>Imbalance / Inefficient Price Action — gap de prix dans le marché laissé par un mouvement trop rapide</dd></div>
+      <div class="glos-item"><dt>S&D</dt><dd>Supply & Demand — les niveaux institutionnels d'achat et de vente</dd></div>
+      <div class="glos-item"><dt>IFC</dt><dd>Institutionally Funded Candle — bougie créée par les institutions pour pousser le prix vers un certain niveau</dd></div>
+      <div class="glos-item"><dt>IPB</dt><dd>Inducement Pullback — niveau où le prix pullback avant une continuation. Même fonction qu'un BoS.</dd></div>
+      <div class="glos-item"><dt>PA</dt><dd>Price Action — comment le prix se déplace sur le marché</dd></div>
+      <div class="glos-item"><dt>B2S</dt><dd>Buy to Sell — souvent vu comme une wick pour mitigater ou sweeper un niveau</dd></div>
+      <div class="glos-item"><dt>S2B</dt><dd>Sell to Buy — souvent vu comme une wick pour mitigater ou sweeper un niveau</dd></div>
+      <div class="glos-item"><dt>AOI</dt><dd>Area of Interest — zone de prix qui est réactive ou tradable (large)</dd></div>
+      <div class="glos-item"><dt>POI</dt><dd>Point of Interest — point spécifique où le prix est réactif ou tradable (précis)</dd></div>
+      <div class="glos-item"><dt>IND</dt><dd>Inducement — placement de liquidité utilisé pour manipuler les traders avant un grand mouvement</dd></div>
+      <div class="glos-item"><dt>EQH/L</dt><dd>Equal Highs/Lows — niveaux d'égalité, souvent ciblés comme liquidité à prendre</dd></div>
+      <div class="glos-item"><dt>SMT</dt><dd>Smart Money Trap — zone sans liquidité au-dessus/dessous qui se fait run, piégeant les traders SMC</dd></div>
+      <div class="glos-item"><dt>MSS</dt><dd>Market Structure Shift — changement confirmé de direction du marché vers la prochaine zone de renversement</dd></div>
+      <div class="glos-item"><dt>Vectors</dt><dd>Grandes bougies impulsives créées par les institutions pour pousser le prix vers son objectif ciblé</dd></div>
+      <div class="glos-item"><dt>V-SR</dt><dd>V-Shaped Recovery — mouvement rapide d'entrée et de sortie d'une zone (IFC visible sur HTF)</dd></div>
+      <div class="glos-item"><dt>TF</dt><dd>Time Frame — échelle de temps du chart (1m, 5m, 15m, 1h, 4h, Daily, etc.)</dd></div>
+      <div class="glos-item"><dt>FR</dt><dd>Failed Reaction — échec de supply/demand interne (supply/demand fail)</dd></div>
+      <div class="glos-item"><dt>OF</dt><dd>Order-Flow — le mouvement de l'argent institutionnel à travers le marché</dd></div>
+      <div class="glos-item"><dt>True Zone</dt><dd>L'orderblock réel qui sera utilisé et qui contient le haut volume d'ordres institutionnels</dd></div>
+      <div class="glos-item"><dt>PDH/PDL</dt><dd>Previous Daily High/Low — H/L journalier précédent (fort point d'inducement structurel)</dd></div>
+      <div class="glos-item"><dt>PWH/PWL</dt><dd>Previous Weekly High/Low — H/L hebdomadaire précédent (très fort point d'inducement structurel)</dd></div>
+      <div class="glos-item"><dt>MMM</dt><dd>Magic Minute Mitigations — 30min ou 1h30 après ouverture London et New York (haute probabilité)</dd></div>
+      <div class="glos-item"><dt>AWS</dt><dd>Asian Whipsaw — London prend un côté d'Asia, NY prend l'autre et reverse (Cas 1)</dd></div>
+      <div class="glos-item"><dt>HTF</dt><dd>Higher Time Frame — timeframe supérieur à celui sur lequel on est en train de trader</dd></div>
+      <div class="glos-item"><dt>LTF</dt><dd>Lower Time Frame — timeframe inférieur utilisé pour raffiner l'entrée</dd></div>
+    </dl>
+  </section>
+
+</main>
+
+<script>
+  // Active nav link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+<script src="../nav.js"></script>
+</body>
+</html>

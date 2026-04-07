@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Financial Juice — Live</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body {
+    width:100%; height:100%;
+    background:#050709; color:#CDD6F4;
+    font-family:'IBM Plex Mono', monospace;
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+
+  header {
+    display:flex; align-items:center; gap:14px;
+    padding:0 20px; height:48px;
+    background:#0A0D14; border-bottom:1px solid #182338; flex-shrink:0;
+  }
+  .logo { font-size:14px; font-weight:700; color:#E9B84C; letter-spacing:.04em; }
+  .logo span { color:#CDD6F4; }
+  .live-badge {
+    display:flex; align-items:center; gap:5px; font-size:9px; color:#2DD67A;
+    border:1px solid rgba(45,214,122,.25); border-radius:20px; padding:2px 9px;
+  }
+  .live-dot { width:5px; height:5px; border-radius:50%; background:#2DD67A; animation:pulse 1.4s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .header-links { margin-left:auto; display:flex; gap:8px; }
+  .hlink {
+    font-size:10px; color:#6C7A9C; text-decoration:none;
+    border:1px solid #182338; border-radius:5px; padding:4px 10px; transition:.15s;
+  }
+  .hlink:hover { color:#CDD6F4; border-color:#243450; }
+
+  /* TABS widget */
+  .tabs {
+    display:flex; align-items:center; gap:3px;
+    padding:0 20px; height:38px;
+    background:#0A0D14; border-bottom:1px solid #182338; flex-shrink:0;
+  }
+  .tab {
+    padding:5px 22px; font-size:10px; letter-spacing:.07em;
+    border-radius:5px; cursor:pointer; color:#6C7A9C;
+    border:1px solid transparent; background:transparent;
+    font-family:inherit; transition:all .15s;
+  }
+  .tab.active { background:#0F1520; border-color:#243450; color:#CDD6F4; }
+  .tab:hover:not(.active) { color:#CDD6F4; }
+
+  /* BARRE FILTRE US — visible uniquement sur l'onglet NEWS */
+  .filter-bar {
+    display:none;
+    align-items:center;
+    gap:8px;
+    padding:6px 20px;
+    background:#0A0D14;
+    border-bottom:1px solid #182338;
+    flex-shrink:0;
+    flex-wrap:wrap;
+  }
+  .filter-bar.visible { display:flex; }
+  .filter-label { font-size:9px; color:#6C7A9C; letter-spacing:.08em; margin-right:4px; }
+  .filter-btn {
+    font-size:9px; padding:3px 10px; border-radius:20px;
+    border:1px solid #182338; color:#6C7A9C;
+    background:transparent; cursor:pointer;
+    font-family:inherit; transition:all .15s; letter-spacing:.05em;
+  }
+  .filter-btn:hover { border-color:#243450; color:#CDD6F4; }
+  .filter-btn.on {
+    background:rgba(240,69,69,.1);
+    border-color:rgba(240,69,69,.4);
+    color:#F04545;
+  }
+  .filter-btn.on.blue {
+    background:rgba(75,156,244,.1);
+    border-color:rgba(75,156,244,.4);
+    color:#4B9CF4;
+  }
+  .filter-count {
+    margin-left:auto; font-size:9px; color:#6C7A9C; letter-spacing:.05em;
+  }
+  .filter-count span { color:#2DD67A; }
+
+  /* BODY */
+  .body { flex:1; min-height:0; overflow:hidden; position:relative; }
+  .panel { display:none; position:absolute; inset:0; overflow:auto; }
+  .panel.active { display:block; }
+  .panel > div { width:100%; height:100%; }
+
+  footer {
+    height:28px; background:#0A0D14; border-top:1px solid #182338;
+    display:flex; align-items:center; padding:0 20px; gap:16px; flex-shrink:0;
+  }
+  .ftr { font-size:9px; color:#2E3D5C; letter-spacing:.06em; }
+  .ftr.live { color:#2DD67A; display:flex; align-items:center; gap:4px; }
+
+  body::after {
+    content:''; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);
+    pointer-events:none; z-index:9999;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">FINANCIAL<span>JUICE</span></div>
+  <div class="live-badge"><div class="live-dot"></div>LIVE FEED</div>
+  <div class="header-links">
+    <a class="hlink" href="https://www.financialjuice.com/feed" target="_blank">SITE ↗</a>
+    <a class="hlink" href="https://t.me/FinancialJuice" target="_blank">TELEGRAM ↗</a>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="sw('voice',this)">🎙 VOICE SQUAWK</button>
+  <button class="tab" onclick="sw('eco',this)">📅 CALENDRIER ÉCO</button>
+  <button class="tab" onclick="sw('news',this)">📰 NEWS FEED</button>
+</div>
+
+<!-- FILTRE US — visible uniquement sur NEWS -->
+<div class="filter-bar" id="filter-bar">
+  <span class="filter-label">FILTRE :</span>
+  <button class="filter-btn" id="fb-all"   onclick="setFilter('all')">TOUT</button>
+  <button class="filter-btn on"  id="fb-us"    onclick="setFilter('us')">🇺🇸 US ONLY</button>
+  <button class="filter-btn blue" id="fb-indexes" onclick="setFilter('indexes')">INDEXES</button>
+  <button class="filter-btn blue" id="fb-fed"  onclick="setFilter('fed')">FED / FOMC</button>
+  <span class="filter-count" id="filter-count">— news visibles</span>
+</div>
+
+<div class="body">
+  <div class="panel active" id="p-voice">
+    <div id="financialjuice-voice-widget-container"></div>
+  </div>
+  <div class="panel" id="p-eco">
+    <div id="financialjuice-eco-widget-container"></div>
+  </div>
+  <div class="panel" id="p-news">
+    <div id="financialjuice-news-widget-container"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="ftr live"><div class="live-dot"></div>LIVE</div>
+  <div class="ftr">FINANCIALJUICE.COM</div>
+  <div class="ftr" id="ftr-filter">FILTRE : US ONLY</div>
+</footer>
+
+<script>
+// ── TABS ────────────────────────────────────────────────────────────────────
+function sw(k, el) {
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  el.classList.add('active');
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('p-'+k).classList.add('active');
+  // Filtre bar visible uniquement sur NEWS
+  var fb = document.getElementById('filter-bar');
+  fb.classList.toggle('visible', k === 'news');
+}
+
+// ── MOTS CLÉS FILTRES ───────────────────────────────────────────────────────
+var FILTERS = {
+  all:     null, // tout afficher
+  us:      ['US','U.S.','USD','Federal','Fed','FOMC','Treasury','White House','Congress','Senate',
+            'Biden','Trump','Powell','American','America','United States','NYSE','NASDAQ','S&P',
+            'Dow','NFP','CPI','PPI','PCE','ISM','ADP','JOLTS','Michigan','Conference Board',
+            'Retail Sales','Nonfarm','Initial Claims','GDP','Dollar','NQ','ES','SPX',
+            'Wall Street','Washington','SEC','IMF','World Bank'],
+  indexes: ['S&P','SPX','Dow','NASDAQ','NQ','ES','YM','Russell','Index','Indexes','Indices','VIX'],
+  fed:     ['Fed','Federal Reserve','FOMC','Powell','Rate','rates','hike','cut','pivot',
+            'monetary policy','balance sheet','QT','QE','basis points','bps','dot plot']
+};
+
+var currentFilter = 'us';
+var observer = null;
+
+function setFilter(key) {
+  currentFilter = key;
+  // Update boutons
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('on'); });
+  var btn = document.getElementById('fb-' + key);
+  if (btn) btn.classList.add('on');
+  document.getElementById('ftr-filter').textContent = 'FILTRE : ' + key.toUpperCase();
+  applyFilter();
+}
+
+function matchesFilter(text, key) {
+  if (!key || key === 'all') return true;
+  var keywords = FILTERS[key];
+  if (!keywords) return true;
+  var t = text.toUpperCase();
+  for (var i = 0; i < keywords.length; i++) {
+    if (t.indexOf(keywords[i].toUpperCase()) !== -1) return true;
+  }
+  return false;
+}
+
+function applyFilter() {
+  var container = document.getElementById('financialjuice-news-widget-container');
+  if (!container) return;
+
+  // Le SDK FJ génère des éléments avec du texte — on cherche tous les noeuds feuilles
+  // qui ressemblent à des items de news (li, div, tr, article...)
+  var items = container.querySelectorAll('li, .news-item, .headline, .fj-item, tr[class], div[class*="item"], div[class*="news"], div[class*="row"]');
+
+  if (items.length === 0) {
+    // Fallback : prendre tous les divs directs du premier enfant
+    var root = container.firstElementChild;
+    if (root) items = root.children;
+  }
+
+  var visible = 0;
+  var total = 0;
+
+  Array.prototype.forEach.call(items, function(item) {
+    var text = item.textContent || '';
+    total++;
+    if (matchesFilter(text, currentFilter)) {
+      item.style.display = '';
+      visible++;
+    } else {
+      item.style.display = 'none';
+    }
+  });
+
+  var countEl = document.getElementById('filter-count');
+  if (countEl) {
+    if (total === 0) {
+      countEl.innerHTML = 'Chargement...';
+    } else {
+      countEl.innerHTML = '<span>' + visible + '</span>/' + total + ' news visibles';
+    }
+  }
+}
+
+function startObserver() {
+  var container = document.getElementById('financialjuice-news-widget-container');
+  if (!container) return;
+  if (observer) observer.disconnect();
+  observer = new MutationObserver(function() {
+    applyFilter();
+  });
+  observer.observe(container, { childList: true, subtree: true });
+  applyFilter();
+}
+
+// ── SDK FJ ──────────────────────────────────────────────────────────────────
+var jo = document.createElement("script");
+jo.type = "text/javascript";
+jo.id = "FJ-Widgets";
+var r = Math.floor(Math.random() * (9999 - 0 + 1) + 0);
+jo.src = "https://feed.financialjuice.com/widgets/widgets.js?r=" + r;
+
+jo.onload = function() {
+  var d = { w: window.innerWidth, h: window.innerHeight - 48 - 38 - 28 };
+
+  // VOICE
+  var o1 = {};
+  o1.container = "financialjuice-voice-widget-container";
+  o1.mode = "standard";
+  o1.width = d.w + "px";
+  o1.height = d.h + "px";
+  o1.backColor = "050709";
+  o1.fontColor = "CDD6F4";
+  o1.widgetType = "Voice";
+  new window.FJWidgets.createWidget(o1);
+
+  // ECOCAL
+  var o2 = {};
+  o2.container = "financialjuice-eco-widget-container";
+  o2.mode = "standard";
+  o2.width = d.w + "px";
+  o2.height = d.h + "px";
+  o2.backColor = "0A0D14";
+  o2.fontColor = "CDD6F4";
+  o2.widgetType = "ECOCAL";
+  new window.FJWidgets.createWidget(o2);
+
+  // NEWS
+  var o3 = {};
+  o3.container = "financialjuice-news-widget-container";
+  o3.mode = "Dark";
+  o3.width = d.w + "px";
+  o3.height = (d.h - 38) + "px"; // -38 pour la filter bar
+  o3.backColor = "0A0D14";
+  o3.fontColor = "CDD6F4";
+  o3.widgetType = "NEWS";
+  new window.FJWidgets.createWidget(o3);
+
+  // Démarrer l'observer après que le widget NEWS soit rendu
+  setTimeout(startObserver, 2000);
+};
+
+document.getElementsByTagName("head")[0].appendChild(jo);
+</script>
+<script src="../nav.js"></script>
+</body>
+</html>

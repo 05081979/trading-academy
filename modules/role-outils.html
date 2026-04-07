@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rôle Unique — Chaque Outil, Une Utilité</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #07080b;
+    --s1: #0e1116;
+    --s2: #13171e;
+    --s3: #191e27;
+    --bd: #1c2230;
+    --bd2: #232c3a;
+    --gold: #c8a228;
+    --gold2: #e5bc3c;
+    --gd: rgba(200,162,40,0.10);
+    --gd2: rgba(200,162,40,0.06);
+    --blue: #3d82e0;
+    --bd_: rgba(61,130,224,0.12);
+    --green: #2ec974;
+    --gn: rgba(46,201,116,0.10);
+    --red: #e05050;
+    --rn: rgba(224,80,80,0.10);
+    --orange: #e08830;
+    --on: rgba(224,136,48,0.10);
+    --purple: #9b72e0;
+    --pn: rgba(155,114,224,0.10);
+    --cyan: #28bfcf;
+    --cn: rgba(40,191,207,0.10);
+    --text: #cdd5e2;
+    --t2: #8594a8;
+    --t3: #4a5668;
+    --t4: #2d3848;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+  }
+
+  /* TOP BANNER */
+  .banner {
+    background: var(--s1);
+    border-bottom: 1px solid var(--bd2);
+    padding: 36px 56px 32px;
+    position: relative;
+  }
+  .banner::before {
+    content:'';
+    position:absolute; top:0; left:0; right:0; height:2px;
+    background: linear-gradient(90deg, transparent 0%, var(--gold) 30%, var(--gold2) 50%, var(--gold) 70%, transparent 100%);
+  }
+  .banner-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .banner h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.1;
+  }
+  .banner h1 em { color: var(--gold2); font-style: normal; }
+  .banner-sub {
+    margin-top: 10px;
+    color: var(--t2);
+    font-size: 13px;
+    max-width: 600px;
+  }
+  .phases-strip {
+    margin-top: 24px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .phase-chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 5px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all .15s;
+    text-transform: uppercase;
+  }
+  .pc-0 { background:rgba(200,162,40,.12); color:var(--gold2); border:1px solid rgba(200,162,40,.2); }
+  .pc-1 { background:rgba(61,130,224,.10); color:var(--blue); border:1px solid rgba(61,130,224,.2); }
+  .pc-2 { background:rgba(155,114,224,.10); color:var(--purple); border:1px solid rgba(155,114,224,.2); }
+  .pc-3 { background:rgba(40,191,207,.10); color:var(--cyan); border:1px solid rgba(40,191,207,.2); }
+  .pc-4 { background:rgba(46,201,116,.10); color:var(--green); border:1px solid rgba(46,201,116,.2); }
+  .pc-5 { background:rgba(224,136,48,.10); color:var(--orange); border:1px solid rgba(224,136,48,.2); }
+
+  /* MAIN */
+  .wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 56px 80px;
+  }
+
+  /* PHASE HEADER */
+  .phase-block {
+    margin-bottom: 56px;
+  }
+  .phase-head {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--bd);
+  }
+  .phase-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 4px;
+    letter-spacing: 2px;
+    flex-shrink: 0;
+  }
+  .pn-0 { background:var(--gd); color:var(--gold2); border:1px solid rgba(200,162,40,.2); }
+  .pn-1 { background:var(--bd_); color:var(--blue); border:1px solid rgba(61,130,224,.2); }
+  .pn-2 { background:var(--pn); color:var(--purple); border:1px solid rgba(155,114,224,.2); }
+  .pn-3 { background:var(--cn); color:var(--cyan); border:1px solid rgba(40,191,207,.2); }
+  .pn-4 { background:var(--gn); color:var(--green); border:1px solid rgba(46,201,116,.2); }
+  .pn-5 { background:var(--on); color:var(--orange); border:1px solid rgba(224,136,48,.2); }
+
+  .phase-title-block {}
+  .phase-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .phase-desc { color: var(--t2); font-size: 12px; margin-top: 2px; }
+  .phase-when {
+    margin-left: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--t3);
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* TOOL CARDS GRID */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 12px;
+  }
+
+  /* TOOL CARD */
+  .tool {
+    background: var(--s2);
+    border: 1px solid var(--bd);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: border-color .15s;
+  }
+  .tool:hover { border-color: var(--bd2); }
+  .tool-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--bd);
+  }
+  .tool-icon {
+    width: 32px; height: 32px;
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .tool-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    flex: 1;
+  }
+  .tool-source {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    color: var(--t3);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .tool-body { padding: 14px 16px; }
+
+  /* ROLE BOX — the "one utility" */
+  .role-box {
+    background: var(--s3);
+    border-radius: 4px;
+    padding: 10px 13px;
+    margin-bottom: 12px;
+    border-left: 3px solid var(--gold);
+  }
+  .role-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .role-text {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .how-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: var(--t3);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    margin-top: 10px;
+  }
+
+  ul.steps {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  ul.steps li {
+    color: var(--t2);
+    font-size: 11.5px;
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.5;
+  }
+  ul.steps li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--t3);
+    font-size: 10px;
+  }
+
+  /* WHEN NOT */
+  .not-box {
+    background: rgba(224,80,80,.06);
+    border: 1px solid rgba(224,80,80,.12);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-top: 10px;
+    font-size: 11px;
+    color: rgba(224,80,80,.8);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  /* CONNECTOR ARROW BETWEEN PHASES */
+  .phase-connector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding: 10px 16px;
+    background: var(--s1);
+    border: 1px solid var(--bd);
+    border-radius: 5px;
+  }
+  .phase-connector .arrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 18px;
+    color: var(--t3);
+  }
+  .phase-connector .conn-text {
+    font-size: 11px;
+    color: var(--t2);
+  }
+  .phase-connector .conn-text strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* MASTER FLOW AT TOP */
+  .master-flow {
+    background: var(--s1);
+    border: 1px solid var(--bd2);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 48px;
+    overflow-x: auto;
+  }
+  .mf-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--t3);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .mf-steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: nowrap;
+    min-width: 800px;
+  }
+  .mf-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+  }
+  .mf-circle {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+  .mf-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    margin-top: 8px;
+    color: var(--text);
+  }
+  .mf-sub { font-size: 9px; color: var(--t2); margin-top: 2px; max-width: 90px; }
+  .mf-arrow {
+    color: var(--t3);
+    font-size: 16px;
+    margin-bottom: 24px;
+    flex-shrink: 0;
+    padding: 0 4px;
+  }
+
+  /* TOOL COLOR VARIANTS */
+  .ti-gold { background: var(--gd); }
+  .ti-blue { background: var(--bd_); }
+  .ti-purple { background: var(--pn); }
+  .ti-cyan { background: var(--cn); }
+  .ti-green { background: var(--gn); }
+  .ti-orange { background: var(--on); }
+  .ti-red { background: var(--rn); }
+
+  .rb-gold { border-left-color: var(--gold); }
+  .rb-blue { border-left-color: var(--blue); }
+  .rb-purple { border-left-color: var(--purple); }
+  .rb-cyan { border-left-color: var(--cyan); }
+  .rb-green { border-left-color: var(--green); }
+  .rb-orange { border-left-color: var(--orange); }
+  .rb-red { border-left-color: var(--red); }
+
+  .rl-gold { color: var(--gold); }
+  .rl-blue { color: var(--blue); }
+  .rl-purple { color: var(--purple); }
+  .rl-cyan { color: var(--cyan); }
+  .rl-green { color: var(--green); }
+  .rl-orange { color: var(--orange); }
+  .rl-red { color: var(--red); }
+
+  /* FULL WIDTH TOOL */
+  .tool-wide {
+    grid-column: 1 / -1;
+  }
+
+  /* SECTION DIVIDER */
+  .sdiv {
+    height: 1px;
+    background: var(--bd);
+    margin: 48px 0;
+  }
+
+  /* REDUNDANCY RESOLVER */
+  .resolve-table {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+  .resolve-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--t3);
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--bd2);
+  }
+  .resolve-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--bd);
+    font-size: 12px;
+    vertical-align: top;
+    color: var(--t2);
+  }
+  .resolve-table td:first-child { color: var(--text); font-weight: 500; }
+
+  /* scroll */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--bd2); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- BANNER -->
+<div class="banner">
+  <div class="banner-eyebrow">Organisation Opérationnelle · 9 Sources · NQ Futures</div>
+  <h1>CHAQUE OUTIL, <em>UNE UTILITÉ</em></h1>
+  <p class="banner-sub">Cartographie complète de tous les concepts : rôle unique, moment d'utilisation, ce qui remplace quoi. Zéro redondance, zéro confusion.</p>
+  <div class="phases-strip">
+    <span class="phase-chip pc-0">① Veille</span>
+    <span class="phase-chip pc-1">② Pré-session</span>
+    <span class="phase-chip pc-2">③ Lecture de marché</span>
+    <span class="phase-chip pc-3">④ Identification du setup</span>
+    <span class="phase-chip pc-4">⑤ Entrée</span>
+    <span class="phase-chip pc-5">⑥ Gestion</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- MASTER FLOW -->
+  <div class="master-flow">
+    <div class="mf-label">Séquence opérationnelle complète</div>
+    <div class="mf-steps">
+      <div class="mf-step">
+        <div class="mf-circle" style="background:var(--gd);color:var(--gold2);border:1px solid rgba(200,162,40,.2)">VEILLE</div>
+        <div class="mf-name">Ancres</div>
+        <div class="mf-sub">Fix Price · IMP · True Opens</div>
+      </div>
+      <div class="mf-arrow">›</div>
+      <div class="mf-step">
+        <div class="mf-circle" style="background:var(--bd_);color:var(--blue);border:1px solid rgba(61,130,224,.2)">PRÉ</div>
+        <div class="mf-name">Biais</div>
+        <div class="mf-sub">QT · Daily Bias · Inducements</div>
+      </div>
+      <div class="mf-arrow">›</div>
+      <div class="mf-step">
+        <div class="mf-circle" style="background:var(--pn);color:var(--purple);border:1px solid rgba(155,114,224,.2)">LECT</div>
+        <div class="mf-name">Phase</div>
+        <div class="mf-sub">AMD · MMM · Env. selection</div>
+      </div>
+      <div class="mf-arrow">›</div>
+      <div class="mf-step">
+        <div class="mf-circle" style="background:var(--cn);color:var(--cyan);border:1px solid rgba(40,191,207,.2)">SETUP</div>
+        <div class="mf-name">Timing</div>
+        <div class="mf-sub">SSMT · PSP · Macro window</div>
+      </div>
+      <div class="mf-arrow">›</div>
+      <div class="mf-step">
+        <div class="mf-circle" style="background:var(--gn);color:var(--green);border:1px solid rgba(46,201,116,.2)">ENTRÉ</div>
+        <div class="mf-name">Exécution</div>
+        <div class="mf-sub">TCISD · HIPPO · CZ M5 · SMT</div>
+      </div>
+      <div class="mf-arrow">›</div>
+      <div class="mf-step">
+        <div class="mf-circle" style="background:var(--on);color:var(--orange);border:1px solid rgba(224,136,48,.2)">GEST</div>
+        <div class="mf-name">Gestion</div>
+        <div class="mf-sub">Targets · Left/Right · Trail</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- PHASE 0 — VEILLE -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="phase-block" id="p0">
+    <div class="phase-head">
+      <div class="phase-num pn-0">PHASE 01</div>
+      <div class="phase-title-block">
+        <div class="phase-title">Veille — Préparer les Ancres</div>
+        <div class="phase-desc">Après 22h00 Paris · avant d'aller dormir · 10 minutes maximum</div>
+      </div>
+      <div class="phase-when">Après 22h Paris<br><span style="color:var(--t3)">Après settlement CME</span></div>
+    </div>
+
+    <div class="tools-grid">
+
+      <!-- FIX PRICE -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-gold">⚓</div>
+          <div>
+            <div class="tool-name">Fix Price CME 16h00 ET</div>
+            <div class="tool-source">Goldbach · Fix Price · Zine</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-gold">
+            <div class="role-label rl-gold">Utilité unique</div>
+            <div class="role-text">Centre de gravité absolu du lendemain. Sépare discount (long uniquement) de premium (short uniquement). Ancre de TOUT le reste.</div>
+          </div>
+          <div class="how-label">Comment</div>
+          <ul class="steps">
+            <li>Relever la bougie 30 secondes qui ferme à 16h00 ET</li>
+            <li>Prendre le midpoint (50%) de cette bougie</li>
+            <li>Tracer le niveau horizontal sur le graphique du lendemain</li>
+            <li>Calculer IMP10 = FP × 1.007 / FP × 0.993</li>
+          </ul>
+          <div class="not-box">✗ Ne jamais longer si prix &gt; Fix Price. Ne jamais shorter si prix &lt; Fix Price.</div>
+        </div>
+      </div>
+
+      <!-- IMP LEVELS -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-gold">🎯</div>
+          <div>
+            <div class="tool-name">IMP10 / IMP24 / IMP36</div>
+            <div class="tool-source">Fix Price · Goldbach Trifecta</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-gold">
+            <div class="role-label rl-gold">Utilité unique</div>
+            <div class="role-text">Targets journalières institutionnelles. Définissent jusqu'où le marché peut aller. IMP10 franchi = biais inverse demain.</div>
+          </div>
+          <div class="how-label">Comment</div>
+          <ul class="steps">
+            <li>IMP10 = ±0.7% du Fix Price (~170 pts NQ) → target jour normal</li>
+            <li>IMP24 = ±1.3% (~315 pts) → target jour volatile</li>
+            <li>IMP36 = ±2.0% (~485 pts) → target jour exceptionnel</li>
+            <li>Tracer les 6 niveaux (3 hauts + 3 bas) chaque soir</li>
+          </ul>
+          <div class="not-box">✗ Ne pas utiliser comme zones d'entrée — uniquement comme targets et biais.</div>
+        </div>
+      </div>
+
+      <!-- GOLDBACH LEVELS -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-gold">📐</div>
+          <div>
+            <div class="tool-name">Niveaux Goldbach du Range</div>
+            <div class="tool-source">Goldbach Trifecta</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-gold">
+            <div class="role-label rl-gold">Utilité unique</div>
+            <div class="role-text">Architecture institutionnelle du range journalier. Définit OÙ les retournements et entrées sont valides (pas quand — ça, c'est les autres outils).</div>
+          </div>
+          <div class="how-label">Comment</div>
+          <ul class="steps">
+            <li>Tracer le Goldbach FIB de CB− à CB+ (Fix Price = 0.500)</li>
+            <li>Les niveaux clés : 17/83% (FVG) · 11/89% (OB) · 29/71% (Void = targets) · 23/77% (Zone Bleue = entrée)</li>
+            <li>Un niveau n'est valide QUE dans sa partition</li>
+          </ul>
+          <div class="not-box">✗ Ne pas entrer en Zone Rouge [41-59%] ni en Zone Verte [0-17% / 83-100%].</div>
+        </div>
+      </div>
+
+      <!-- TRUE OPENS -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-blue">🕐</div>
+          <div>
+            <div class="tool-name">True Opens (TWO · TDO · TMO)</div>
+            <div class="tool-source">QT Bucko · Zine</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-blue">
+            <div class="role-label rl-blue">Utilité unique</div>
+            <div class="role-text">Pivots temporels institutionnels. Définissent premium/discount DANS LE TEMPS (pas dans le range de prix). Complément temporel du Fix Price.</div>
+          </div>
+          <div class="how-label">Comment — noter chaque soir</div>
+          <ul class="steps">
+            <li>True Week Open (TWO) = lundi 18h00 Paris (ouverture Mardi)</li>
+            <li>True Day Open (TDO) = 00h00 NY = 06h00 Paris</li>
+            <li>7h30 Open (Zine) = 13h30 Paris = équilibre pré-marché</li>
+            <li>Si prix &lt; tous les opens → discount extrême (Stacked Opens) → SSMT bullish ici = explosif</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SURGICAL LIMITS -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-gold">✂️</div>
+          <div>
+            <div class="tool-name">Surgical Limits</div>
+            <div class="tool-source">Fix Price · Goldbach</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-gold">
+            <div class="role-label rl-gold">Utilité unique</div>
+            <div class="role-text">Calibrer la taille du range attendu PAR SESSION. London ≠ NY AM ≠ pré-market. Permet d'ajuster les targets selon la session active.</div>
+          </div>
+          <div class="how-label">Comment</div>
+          <ul class="steps">
+            <li>Pré-market → 0.4375% du Fix Price</li>
+            <li>London → 0.875%</li>
+            <li>NY AM → 1.75% (le plus utile)</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- PHASE 1 — PRÉ-SESSION -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="phase-block" id="p1">
+    <div class="phase-head">
+      <div class="phase-num pn-1">PHASE 02</div>
+      <div class="phase-title-block">
+        <div class="phase-title">Pré-Session — Établir le Biais</div>
+        <div class="phase-desc">Le matin · avant 13h00 Paris · biais fixé et non modifiable pendant la session</div>
+      </div>
+      <div class="phase-when">Matin<br><span style="color:var(--t3)">Avant 13h Paris</span></div>
+    </div>
+
+    <div class="tools-grid">
+
+      <!-- QT CYCLE POSITION -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-blue">📅</div>
+          <div>
+            <div class="tool-name">Position dans le Cycle QT</div>
+            <div class="tool-source">QT Bucko · Zine</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-blue">
+            <div class="role-label rl-blue">Utilité unique</div>
+            <div class="role-text">Savoir quelle FONCTION la journée doit remplir dans le cycle. Accumulation ? Manipulation ? Distribution ? Cela détermine si on trade agressivement ou pas du tout.</div>
+          </div>
+          <div class="how-label">Comment — séquence hebdomadaire</div>
+          <ul class="steps">
+            <li>Lundi = X ou Accumulation → observer · pas de trade agressif</li>
+            <li>Mardi = MANIPULATION → attendre SSMT avant tout trade</li>
+            <li>Mercredi = Confirmation du biais · préparer</li>
+            <li>Jeudi = Distribution ★ → meilleur jour · rider</li>
+            <li>Vendredi = Retour vers TWO uniquement · pas de directional sans SSMT Jeu↔Ven</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- DAILY BIAS SIGNATURES -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-blue">🕯️</div>
+          <div>
+            <div class="tool-name">Daily Bias — 3 Signatures</div>
+            <div class="tool-source">QT Bucko · Fiches SMC</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-blue">
+            <div class="role-label rl-blue">Utilité unique</div>
+            <div class="role-text">Qualifier le biais du jour via la clôture de la bougie Daily. Toujours regarder les WICKS, pas les corps.</div>
+          </div>
+          <div class="how-label">Comment</div>
+          <ul class="steps">
+            <li>Continuation : clôture J AU-DESSUS de la mèche haute J−1 → continuer dans ce sens</li>
+            <li>Reversal : mèche J sous bas J−1 PUIS clôture EN-DEDANS du range J−1 → nouveau sens</li>
+            <li>Consolidation : J ne prend NI high NI low J−1 → ne pas trader · très volatile demain</li>
+          </ul>
+          <div class="not-box">✗ Ne jamais décider du biais sur les corps de bougies seuls — uniquement les wicks.</div>
+        </div>
+      </div>
+
+      <!-- INDUCEMENTS HTF -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-blue">💧</div>
+          <div>
+            <div class="tool-name">Cartographie des Inducements</div>
+            <div class="tool-source">RedPillFX · IPTA · Fiches SMC</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-blue">
+            <div class="role-label rl-blue">Utilité unique</div>
+            <div class="role-text">Identifier OÙ va aller le prix (Draw on Liquidity = point B de la narrative). Ce n'est pas une zone d'entrée — c'est la cible.</div>
+          </div>
+          <div class="how-label">Comment — toujours de grand vers petit</div>
+          <ul class="steps">
+            <li>1. Majeurs (H1→Daily) : PWH, PWL, PMH, PML, Equal Lows/Highs multi-semaines</li>
+            <li>2. Moyens (M5→M15) : PDH, PDL, H/L des 2-3 derniers jours</li>
+            <li>3. Mineurs (M1→M5) : petits highs/lows intraday</li>
+            <li>La liquidité non prise = ton biais de direction</li>
+          </ul>
+          <div class="not-box">✗ Ne jamais commencer par les mineurs. Un mineur ignoré face à un majeur détruira la position.</div>
+        </div>
+      </div>
+
+      <!-- ENVIRONMENT SELECTION -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-blue">🌡️</div>
+          <div>
+            <div class="tool-name">Sélection d'Environnement</div>
+            <div class="tool-source">IPTA · Fix Price · Tous</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-blue">
+            <div class="role-label rl-blue">Utilité unique</div>
+            <div class="role-text">Décider si on trade aujourd'hui, à quel risque, et vers quelles targets. 70% du travail. Avant de chercher un setup.</div>
+          </div>
+          <div class="how-label">Checklist HP vs LP</div>
+          <ul class="steps">
+            <li>HP : direction HTF claire · intermarket aligné · macros produisent du mouvement · pas de news</li>
+            <li>LP : intermarket désordonné · SMT des deux côtés · FVG comblés immédiatement</li>
+            <li>NO TRADE : macros silencieuses · news NFP/FOMC · Lunch 17h30-19h Paris</li>
+          </ul>
+          <div class="not-box">✗ Ne jamais chercher un setup avant d'avoir validé l'environnement. L'environnement décide — le setup confirme.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- PHASE 2 — LECTURE DE MARCHÉ -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="phase-block" id="p2">
+    <div class="phase-head">
+      <div class="phase-num pn-2">PHASE 03</div>
+      <div class="phase-title-block">
+        <div class="phase-title">Lecture de Marché — Identifier la Phase et le Modèle</div>
+        <div class="phase-desc">En session · HTF → LTF · Comprendre où on est dans le cycle avant de chercher l'entrée</div>
+      </div>
+      <div class="phase-when">Session active<br><span style="color:var(--t3)">13h-17h30 Paris</span></div>
+    </div>
+
+    <div class="tools-grid">
+
+      <!-- AMD CYCLE -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-purple">🔄</div>
+          <div>
+            <div class="tool-name">Cycle AMD + Poupée Russe</div>
+            <div class="tool-source">RedPillFX · IPTA · QT</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-purple">
+            <div class="role-label rl-purple">Utilité unique</div>
+            <div class="role-text">Identifier dans quelle PHASE du cycle on se trouve actuellement (Accumulation / Manipulation / Distribution). Pas un signal d'entrée — une lecture de phase.</div>
+          </div>
+          <div class="how-label">Comment</div>
+          <ul class="steps">
+            <li>Accumulation : range · faux BOS · indécision → observer</li>
+            <li>Manipulation : BTS ou STB violent sur zone de liquidité connue → se préparer</li>
+            <li>Distribution : mouvement directionnel fort → trader</li>
+            <li>Appliquer à 5 niveaux imbriqués : Daily → H1 → M15 → M5 → M1</li>
+          </ul>
+          <div class="not-box">✗ Ne pas entrer pendant la phase Accumulation. Un faux BOS en phase A est un piège — pas un signal.</div>
+        </div>
+      </div>
+
+      <!-- MMBM / MMSM -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-purple">📊</div>
+          <div>
+            <div class="tool-name">Market Maker Model (MMBM/MMSM)</div>
+            <div class="tool-source">IPTA · Zine · Fiches SMC</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-purple">
+            <div class="role-label rl-purple">Utilité unique</div>
+            <div class="role-text">Lire la structure complète du mouvement (gauche → droite). Identifier où on est dans la courbe (sell side ou buy side) et quelles entrées restent disponibles.</div>
+          </div>
+          <div class="how-label">Comment</div>
+          <ul class="steps">
+            <li>Identifier l'Original Consolidation (le range de départ)</li>
+            <li>Lire la courbe gauche (accumulation des contreparties)</li>
+            <li>Attendre le SMR (Smart Money Reversal) pour confirmer le retournement</li>
+            <li>Les 3 entrées disponibles : LRB → Accum Phase 1 → Silver Bullet</li>
+          </ul>
+          <div class="not-box">✗ Ne jamais entrer Stage 1 ou Stage 2 de la CZ. Attendre le SMR complet.</div>
+        </div>
+      </div>
+
+      <!-- BTS / STB -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-purple">⚡</div>
+          <div>
+            <div class="tool-name">Buy to Sell / Sell to Buy</div>
+            <div class="tool-source">RedPillFX</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-purple">
+            <div class="role-label rl-purple">Utilité unique</div>
+            <div class="role-text">Signature visuelle de la phase de Manipulation. Confirme que la phase M est en cours et que la Distribution va suivre. PAS un signal d'entrée direct.</div>
+          </div>
+          <div class="how-label">Comment identifier</div>
+          <ul class="steps">
+            <li>Mouvement violent et rapide sur une zone de liquidité préalablement identifiée</li>
+            <li>Grande mèche · arrivée directe sur la zone · renversement quasi-immédiat</li>
+            <li>BTS : monte fort → reverse → vrai mouvement baissier</li>
+            <li>STB : descend fort → reverse → vrai mouvement haussier</li>
+          </ul>
+          <div class="not-box">✗ Sans zone de liquidité préalablement identifiée, un mouvement violent n'est PAS un BTS/STB valide.</div>
+        </div>
+      </div>
+
+      <!-- PREMIUM / DISCOUNT -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-purple">⚖️</div>
+          <div>
+            <div class="tool-name">Premium / Discount</div>
+            <div class="tool-source">Fiches SMC · IPTA · Tous</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-purple">
+            <div class="role-label rl-purple">Utilité unique</div>
+            <div class="role-text">Filtre directionnel dans le range. Confirme le côté depuis lequel chercher des trades. Au-dessus du 50% = premium = short uniquement. En dessous = discount = long uniquement.</div>
+          </div>
+          <div class="how-label">Comment</div>
+          <ul class="steps">
+            <li>Le 50% = Fix Price = Equilibrium</li>
+            <li>Premium : prix &gt; Fix Price → chercher shorts sur FVG/OB en premium</li>
+            <li>Discount : prix &lt; Fix Price → chercher longs sur FVG/OB en discount</li>
+            <li>S'applique à tous les timeframes (fractal)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- MSST / MSS -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-purple">🔀</div>
+          <div>
+            <div class="tool-name">MSS — Market Structure Shift</div>
+            <div class="tool-source">IPTA · Fiches SMC</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-purple">
+            <div class="role-label rl-purple">Utilité unique</div>
+            <div class="role-text">Confirmer que le changement de direction est réel (≠ faux BOS). Requis comme confirmation structurelle avant toute entrée contre-trend.</div>
+          </div>
+          <div class="how-label">3 conditions simultanées obligatoires</div>
+          <ul class="steps">
+            <li>1. Formation d'un Breaker (Full Swing ou Failure Swing)</li>
+            <li>2. Dépassement du high du Breaker avec clôture</li>
+            <li>3. Imbalance visible dans la jambe de break</li>
+          </ul>
+          <div class="not-box">✗ Sans les 3 simultanément, ce n'est pas un vrai MSS. C'est encore un faux BOS de la phase A.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- PHASE 3 — IDENTIFICATION DU SETUP -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="phase-block" id="p3">
+    <div class="phase-head">
+      <div class="phase-num pn-3">PHASE 04</div>
+      <div class="phase-title-block">
+        <div class="phase-title">Identification du Setup — Timing et Signal</div>
+        <div class="phase-desc">Attendre la convergence : le bon endroit + le bon moment + la bonne confirmation</div>
+      </div>
+      <div class="phase-when">Fenêtre macro active<br><span style="color:var(--t3)">15h45-16h15 · 19h45-20h15 Paris</span></div>
+    </div>
+
+    <div class="tools-grid">
+
+      <!-- SESSIONS & MACROS -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-cyan">⏱️</div>
+          <div>
+            <div class="tool-name">Sessions & Macro Windows</div>
+            <div class="tool-source">IPTA · Fix Price · Zine</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-cyan">
+            <div class="role-label rl-cyan">Utilité unique</div>
+            <div class="role-text">Définir les SEULS moments où entrer est valide. Hors fenêtre macro = attendre. Le niveau seul ne suffit pas — le timing est obligatoire.</div>
+          </div>
+          <div class="how-label">Fenêtres valides (heure Paris)</div>
+          <ul class="steps">
+            <li>London : 08h45-09h15 Paris (macro principale)</li>
+            <li>NY AM ★ : 15h45-16h15 Paris (meilleure fenêtre)</li>
+            <li>NY AM sec. : 16h45-17h15 Paris</li>
+            <li>NY PM : 19h45-20h15 · 20h45-21h15 Paris</li>
+          </ul>
+          <div class="not-box">✗ Hors macro = pas d'entrée. Si la macro ne produit pas d'injection de vitesse → journée chaotique → fermer les charts.</div>
+        </div>
+      </div>
+
+      <!-- SSMT -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-cyan">🔬</div>
+          <div>
+            <div class="tool-name">SSMT — Sequential SMT</div>
+            <div class="tool-source">QT Bucko</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-cyan">
+            <div class="role-label rl-cyan">Utilité unique</div>
+            <div class="role-text">Confirmer QUAND le prix est prêt à reverser ou s'étendre. C'est le déclencheur temporel du setup. Sans SSMT = aucun trade.</div>
+          </div>
+          <div class="how-label">Comment valider</div>
+          <ul class="steps">
+            <li>Un asset prend le H/L du quarter précédent · l'autre échoue (Turtle Suit ≠ Failure Swing)</li>
+            <li>Doit se former du bon côté du True Open (SSMT bullish &lt; TWO)</li>
+            <li>Idéalement : wick + clôture au-delà du niveau de référence</li>
+            <li>2 stages : SSMT HTF (1H) → SSMT LTF (5min) = signal le plus puissant</li>
+          </ul>
+          <div class="not-box">✗ SSMT opposé à la narrative HTF = retracement vers FVG puis continuation. Ne pas trader contra-trend.</div>
+        </div>
+      </div>
+
+      <!-- PSP -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-cyan">📍</div>
+          <div>
+            <div class="tool-name">PSP — Precision Swing Point</div>
+            <div class="tool-source">QT Bucko</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-cyan">
+            <div class="role-label rl-cyan">Utilité unique</div>
+            <div class="role-text">Confirmer que le SSMT va tenir (reversal) OU anticiper le SSMT avant qu'il ne se forme. Précision supplémentaire sur le candle créateur.</div>
+          </div>
+          <div class="how-label">Comment</div>
+          <ul class="steps">
+            <li>Pattern 3 candles : C2 = wick plus grand que C1 et C3 + clôtures divergentes entre NQ et ES</li>
+            <li>PSP sur même TF que SSMT → confirme que le SSMT va tenir</li>
+            <li>PSP avant le SSMT → C3 va turtle-suiter C2 → SSMT en cours</li>
+            <li>PSPs back-to-back sans mouvement → consolidation → rester dehors</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SMT NQ/ES -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-cyan">🔗</div>
+          <div>
+            <div class="tool-name">SMT ES/NQ (Intermarché)</div>
+            <div class="tool-source">IPTA · Fix Price · Tous</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-cyan">
+            <div class="role-label rl-cyan">Utilité unique</div>
+            <div class="role-text">Confirmation intermarché obligatoire avant l'entrée. SMR sans SMT = piège. C'est la 2ème des 3 confirmations obligatoires.</div>
+          </div>
+          <div class="how-label">Signaux</div>
+          <ul class="steps">
+            <li>SMT Bullish : NQ lower low + ES higher low → long NQ</li>
+            <li>SMT Bearish : NQ higher high + ES lower high → short NQ</li>
+            <li>SMT des deux côtés simultanément = chaos → ne pas trader</li>
+            <li>SMT absent → sortir uniquement à T1 (pas de T2/T3)</li>
+          </ul>
+          <div class="not-box">✗ SMT seul sans contexte (liquidité + HTF + macro) = erreur critique. Toujours combiner avec les autres confirmations.</div>
+        </div>
+      </div>
+
+      <!-- SMT FILL -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-cyan">🔲</div>
+          <div>
+            <div class="tool-name">SMT Fill</div>
+            <div class="tool-source">QT Bucko</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-cyan">
+            <div class="role-label rl-cyan">Utilité unique</div>
+            <div class="role-text">Confirmer qu'un FVG va tenir via divergence intermarché. Complémentaire du SSMT — compare le comportement dans les gaps (pas aux highs/lows).</div>
+          </div>
+          <div class="how-label">Comment</div>
+          <ul class="steps">
+            <li>FVG formé au même moment sur ≥2 assets corrélés</li>
+            <li>Asset A trade dans son gap · Asset B échoue → SMT Fill Variant 1</li>
+            <li>Variant 3 (le plus puissant) : A remplit complètement le gap · B échoue</li>
+            <li>Modèle SSMT+SMT Fill : SSMT → 1er FVG post-SSMT → monitorer SMT Fill → entrée</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- PHASE 4 — ENTRÉE -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="phase-block" id="p4">
+    <div class="phase-head">
+      <div class="phase-num pn-4">PHASE 05</div>
+      <div class="phase-title-block">
+        <div class="phase-title">Entrée — Précision d'Exécution</div>
+        <div class="phase-desc">Le bon endroit sur le bon niveau avec la bonne confirmation structurelle</div>
+      </div>
+      <div class="phase-when">Intra-macro<br><span style="color:var(--t3)">Dans la fenêtre active</span></div>
+    </div>
+
+    <div class="tools-grid">
+
+      <!-- HIPPO H1 -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-green">🦛</div>
+          <div>
+            <div class="tool-name">HIPPO H1</div>
+            <div class="tool-source">Goldbach Trifecta · HIPPO doc</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-green">
+            <div class="role-label rl-green">Utilité unique</div>
+            <div class="role-text">Zone d'entrée précise sur le H1. Le HIPPO est le Point of Interest institutionnel d'où le prix repart. C'est l'endroit exact, pas une direction.</div>
+          </div>
+          <div class="how-label">Qualifier la force du HIPPO — dans cet ordre</div>
+          <ul class="steps">
+            <li>1. Est-il dans la Zone Bleue [23-35% / 65-77%] ? (si Zone Rouge → faible)</li>
+            <li>2. Est-il du côté du biais Fix Price ?</li>
+            <li>3. Est-il sur un niveau institutionnel (FVG 17/83% ou OB 11/89%) ?</li>
+            <li>4. Est-il vierge (jamais testé ou testé 1 seule fois) ?</li>
+          </ul>
+          <div class="not-box">✗ HIPPO déjà testé 2 fois = mort. HIPPO sans niveau sous-jacent = zone de passage seulement.</div>
+        </div>
+      </div>
+
+      <!-- TCISD -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-green">🎯</div>
+          <div>
+            <div class="tool-name">TCISD — True CiSD</div>
+            <div class="tool-source">QT Bucko</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-green">
+            <div class="role-label rl-green">Utilité unique</div>
+            <div class="role-text">Signal d'entrée précis post-SSMT. Donne le meilleur RR en entrant sur le candle créateur du SSMT plutôt que sur le displacement classique.</div>
+          </div>
+          <div class="how-label">Séquence</div>
+          <ul class="steps">
+            <li>1. SSMT formé → identifier le PREMIER candle qui prend le H/L de référence</li>
+            <li>2. Marquer l'OPEN de ce candle (pas close, pas wick)</li>
+            <li>3. Attendre clôture au-dessus (bullish) ou en-dessous (bearish) de cet open</li>
+            <li>4. Entrée : retest du corps du TCISD · Stop : low du SSMT</li>
+          </ul>
+          <div class="not-box">✗ Max 2 disrespects tolérables. Au 3ème → abandonner. Si disrespected → le SSMT va probablement aussi échouer.</div>
+        </div>
+      </div>
+
+      <!-- CZ M5 (ZINE) -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-green">📉</div>
+          <div>
+            <div class="tool-name">CZ M5 + 50% Breaker (Zine)</div>
+            <div class="tool-source">Zine</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-green">
+            <div class="role-label rl-green">Utilité unique</div>
+            <div class="role-text">Structure d'entrée précise sur le lower timeframe (M5 uniquement). Lit le Market Maker Model au niveau micro et entre sur le 50% du Breaker après SMR complet.</div>
+          </div>
+          <div class="how-label">Conditions obligatoires</div>
+          <ul class="steps">
+            <li>1. Prix du bon côté du 7h30 Open (discount ou premium)</li>
+            <li>2. CZ identifiée sur M5 (range serré visible)</li>
+            <li>3. Stage 1 + Stage 2 + SMR complétés (ne pas sauter une étape)</li>
+            <li>4. Retrace au 50% du Breaker + rejet visible sur ce 50%</li>
+          </ul>
+          <div class="not-box">✗ Ne jamais entrer sur le SMR lui-même. Attendre que le prix revienne au 50% du Breaker avec rejet confirmé.</div>
+        </div>
+      </div>
+
+      <!-- GOLDBACH REVERSAL 1 -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-green">📐</div>
+          <div>
+            <div class="tool-name">Goldbach Structure Shift — Reversal 1</div>
+            <div class="tool-source">Goldbach Trifecta</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-green">
+            <div class="role-label rl-green">Utilité unique</div>
+            <div class="role-text">Setup opérationnel sur les niveaux Goldbach. Confirme qu'un niveau institutionnel va tenir via la séquence Gap → Close → Retest → Block → Break.</div>
+          </div>
+          <div class="how-label">Pattern Bearish (miroir pour Bullish)</div>
+          <ul class="steps">
+            <li>1. Gap se forme AU-DESSUS d'un niveau Goldbach</li>
+            <li>2. Body close EN-DESSOUS du niveau (wick seul = invalide)</li>
+            <li>3. Prix remonte pour tester le gap → c'est là qu'on attend</li>
+            <li>4. Block se forme AU niveau + le défend → ENTRÉE SHORT sur cassure du block</li>
+          </ul>
+          <div class="not-box">✗ Un wick qui touche le niveau sans body close ne valide JAMAIS un Goldbach Structure Shift.</div>
+        </div>
+      </div>
+
+      <!-- CSD / IFVG -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-green">🔁</div>
+          <div>
+            <div class="tool-name">CSD — Change in State of Delivery</div>
+            <div class="tool-source">IPTA · Fix Price</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-green">
+            <div class="role-label rl-green">Utilité unique</div>
+            <div class="role-text">1ère des 3 confirmations obligatoires. Confirme que l'algorithme a changé son mode de livraison (bullish → bearish ou inverse). Requis sur tout retournement.</div>
+          </div>
+          <div class="how-label">Comment</div>
+          <ul class="steps">
+            <li>Breaker Block validé (Full Swing ou Failure Swing)</li>
+            <li>OU IFVG (Inverted FVG) créé</li>
+            <li>OU les deux combinés → le plus fiable</li>
+            <li>C'est la signature que le programme de livraison a changé</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- PHASE 5 — GESTION -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="phase-block" id="p5">
+    <div class="phase-head">
+      <div class="phase-num pn-5">PHASE 06</div>
+      <div class="phase-title-block">
+        <div class="phase-title">Gestion — Après l'Entrée</div>
+        <div class="phase-desc">Targets · Validation continue · Sorties · Invalidations</div>
+      </div>
+      <div class="phase-when">En position<br><span style="color:var(--t3)">Post-entrée</span></div>
+    </div>
+
+    <div class="tools-grid">
+
+      <!-- IMMEDIATE REBALANCE -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-orange">✅</div>
+          <div>
+            <div class="tool-name">Immediate Rebalance</div>
+            <div class="tool-source">IPTA · Fix Price</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-orange">
+            <div class="role-label rl-orange">Utilité unique</div>
+            <div class="role-text">Validation algorithmique immédiate de l'entrée. Après avoir entré, le prix DOIT revenir dans une imbalance ou Breaker. Absence = réduire immédiatement.</div>
+          </div>
+          <div class="how-label">Protocole post-entrée</div>
+          <ul class="steps">
+            <li>Rebalance présent → TENIR · viser target complète · déplacer SL progressivement</li>
+            <li>Rebalance absent → RÉDUIRE 50% · stop breakeven immédiat</li>
+            <li>Rebalance puis cassure → SORTIE IMMÉDIATE 100% · programme invalidé</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- LEFT/RIGHT SIDE -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-orange">↔️</div>
+          <div>
+            <div class="tool-name">Left Side vs Right Side</div>
+            <div class="tool-source">IPTA · Fix Price</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-orange">
+            <div class="role-label rl-orange">Utilité unique</div>
+            <div class="role-text">Validation continue du programme pendant la gestion. Les niveaux créés sur la gauche de la courbe DOIVENT tenir sur la droite. Si non → sortie immédiate.</div>
+          </div>
+          <div class="how-label">Règle</div>
+          <ul class="steps">
+            <li>CB/BC violés sur la gauche → doivent agir comme support sur la droite</li>
+            <li>Chaque retracement doit rester au-dessus du bas du retracement précédent (left side)</li>
+            <li>Right side repasse sous les niveaux invalidants du left side → programme mort → sortir 100%</li>
+          </ul>
+          <div class="not-box">✗ Pas d'espoir, pas d'ego sur les invalidations. Le programme est mort = on sort. Point.</div>
+        </div>
+      </div>
+
+      <!-- TARGETS HIERARCHY -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-orange">🏁</div>
+          <div>
+            <div class="tool-name">Hiérarchie des Targets</div>
+            <div class="tool-source">Fix Price · Zine · Goldbach · IPTA</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-orange">
+            <div class="role-label rl-orange">Utilité unique</div>
+            <div class="role-text">Définir QUAND sortir partiellement et totalement selon le type de journée. Pas de subjectivité — la hiérarchie est fixe.</div>
+          </div>
+          <div class="how-label">Jour Normal</div>
+          <ul class="steps">
+            <li>T1 : Original Consolidation · 7h30 Open · premier Goldbach → 50% de la position · stop BE</li>
+            <li>T2 : Fix Price · Liquidity Void 29/71% → 30% supplémentaires</li>
+            <li>T3 : IMP24 · Daily Open · BSL/SSL HTF → runner 20%</li>
+            <li>Règle 5-10 pts avant : sortir toujours 5-10 pts AVANT la target exacte</li>
+          </ul>
+          <div class="not-box">✗ Jour choppy : T1 = sortie totale. Ne jamais viser T2/T3 sans SMT confirmé. Aucune prise partielle avant T1.</div>
+        </div>
+      </div>
+
+      <!-- LRLR -->
+      <div class="tool">
+        <div class="tool-head">
+          <div class="tool-icon ti-orange">🚀</div>
+          <div>
+            <div class="tool-name">LRLR — Low Resistance Liquidity Run</div>
+            <div class="tool-source">IPTA · Fix Price</div>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="role-box rb-orange">
+            <div class="role-label rl-orange">Utilité unique</div>
+            <div class="role-text">Reconnaître un mouvement d'expansion haute probabilité vers le draw. Quand le LRLR est confirmé (rebalance + retest) → tenir le runner jusqu'à la cible finale.</div>
+          </div>
+          <div class="how-label">4 étapes</div>
+          <ul class="steps">
+            <li>1. Purge → stop run PDH/PDL</li>
+            <li>2. Rebalance instantané sur IFVG/CB (si absent = pas de LRLR)</li>
+            <li>3. Retest → dernière opportunité d'entrée ou de taille</li>
+            <li>4. Ignition → expansion en ligne droite → pas de sortie avant la cible</li>
+          </ul>
+          <div class="not-box">✗ Un LRLR n'apparaît JAMAIS hors des fenêtres macro. Si rebalance absent = programme invalidé.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="sdiv"></div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- RÉSOLUTION DES REDONDANCES -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div style="margin-bottom:48px">
+    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:6px;">Résolution des Redondances Apparentes</div>
+    <div style="color:var(--t2);font-size:12px;margin-bottom:24px;">Quand deux outils semblent faire la même chose — lequel utiliser et pourquoi</div>
+
+    <table class="resolve-table">
+      <tr><th>Concept A</th><th>Concept B</th><th>Ce qui les différencie</th></tr>
+      <tr>
+        <td>Fix Price CME</td>
+        <td>7h30 Open (Zine)</td>
+        <td>Fix Price = ancre du lendemain (veille). 7h30 Open = équilibre pré-marché du matin. Les deux ensemble définissent premium/discount à deux moments différents. Utiliser les deux — pas un ou l'autre.</td>
+      </tr>
+      <tr>
+        <td>SSMT (QT)</td>
+        <td>SMT ES/NQ (classique)</td>
+        <td>SSMT compare entre deux QUARTERS consécutifs (dimension temporelle). SMT classique compare à n'importe quel moment. SSMT = timing du setup. SMT classique = confirmation d'entrée. Les deux ensemble = signal le plus puissant.</td>
+      </tr>
+      <tr>
+        <td>TCISD</td>
+        <td>CZ M5 50% Breaker (Zine)</td>
+        <td>TCISD = entrée sur le candle créateur du SSMT (TF du SSMT). CZ M5 = lecture micro de la structure d'entrée (M5 uniquement). Ils opèrent sur des TF différents et sont complémentaires, pas concurrents.</td>
+      </tr>
+      <tr>
+        <td>MSS (3 conditions)</td>
+        <td>CSD</td>
+        <td>MSS = confirmation structurelle que le retournement est valide. CSD = confirmation algorithmique que la livraison a changé. MSS est visible sur le graphique (structure). CSD est la signature d'intention (Breaker/IFVG). Les deux = C1 de la checklist d'entrée.</td>
+      </tr>
+      <tr>
+        <td>AMD Cycle</td>
+        <td>Market Maker Model</td>
+        <td>AMD = lecture de PHASE (où on est dans le cycle). MMM = lecture de STRUCTURE (anatomie complète du mouvement gauche → droite). AMD dit "on est en phase M". MMM dit "on est au Stage 2 de la sell side curve". L'un ne remplace pas l'autre.</td>
+      </tr>
+      <tr>
+        <td>HIPPO H1</td>
+        <td>Goldbach Reversal 1</td>
+        <td>HIPPO = zone d'entrée précise (PD Array). Goldbach Reversal 1 = pattern structurel de validation d'un niveau. Le Goldbach Reversal qualifie SI le niveau va tenir. Le HIPPO dit OÙ est ce niveau. Utiliser Goldbach Reversal pour valider, HIPPO pour entrer.</td>
+      </tr>
+      <tr>
+        <td>Inducements</td>
+        <td>Targets (IMP10/Goldbach Voids)</td>
+        <td>Inducements = zones de liquidité À PRENDRE avant le vrai mouvement (point B pré-move). Targets = zones d'arrivée du vrai mouvement (point B post-entrée). L'inducement est consommé AVANT l'entrée. La target est visée APRÈS l'entrée.</td>
+      </tr>
+      <tr>
+        <td>PSP</td>
+        <td>SMT Fill</td>
+        <td>PSP = divergence de CLÔTURE sur un swing point (structure). SMT Fill = divergence dans un FVG (imbalance). PSP précède ou confirme le SSMT. SMT Fill confirme qu'un FVG post-SSMT va tenir. Ils interviennent à des moments différents de la même séquence.</td>
+      </tr>
+      <tr>
+        <td>Premium/Discount (Fix Price)</td>
+        <td>True Opens (QT)</td>
+        <td>Premium/Discount via Fix Price = filtre de prix dans le range. True Opens = filtre temporel (premium/discount dans le temps). Les deux disent la même chose mais l'un via le prix, l'autre via le temps. Convergence des deux = confirmation renforcée.</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- CHECKLIST ULTRA-COMPACTE -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div style="background:var(--s1);border:1px solid var(--bd2);border-radius:8px;padding:28px 32px;margin-bottom:48px;">
+    <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:4px;">Checklist d'Exécution en Session</div>
+    <div style="color:var(--t2);font-size:11px;margin-bottom:24px;font-family:'IBM Plex Mono',monospace;letter-spacing:1px;text-transform:uppercase;">À faire dans cet ordre · sans sauter d'étape</div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">① Ancres (veille)</div>
+        <ul class="steps">
+          <li>Fix Price calculé et tracé</li>
+          <li>IMP10/24 tracés</li>
+          <li>Goldbach FIB tracé</li>
+          <li>True Week Open noté</li>
+        </ul>
+      </div>
+
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--blue);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">② Biais (matin)</div>
+        <ul class="steps">
+          <li>Position QT de la semaine</li>
+          <li>Daily Bias signature</li>
+          <li>Inducements HTF → Moyens cartographiés</li>
+          <li>Environnement : HP / LP / NO TRADE ?</li>
+        </ul>
+      </div>
+
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--purple);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">③ Phase (en session)</div>
+        <ul class="steps">
+          <li>AMD : Accumulation / Manip / Distribution ?</li>
+          <li>MMM : sell side ou buy side de la courbe ?</li>
+          <li>BTS / STB visible ?</li>
+          <li>Premium ou Discount du Fix Price ?</li>
+        </ul>
+      </div>
+
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">④ Setup (dans la macro)</div>
+        <ul class="steps">
+          <li>Fenêtre macro active ? (15h45-16h15 Paris)</li>
+          <li>SSMT formé entre quarters consécutifs ?</li>
+          <li>PSP confirme le SSMT ?</li>
+          <li>SMT ES/NQ aligné avec le biais ?</li>
+        </ul>
+      </div>
+
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--green);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">⑤ Entrée</div>
+        <ul class="steps">
+          <li>C1 : CSD confirmé (Breaker ou IFVG) ?</li>
+          <li>HIPPO H1 vierge dans Zone Bleue du côté du biais ?</li>
+          <li>TCISD : open du candle créateur marqué · clôture de validation reçue ?</li>
+          <li>RR minimum 1:2 avant la target ?</li>
+        </ul>
+      </div>
+
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--orange);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">⑥ Gestion</div>
+        <ul class="steps">
+          <li>Rebalance présent ? → tenir · sinon réduire</li>
+          <li>Left side tient ? → programme actif</li>
+          <li>T1 atteint → 50% sorti · stop BE</li>
+          <li>T2/T3 → selon SMT et type de journée</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script src="../nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time × Price — Training Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #0a0e1a;
+    --bg2:      #0d1225;
+    --bg3:      #060b18;
+    --border:   #1e2d5a;
+    --blue:     #3b82f6;
+    --blue2:    #60a5fa;
+    --blue3:    #1d4ed8;
+    --gold:     #fbbf24;
+    --green:    #10b981;
+    --red:      #ef4444;
+    --text:     #e8eaf6;
+    --muted:    #6b7280;
+    --muted2:   #4a5568;
+    --font:     'IBM Plex Mono', 'Courier New', monospace;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0d1225, #141b35);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 28px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo { font-size: 11px; letter-spacing: 4px; color: #4a7fff; text-transform: uppercase; font-weight: 700; }
+  .title { font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -0.5px; margin-top: 2px; }
+  .badge {
+    background: linear-gradient(135deg, #1a3a8f, #2563eb);
+    color: #93c5fd; font-size: 11px; padding: 4px 14px;
+    border-radius: 20px; letter-spacing: 2px; text-transform: uppercase;
+    font-weight: 700; border: 1px solid #2563eb44;
+  }
+
+  /* NAV */
+  .nav {
+    display: flex; gap: 0; padding: 0 28px;
+    border-bottom: 1px solid var(--border); background: var(--bg2);
+  }
+  .nav-btn {
+    display: flex; align-items: center; gap: 7px;
+    padding: 14px 20px; background: none; border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--muted2); font-size: 12px; letter-spacing: 1.5px;
+    text-transform: uppercase; font-weight: 600;
+    cursor: pointer; font-family: var(--font); transition: all .2s;
+  }
+  .nav-btn.active { color: var(--blue2); border-bottom-color: var(--blue); }
+  .nav-btn:hover:not(.active) { color: var(--muted); }
+
+  /* MAIN */
+  .main { padding: 28px; max-width: 1100px; margin: 0 auto; }
+  .tab { display: none; }
+  .tab.active { display: block; }
+
+  /* GRID */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media(max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+
+  /* CARD */
+  .card {
+    background: linear-gradient(135deg, #0d1225, #111827);
+    border: 1px solid var(--border); border-radius: 12px; padding: 22px;
+    margin-bottom: 0;
+  }
+  .card-title {
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: #4a7fff; font-weight: 700; margin-bottom: 18px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* FORM */
+  label.lbl {
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px; display: block;
+  }
+  input, select, textarea {
+    width: 100%; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 14px; color: var(--text);
+    font-size: 15px; font-family: var(--font); outline: none;
+    transition: border-color .2s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--blue); }
+  textarea { resize: vertical; min-height: 60px; font-size: 13px; }
+  select { font-size: 13px; cursor: pointer; }
+  .row { display: flex; gap: 14px; margin-bottom: 16px; }
+  .field { flex: 1; }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 11px 20px; border-radius: 8px; border: none;
+    font-size: 12px; font-family: var(--font); letter-spacing: 1.5px;
+    text-transform: uppercase; font-weight: 700; cursor: pointer; transition: all .2s;
+  }
+  .btn-primary { background: linear-gradient(135deg, var(--blue3), var(--blue)); color: #fff; }
+  .btn-primary:hover { filter: brightness(1.15); }
+  .btn-success { background: linear-gradient(135deg, #065f46, var(--green)); color: #fff; }
+  .btn-danger  { background: linear-gradient(135deg, #7f1d1d, var(--red)); color: #fff; }
+  .btn-ghost   { background: var(--border); color: var(--text); }
+  .btn-ghost:hover { background: #2a3f6f; }
+  .btn-sm      { padding: 6px 12px; font-size: 11px; }
+  .btn-full    { width: 100%; margin-top: 8px; }
+  .btn-icon    { background: none; border: none; color: var(--muted2); cursor: pointer; padding: 4px; font-size: 16px; }
+  .btn-icon:hover { color: var(--red); }
+
+  /* RESULT BOX */
+  .result-box {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px; margin-bottom: 14px;
+  }
+  .result-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 0; border-bottom: 1px solid #0d1a35;
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-label { font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+  .result-val   { font-size: 15px; color: var(--blue2); font-weight: 700; }
+  .result-gold  { color: var(--gold) !important; }
+
+  /* HIGHLIGHT */
+  .highlight {
+    background: linear-gradient(135deg, #1a3a8f22, #2563eb11);
+    border: 1px solid #2563eb44; border-radius: 8px;
+    padding: 11px 16px; margin-bottom: 8px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .highlight-label { font-size: 11px; color: var(--muted); }
+  .highlight-val   { font-size: 14px; color: var(--blue2); font-weight: 700; }
+
+  /* TAGS */
+  .tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 12px; font-size: 10px;
+    font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  }
+  .tag-blue   { background: #1e3a8a33; color: var(--blue2);  border: 1px solid #60a5fa44; }
+  .tag-green  { background: #064e3b33; color: #34d399;        border: 1px solid #34d39944; }
+  .tag-red    { background: #7f1d1d33; color: #f87171;        border: 1px solid #f8717144; }
+  .tag-gold   { background: #78350f33; color: var(--gold);    border: 1px solid #fbbf2444; }
+  .tag-gray   { background: #27272a33; color: #9ca3af;        border: 1px solid #9ca3af44; }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 18px 0; }
+
+  /* STATS GRID */
+  .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 24px; }
+  @media(max-width:600px){ .stats-grid { grid-template-columns: repeat(2,1fr); } }
+  .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 18px; text-align: center; }
+  .stat-num  { font-size: 32px; font-weight: 700; color: var(--blue2); display: block; }
+  .stat-lbl  { font-size: 10px; color: var(--muted2); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; display: block; }
+
+  /* PROGRESS BAR */
+  .progress-wrap { background: var(--bg3); border-radius: 999px; height: 8px; overflow: hidden; margin: 8px 0; }
+  .progress-bar  { height: 100%; border-radius: 999px; transition: width .6s ease; }
+  .bar-blue { background: linear-gradient(90deg, var(--blue3), var(--blue2)); }
+  .bar-gold { background: linear-gradient(90deg, #d97706, var(--gold)); }
+
+  /* ENTRY CARD */
+  .entry-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 20px; margin-bottom: 10px;
+    transition: border-color .2s;
+  }
+  .entry-card.validated { border-color: #065f46; }
+  .entry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .entry-meta   { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+  /* MINI GRID */
+  .mini-grid4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 12px; }
+  @media(max-width:600px){ .mini-grid4 { grid-template-columns: repeat(2,1fr); } }
+  .mini-cell  { background: var(--bg3); border-radius: 8px; padding: 10px; text-align: center; }
+  .mini-lbl   { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+  .mini-val   { font-size: 15px; color: var(--blue2); font-weight: 700; }
+
+  /* TAGS WRAP */
+  .tags-wrap  { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+
+  /* EVAL GRID */
+  .eval-grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 14px; }
+  @media(max-width:600px){ .eval-grid3 { grid-template-columns: 1fr; } }
+
+  /* PROTOCOL STEPS */
+  .steps-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; }
+  @media(max-width:800px){ .steps-grid { grid-template-columns: repeat(2,1fr); } }
+  .step-cell  { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+  .step-n     { font-size: 28px; font-weight: 700; color: var(--blue3); margin-bottom: 6px; }
+  .step-title { font-size: 12px; color: var(--blue2); font-weight: 700; margin-bottom: 6px; }
+  .step-desc  { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+  /* PHASE ROW */
+  .phase-row {
+    display: flex; align-items: center; gap: 16px; padding: 14px;
+    border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border);
+    background: var(--bg3);
+  }
+  .phase-row.active { background: #1e3a8a22; border-color: #2563eb44; }
+  .phase-row.done   { background: #065f4622; border-color: #065f4644; }
+  .phase-icon {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; flex-shrink: 0; color: #fff;
+  }
+  .phase-icon.active { background: var(--blue3); }
+  .phase-icon.done   { background: #065f46; color: #34d399; }
+
+  /* CRITERIA ROW */
+  .crit-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px; border-radius: 8px; margin-bottom: 8px;
+    background: var(--bg3); border: 1px solid var(--border);
+  }
+  .crit-row.done { background: #065f4622; border-color: #065f4644; }
+  .crit-left { display: flex; align-items: center; gap: 10px; }
+
+  /* RATE ROW */
+  .rate-row { margin-bottom: 14px; }
+  .rate-header { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 11px; }
+
+  /* EMPTY STATE */
+  .empty { text-align: center; padding: 60px; }
+  .empty-icon { font-size: 40px; margin-bottom: 16px; }
+  .empty-text { color: var(--muted2); font-size: 14px; }
+  .empty-sub  { color: var(--muted2); font-size: 12px; margin-top: 8px; }
+
+  /* EVAL BOX */
+  .eval-box { background: var(--bg3); border-radius: 8px; padding: 16px; }
+  .eval-box-title { font-size: 10px; color: #4a7fff; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; font-weight: 700; }
+
+  /* OBS */
+  .obs-text { font-size: 11px; color: var(--muted2); font-style: italic; margin-top: 4px; }
+
+  /* GB CONFLUENCE SECTION */
+  .gb-sub { font-size: 10px; color: var(--muted2); letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase; }
+
+  /* LEVEL ROWS */
+  .lvl-row { display: flex; justify-content: space-between; align-items: flex-end; padding: 8px 0; border-bottom: 1px solid #0d1a35; }
+  .lvl-row:last-child { border-bottom: none; }
+  .lvl-name  { font-size: 11px; color: var(--muted); }
+  .lvl-gb    { font-size: 10px; color: var(--muted2); margin-top: 2px; }
+  .lvl-price { font-size: 15px; font-weight: 700; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg3); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .mt16 { margin-top: 16px; }
+  .mt20 { margin-top: 20px; }
+  .mb8  { margin-bottom: 8px; }
+  .mb12 { margin-bottom: 12px; }
+  .mb16 { margin-bottom: 16px; }
+  .bold { font-weight: 700; }
+  .c-blue  { color: var(--blue2); }
+  .c-gold  { color: var(--gold); }
+  .c-red   { color: #f87171; }
+  .c-green { color: #34d399; }
+  .c-muted { color: var(--muted); }
+  .flex-between { display: flex; justify-content: space-between; align-items: center; }
+  .flex-gap8 { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .f700 { font-weight: 700; }
+  .f11  { font-size: 11px; }
+  .f12  { font-size: 12px; }
+  .f13  { font-size: 13px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <div class="logo">Time × Price</div>
+    <div class="title">Training Hub</div>
+  </div>
+  <div class="badge">NQ Futures</div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="nav-btn active" onclick="showTab('calc', this)">📈 Calculateur</button>
+  <button class="nav-btn" onclick="showTab('journal', this)">📒 Journal (<span id="entry-count">0</span>)</button>
+  <button class="nav-btn" onclick="showTab('progress', this)">🎯 Progression</button>
+</div>
+
+<div class="main">
+
+  <!-- ═══════════════ CALCULATEUR ═══════════════ -->
+  <div id="tab-calc" class="tab active">
+    <div class="grid2">
+
+      <!-- INPUT -->
+      <div class="card">
+        <div class="card-title">📐 Calculateur de Move</div>
+
+        <div class="row">
+          <div class="field">
+            <label class="lbl">High du move</label>
+            <input type="number" id="inp-high" placeholder="23895" oninput="onInputChange()">
+          </div>
+          <div class="field">
+            <label class="lbl">Low du move</label>
+            <input type="number" id="inp-low" placeholder="23200" oninput="onInputChange()">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label class="lbl">Origine</label>
+            <select id="inp-origin">
+              <option value="high">Depuis le HIGH (move baissier)</option>
+              <option value="low">Depuis le LOW (move haussier)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="lbl">Timeframe</label>
+            <select id="inp-tf">
+              <option value="1">M1 (1 min)</option>
+              <option value="5">M5 (5 min)</option>
+              <option value="15">M15 (15 min)</option>
+              <option value="60" selected>H1 (60 min)</option>
+              <option value="240">H4 (4h)</option>
+              <option value="1440">D1 (Jour)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="gb-sub">Confluence Goldbach (optionnel)</div>
+
+        <div class="row">
+          <div class="field">
+            <label class="lbl">Range High (GB)</label>
+            <input type="number" id="inp-rh" placeholder="24000" oninput="onInputChange()">
+          </div>
+          <div class="field">
+            <label class="lbl">Range Low (GB)</label>
+            <input type="number" id="inp-rl" placeholder="23000" oninput="onInputChange()">
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-full" onclick="calculate()">🔢 Calculer</button>
+        <button class="btn btn-success btn-full mt16" id="add-btn" style="display:none" onclick="addToJournal()">+ Ajouter au Journal</button>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="card">
+        <div class="card-title">⚡ Résultats</div>
+        <div id="result-empty" style="text-align:center;color:#374151;padding:40px 0;font-size:13px;">
+          Entrez un move et cliquez Calculer
+        </div>
+        <div id="result-content" style="display:none;">
+
+          <div class="result-box">
+            <div class="result-row">
+              <span class="result-label">Amplitude</span>
+              <span class="result-val" id="r-pts">—</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">Ticks (×4)</span>
+              <span class="result-val" id="r-ticks">—</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">Cercle le plus proche</span>
+              <span class="result-val result-gold" id="r-circle">—</span>
+            </div>
+          </div>
+
+          <div class="card-title">🕐 Timings</div>
+          <div id="r-timings"></div>
+
+          <div class="card-title mt16">📍 Niveaux Cibles</div>
+          <div id="r-levels"></div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- PROTOCOL -->
+    <div class="card mt20">
+      <div class="card-title">📋 Protocole — 5 Étapes</div>
+      <div class="steps-grid">
+        <div class="step-cell">
+          <div class="step-n">1</div>
+          <div class="step-title">Mesurer</div>
+          <div class="step-desc">High, Low, Points, Ticks (×4)</div>
+        </div>
+        <div class="step-cell">
+          <div class="step-n">2</div>
+          <div class="step-title">Phantom</div>
+          <div class="step-desc">÷10, ÷100, ÷1000 — garder 5 à 30 barres H1</div>
+        </div>
+        <div class="step-cell">
+          <div class="step-n">3</div>
+          <div class="step-title">Projeter</div>
+          <div class="step-desc">Ligne verticale X barres depuis l'origine</div>
+        </div>
+        <div class="step-cell">
+          <div class="step-n">4</div>
+          <div class="step-title">Croiser</div>
+          <div class="step-desc">Vérifier le niveau Goldbach sur la cible</div>
+        </div>
+        <div class="step-cell">
+          <div class="step-n">5</div>
+          <div class="step-title">Attendre</div>
+          <div class="step-desc">CSD + sweep bougie H1 → entrée</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ JOURNAL ═══════════════ -->
+  <div id="tab-journal" class="tab">
+    <div id="journal-empty" class="card empty">
+      <div class="empty-icon">📒</div>
+      <div class="empty-text">Aucune entrée pour l'instant.</div>
+      <div class="empty-sub">Calculez un move et ajoutez-le au journal.</div>
+    </div>
+    <div id="journal-list"></div>
+  </div>
+
+  <!-- ═══════════════ PROGRESSION ═══════════════ -->
+  <div id="tab-progress" class="tab">
+    <div class="stats-grid">
+      <div class="stat-card"><span class="stat-num" id="s-total">0</span><span class="stat-lbl">Moves Analysés</span></div>
+      <div class="stat-card"><span class="stat-num" id="s-eval">0</span><span class="stat-lbl">Évalués</span></div>
+      <div class="stat-card"><span class="stat-num" id="s-valid">0</span><span class="stat-lbl">Validés ✓✓✓</span></div>
+      <div class="stat-card"><span class="stat-num" id="s-note">—</span><span class="stat-lbl">Note Moyenne</span></div>
+    </div>
+
+    <!-- PHASE COURANTE -->
+    <div class="card mb16" style="border-color:#2563eb44">
+      <div class="card-title">🚀 Phase Actuelle</div>
+      <div id="phase-content"></div>
+    </div>
+
+    <!-- TOUTES LES PHASES -->
+    <div class="card mb16">
+      <div class="card-title">📚 Parcours Complet</div>
+      <div id="phases-list"></div>
+    </div>
+
+    <!-- CRITÈRES -->
+    <div class="card mb16">
+      <div class="card-title">⭐ Critères pour Trader en Réel</div>
+      <div id="criteria-list"></div>
+      <div id="rates-section" style="display:none">
+        <div class="divider"></div>
+        <div class="card-title">📊 Taux de Réussite</div>
+        <div id="rates-list"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+let entries = JSON.parse(localStorage.getItem('txp_entries') || '[]');
+let lastResult = null;
+let lastInputs  = {};
+
+const GOLDBACH = [0,3,11,17,23,29,35,41,47,50,53,59,65,71,77,83,89,97,100];
+const GB_NAMES = {
+  0:"Low",3:"Reject",11:"Order Block",17:"Gap",23:"Void NGB",
+  29:"Liquidity Void",35:"Breaker NGB",41:"Breaker",47:"Mitigation",
+  50:"EQ / Rebalance",53:"Mitigation",59:"Breaker",65:"Breaker NGB",
+  71:"Liquidity Void",77:"Void NGB",83:"Gap / FVG",89:"Order Block",
+  97:"Reject",100:"High"
+};
+const CIRCLES = [36,45,90,120,180,270,360,540,720,1080,1440];
+
+function save() {
+  localStorage.setItem('txp_entries', JSON.stringify(entries));
+  document.getElementById('entry-count').textContent = entries.length;
+}
+
+// ─── TABS ────────────────────────────────────────────────────────────────────
+function showTab(id, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'journal') renderJournal();
+  if (id === 'progress') renderProgress();
+}
+
+// ─── MATH ────────────────────────────────────────────────────────────────────
+function nearestGB(rh, rl, price) {
+  if (!rh || !rl || rh <= rl) return null;
+  const pct = ((price - rl) / (rh - rl)) * 100;
+  const closest = GOLDBACH.reduce((a,b) => Math.abs(b-pct) < Math.abs(a-pct) ? b : a);
+  return { pct: pct.toFixed(1), level: closest, name: GB_NAMES[closest] };
+}
+
+function phantomTimings(ticks, tfMins) {
+  const results = [];
+  [1, 10, 100, 1000].forEach(div => {
+    const bars = Math.round(ticks / div);
+    if (bars >= 2 && bars <= 500) {
+      const mins = bars * tfMins;
+      let time = mins < 60 ? `${mins}min` : mins < 1440 ? `${(mins/60).toFixed(1)}h` : `${(mins/1440).toFixed(1)}j`;
+      results.push({ div, bars, time, label: div === 1 ? 'Brut' : `÷${div}` });
+    }
+  });
+  return results;
+}
+
+function nearestCircle(pts) {
+  return CIRCLES.reduce((a,b) => Math.abs(b-pts) < Math.abs(a-pts) ? b : a);
+}
+
+function onInputChange() { /* live update could go here */ }
+
+function calculate() {
+  const high = parseFloat(document.getElementById('inp-high').value);
+  const low  = parseFloat(document.getElementById('inp-low').value);
+  const tf   = parseInt(document.getElementById('inp-tf').value);
+  const rh   = parseFloat(document.getElementById('inp-rh').value);
+  const rl   = parseFloat(document.getElementById('inp-rl').value);
+
+  if (isNaN(high) || isNaN(low) || high === low) return;
+
+  const pts    = Math.abs(high - low);
+  const ticks  = pts * 4;
+  const circle = nearestCircle(pts);
+  const timings = phantomTimings(ticks, tf);
+  const lo     = Math.min(high, low);
+
+  const levels = [
+    { label: "50% — Symétrie",    val: lo + pts*0.5,   color: "gold" },
+    { label: "61.8% — OTE",       val: lo + pts*0.618, color: "blue" },
+    { label: "75%",               val: lo + pts*0.75,  color: "blue" },
+    { label: "Ext. −180 pts",     val: lo - 180,       color: "red"  },
+    { label: "Ext. −243 pts",     val: lo - 243,       color: "red"  },
+    { label: "Ext. −360 pts",     val: lo - 360,       color: "red"  },
+  ];
+
+  lastResult = { high, low, pts, ticks, circle, timings, levels, tf, rh, rl };
+  lastInputs  = { high, low, tf, rh, rl };
+
+  // Render
+  document.getElementById('result-empty').style.display = 'none';
+  document.getElementById('result-content').style.display = 'block';
+  document.getElementById('add-btn').style.display = 'flex';
+
+  document.getElementById('r-pts').textContent   = `${pts} pts`;
+  document.getElementById('r-ticks').textContent = `${ticks} ticks`;
+  document.getElementById('r-circle').textContent = `${circle} (${Math.abs(pts - circle).toFixed(0)} pts d'écart)`;
+
+  // Timings
+  const timDiv = document.getElementById('r-timings');
+  timDiv.innerHTML = timings.slice(0, 6).map(t =>
+    `<div class="highlight">
+      <span class="highlight-label">${t.label} = ${t.bars} barres</span>
+      <span class="highlight-val">⏱ ${t.time}</span>
+    </div>`
+  ).join('');
+
+  // Levels
+  const lvlDiv = document.getElementById('r-levels');
+  lvlDiv.innerHTML = levels.map(lvl => {
+    const gb = (rh && rl && !isNaN(rh) && !isNaN(rl)) ? nearestGB(rh, rl, lvl.val) : null;
+    const colorClass = lvl.color === 'gold' ? 'c-gold' : lvl.color === 'red' ? 'c-red' : 'c-blue';
+    return `<div class="lvl-row">
+      <div>
+        <div class="lvl-name">${lvl.label}</div>
+        ${gb ? `<div class="lvl-gb">GB ${gb.level}% — ${gb.name} (${gb.pct}%)</div>` : ''}
+      </div>
+      <span class="lvl-price ${colorClass}">${lvl.val.toFixed(2)}</span>
+    </div>`;
+  }).join('');
+}
+
+// ─── ADD TO JOURNAL ──────────────────────────────────────────────────────────
+function addToJournal() {
+  if (!lastResult) return;
+  const tfNames = {1:'M1',5:'M5',15:'M15',60:'H1',240:'H4',1440:'D1'};
+  const entry = {
+    id:      Date.now().toString(),
+    date:    new Date().toLocaleString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}),
+    ...lastInputs,
+    ...lastResult,
+    tfName:  tfNames[lastInputs.tf] || 'H1',
+    timingOk: null, levelOk: null, signalOk: null,
+    note: '', obs: '',
+  };
+  entries.push(entry);
+  save();
+  renderJournal();
+  renderProgress();
+  // Flash button
+  const btn = document.getElementById('add-btn');
+  btn.textContent = '✓ Ajouté !';
+  btn.classList.replace('btn-success', 'btn-ghost');
+  setTimeout(() => {
+    btn.innerHTML = '+ Ajouter au Journal';
+    btn.classList.replace('btn-ghost', 'btn-success');
+  }, 2000);
+}
+
+// ─── JOURNAL ─────────────────────────────────────────────────────────────────
+function renderJournal() {
+  const list = document.getElementById('journal-list');
+  const empty = document.getElementById('journal-empty');
+
+  if (entries.length === 0) {
+    empty.style.display = 'block';
+    list.innerHTML = '';
+    return;
+  }
+  empty.style.display = 'none';
+
+  list.innerHTML = [...entries].reverse().map(e => {
+    const validated = e.timingOk && e.levelOk && e.signalOk;
+    const hasEval   = e.timingOk !== null;
+    const timings   = (e.timings || []).filter(t => t.bars >= 2 && t.bars <= 200).slice(0,4);
+
+    return `<div class="entry-card ${validated ? 'validated' : ''}" id="ec-${e.id}">
+      <div class="entry-header">
+        <div class="entry-meta">
+          <span class="f11 c-muted">🕐 ${e.date}</span>
+          <span class="tag tag-blue">${e.tfName || 'H1'}</span>
+          ${validated ? '<span class="tag tag-green">✓ Validé</span>' : ''}
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-ghost btn-sm" onclick="toggleEval('${e.id}')">Évaluer</button>
+          <button class="btn-icon" onclick="deleteEntry('${e.id}')">🗑</button>
+        </div>
+      </div>
+
+      <div class="mini-grid4">
+        <div class="mini-cell"><div class="mini-lbl">High</div><div class="mini-val">${e.high}</div></div>
+        <div class="mini-cell"><div class="mini-lbl">Low</div><div class="mini-val">${e.low}</div></div>
+        <div class="mini-cell"><div class="mini-lbl">Amplitude</div><div class="mini-val">${e.pts} pts</div></div>
+        <div class="mini-cell"><div class="mini-lbl">Ticks</div><div class="mini-val">${e.ticks}</div></div>
+      </div>
+
+      <div class="tags-wrap">
+        ${timings.map(t => `<span class="tag tag-blue">${t.label}: ${t.bars} barres (${t.time})</span>`).join('')}
+        <span class="tag tag-gold">≈ ${e.circle} cercle</span>
+      </div>
+
+      <!-- EVAL BOX -->
+      <div id="eval-${e.id}" style="display:none">
+        <div class="eval-box">
+          <div class="eval-box-title">Évaluation du Setup</div>
+          <div class="eval-grid3">
+            ${[['timingOk','Timing correct ?'],['levelOk','Niveau respecté ?'],['signalOk','Signal présent ?']].map(([key, lbl]) => `
+              <div>
+                <div class="f11 c-muted mb8">${lbl}</div>
+                <div style="display:flex;gap:6px">
+                  <button class="btn btn-sm ${e[key]===true?'btn-success':'btn-ghost'}" style="flex:1"
+                    onclick="setBool('${e.id}','${key}',true)">✓ Oui</button>
+                  <button class="btn btn-sm ${e[key]===false?'btn-danger':'btn-ghost'}" style="flex:1"
+                    onclick="setBool('${e.id}','${key}',false)">✗ Non</button>
+                </div>
+              </div>`).join('')}
+          </div>
+          <div class="row mb8">
+            <div class="field">
+              <label class="lbl">Note /10</label>
+              <input type="number" min="0" max="10" style="width:100px" value="${e.note}"
+                onchange="setField('${e.id}','note',this.value)">
+            </div>
+          </div>
+          <div>
+            <label class="lbl">Observation</label>
+            <textarea onchange="setField('${e.id}','obs',this.value)"
+              placeholder="Ce que j'ai appris sur ce setup...">${e.obs || ''}</textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- EVAL RESULT (if evaluated & closed) -->
+      ${hasEval ? `
+        <div class="tags-wrap" id="eval-result-${e.id}">
+          <span class="tag ${e.timingOk?'tag-green':'tag-red'}">${e.timingOk?'✓':'✗'} Timing</span>
+          <span class="tag ${e.levelOk?'tag-green':'tag-red'}">${e.levelOk?'✓':'✗'} Niveau</span>
+          <span class="tag ${e.signalOk?'tag-green':'tag-red'}">${e.signalOk?'✓':'✗'} Signal</span>
+          ${e.note ? `<span class="tag tag-blue">⭐ ${e.note}/10</span>` : ''}
+          ${e.obs ? `<div class="obs-text" style="width:100%">"${e.obs}"</div>` : ''}
+        </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function toggleEval(id) {
+  const box = document.getElementById('eval-' + id);
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+}
+
+function setBool(id, key, val) {
+  const e = entries.find(e => e.id === id);
+  if (!e) return;
+  e[key] = val;
+  save();
+  renderJournal();
+  renderProgress();
+}
+
+function setField(id, key, val) {
+  const e = entries.find(e => e.id === id);
+  if (!e) return;
+  e[key] = val;
+  save();
+}
+
+function deleteEntry(id) {
+  if (!confirm('Supprimer cette entrée ?')) return;
+  entries = entries.filter(e => e.id !== id);
+  save();
+  renderJournal();
+  renderProgress();
+}
+
+// ─── PROGRESS ────────────────────────────────────────────────────────────────
+function renderProgress() {
+  const total    = entries.length;
+  const evaluated = entries.filter(e => e.timingOk !== null);
+  const validated  = entries.filter(e => e.timingOk && e.levelOk && e.signalOk);
+  const timingOk   = entries.filter(e => e.timingOk === true).length;
+  const levelOk    = entries.filter(e => e.levelOk === true).length;
+  const signalOk   = entries.filter(e => e.signalOk === true).length;
+  const notes      = evaluated.filter(e => e.note).map(e => parseFloat(e.note));
+  const avgNote    = notes.length ? (notes.reduce((a,b)=>a+b,0)/notes.length).toFixed(1) : '—';
+
+  // Stats
+  document.getElementById('s-total').textContent = total;
+  document.getElementById('s-eval').textContent  = evaluated.length;
+  document.getElementById('s-valid').textContent = validated.length;
+  document.getElementById('s-note').textContent  = avgNote;
+
+  // Current phase
+  const phase = total < 5 ? 1 : total < 10 ? 2 : total < 15 ? 3 : total < 20 ? 4 : 5;
+  const PHASES = [
+    { n:1, title:"Apprendre à mesurer",     goal:5,  desc:"5 moves analysés en arrière" },
+    { n:2, title:"Ajouter les niveaux",      goal:10, desc:"10 exemples avec confluence Goldbach" },
+    { n:3, title:"Anticiper en temps réel", goal:15, desc:"15 anticipations avant la session" },
+    { n:4, title:"Validation finale",        goal:20, desc:"20 exemples — 70% timing correct" },
+  ];
+
+  const phaseEl = document.getElementById('phase-content');
+  if (phase <= 4) {
+    const p = PHASES[phase-1];
+    const pct = Math.min((total / p.goal) * 100, 100);
+    phaseEl.innerHTML = `
+      <div style="font-size:24px;font-weight:700;color:var(--blue2);margin-bottom:6px">
+        Phase ${p.n} — ${p.title}
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:14px">${p.desc}</div>
+      <div class="progress-wrap"><div class="progress-bar bar-blue" style="width:${pct}%"></div></div>
+      <div style="font-size:12px;color:var(--muted2);margin-top:6px">${total} / ${p.goal} exemples</div>`;
+  } else {
+    phaseEl.innerHTML = `<div style="text-align:center;padding:20px">
+      <div style="font-size:40px;margin-bottom:12px">🎯</div>
+      <div style="font-size:20px;font-weight:700;color:#34d399">Prêt pour le trading réel !</div>
+    </div>`;
+  }
+
+  // All phases
+  document.getElementById('phases-list').innerHTML = PHASES.map(p => {
+    const done   = total >= p.goal;
+    const active = phase === p.n;
+    return `<div class="phase-row ${done?'done':active?'active':''}">
+      <div class="phase-icon ${done?'done':active?'active':''}">
+        ${done ? '✓' : p.n}
+      </div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;color:${done?'#34d399':active?'var(--blue2)':'var(--muted2)'}">
+          ${p.title}
+        </div>
+        <div style="font-size:11px;color:var(--muted2);margin-top:2px">${p.desc}</div>
+      </div>
+      <span class="tag ${done?'tag-green':active?'tag-blue':'tag-gray'}">
+        ${done ? '✓ Terminé' : active ? 'En cours' : `Objectif: ${p.goal}`}
+      </span>
+    </div>`;
+  }).join('');
+
+  // Criteria
+  const timingRate = evaluated.length > 0 ? timingOk / evaluated.length : 0;
+  const CRITERIA = [
+    { label:"20 exemples analysés",                 done: total >= 20,             val: `${total}/20` },
+    { label:"Timing correct ≥ 70%",                 done: evaluated.length>0 && timingRate >= 0.7, val: evaluated.length>0 ? `${Math.round(timingRate*100)}%` : '—' },
+    { label:"5 anticipations validées consécutives", done: validated.length >= 5,   val: `${validated.length}/5` },
+    { label:"10 setups évalués avec SL + TP",        done: evaluated.length >= 10,  val: `${evaluated.length} évalués` },
+  ];
+
+  document.getElementById('criteria-list').innerHTML = CRITERIA.map(c => `
+    <div class="crit-row ${c.done?'done':''}">
+      <div class="crit-left">
+        <span style="color:${c.done?'#34d399':'#374151'}">${c.done?'✓':'✗'}</span>
+        <span style="font-size:13px;color:${c.done?'#d1fae5':'var(--muted)'}">${c.label}</span>
+      </div>
+      <span class="tag ${c.done?'tag-green':'tag-gray'}">${c.val}</span>
+    </div>`).join('');
+
+  // Rates
+  if (evaluated.length > 0) {
+    document.getElementById('rates-section').style.display = 'block';
+    const rates = [
+      { label:"Timing", val:timingOk,  total:evaluated.length },
+      { label:"Niveau", val:levelOk,   total:evaluated.length },
+      { label:"Signal", val:signalOk,  total:evaluated.length },
+    ];
+    document.getElementById('rates-list').innerHTML = rates.map(r => {
+      const pct = r.total > 0 ? Math.round(r.val/r.total*100) : 0;
+      const isGold = pct >= 70;
+      return `<div class="rate-row">
+        <div class="rate-header">
+          <span style="font-size:11px;color:var(--muted)">${r.label}</span>
+          <span style="font-size:12px;color:${isGold?'var(--gold)':'var(--blue2)'};font-weight:700">${pct}%</span>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-bar ${isGold?'bar-gold':'bar-blue'}" style="width:${pct}%"></div>
+        </div>
+      </div>`;
+    }).join('');
+  } else {
+    document.getElementById('rates-section').style.display = 'none';
+  }
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+document.getElementById('entry-count').textContent = entries.length;
+renderProgress();
+</script>
+<script src="../nav.js"></script>
+</body>
+</html>

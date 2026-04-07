@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPTA Algorithmic Framework — Trainer Hub</title>
+<style>
+:root {
+  --dark:   #0D1117;
+  --navy:   #161B22;
+  --panel:  #1C2128;
+  --border: #30363D;
+  --accent: #F5A623;
+  --red:    #E94560;
+  --green:  #27AE60;
+  --blue:   #1E90FF;
+  --purple: #9B59B6;
+  --text:   #E6EDF3;
+  --muted:  #8B949E;
+  --card:   #21262D;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--dark); color: var(--text); font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; }
+
+/* ── HEADER ── */
+header {
+  background: linear-gradient(135deg, #0D1117, #1A1A2E);
+  border-bottom: 2px solid var(--accent);
+  padding: 16px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.logo { font-size: 1.3rem; font-weight: 800; color: var(--accent); letter-spacing: 2px; }
+.logo span { color: var(--red); }
+.score-bar { display: flex; gap: 16px; align-items: center; font-size: .85rem; }
+.score-pill { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 4px 14px; font-weight: 700; }
+.score-pill.good { color: var(--green); border-color: var(--green); }
+.score-pill.bad  { color: var(--red);   border-color: var(--red); }
+.score-pill.total{ color: var(--accent); border-color: var(--accent); }
+
+/* ── LAYOUT ── */
+.container { display: flex; height: calc(100vh - 61px); }
+nav { width: 220px; min-width: 220px; background: var(--navy); border-right: 1px solid var(--border); overflow-y: auto; padding: 12px 0; }
+nav h4 { padding: 8px 16px; font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; }
+nav a {
+  display: block; padding: 9px 16px; font-size: .82rem; color: var(--muted);
+  text-decoration: none; cursor: pointer; border-left: 3px solid transparent;
+  transition: all .2s; line-height: 1.3;
+}
+nav a:hover, nav a.active {
+  background: var(--panel); color: var(--text); border-left-color: var(--accent);
+}
+nav a.done { color: var(--green); }
+nav a.done::after { content: ' ✓'; }
+
+main { flex: 1; overflow-y: auto; padding: 32px; }
+
+/* ── SECTION HEADER ── */
+.section-title {
+  font-size: 1.5rem; font-weight: 800; color: var(--accent);
+  border-bottom: 2px solid var(--accent); padding-bottom: 8px; margin-bottom: 24px;
+}
+.section-subtitle { color: var(--muted); font-size: .9rem; margin-bottom: 24px; margin-top: -16px; }
+
+/* ── CARDS ── */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 32px; }
+.info-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px; transition: transform .2s, border-color .2s;
+}
+.info-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+.info-card h3 { color: var(--accent); font-size: .95rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.info-card p { color: var(--muted); font-size: .82rem; line-height: 1.6; }
+.info-card .tag { display: inline-block; font-size: .7rem; padding: 2px 8px; border-radius: 10px; margin-bottom: 8px; font-weight: 700; }
+.tag-bull { background: rgba(39,174,96,.2); color: var(--green); }
+.tag-bear { background: rgba(233,69,96,.2); color: var(--red); }
+.tag-key  { background: rgba(245,166,35,.2); color: var(--accent); }
+
+/* ── FLASHCARDS ── */
+.fc-area { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.fc-progress { width: 100%; max-width: 700px; background: var(--panel); border-radius: 4px; height: 6px; }
+.fc-progress-bar { height: 100%; background: var(--accent); border-radius: 4px; transition: width .4s; }
+.fc-counter { color: var(--muted); font-size: .85rem; }
+
+.flashcard {
+  width: 100%; max-width: 700px; min-height: 240px;
+  background: var(--card); border: 2px solid var(--border); border-radius: 14px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 32px; cursor: pointer; text-align: center;
+  position: relative; transition: all .35s;
+  perspective: 1000px;
+}
+.flashcard.flipped { border-color: var(--green); }
+.fc-front, .fc-back { width: 100%; }
+.fc-back { display: none; }
+.flashcard.flipped .fc-front { display: none; }
+.flashcard.flipped .fc-back { display: block; }
+.fc-label { font-size: .7rem; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 14px; }
+.fc-question { font-size: 1.15rem; font-weight: 700; color: var(--text); line-height: 1.5; }
+.fc-answer { font-size: .95rem; color: var(--green); line-height: 1.7; }
+.fc-hint { font-size: .75rem; color: var(--muted); margin-top: 16px; }
+.fc-tag { font-size: .7rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; display: inline-block; }
+
+.fc-nav { display: flex; gap: 12px; }
+.btn {
+  padding: 10px 22px; border-radius: 8px; border: none; cursor: pointer;
+  font-size: .88rem; font-weight: 700; transition: all .2s; letter-spacing: .5px;
+}
+.btn-primary { background: var(--accent); color: #000; }
+.btn-primary:hover { filter: brightness(1.15); }
+.btn-ghost { background: var(--panel); color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.btn-green { background: var(--green); color: #fff; }
+.btn-red   { background: var(--red); color: #fff; }
+.btn-sm { padding: 7px 14px; font-size: .78rem; }
+
+/* ── QUIZ ── */
+.quiz-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+  padding: 28px; max-width: 720px;
+}
+.quiz-q { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; line-height: 1.5; }
+.quiz-opts { display: flex; flex-direction: column; gap: 10px; }
+.quiz-opt {
+  background: var(--panel); border: 2px solid var(--border); border-radius: 8px;
+  padding: 12px 18px; cursor: pointer; font-size: .9rem; transition: all .2s;
+  text-align: left;
+}
+.quiz-opt:hover:not(.locked) { border-color: var(--blue); color: var(--blue); }
+.quiz-opt.correct { border-color: var(--green); background: rgba(39,174,96,.1); color: var(--green); }
+.quiz-opt.wrong   { border-color: var(--red);   background: rgba(233,69,96,.1);  color: var(--red); }
+.quiz-explain { margin-top: 16px; padding: 14px; background: rgba(245,166,35,.08); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; font-size: .85rem; color: var(--muted); line-height: 1.6; display: none; }
+.quiz-explain.show { display: block; }
+.quiz-nav { display: flex; justify-content: space-between; margin-top: 20px; }
+
+/* ── SCHEMA ── */
+.schema-box {
+  background: #0D1117; border: 1px solid var(--border); border-radius: 10px;
+  padding: 20px; font-family: 'Courier New', monospace; font-size: .82rem;
+  color: var(--text); line-height: 1.9; margin-bottom: 16px;
+  white-space: pre-wrap;
+}
+.schema-box .hl-gold  { color: var(--accent); font-weight: 700; }
+.schema-box .hl-green { color: var(--green); }
+.schema-box .hl-red   { color: var(--red); }
+.schema-box .hl-blue  { color: var(--blue); }
+
+/* ── PROTOCOL CHECKLIST ── */
+.protocol-steps { display: flex; flex-direction: column; gap: 0; max-width: 700px; }
+.proto-step {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 16px; border: 1px solid var(--border); background: var(--card);
+  cursor: pointer; transition: all .2s; position: relative;
+}
+.proto-step:first-child { border-radius: 10px 10px 0 0; }
+.proto-step:last-child  { border-radius: 0 0 10px 10px; }
+.proto-step:not(:last-child) { border-bottom: none; }
+.proto-step:hover { background: var(--panel); }
+.proto-step.done { background: rgba(39,174,96,.08); border-left: 4px solid var(--green); }
+.proto-step.done .step-icon { background: var(--green); color: #fff; }
+.proto-step.pending .step-icon { background: var(--panel); color: var(--muted); }
+.step-icon {
+  width: 36px; height: 36px; min-width: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: .9rem; transition: all .3s;
+}
+.step-body h4 { font-size: .95rem; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+.step-body p  { font-size: .82rem; color: var(--muted); line-height: 1.5; }
+
+/* ── TABLE ── */
+.t { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: .85rem; }
+.t th { background: #0D2137; color: var(--accent); padding: 10px 14px; text-align: left; font-size: .78rem; text-transform: uppercase; letter-spacing: 1px; }
+.t td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: var(--text); line-height: 1.5; }
+.t tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+.t tr:hover td { background: rgba(245,166,35,.05); }
+.t .bull { color: var(--green); font-weight: 700; }
+.t .bear { color: var(--red);   font-weight: 700; }
+.t .key  { color: var(--accent); font-weight: 700; }
+
+/* ── KEY RULE BOX ── */
+.rule-box {
+  background: linear-gradient(135deg, #1A1A2E, #0D2137);
+  border: 2px solid var(--accent); border-radius: 10px;
+  padding: 16px 22px; margin: 20px 0; text-align: center;
+  color: var(--accent); font-weight: 800; font-size: 1rem; letter-spacing: 1px;
+}
+.rule-box .sub { color: var(--muted); font-size: .82rem; font-weight: 400; margin-top: 6px; }
+
+/* ── TABS ── */
+.tabs { display: flex; gap: 4px; margin-bottom: 24px; flex-wrap: wrap; }
+.tab {
+  padding: 8px 18px; border-radius: 20px; border: 1px solid var(--border);
+  background: var(--panel); color: var(--muted); cursor: pointer; font-size: .82rem;
+  font-weight: 700; transition: all .2s;
+}
+.tab:hover, .tab.active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+/* ── RESPONSIVE ── */
+@media(max-width: 768px) {
+  nav { width: 180px; min-width: 180px; }
+  main { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">IPTA <span>TRAINER</span></div>
+  <div class="score-bar">
+    <span class="score-pill good" id="sc-correct">✓ 0</span>
+    <span class="score-pill bad"  id="sc-wrong">✗ 0</span>
+    <span class="score-pill total" id="sc-total">Score: 0%</span>
+    <button class="btn btn-ghost btn-sm" onclick="resetScore()">Reset</button>
+  </div>
+</header>
+
+<div class="container">
+<nav id="nav">
+  <h4>Vue d'ensemble</h4>
+  <a onclick="show('home')" class="active">🏠 Dashboard</a>
+  <a onclick="show('protocol')">📋 Le Protocole</a>
+  <h4>Cours</h4>
+  <a onclick="show('m1')">M1 · Price Cycles</a>
+  <a onclick="show('m2')">M2 · Time Cycles</a>
+  <a onclick="show('m3')">M3 · Liquidité</a>
+  <a onclick="show('m4')">M4 · PD Arrays</a>
+  <a onclick="show('m5')">M5 · IOF HTF</a>
+  <a onclick="show('m6')">M6 · Draw on Liquidity</a>
+  <a onclick="show('m7')">M7 · Times of Interest</a>
+  <a onclick="show('m8')">M8 · SMT</a>
+  <a onclick="show('m9')">M9 · CSD</a>
+  <a onclick="show('m10')">M10 · Entry Patterns</a>
+  <a onclick="show('m11')">M11 · Trade Management</a>
+  <a onclick="show('m12')">M12 · Risk Management</a>
+  <h4>Entraînement</h4>
+  <a onclick="show('flashcards')">🃏 Flashcards</a>
+  <a onclick="show('quiz')">🧠 Quiz Complet</a>
+</nav>
+
+<main id="main">
+
+<!-- ═══ HOME ═══ -->
+<div id="page-home">
+  <div class="section-title">📊 IPTA Algorithmic Framework</div>
+  <p class="section-subtitle">Synthèse complète — PXH/PXL · Time Course · Algorithmic Precision</p>
+
+  <div class="rule-box">
+    TIME FIRST — THEN PRICE
+    <div class="sub">Le temps ne peut pas être manipulé — l'horloge continue de tourner</div>
+  </div>
+
+  <div class="card-grid">
+    <div class="info-card" onclick="show('m1')">
+      <div class="tag tag-key">FONDATION</div>
+      <h3>📈 Price Cycles</h3>
+      <p>Point A (Inception) → Point B (Terminus). Reconnaître le programme en cours — Buy ou Sell. Low resistance vs High resistance.</p>
+    </div>
+    <div class="info-card" onclick="show('m2')">
+      <div class="tag tag-key">FONDATION</div>
+      <h3>⏱ Time Cycles</h3>
+      <p>PXH / PXL. Hiérarchie Annuel → 10min. Purge & Revert vs Continuation. Les 90 minutes AM et PM.</p>
+    </div>
+    <div class="info-card" onclick="show('m3')">
+      <div class="tag tag-key">FONDATION</div>
+      <h3>💧 Liquidité</h3>
+      <p>BSL au-dessus des hauts. SSL en-dessous des bas. Engineering de liquidité. Smooth highs / smooth lows.</p>
+    </div>
+    <div class="info-card" onclick="show('m4')">
+      <div class="tag tag-key">PRICE</div>
+      <h3>📐 PD Arrays</h3>
+      <p>SIBI / BISI. Order Block (50% = Mean Threshold). Rejection Block. Breaker Block. Mitigation Block. Inversion FVG.</p>
+    </div>
+    <div class="info-card" onclick="show('m5')">
+      <div class="tag tag-bull">DIRECTION</div>
+      <h3>🏛 HTF IOF</h3>
+      <p>Buy ou Sell Program ? Market Structure Shift Pattern. Ne jamais descendre en LTF sans IOF HTF établi.</p>
+    </div>
+    <div class="info-card" onclick="show('m6')">
+      <div class="tag tag-bull">DIRECTION</div>
+      <h3>🎯 Draw on Liquidity</h3>
+      <p>3 méthodes : Time Cycles + Key Levels + PD Arrays. DOL = aimant. DOL AVANT POI toujours.</p>
+    </div>
+    <div class="info-card" onclick="show('m7')">
+      <div class="tag tag-key">TIMING</div>
+      <h3>⏰ Times of Interest</h3>
+      <p>Macros XX:45→XX:15. SMR hors macro → attendre la prochaine. Manipulation → Distribution.</p>
+    </div>
+    <div class="info-card" onclick="show('m8')">
+      <div class="tag tag-key">CONFIRMATION</div>
+      <h3>🔀 SMT</h3>
+      <p>Smart Money Time. NQ vs ES. Big cycle + Small cycle = Double SMT. Opening Price SMT. Outil de confirmation UNIQUEMENT.</p>
+    </div>
+    <div class="info-card" onclick="show('m9')">
+      <div class="tag tag-key">CONFIRMATION</div>
+      <h3>🔄 CSD</h3>
+      <p>Change in State of Delivery. Sell→Buy ou Buy→Sell. MSS Pattern. La gauche détermine la droite.</p>
+    </div>
+    <div class="info-card" onclick="show('m10')">
+      <div class="tag tag-bull">EXÉCUTION</div>
+      <h3>🎯 Entry Patterns</h3>
+      <p>Breaker Block · Mitigation Block · SIBI/BISI. Stackage = signal maximal. Entrées multiples dans le même move.</p>
+    </div>
+    <div class="info-card" onclick="show('m11')">
+      <div class="tag tag-key">GESTION</div>
+      <h3>⚖️ Trade Management</h3>
+      <p>Entry + Invalidation + Target prédéfinis. Trailing stop progressif. Pyramiding. Signaux d'alerte de sortie.</p>
+    </div>
+    <div class="info-card" onclick="show('m12')">
+      <div class="tag tag-key">GESTION</div>
+      <h3>🛡 Risk Management</h3>
+      <p>Regular (1%→0.5%). Prop Firm (10%→5% du drawdown max). Exponential (50% des profits). Réduire en drawdown TOUJOURS.</p>
+    </div>
+  </div>
+
+  <div class="rule-box" onclick="show('protocol')" style="cursor:pointer">
+    ▶ VOIR LE PROTOCOLE COMPLET — 6 ÉTAPES OBLIGATOIRES
+    <div class="sub">IOF → DOL → POI → ToI → SMT → CSD → Entrée</div>
+  </div>
+</div>
+
+<!-- ═══ PROTOCOL ═══ -->
+<div id="page-protocol" style="display:none">
+  <div class="section-title">📋 La Reversal Sequence — Protocole Complet</div>
+  <p class="section-subtitle">Cliquer sur chaque étape pour la cocher. Si une étape manque → pas de trade.</p>
+
+  <div class="protocol-steps" id="proto-steps">
+    <div class="proto-step pending" onclick="toggleStep(this)">
+      <div class="step-icon">1</div>
+      <div class="step-body">
+        <h4>Higher TF Institutional Order Flow</h4>
+        <p>Buy Program ou Sell Program ? Définir la narrative — pourquoi les masses ont-elles tort ? Monthly → Weekly → Daily</p>
+      </div>
+    </div>
+    <div class="proto-step pending" onclick="toggleStep(this)">
+      <div class="step-icon">2</div>
+      <div class="step-body">
+        <h4>Draw on Liquidity (DOL)</h4>
+        <p>PXH/PXL + Key Level + PD Array + Opening Price. Du grand cycle vers le petit. DOL = aimant prédéfini.</p>
+      </div>
+    </div>
+    <div class="proto-step pending" onclick="toggleStep(this)">
+      <div class="step-icon">3</div>
+      <div class="step-body">
+        <h4>Point of Interest (POI)</h4>
+        <p>Discount array (bullish) ou Premium array (bearish). En avance d'un key level. Mêmes méthodes que DOL mais côté opposé.</p>
+      </div>
+    </div>
+    <div class="proto-step pending" onclick="toggleStep(this)">
+      <div class="step-icon">4</div>
+      <div class="step-body">
+        <h4>Time of Interest (ToI)</h4>
+        <p>Macro window active (XX:45→XX:15). Manipulation cycle reconnu : open high (bearish) ou open low (bullish) dans le nouveau cycle.</p>
+      </div>
+    </div>
+    <div class="proto-step pending" onclick="toggleStep(this)">
+      <div class="step-icon">5</div>
+      <div class="step-body">
+        <h4>SMT — Smart Money Time</h4>
+        <p>Big cycle SMT + Small cycle SMT (Double SMT idéal). Relatif au PXH/PXL du cycle courant. NQ vs ES · EUR vs DXY.</p>
+      </div>
+    </div>
+    <div class="proto-step pending" onclick="toggleStep(this)">
+      <div class="step-icon">6</div>
+      <div class="step-body">
+        <h4>CSD — Change in State of Delivery</h4>
+        <p>Imbalances gauche déplacées → fonctionnent en support/résistance. Breaker ou Mitigation formé. SIBI ou BISI créé lors du déplacement.</p>
+      </div>
+    </div>
+    <div class="proto-step pending" onclick="toggleStep(this)" style="background:rgba(245,166,35,.06); border-color: var(--accent)">
+      <div class="step-icon" style="background:rgba(245,166,35,.2); color:var(--accent)">→</div>
+      <div class="step-body">
+        <h4 style="color:var(--accent)">ENTRÉE</h4>
+        <p>Breaker Block · Mitigation Block · SIBI/BISI. Stackage pour signal maximal. Stop + Target prédéfinis.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:20px; display:flex; gap:12px;">
+    <button class="btn btn-ghost" onclick="resetProto()">Reset Checklist</button>
+  </div>
+
+  <br>
+  <div class="rule-box">
+    Si une étape est manquante → AUCUN TRADE
+    <div class="sub">La séquence est fractale — s'applique du cycle mensuel au cycle de 3 minutes</div>
+  </div>
+</div>
+
+<!-- ═══ M1 : PRICE CYCLES ═══ -->
+<div id="page-m1" style="display:none">
+  <div class="section-title">M1 — Price Cycles : Point A → Point B</div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(this,'m1','concept')">Concept</div>
+    <div class="tab" onclick="switchTab(this,'m1','schema')">Schémas</div>
+  </div>
+  <div id="m1-concept">
+    <div class="rule-box">Tout mouvement = Programme. A = Inception, B = Terminus.</div>
+    <table class="t">
+      <tr><th>PROGRAMME HAUSSIER</th><th>PROGRAMME BAISSIER</th></tr>
+      <tr><td class="bull">Point A = Swing Low formé</td><td class="bear">Point A = Swing High formé</td></tr>
+      <tr><td class="bull">Prix monte à travers les niveaux</td><td class="bear">Prix descend à travers les niveaux</td></tr>
+      <tr><td class="bull">Discount arrays = support</td><td class="bear">Premium arrays = résistance</td></tr>
+      <tr><td class="bull">Entrée sous l'EQ (50%) du range</td><td class="bear">Entrée au-dessus de l'EQ (50%) du range</td></tr>
+      <tr><td class="bull">Point B = BSL cible</td><td class="bear">Point B = SSL cible</td></tr>
+    </table>
+    <table class="t">
+      <tr><th>LOW RESISTANCE</th><th>HIGH RESISTANCE</th></tr>
+      <tr><td class="bull">Expansion rapide et propre</td><td class="bear">Beaucoup d'allers-retours (chop)</td></tr>
+      <tr><td class="bull">SIBI/BISI tiennent en 1er retrace</td><td class="bear">Retracements profonds et multiples</td></tr>
+      <tr><td class="bull">Environnement IDÉAL</td><td class="bear">Éviter ou gérer très agressivement</td></tr>
+    </table>
+  </div>
+  <div id="m1-schema" style="display:none">
+    <div class="schema-box"><span class="hl-gold">PROGRAMME HAUSSIER</span>
+                      <span class="hl-green">BSL ▲</span> ← Point B (Terminus)
+                       │
+     <span class="hl-green">▲</span> Expansion + BISI créés sur la droite
+                       │
+     <span class="hl-gold">≡</span> Niveaux franchis (PXH successifs)
+                       │
+     <span class="hl-green">▼</span> Retracement (manipulation) dans discount array
+                       │
+     <span class="hl-green">★</span> Point A (Inception / Smart Money Reversal)
+                       │
+                      <span class="hl-red">SSL ▼</span> ← Purgée pour déclencher le Buy Program</div>
+    <div class="schema-box"><span class="hl-red">PROGRAMME BAISSIER</span>
+                      <span class="hl-red">BSL ▲</span> ← Purgée pour déclencher le Sell Program
+                       │
+     <span class="hl-red">★</span> Point A (Inception / Smart Money Reversal)
+                       │
+     <span class="hl-red">▼</span> Expansion + SIBI créés sur la droite
+                       │
+     <span class="hl-gold">≡</span> Niveaux franchis (PXL successifs)
+                       │
+     <span class="hl-red">▲</span> Retracement (manipulation) dans premium array
+                       │
+                      <span class="hl-red">SSL ▼</span> ← Point B (Terminus)</div>
+  </div>
+</div>
+
+<!-- ═══ M2 : TIME CYCLES ═══ -->
+<div id="page-m2" style="display:none">
+  <div class="section-title">M2 — Time Cycles : La Hiérarchie Temporelle</div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(this,'m2','hier')">Hiérarchie</div>
+    <div class="tab" onclick="switchTab(this,'m2','win')">Fenêtres</div>
+    <div class="tab" onclick="switchTab(this,'m2','scen')">Scénarios</div>
+  </div>
+  <div id="m2-hier">
+    <div class="rule-box">Chaque cycle réfère au PXH et PXL du cycle précédent</div>
+    <table class="t">
+      <tr><th>CYCLE</th><th>FENÊTRE</th><th>RÉFÉRENCE</th></tr>
+      <tr><td class="key">Annuel</td><td>Jan → Déc</td><td>High/Low de l'année précédente</td></tr>
+      <tr><td class="key">Mensuel</td><td>1er → dernier jour</td><td>High/Low du mois précédent</td></tr>
+      <tr><td class="key">Hebdomadaire</td><td>Lun → Ven</td><td>High/Low de la semaine précédente</td></tr>
+      <tr><td class="key">Journalier</td><td>Minuit → Minuit</td><td>High/Low du jour précédent</td></tr>
+      <tr><td class="key">Session</td><td>Variable</td><td>High/Low de la session précédente</td></tr>
+      <tr><td class="key">90 minutes</td><td>3 cycles/session</td><td>High/Low du cycle 90min précédent</td></tr>
+      <tr><td class="key">30 minutes</td><td>3 cycles/90min</td><td>High/Low du cycle 30min précédent</td></tr>
+    </table>
+  </div>
+  <div id="m2-win" style="display:none">
+    <table class="t">
+      <tr><th>SESSION</th><th>HORAIRE NY</th><th>CYCLE</th><th>NOTE</th></tr>
+      <tr><td>Asie</td><td>18h00 → 02h30</td><td>—</td><td class="bear">Peu volatile — éviter pour NQ</td></tr>
+      <tr><td class="key">Londres</td><td>02h30 → 07h00</td><td>L1/L2/L3</td><td class="bull">Macros 02h45 et 03h45</td></tr>
+      <tr><td class="key">NY Morning</td><td>07h00 → 11h30</td><td>AM1/AM2/AM3</td><td class="bull">Session principale — macros 09h45/10h45</td></tr>
+      <tr><td class="key">NY Afternoon</td><td>11h30 → 16h00</td><td>PM1/PM2/PM3</td><td class="bull">PM1=Lunch (éviter) — macros 13h45/14h45</td></tr>
+    </table>
+    <table class="t">
+      <tr><th>CYCLE 90MIN</th><th>HORAIRE</th><th>STATUT</th></tr>
+      <tr><td>AM1</td><td>07h00 → 08h30</td><td>Accumulation fréquente</td></tr>
+      <tr><td class="key">AM2</td><td>08h30 → 10h00</td><td class="bull">★ Ouverture NY — forte volatilité</td></tr>
+      <tr><td>AM3</td><td>10h00 → 11h30</td><td>Distribution fréquente</td></tr>
+      <tr><td class="bear">PM1 (Lunch)</td><td>11h30 → 13h00</td><td class="bear">Peu actif — engineering de liquidité</td></tr>
+      <tr><td class="key">PM2</td><td>13h00 → 14h30</td><td class="bull">★ Run cycle principal PM</td></tr>
+      <tr><td>PM3</td><td>14h30 → 16h00</td><td>Distribution PM</td></tr>
+    </table>
+  </div>
+  <div id="m2-scen" style="display:none">
+    <div class="schema-box"><span class="hl-gold">PURGE & REVERT (Manipulation → Distribution)</span>
+
+<span class="hl-green">HAUSSIER :</span>
+  Nouveau cycle s'ouvre
+  → Prix descend SOUS le PXL
+  → SSL purgée (sell stops déclenchés)
+  → Prix remonte AU-DESSUS du PXL
+  → PXL devient SUPPORT ✓
+  → Draw vers le PXH (BSL)
+
+<span class="hl-red">BAISSIER :</span>
+  Nouveau cycle s'ouvre
+  → Prix monte AU-DESSUS du PXH
+  → BSL purgée (buy stops déclenchés)
+  → Prix redescend EN-DESSOUS du PXH
+  → PXH devient RÉSISTANCE ✓
+  → Draw vers le PXL (SSL)</div>
+    <div class="schema-box"><span class="hl-gold">CONTINUATION</span>
+
+<span class="hl-green">HAUSSIER :</span>
+  Prix casse le PXH vers le haut
+  → Reteste le PXH
+  → PXH agit comme SUPPORT ✓
+  → Continuation haussière vers la prochaine BSL
+
+<span class="hl-red">BAISSIER :</span>
+  Prix casse le PXL vers le bas
+  → Reteste le PXL
+  → PXL agit comme RÉSISTANCE ✓
+  → Continuation baissière vers la prochaine SSL</div>
+    <div class="schema-box"><span class="hl-gold">SWEEPING vs PURGING</span>
+
+Sweeping  = le marché touche simplement le niveau
+             → Prix arrive sur le PXL/PXH et repart
+             → Pas encore de confirmation
+
+Purging   = le marché touche + se déplace DERRIÈRE
+             + revient de l'autre côté
+             → <span class="hl-green">Manipulation CONFIRMÉE</span>
+             → Anticiper la DISTRIBUTION</div>
+  </div>
+</div>
+
+<!-- ═══ M3 : LIQUIDITÉ ═══ -->
+<div id="page-m3" style="display:none">
+  <div class="section-title">M3 — Liquidité : BSL & SSL</div>
+  <div class="rule-box">Le marché se déplace d'un pool de liquidité vers l'autre — en boucle continue</div>
+  <table class="t">
+    <tr><th>TYPE</th><th>POSITION</th><th>SOURCE</th><th>ACTION SM</th></tr>
+    <tr>
+      <td class="bull">BSL — Buy Side</td>
+      <td>Au-dessus des hauts</td>
+      <td>Buy stops des shorts</td>
+      <td>SM monte vers BSL → vend contre les acheteurs forcés</td>
+    </tr>
+    <tr>
+      <td class="bear">SSL — Sell Side</td>
+      <td>En-dessous des bas</td>
+      <td>Sell stops des longs</td>
+      <td>SM descend vers SSL → achète contre les vendeurs forcés</td>
+    </tr>
+  </table>
+  <div class="schema-box"><span class="hl-gold">ENGINEERING DE LIQUIDITÉ</span>
+
+Consolidation propre avec relative equal highs
+  → Les retail voient une résistance
+  → SM voit de la BSL engineérée au-dessus
+  → <span class="hl-green">SM tirera le prix vers cette BSL au bon moment</span>
+
+Consolidation propre avec relative equal lows
+  → Les retail voient un support
+  → SM voit de la SSL engineérée en-dessous
+  → <span class="hl-red">SM tirera le prix vers cette SSL au bon moment</span>
+
+<span class="hl-gold">Règle :</span> Smooth highs like to be made jacked
+           Smooth lows like to be made jacked</div>
+</div>
+
+<!-- ═══ M4 : PD ARRAYS ═══ -->
+<div id="page-m4" style="display:none">
+  <div class="section-title">M4 — PD Arrays : La Matrice</div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(this,'m4','seq')">Séquence</div>
+    <div class="tab" onclick="switchTab(this,'m4','sibisi')">SIBI / BISI</div>
+    <div class="tab" onclick="switchTab(this,'m4','breaker')">Breaker</div>
+    <div class="tab" onclick="switchTab(this,'m4','ob')">Order Block</div>
+  </div>
+  <div id="m4-seq">
+    <div class="rule-box">Les PD Arrays forment dans un ORDRE précis — reconnaître la séquence</div>
+    <table class="t">
+      <tr><th>#</th><th>PROGRAMME BAISSIER (Premium)</th><th>PROGRAMME HAUSSIER (Discount)</th></tr>
+      <tr><td class="key">1</td><td>Bearish Rejection Block</td><td>Bullish Rejection Block</td></tr>
+      <tr><td class="key">2</td><td>Bearish Order Block</td><td>Bullish Order Block</td></tr>
+      <tr><td class="key">3</td><td class="bear">SIBI (FVG baissier)</td><td class="bull">BISI (FVG haussier)</td></tr>
+      <tr><td class="key">4</td><td>Bearish Breaker Block</td><td>Bullish Breaker Block</td></tr>
+      <tr><td class="key">5</td><td>Bearish Mitigation Block</td><td>Bullish Mitigation Block</td></tr>
+    </table>
+  </div>
+  <div id="m4-sibisi" style="display:none">
+    <div class="schema-box"><span class="hl-red">SIBI — Sell Side Imbalance / Buy Side Inefficiency</span>
+Créé lors d'une expansion BAISSIÈRE rapide
+
+  Bougie 1 → LOW  ←─┐
+                     │  GAP = SIBI
+  Bougie 3 → HIGH ←─┘
+
+Le marché doit revenir dans ce SIBI avant de continuer.
+Il y a un manque de buy side delivery dans cette zone.
+
+<span class="hl-green">BISI — Buy Side Imbalance / Sell Side Inefficiency</span>
+Créé lors d'une expansion HAUSSIÈRE rapide
+
+  Bougie 1 → HIGH ←─┐
+                     │  GAP = BISI
+  Bougie 3 → LOW  ←─┘
+
+Le marché doit revenir dans ce BISI avant de continuer.
+Il y a un manque de sell side delivery dans cette zone.
+
+<span class="hl-gold">INVERSION FVG :</span>
+  SIBI déplacé à la HAUSSE → devient SUPPORT
+  BISI déplacé à la BAISSE → devient RÉSISTANCE</div>
+  </div>
+  <div id="m4-breaker" style="display:none">
+    <div class="schema-box"><span class="hl-red">BEARISH BREAKER BLOCK</span>
+Pattern : High → Low → Higher High → Lower Low
+
+  [Haut]
+     ↓
+  [Bas]
+     ↑
+  [Higher High]  ←── BSL purgée ici
+     ↓ déplacement en-dessous du bas intermédiaire
+  [Lower Low]
+
+Le downclose candle qui a mis en place le Higher High
+= BEARISH BREAKER BLOCK
+→ Après déplacement sous son low, ce candle = RÉSISTANCE
+→ SIBI doit être créé lors du déplacement
+
+<span class="hl-green">BULLISH BREAKER BLOCK</span>
+Pattern : Low → High → Lower Low → Higher High
+
+  [Bas]
+     ↑
+  [Haut]
+     ↓
+  [Lower Low]  ←── SSL purgée ici
+     ↑ déplacement au-dessus du haut intermédiaire
+  [Higher High]
+
+Le upclose candle qui a mis en place le Lower Low
+= BULLISH BREAKER BLOCK
+→ Après déplacement au-dessus de son high, ce candle = SUPPORT
+→ BISI doit être créé lors du déplacement
+
+<span class="hl-gold">MITIGATION BLOCK :</span> Même logique mais SANS nouveau sommet/bas
+  → Lower High (bearish) ou Higher Low (bullish)
+  → Un marché = Breaker, l'autre = Mitigation → SMT !</div>
+  </div>
+  <div id="m4-ob" style="display:none">
+    <div class="schema-box"><span class="hl-red">BEARISH ORDER BLOCK</span>
+Dernier upclose candle (ou séquence) avant la chute
+
+  ┌──────────────┐ ← High de l'OB
+  │  UPCLOSE     │
+  │  CANDLE(S)   │ ← Mean Threshold (50%)  ★ NIVEAU CLÉ
+  └──────────────┘ ← Low de l'OB (le plus important)
+
+Règle : si le prix retrace dans l'OB mais que les CORPS
+ne clôturent PAS au-dessus du 50% → baissier confirmé
+
+<span class="hl-green">BULLISH ORDER BLOCK</span>
+Dernier downclose candle (ou séquence) avant la montée
+
+  ┌──────────────┐ ← High de l'OB (le plus important)
+  │  DOWNCLOSE   │
+  │  CANDLE(S)   │ ← Mean Threshold (50%)  ★ NIVEAU CLÉ
+  └──────────────┘ ← Low de l'OB
+
+Règle : si le prix retrace dans l'OB mais que les CORPS
+ne clôturent PAS en-dessous du 50% → haussier confirmé
+
+<span class="hl-gold">REJECTION BLOCK :</span>
+  Bearish : range = close → high (long wick sur le haut)
+  Bullish  : range = low → close (long wick sur le bas)
+  "Les wicks font le dommage, les corps racontent l'histoire"</div>
+  </div>
+</div>
+
+<!-- ═══ M5 : IOF ═══ -->
+<div id="page-m5" style="display:none">
+  <div class="section-title">M5 — Higher TF Institutional Order Flow</div>
+  <div class="rule-box">Sans IOF HTF établi → ne pas descendre en LTF</div>
+  <table class="t">
+    <tr><th>TYPE IOF</th><th>SIGNATURE</th><th>ARRAYS</th></tr>
+    <tr><td class="bull">Haussier</td><td>Expansion ↑ → Retrace → Expansion ↑</td><td class="bull">Discount arrays = support</td></tr>
+    <tr><td class="bear">Baissier</td><td>Expansion ↓ → Retrace → Expansion ↓</td><td class="bear">Premium arrays = résistance</td></tr>
+    <tr><td class="key">Neutre</td><td>Consolidation — pas de direction</td><td>Attendre une direction claire</td></tr>
+  </table>
+  <div class="schema-box"><span class="hl-gold">MARKET STRUCTURE SHIFT PATTERN (MSS) ★★★</span>
+C'est la signature algorithmique la plus puissante.
+
+<span class="hl-green">MSS HAUSSIER :</span>
+  SIBI sur la gauche de la courbe
+  → Haut formé DANS ce SIBI
+  → Prix descend, purge SSL
+  → Déplacement AU-DESSUS de ce haut
+  → BISI créé lors de ce déplacement
+  → Ce BISI tient comme SUPPORT
+  = MSS Haussier ✅
+
+<span class="hl-red">MSS BAISSIER :</span>
+  BISI sur la gauche de la courbe
+  → Bas formé DANS ce BISI
+  → Prix monte, purge BSL
+  → Déplacement EN-DESSOUS de ce bas
+  → SIBI créé lors de ce déplacement
+  → Ce SIBI tient comme RÉSISTANCE
+  = MSS Baissier ✅
+
+Présent à CHAQUE retournement majeur — sur tous les TF</div>
+</div>
+
+<!-- ═══ M6 : DOL ═══ -->
+<div id="page-m6" style="display:none">
+  <div class="section-title">M6 — Draw on Liquidity (DOL)</div>
+  <div class="rule-box">DOL toujours AVANT POI — l'aimant avant le piège</div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(this,'m6','methods')">3 Méthodes</div>
+    <div class="tab" onclick="switchTab(this,'m6','levels')">Key Levels</div>
+  </div>
+  <div id="m6-methods">
+    <table class="t">
+      <tr><th>MÉTHODE</th><th>DESCRIPTION</th><th>QUAND UTILISER</th></tr>
+      <tr><td class="key">1. Time Cycles</td><td>PXH (bullish) ou PXL (bearish) du cycle précédent. Du grand vers le petit.</td><td>Toujours en premier</td></tr>
+      <tr><td class="key">2. Key Levels</td><td>Quadrants fixes : 0% / 25% / 50% (EQ) / 75% / 100%. Ne changent jamais.</td><td>Pour préciser le niveau exact</td></tr>
+      <tr><td class="key">3. PD Arrays</td><td>Vieux SIBI/BISI non rebalancés. Opening prices. Liquidité engineérée en avance.</td><td>Pour valider la zone</td></tr>
+    </table>
+    <div class="rule-box">Liquidité engineérée EN AVANCE d'un key level + PD Array = Setup idéal ★</div>
+  </div>
+  <div id="m6-levels" style="display:none">
+    <div class="schema-box"><span class="hl-gold">QUADRANTS (exemple range 20000→21000)</span>
+
+  21000 ──── 100% (Range High) ────── BSL majeure
+  20750 ──── 75%  (Quadrant)   ────── Niveau de réaction
+  20500 ──── 50%  (Equilibrium)────── Réjection fréquente ★
+  20250 ──── 25%  (Quadrant)   ────── Niveau de réaction
+  20000 ──── 0%   (Range Low)  ────── SSL majeure
+
+<span class="hl-gold">Règle :</span> Le marché se déplace NIVEAU par NIVEAU
+jusqu'à sortir du range vers le haut ou le bas.
+
+<span class="hl-green">Confirmer direction :</span>
+  Si prix consolide à l'EQ et fait un biais ↑ → draw vers 100%
+  Si prix consolide à l'EQ et fait un biais ↓ → draw vers 0%
+
+<span class="hl-gold">Key Levels = FIXES</span> (ne changent jamais)
+<span class="hl-blue">PXH/PXL     = DYNAMIQUES</span> (changent à chaque cycle)</div>
+  </div>
+</div>
+
+<!-- ═══ M7 : TIMES OF INTEREST ═══ -->
+<div id="page-m7" style="display:none">
+  <div class="section-title">M7 — Times of Interest & Macros</div>
+  <div class="rule-box">Reconnaître la manipulation → anticiper la distribution — TOUJOURS</div>
+  <table class="t">
+    <tr><th>SESSION</th><th>MACRO 1</th><th>MACRO 2</th></tr>
+    <tr><td class="key">Londres</td><td>02h45 → 03h15</td><td>03h45 → 04h15</td></tr>
+    <tr><td class="key">NY Morning</td><td>09h45 → 10h15 ★</td><td>10h45 → 11h15 ★</td></tr>
+    <tr><td class="key">NY Afternoon</td><td>13h45 → 14h15</td><td>14h45 → 15h15</td></tr>
+  </table>
+  <div class="schema-box"><span class="hl-gold">RÈGLE DES MACROS :</span>
+
+  SMR dans la fenêtre macro  → Entrée possible immédiatement
+  SMR HORS de la fenêtre     → Attendre la PROCHAINE macro pour l'expansion
+
+<span class="hl-gold">DELIVERY PROFILES :</span>
+
+  Consolidation  → Engineering de liquidité des deux côtés
+  Manipulation   → Mouvement rapide contre la majorité (piège)
+  Distribution   → Expansion dans la vraie direction
+
+  Asia conso + London expansion + AM expansion
+  → PM potentiellement chaotique (range étroit)
+
+  Asia conso + London conso + AM expansion
+  → PM probablement expansion dans la continuation
+
+<span class="hl-gold">OPEN HIGH / OPEN LOW :</span>
+  [Bearish] Nouveau cycle → monte (open high) → prend PXH → manipulation
+            → Attendre les signes de SMR → Distribution ↓
+  [Bullish] Nouveau cycle → descend (open low) → prend PXL → manipulation
+            → Attendre les signes de SMR → Distribution ↑</div>
+</div>
+
+<!-- ═══ M8 : SMT ═══ -->
+<div id="page-m8" style="display:none">
+  <div class="section-title">M8 — SMT : Smart Money Time</div>
+  <div class="rule-box">SMT = confirmation UNIQUEMENT — jamais initiation</div>
+  <table class="t">
+    <tr><th>TYPE SMT</th><th>SIGNAL BAISSIER</th><th>SIGNAL HAUSSIER</th></tr>
+    <tr><td class="key">Big Cycle</td><td>NQ: Higher High / ES: Lower High</td><td>NQ: Higher Low / ES: Lower Low</td></tr>
+    <tr><td class="key">Small Cycle</td><td>À l'intérieur du swing high — cycle 30/10/3min</td><td>À l'intérieur du swing low — cycle 30/10/3min</td></tr>
+    <tr><td class="key">Double SMT ★</td><td colspan="2">Big cycle + Small cycle simultanément = confirmation maximale</td></tr>
+    <tr><td class="key">Opening Price</td><td>NQ atteint weekly open / ES ne l'atteint pas</td><td>NQ n'atteint pas weekly open / ES l'atteint</td></tr>
+  </table>
+  <table class="t">
+    <tr><th>MARCHÉS</th><th>CORRÉLATION</th></tr>
+    <tr><td class="bull">NQ ↔ ES (S&P)</td><td class="bull">Corrélés — doivent aller dans la même direction</td></tr>
+    <tr><td class="bull">NQ ↔ Dow Jones</td><td class="bull">Corrélés — doivent aller dans la même direction</td></tr>
+    <tr><td>EUR/USD ↔ DXY</td><td class="bear">Inversement corrélés — sens opposés</td></tr>
+    <tr><td>GBP/USD ↔ DXY</td><td class="bear">Inversement corrélés — sens opposés</td></tr>
+  </table>
+  <div class="schema-box"><span class="hl-gold">UTILISATION PRATIQUE :</span>
+
+  1. IOF HTF + DOL + POI + ToI → tous en place
+  2. On arrive au POI (point de retournement anticipé)
+  3. On cherche le SMT relatif au PXH ou PXL du cycle courant
+  4. Big cycle SMT détecté ✓
+  5. On zoome → Small cycle SMT dans le swing ✓
+  6. DOUBLE SMT → confirmation que le swing est formé
+  7. → Passer au CSD pour confirmer l'entrée</div>
+</div>
+
+<!-- ═══ M9 : CSD ═══ -->
+<div id="page-m9" style="display:none">
+  <div class="section-title">M9 — CSD : Change in State of Delivery</div>
+  <div class="rule-box">La gauche de la courbe détermine comment se livrera la droite</div>
+  <div class="schema-box"><span class="hl-green">CSD HAUSSIER — Étapes :</span>
+  1. Prix descend, purge SSL sous un bas
+  2. Prix remonte AU-DESSUS du high intermédiaire
+     → Ce high = Bullish Breaker formé
+  3. Déplacement rapide avec création d'un BISI
+  4. Le BISI tient comme SUPPORT ✓
+  5. CSD Haussier CONFIRMÉ → Buy Program ✅
+
+<span class="hl-red">CSD BAISSIER — Étapes :</span>
+  1. Prix monte, purge BSL au-dessus d'un haut
+  2. Prix descend EN-DESSOUS du low intermédiaire
+     → Ce low = Bearish Breaker formé
+  3. Déplacement rapide avec création d'un SIBI
+  4. Le SIBI tient comme RÉSISTANCE ✓
+  5. CSD Baissier CONFIRMÉ → Sell Program ✅
+
+<span class="hl-gold">RÈGLE DE LA GAUCHE SUR LA DROITE :</span>
+  - Étendre tous les SIBI/BISI de la gauche vers la droite
+  - Observer si ils fonctionnent comme support ou résistance
+  - SIBI gauche déplacé à la hausse → BISI inversé = support
+  - BISI gauche déplacé à la baisse → SIBI inversé = résistance</div>
+</div>
+
+<!-- ═══ M10 : ENTRY PATTERNS ═══ -->
+<div id="page-m10" style="display:none">
+  <div class="section-title">M10 — Entry Patterns</div>
+  <div class="rule-box">L'entrée est la DERNIÈRE étape — maîtriser d'abord les 6 étapes du protocole</div>
+  <table class="t">
+    <tr><th>PATTERN</th><th>SETUP BAISSIER</th><th>STOP</th></tr>
+    <tr>
+      <td class="key">Breaker Block</td>
+      <td>High→Low→HH→LL · Retrace dans le downclose candle</td>
+      <td>Au-dessus du SMR (safe) ou au-dessus du Breaker High</td>
+    </tr>
+    <tr>
+      <td class="key">Mitigation Block</td>
+      <td>High→Low→Lower High · Retrace dans le downclose candle</td>
+      <td>Au-dessus du haut qui a mis en place la chute</td>
+    </tr>
+    <tr>
+      <td class="key">SIBI (FVG baissier)</td>
+      <td>3 downclose rapides → SIBI créé → Retrace dans le SIBI</td>
+      <td>Au-dessus de la bougie 1 (qui a créé le gap)</td>
+    </tr>
+  </table>
+  <table class="t">
+    <tr><th>PATTERN</th><th>SETUP HAUSSIER</th><th>STOP</th></tr>
+    <tr>
+      <td class="key">Breaker Block</td>
+      <td>Low→High→LL→HH · Retrace dans le upclose candle</td>
+      <td>En-dessous du SMR (safe) ou du Breaker Low</td>
+    </tr>
+    <tr>
+      <td class="key">Mitigation Block</td>
+      <td>Low→High→Higher Low · Retrace dans le upclose candle</td>
+      <td>En-dessous du bas qui a mis en place la montée</td>
+    </tr>
+    <tr>
+      <td class="key">BISI (FVG haussier)</td>
+      <td>3 upclose rapides → BISI créé → Retrace dans le BISI</td>
+      <td>En-dessous de la bougie 1 (qui a créé le gap)</td>
+    </tr>
+  </table>
+  <div class="schema-box"><span class="hl-gold">STACKAGE (signal maximal) :</span>
+  Breaker Block + SIBI/BISI dans la même zone → ★★★
+
+<span class="hl-gold">ENTRÉES MULTIPLES :</span>
+  Il peut y avoir 3 à 5 BISI/SIBI dans un move A→B
+  Chacun = nouvelle opportunité d'entrée
+  Pas de FOMO si on rate le premier — il y en aura d'autres
+
+<span class="hl-gold">HIGH vs LOW RESISTANCE :</span>
+  High Resistance → prix lent, beaucoup de chop avant le SIBI/BISI
+  Low Resistance  → expansion immédiate dès le SIBI/BISI touché</div>
+</div>
+
+<!-- ═══ M11 : TRADE MANAGEMENT ═══ -->
+<div id="page-m11" style="display:none">
+  <div class="section-title">M11 — Trade Management</div>
+  <div class="rule-box">Ne jamais gérer une position qu'on n'aurait pas dû prendre</div>
+  <table class="t">
+    <tr><th>ÉLÉMENT</th><th>DÉFINITION</th><th>EXEMPLE</th></tr>
+    <tr><td class="key">Entry</td><td>Niveau d'entrée prédéfini</td><td>Retrace dans le SIBI à 20750</td></tr>
+    <tr><td class="key">Invalidation</td><td>Stop loss — idée annulée si touché</td><td>Au-dessus du SMR à 20810</td></tr>
+    <tr><td class="key">Target</td><td>DOL prédéfini</td><td>SSL à 20250</td></tr>
+  </table>
+  <div class="schema-box"><span class="hl-gold">TRAILING STOP PROGRESSIF :</span>
+
+  Entrée → Stop sous/au-dessus du SMR
+     ↓
+  Prix expanse → Nouveau SIBI créé
+  → Stop monte sous ce nouveau SIBI
+     ↓
+  Prix expanse encore → Nouveau bas protégé
+  → Stop ajusté encore
+     ↓
+  Pyramiding : ajouter contrats à chaque SIBI/BISI valide
+
+<span class="hl-gold">SIGNAUX DE SORTIE MANUELLE :</span>
+  - Gros upclose candle (en short) clôture AU-DESSUS d'un SIBI
+  - SMT s'inverse dans la direction opposée à la position
+  - Prix clôture au-delà du 50% du Breaker/OB sans rebond
+  - Ouverture d'un nouveau cycle qui ne confirme pas la direction
+
+<span class="hl-red">SIGNAL PSYCHOLOGIQUE DE SORTIE :</span>
+  Battements accélérés + sueur + doutes + incertitude
+  → Sortir IMMÉDIATEMENT
+  → IPTA ne livre pas comme anticipé</div>
+</div>
+
+<!-- ═══ M12 : RISK MANAGEMENT ═══ -->
+<div id="page-m12" style="display:none">
+  <div class="section-title">M12 — Risk Management</div>
+  <div class="rule-box">Réduire TOUJOURS le risque en drawdown — jamais augmenter pour récupérer</div>
+  <table class="t">
+    <tr><th>STRATÉGIE</th><th>RISQUE INITIAL</th><th>APRÈS WIN</th><th>APRÈS LOSS</th></tr>
+    <tr><td class="key">Regular</td><td>1%</td><td>Maintenir 1%</td><td class="bear">Réduire à 0.5% jusqu'à récupération</td></tr>
+    <tr><td class="key">Prop Firm Funded</td><td>10% du max DD</td><td>Maintenir 10%</td><td class="bear">Réduire à 5% jusqu'à récupération</td></tr>
+    <tr><td class="key">Prop Challenge</td><td>20% du max DD</td><td>Maintenir</td><td>Maintenir (agressif)</td></tr>
+    <tr><td class="key">Exponential ⚠️</td><td>1%</td><td class="bull">Risquer 50% des profits du trade précédent</td><td class="bear">Revenir à 1% immédiatement</td></tr>
+  </table>
+  <div class="schema-box"><span class="hl-gold">POURQUOI 1% NE MARCHE PAS SUR PROP FIRM :</span>
+
+  Max Drawdown = 3000$ sur un compte 100 000$
+  1% du capital = 1000$ de risque
+  1000$ / 3000$ = <span class="hl-red">33% du drawdown en 1 trade</span>
+  3 pertes → compte perdu
+
+  Solution : utiliser % du max allowed drawdown
+  10% de 3000$ = 300$ de risque par trade
+  → 10 pertes consécutives avant de perdre le compte</div>
+</div>
+
+<!-- ═══ FLASHCARDS ═══ -->
+<div id="page-flashcards" style="display:none">
+  <div class="section-title">🃏 Flashcards IPTA</div>
+  <div class="fc-area">
+    <div class="fc-counter"><span id="fc-cur">1</span> / <span id="fc-tot">0</span></div>
+    <div class="fc-progress"><div class="fc-progress-bar" id="fc-bar" style="width:0%"></div></div>
+    <div class="flashcard" id="fc-card" onclick="flipCard()">
+      <div class="fc-front">
+        <div class="fc-tag" id="fc-tag"></div>
+        <div class="fc-label">QUESTION</div>
+        <div class="fc-question" id="fc-q"></div>
+        <div class="fc-hint">Cliquer pour voir la réponse</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-label">RÉPONSE</div>
+        <div class="fc-answer" id="fc-a"></div>
+      </div>
+    </div>
+    <div class="fc-nav">
+      <button class="btn btn-red" onclick="fcGrade(false)">✗ À revoir</button>
+      <button class="btn btn-ghost" onclick="fcNext()">→ Suivant</button>
+      <button class="btn btn-green" onclick="fcGrade(true)">✓ Connu</button>
+    </div>
+    <div style="display:flex; gap:8px; margin-top:8px;">
+      <button class="btn btn-ghost btn-sm" onclick="fcShuffle()">🔀 Mélanger</button>
+      <button class="btn btn-ghost btn-sm" onclick="fcReset()">↺ Recommencer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ QUIZ ═══ -->
+<div id="page-quiz" style="display:none">
+  <div class="section-title">🧠 Quiz Complet</div>
+  <div id="quiz-container">
+    <div class="quiz-card">
+      <div class="fc-counter"><span id="qz-cur">1</span> / <span id="qz-tot">0</span></div>
+      <br>
+      <div class="quiz-q" id="qz-q"></div>
+      <div class="quiz-opts" id="qz-opts"></div>
+      <div class="quiz-explain" id="qz-exp"></div>
+      <div class="quiz-nav">
+        <div class="score-pill total" id="qz-score" style="padding:6px 16px">Score: 0%</div>
+        <button class="btn btn-primary" id="qz-next" onclick="nextQuestion()" style="display:none">Question suivante →</button>
+      </div>
+    </div>
+  </div>
+  <div id="quiz-end" style="display:none; text-align:center; padding:40px;">
+    <div class="section-title" style="justify-content:center">Quiz terminé !</div>
+    <div class="rule-box" id="quiz-final-score"></div>
+    <button class="btn btn-primary" onclick="startQuiz()" style="margin-top:16px">Recommencer</button>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ══ DATA ══════════════════════════════════════════════════════════════════════
+
+const FLASHCARDS = [
+  {tag:"M1",q:"Que signifie Point A et Point B dans le framework IPTA ?",a:"Point A = Inception (début du programme / Smart Money Reversal)\nPoint B = Terminus (objectif / Draw on Liquidity).\nTout trade cherche à capturer le mouvement de A vers B."},
+  {tag:"M1",q:"Quelle est la règle d'entrée dans un programme haussier en terme de position dans le range ?",a:"Entrer EN DESSOUS de l'équilibre (50%) du range A→B anticipé.\nDans un programme baissier : entrer AU-DESSUS de l'équilibre (50%)."},
+  {tag:"M1",q:"Quelle est la différence entre Low Resistance et High Resistance Liquidity Run ?",a:"Low Resistance : expansion rapide et propre, SIBI/BISI tiennent au 1er retrace → environnement idéal.\nHigh Resistance : beaucoup de chop, retracements profonds → éviter ou gérer agressivement."},
+  {tag:"M2",q:"Que signifient PXH et PXL ?",a:"PXH = Previous X High = haut du cycle précédent\nPXL = Previous X Low = bas du cycle précédent\nLe X est variable : Previous Day High, Previous Week Low, Previous 90min High, etc."},
+  {tag:"M2",q:"Quelles sont les 6 fenêtres de 90 minutes des sessions AM et PM (NY Time) ?",a:"NY Morning (AM) :\nAM1 : 07h00-08h30\nAM2 : 08h30-10h00 (ouverture NY)\nAM3 : 10h00-11h30\n\nNY Afternoon (PM) :\nPM1 : 11h30-13h00 (Lunch - éviter)\nPM2 : 13h00-14h30 (Run Cycle)\nPM3 : 14h30-16h00"},
+  {tag:"M2",q:"Quelle est la différence entre Sweeping et Purging la liquidité ?",a:"Sweeping = le marché touche simplement le niveau de liquidité.\nPurging = le marché touche + se déplace DERRIÈRE le niveau + revient de l'autre côté → manipulation CONFIRMÉE → anticiper la distribution."},
+  {tag:"M2",q:"Quelle est la règle pour le scénario Purge & Revert en haussier ?",a:"Le nouveau cycle s'ouvre → prix descend SOUS le PXL → SSL purgée → prix remonte AU-DESSUS du PXL → PXL devient support → draw vers le PXH."},
+  {tag:"M2",q:"Quelle est la règle pour le scénario Continuation en baissier ?",a:"Prix casse le PXL vers le bas → reteste le PXL → PXL agit comme RÉSISTANCE → continuation baissière vers la prochaine SSL."},
+  {tag:"M3",q:"Qu'est-ce que la Buy Side Liquidity (BSL) et d'où vient-elle ?",a:"La BSL est resting AU-DESSUS des anciens hauts.\nSource : buy stops des vendeurs à découvert (stop-loss des shorts).\nSM pousse le prix vers ces hauts → déclenche les stops → vend contre ces acheteurs forcés."},
+  {tag:"M3",q:"Qu'est-ce que la Sell Side Liquidity (SSL) et d'où vient-elle ?",a:"La SSL est resting EN-DESSOUS des anciens bas.\nSource : sell stops des acheteurs (stop-loss des longs).\nSM pousse le prix vers ces bas → déclenche les stops → achète contre ces vendeurs forcés."},
+  {tag:"M3",q:"Que signifie 'smooth highs like to be made jacked' ?",a:"Les hauts trop propres et alignés (relative equal highs) contiennent de la BSL engineérée au-dessus. IPTA sera attiré vers ces niveaux pour purger la BSL avant de continuer ou reverser."},
+  {tag:"M4",q:"Qu'est-ce qu'un SIBI et comment se forme-t-il ?",a:"SIBI = Sell Side Imbalance, Buy Side Inefficiency.\nFVG baissier créé lors d'une expansion rapide vers le bas.\nGap entre le LOW de la bougie 1 et le HIGH de la bougie 3.\nLe marché devra revenir dans ce SIBI pour offrir du buy side delivery."},
+  {tag:"M4",q:"Qu'est-ce qu'un BISI et comment se forme-t-il ?",a:"BISI = Buy Side Imbalance, Sell Side Inefficiency.\nFVG haussier créé lors d'une expansion rapide vers le haut.\nGap entre le HIGH de la bougie 1 et le LOW de la bougie 3.\nLe marché devra revenir dans ce BISI pour offrir du sell side delivery."},
+  {tag:"M4",q:"Qu'est-ce qu'un Inversion FVG ?",a:"Un SIBI déplacé à la HAUSSE (prix clôture au-dessus) → le SIBI devient SUPPORT (inversion haussière).\nUn BISI déplacé à la BAISSE (prix clôture en-dessous) → le BISI devient RÉSISTANCE (inversion baissière)."},
+  {tag:"M4",q:"Quelle est la séquence de formation des PD Arrays dans un programme baissier ?",a:"1. Bearish Rejection Block\n2. Bearish Order Block\n3. SIBI (FVG baissier)\n4. Bearish Breaker Block\n5. Bearish Mitigation Block"},
+  {tag:"M4",q:"Qu'est-ce que le Mean Threshold d'un Order Block et pourquoi est-il important ?",a:"Le Mean Threshold = 50% du range de l'Order Block.\nC'est le niveau le plus important : si le prix retrace dans l'OB mais que les CORPS ne clôturent PAS au-delà du 50%, la direction est confirmée."},
+  {tag:"M4",q:"Quelle est la différence entre un Bearish Breaker et un Bearish Mitigation Block ?",a:"Breaker : High → Low → HIGHER HIGH → Lower Low. Le downclose candle avant le Higher High = Bearish Breaker.\nMitigation : High → Low → LOWER HIGH → Lower Low. Pas de nouveau sommet = Mitigation Block.\nSi un marché crée un Breaker et l'autre un Mitigation → SMT."},
+  {tag:"M5",q:"Qu'est-ce que le Market Structure Shift Pattern (MSS) ?",a:"SIBI sur la gauche de la courbe\n→ Haut formé DANS ce SIBI\n→ Prix purge SSL\n→ Déplacement AU-DESSUS de ce haut avec création d'un BISI\n→ Ce BISI tient comme support\n= MSS Haussier. Présent à CHAQUE retournement majeur."},
+  {tag:"M5",q:"Quelle est la règle absolue avant de descendre en bas timeframe ?",a:"Si on ne peut pas anticiper le mouvement sur les hauts timeframes, on n'a AUCUNE raison de descendre en bas timeframe. L'IOF HTF donne le biais directionnel. Sans lui, on est perdu dans le price action LTF."},
+  {tag:"M6",q:"Quelles sont les 3 méthodes pour définir le Draw on Liquidity ?",a:"1. Time Cycles : PXH (bullish) ou PXL (bearish) du cycle précédent, du grand vers le petit\n2. Key Levels : quadrants fixes 0%/25%/50%/75%/100% qui ne changent jamais\n3. PD Arrays : vieux SIBI/BISI non rebalancés, opening prices"},
+  {tag:"M6",q:"Quelle est la différence entre les Key Levels et les PXH/PXL en termes de nature ?",a:"Key Levels = FIXES (ne changent jamais — même niveaux chaque semaine, mois, année)\nPXH/PXL = DYNAMIQUES (changent à chaque cycle — le haut de Lundi sera différent la semaine prochaine)"},
+  {tag:"M6",q:"Quel est le combo idéal pour un DOL de haute probabilité ?",a:"Liquidité engineérée EN AVANCE d'un key level + un PD Array (SIBI/BISI ou vieux OB) dans la même zone = signature idéale pour un retournement de haute probabilité."},
+  {tag:"M7",q:"Que sont les Macros et quand se produisent-elles ?",a:"Les Macros sont des fenêtres de 30 minutes (XX:45 → XX:15) dans lesquelles IPTA livre des signatures algorithmiques répétables.\nNY Morning : 09h45-10h15 et 10h45-11h15\nNY PM : 13h45-14h15 et 14h45-15h15"},
+  {tag:"M7",q:"Quelle est la règle si le SMR se forme EN DEHORS d'une fenêtre macro ?",a:"Si le Smart Money Reversal se forme hors macro → attendre la PROCHAINE fenêtre macro pour anticiper l'expansion. Ne pas entrer immédiatement après le SMR si on est hors fenêtre."},
+  {tag:"M8",q:"Qu'est-ce que le SMT (Smart Money Time) et quel est son rôle dans le protocole ?",a:"SMT = divergence de corrélation entre marchés corrélés (NQ/ES) ou inversement corrélés (EUR/DXY).\nRôle = CONFIRMATION UNIQUEMENT. Le SMT ne signifie rien seul — il confirme les étapes précédentes du protocole (IOF + DOL + POI + ToI déjà en place)."},
+  {tag:"M8",q:"Qu'est-ce que le Double SMT et pourquoi est-il le plus puissant ?",a:"Double SMT = Big Time Cycle SMT + Small Time Cycle SMT présents simultanément.\nLe Big cycle confirme que le swing se forme. Le Small cycle confirme que la formation est terminée. Ensemble = confirmation maximale que le swing high ou low est bien en place."},
+  {tag:"M8",q:"Qu'est-ce que l'Opening Price SMT ?",a:"Marché 1 atteint un opening price clé (weekly, midnight, monthly) ET Marché 2 ne l'atteint PAS (ou vice versa).\n→ Signal d'alerte : retracement profond probable ou retournement imminent. Si en position, sortir ou réduire."},
+  {tag:"M9",q:"Quelles sont les 4 étapes pour confirmer un CSD Haussier ?",a:"1. Prix descend, purge la SSL sous un bas\n2. Prix remonte AU-DESSUS du high intermédiaire → Bullish Breaker formé\n3. Déplacement avec création d'un BISI\n4. Le BISI tient comme SUPPORT\n→ CSD Haussier CONFIRMÉ → Buy Program ✅"},
+  {tag:"M9",q:"Que signifie 'la gauche de la courbe détermine la droite' ?",a:"Les SIBI/BISI créés sur le côté gauche (sell side de la courbe) doivent être étendus vers la droite. Dans un buy program, ces SIBI/BISI de gauche seront déplacés à la hausse et fonctionneront comme support (inversion FVG) — confirmant que le buy program est bien en cours."},
+  {tag:"M10",q:"Quels sont les 3 patterns d'entrée principaux et leur ordre de risque ?",a:"1. Breaker Block (le plus agressif — entrée dès le retrace dans le Breaker)\n2. Mitigation Block (même logique sans nouveau sommet/bas)\n3. SIBI/BISI (le plus fréquent — entrée dans le FVG sur 3 bougies)"},
+  {tag:"M10",q:"Comment stacke-t-on les patterns d'entrée pour un signal maximal ?",a:"Breaker Block + SIBI/BISI dans la même zone = signal maximal ★★★.\nLe Breaker fournit le contexte (swing formation), le SIBI/BISI offre l'entrée précise et un stop serré."},
+  {tag:"M11",q:"Quels sont les 3 éléments à prédéfinir avant toute entrée en trade ?",a:"1. Entry : le niveau exact d'entrée (Breaker / Mitigation / SIBI-BISI)\n2. Invalidation : le stop loss — où l'idée est annulée (SMR = le plus safe)\n3. Target : le DOL — la destination prédéfinie"},
+  {tag:"M11",q:"Quel signal psychologique indique qu'il faut sortir immédiatement d'une position ?",a:"Battements cardiaques accélérés + sueur + doutes + incertitude = SORTIR IMMÉDIATEMENT.\nCes signaux indiquent qu'on n'est pas aligné avec IPTA. La position ne devrait pas avoir été prise."},
+  {tag:"M12",q:"Quelle est la règle de base du Regular Risk Management après un LOSS ?",a:"Réduire le risque à 0.5% (la moitié) jusqu'à la récupération complète du drawdown. Ensuite revenir à 1%. Ne jamais augmenter le risque après une perte pour 'récupérer'."},
+  {tag:"M12",q:"Pourquoi utiliser 1% du capital total ne fonctionne pas sur un compte prop firm ?",a:"Exemple : max drawdown = 3000$ sur 100 000$.\n1% du capital = 1000$ de risque = 33% du drawdown en 1 trade.\n3 pertes consécutives → compte perdu.\nSolution : utiliser 10% du MAX ALLOWED DRAWDOWN comme risque par trade."},
+  {tag:"PROTO",q:"Quelle est la séquence complète du protocole IPTA ?",a:"1. Higher TF Institutional Order Flow (Buy ou Sell Program ?)\n2. Draw on Liquidity (DOL) — où va le marché ?\n3. Point of Interest (POI) — où va former le swing ?\n4. Time of Interest (Macro window)\n5. SMT (Smart Money Time — confirmation)\n6. CSD (Change in State of Delivery)\n→ ENTRÉE"},
+];
+
+const QUIZ = [
+  {q:"SIBI signifie :",opts:["Support Imbalance Buy Indicator","Sell Side Imbalance Buy Side Inefficiency","Smart Imbalance Breakdown Index","Sell Instability Bullish Input"],correct:1,exp:"SIBI = Sell Side Imbalance, Buy Side Inefficiency. C'est un FVG baissier créé lors d'une expansion rapide vers le bas. Le marché doit revenir le rebalancer."},
+  {q:"BISI signifie :",opts:["Buy Indicator Sell Imbalance","Bearish Inefficiency Sell Index","Buy Side Imbalance Sell Side Inefficiency","Base Impulse Signal Indicator"],correct:2,exp:"BISI = Buy Side Imbalance, Sell Side Inefficiency. C'est un FVG haussier créé lors d'une expansion rapide vers le haut."},
+  {q:"Dans un scénario Purge & Revert haussier, quelle est la séquence ?",opts:["Prix monte au-dessus PXH → purge BSL → revient sous PXH → draw vers PXL","Prix descend sous PXL → purge SSL → remonte au-dessus PXL → draw vers PXH","Prix monte au-dessus PXH → hold PXH comme support → continue haussier","Prix descend sous PXL → hold PXL comme résistance → continue baissier"],correct:1,exp:"Purge & Revert haussier : descente sous PXL → SSL purgée → retour au-dessus du PXL (qui devient support) → draw vers le PXH."},
+  {q:"Le Mean Threshold d'un Order Block est situé à :",opts:["25% du range","33% du range","50% du range","75% du range"],correct:2,exp:"Le Mean Threshold = 50% du range de l'Order Block. C'est le niveau le plus crucial : les corps ne doivent pas clôturer au-delà."},
+  {q:"Le SMT (Smart Money Time) est :",opts:["Un signal d'entrée autonome","Un outil de confirmation qui nécessite les étapes précédentes","Un indicateur de volume","Un pattern de prix isolé"],correct:1,exp:"Le SMT est un outil de CONFIRMATION UNIQUEMENT. Il ne signifie rien sans que les étapes IOF + DOL + POI + ToI soient déjà en place."},
+  {q:"Quelle est la fenêtre de la macro NY Morning principale ?",opts:["08h00 → 08h30 et 09h00 → 09h30","09h45 → 10h15 et 10h45 → 11h15","10h00 → 10h30 et 11h00 → 11h30","08h30 → 09h00 et 09h30 → 10h00"],correct:1,exp:"Les macros NY Morning sont 09h45→10h15 et 10h45→11h15. Ces fenêtres de 30 minutes sont celles où IPTA livre ses signatures les plus nettes."},
+  {q:"La règle DOL → POI signifie :",opts:["Le POI est toujours supérieur au DOL","On définit le DOL AVANT de chercher un POI","Le DOL et le POI sont la même chose","On peut chercher un POI sans DOL défini"],correct:1,exp:"Le DOL (Draw on Liquidity) doit toujours être défini AVANT le POI. Le DOL = la destination, le POI = le point de retournement avant d'atteindre cette destination."},
+  {q:"Qu'est-ce qu'un Double SMT ?",opts:["SMT sur deux marchés différents en même temps","Big Time Cycle SMT + Small Time Cycle SMT simultanément","SMT qui apparaît deux fois dans la même session","Opening SMT confirmé par un autre opening SMT"],correct:1,exp:"Le Double SMT = Big Cycle SMT (ex: relatif au PXL du jour) + Small Cycle SMT (ex: 10min cycle SMT dans le swing low). C'est la confirmation la plus forte."},
+  {q:"Si le SMR se forme HORS d'une fenêtre macro, quelle est la règle ?",opts:["Entrer immédiatement sur le SMR","Ignorer complètement le trade","Attendre la PROCHAINE fenêtre macro pour l'expansion","Chercher un autre setup"],correct:2,exp:"Si le SMR se forme hors macro → attendre la prochaine fenêtre macro pour anticiper l'expansion. Le timing d'entrée sera meilleur et le risk/reward plus favorable."},
+  {q:"Quelle est la différence entre Sweeping et Purging ?",opts:["Sweeping = vendre, Purging = acheter","Sweeping = toucher + revenir de l'autre côté, Purging = juste toucher le niveau","Sweeping = juste toucher le niveau, Purging = toucher + se déplacer au-delà + revenir","Ce sont des synonymes"],correct:2,exp:"Sweeping = le marché touche simplement le niveau. Purging = toucher + déplacement au-delà + retour de l'autre côté. Le Purging CONFIRME la manipulation et annonce la distribution."},
+  {q:"Dans le Risk Management Regular, que faire après un LOSS ?",opts:["Doubler le risque pour récupérer","Maintenir le même risque","Réduire à 0.5% jusqu'à récupération du drawdown","Arrêter de trader"],correct:2,exp:"Après un loss : réduire à 0.5% (la moitié). Si 2ème loss : maintenir 0.5%. Dès qu'on repasse en profit au-dessus du niveau de départ, revenir à 1%."},
+  {q:"PM1 (11h30→13h00) dans la session PM est appelé :",opts:["The Power Hour","The Lunch Cycle","The Run Cycle","The Distribution Cycle"],correct:1,exp:"PM1 est le 'Lunch Cycle'. Il est généralement peu volatil et sert principalement à engineérer la liquidité pour PM2 et PM3. À éviter pour les entrées sur NQ."},
+  {q:"Un SIBI déplacé à la HAUSSE devient :",opts:["Un BISI","Un Bearish Breaker","Un support (Inversion FVG)","Une résistance"],correct:2,exp:"Un SIBI (FVG baissier) déplacé à la hausse → l'inversion le transforme en SUPPORT (Inversion FVG haussier). Le prix devrait y trouver support pour continuer à la hausse."},
+  {q:"Quelle est la première étape du protocole IPTA ?",opts:["Identifier un SIBI ou BISI","Regarder le SMT sur NQ/ES","Définir le Higher TF Institutional Order Flow","Chercher une Macro window"],correct:2,exp:"La première étape est toujours de définir le Higher TF Institutional Order Flow (Buy Program ou Sell Program ?). Sans cela, aucune autre étape n'a de sens."},
+  {q:"Le Market Structure Shift Pattern (MSS) requiert :",opts:["Seulement un FVG et un Breaker","SIBI sur la gauche + haut formé DANS ce SIBI + déplacement au-dessus + BISI créé + BISI tenu","Un double bottom classique","Trois lower lows consécutifs"],correct:1,exp:"Le MSS haussier = SIBI gauche + haut dans ce SIBI + déplacement au-dessus avec BISI + le BISI tient comme support. Présent à CHAQUE retournement majeur sur tous les timeframes."},
+];
+
+// ══ STATE ══════════════════════════════════════════════════════════════════════
+let score = {correct:0, wrong:0};
+let fcIndex = 0, fcDeck = [...FLASHCARDS], fcFlipped = false;
+let qzIndex = 0, qzDeck = [...QUIZ], qzLocked = false, qzCorrect = 0;
+
+// ══ NAV ═══════════════════════════════════════════════════════════════════════
+function show(id) {
+  document.querySelectorAll('[id^="page-"]').forEach(el => el.style.display='none');
+  const p = document.getElementById('page-'+id);
+  if (p) p.style.display='';
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  const navEl = document.querySelector(`nav a[onclick="show('${id}')"]`);
+  if (navEl) navEl.classList.add('active');
+
+  if (id==='flashcards') initFC();
+  if (id==='quiz') startQuiz();
+}
+
+// ══ TABS ══════════════════════════════════════════════════════════════════════
+function switchTab(el, module, tab) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const p = document.getElementById('page-'+module);
+  p.querySelectorAll('[id^="'+module+'-"]').forEach(div => div.style.display='none');
+  document.getElementById(module+'-'+tab).style.display='';
+}
+
+// ══ PROTOCOL ══════════════════════════════════════════════════════════════════
+function toggleStep(el) {
+  el.classList.toggle('done');
+  el.classList.toggle('pending');
+}
+function resetProto() {
+  document.querySelectorAll('.proto-step').forEach(el => {
+    el.classList.add('pending');
+    el.classList.remove('done');
+  });
+}
+
+// ══ SCORE ═════════════════════════════════════════════════════════════════════
+function updateScoreBar() {
+  document.getElementById('sc-correct').textContent = '✓ '+score.correct;
+  document.getElementById('sc-wrong').textContent = '✗ '+score.wrong;
+  const total = score.correct + score.wrong;
+  const pct = total > 0 ? Math.round(score.correct/total*100) : 0;
+  document.getElementById('sc-total').textContent = 'Score: '+pct+'%';
+}
+function resetScore() { score={correct:0,wrong:0}; updateScoreBar(); }
+
+// ══ FLASHCARDS ════════════════════════════════════════════════════════════════
+function initFC() {
+  fcIndex = 0; fcFlipped = false;
+  document.getElementById('fc-tot').textContent = fcDeck.length;
+  renderFC();
+}
+function renderFC() {
+  const fc = fcDeck[fcIndex];
+  document.getElementById('fc-q').textContent = fc.q;
+  document.getElementById('fc-a').textContent = fc.a;
+  document.getElementById('fc-tag').textContent = fc.tag;
+  document.getElementById('fc-tag').style.cssText = 'background:rgba(245,166,35,.2);color:#F5A623;border-radius:20px;padding:3px 12px;font-size:.7rem;font-weight:700;display:inline-block;';
+  document.getElementById('fc-cur').textContent = fcIndex+1;
+  document.getElementById('fc-bar').style.width = ((fcIndex+1)/fcDeck.length*100)+'%';
+  const card = document.getElementById('fc-card');
+  card.classList.remove('flipped');
+  fcFlipped = false;
+}
+function flipCard() {
+  const card = document.getElementById('fc-card');
+  card.classList.toggle('flipped');
+  fcFlipped = !fcFlipped;
+}
+function fcNext() {
+  fcIndex = (fcIndex+1) % fcDeck.length;
+  renderFC();
+}
+function fcGrade(known) {
+  if (known) { score.correct++; } else { score.wrong++; }
+  updateScoreBar();
+  fcNext();
+}
+function fcShuffle() {
+  for (let i=fcDeck.length-1; i>0; i--) {
+    const j=Math.floor(Math.random()*(i+1));
+    [fcDeck[i],fcDeck[j]]=[fcDeck[j],fcDeck[i]];
+  }
+  fcIndex=0; renderFC();
+}
+function fcReset() { fcDeck=[...FLASHCARDS]; initFC(); }
+
+// ══ QUIZ ══════════════════════════════════════════════════════════════════════
+function startQuiz() {
+  qzDeck = [...QUIZ].sort(()=>Math.random()-.5);
+  qzIndex = 0; qzCorrect = 0; qzLocked = false;
+  document.getElementById('quiz-container').style.display='';
+  document.getElementById('quiz-end').style.display='none';
+  document.getElementById('qz-tot').textContent = qzDeck.length;
+  renderQ();
+}
+function renderQ() {
+  const q = qzDeck[qzIndex];
+  document.getElementById('qz-cur').textContent = qzIndex+1;
+  document.getElementById('qz-q').textContent = q.q;
+  const opts = document.getElementById('qz-opts');
+  opts.innerHTML = '';
+  const shuffled = q.opts.map((o,i)=>({text:o,idx:i})).sort(()=>Math.random()-.5);
+  shuffled.forEach(opt => {
+    const btn = document.createElement('div');
+    btn.className = 'quiz-opt';
+    btn.textContent = opt.text;
+    btn.onclick = () => answerQ(opt.idx, q.correct, btn, opts, q.exp);
+    opts.appendChild(btn);
+  });
+  document.getElementById('qz-exp').className = 'quiz-explain';
+  document.getElementById('qz-next').style.display = 'none';
+  document.getElementById('qz-score').textContent = 'Score: '+Math.round(qzCorrect/Math.max(qzIndex,1)*100)+'%';
+  qzLocked = false;
+}
+function answerQ(chosen, correct, el, opts, exp) {
+  if (qzLocked) return;
+  qzLocked = true;
+  opts.querySelectorAll('.quiz-opt').forEach(o => o.classList.add('locked'));
+  // find correct option
+  const allOpts = opts.querySelectorAll('.quiz-opt');
+  const shuffledTexts = [...allOpts].map(o=>o.textContent);
+  // mark chosen
+  el.classList.add(chosen === correct ? 'correct' : 'wrong');
+  if (chosen !== correct) {
+    // find and mark correct
+    const qData = qzDeck[qzIndex];
+    allOpts.forEach(o => { if(o.textContent === qData.opts[correct]) o.classList.add('correct'); });
+  }
+  const didCorrect = chosen === correct;
+  if (didCorrect) { qzCorrect++; score.correct++; } else { score.wrong++; }
+  updateScoreBar();
+  const expEl = document.getElementById('qz-exp');
+  expEl.textContent = exp;
+  expEl.className = 'quiz-explain show';
+  document.getElementById('qz-next').style.display = '';
+  document.getElementById('qz-score').textContent = 'Score: '+Math.round(qzCorrect/(qzIndex+1)*100)+'%';
+}
+function nextQuestion() {
+  qzIndex++;
+  if (qzIndex >= qzDeck.length) {
+    document.getElementById('quiz-container').style.display='none';
+    document.getElementById('quiz-end').style.display='';
+    const pct = Math.round(qzCorrect/qzDeck.length*100);
+    document.getElementById('quiz-final-score').innerHTML =
+      `${qzCorrect} / ${qzDeck.length} correctes — <strong>${pct}%</strong>`;
+    return;
+  }
+  renderQ();
+}
+
+// ══ INIT ══════════════════════════════════════════════════════════════════════
+show('home');
+</script>
+<script src="../nav.js"></script>
+</body>
+</html>
