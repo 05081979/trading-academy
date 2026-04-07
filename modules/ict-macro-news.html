@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="../auth.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICT Macro Tracker + News — Fenetres Macro &amp; Calendrier</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #07080b;
+    --s1: #0e1116;
+    --s2: #13171e;
+    --s3: #191e27;
+    --bd: #1c2230;
+    --bd2: #232c3a;
+    --gold: #c8a228;
+    --gold2: #e5bc3c;
+    --blue: #3d82e0;
+    --green: #2ec974;
+    --red: #e05050;
+    --orange: #e08830;
+    --purple: #9b72e0;
+    --cyan: #28bfcf;
+    --text: #cdd5e2;
+    --t2: #8594a8;
+    --t3: #4a5668;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; }
+
+  .banner { background: var(--s1); border-bottom: 1px solid var(--bd2); padding: 36px 56px 32px; position: relative; }
+  .banner::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg, transparent 0%, var(--orange) 30%, #FF9800 50%, var(--orange) 70%, transparent 100%); }
+  .banner-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 3px; color: var(--orange); text-transform: uppercase; margin-bottom: 10px; }
+  .banner h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: #fff; line-height: 1.1; }
+  .banner h1 em { color: #FF9800; font-style: normal; }
+  .banner-sub { margin-top: 10px; color: var(--t2); font-size: 13px; max-width: 700px; line-height: 1.6; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 40px; }
+
+  .section { background: var(--s1); border: 1px solid var(--bd); border-radius: 10px; padding: 28px 32px; margin-bottom: 24px; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section-title .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  @media(max-width:800px) { .concept-grid { grid-template-columns: 1fr; } .container { padding: 16px; } .banner { padding: 24px; } }
+
+  .concept-card { background: var(--s2); border: 1px solid var(--bd); border-radius: 8px; padding: 18px 20px; }
+  .concept-card h3 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .concept-card p { color: var(--t2); line-height: 1.7; font-size: 12px; }
+  .concept-card.full { grid-column: 1 / -1; }
+
+  .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 9px; padding: 2px 8px; border-radius: 4px; margin-right: 4px; margin-bottom: 4px; }
+  .tag-blue { background: rgba(61,130,224,0.12); color: var(--blue); }
+  .tag-green { background: rgba(46,201,116,0.10); color: var(--green); }
+  .tag-orange { background: rgba(224,136,48,0.10); color: var(--orange); }
+  .tag-red { background: rgba(224,80,80,0.10); color: var(--red); }
+  .tag-purple { background: rgba(155,114,224,0.10); color: var(--purple); }
+  .tag-cyan { background: rgba(40,191,207,0.10); color: var(--cyan); }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 12px; }
+  th { text-align: left; padding: 8px 12px; background: var(--s2); color: var(--orange); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1px; border-bottom: 1px solid var(--bd); }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--bd); color: var(--t2); }
+  tr:hover td { color: var(--text); background: rgba(255,255,255,0.02); }
+
+  .code-block { background: #0d1117; border: 1px solid var(--bd); border-radius: 8px; padding: 20px; margin-top: 12px; overflow-x: auto; max-height: 500px; overflow-y: auto; }
+  .code-block pre { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #c9d1d9; line-height: 1.6; white-space: pre; }
+  .code-block::-webkit-scrollbar { width: 6px; height: 6px; }
+  .code-block::-webkit-scrollbar-track { background: transparent; }
+  .code-block::-webkit-scrollbar-thumb { background: var(--bd2); border-radius: 3px; }
+
+  .btn-row { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+  .btn { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 10px 22px; border-radius: 6px; border: 1px solid var(--bd); background: var(--s2); color: var(--text); cursor: pointer; transition: all 0.15s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+  .btn:hover { border-color: var(--orange); color: var(--orange); }
+  .btn-orange { border-color: var(--orange); color: var(--orange); }
+  .btn-orange:hover { background: rgba(224,136,48,0.1); }
+
+  .list-styled { padding-left: 20px; margin-top: 8px; }
+  .list-styled li { color: var(--t2); line-height: 1.8; font-size: 12px; }
+  .list-styled li strong { color: var(--text); }
+
+  .highlight { color: #FF9800; font-weight: 500; }
+
+  .macro-timeline { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+  .macro-row { display: flex; align-items: center; gap: 12px; padding: 6px 12px; background: var(--s2); border-radius: 6px; border-left: 3px solid; }
+  .macro-row .time { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text); min-width: 120px; }
+  .macro-row .desc { font-size: 11px; color: var(--t2); }
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+<link rel="stylesheet" href="../readability.css">
+
+<div class="banner">
+  <div class="banner-eyebrow">Module 14 &mdash; Indicateur Pine Script</div>
+  <h1>ICT Macro Tracker &mdash; <em>+ News Calendar</em></h1>
+  <p class="banner-sub">
+    Indicateur qui affiche les fenetres macro ICT (horaires et demi-heure) avec un calendrier economique Forex Factory integre. Adapte par mmxm, base sur toodegrees. Fonctionne en overlay ou en volet separe.
+  </p>
+  <div class="btn-row">
+    <a class="btn btn-orange" href="../pdf/ict-macro-news-guide.html" target="_blank">Telecharger le Guide PDF</a>
+    <button class="btn" onclick="document.getElementById('code-section').scrollIntoView({behavior:'smooth'})">Voir le Code Source</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- CONCEPT -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:#FF9800"></span> Qu'est-ce qu'une Macro ICT ?</div>
+    <p style="color:var(--t2);line-height:1.7;">
+      Les <span class="highlight">ICT Macros</span> sont des fenetres temporelles de 30 minutes (XX:45 - XX+1:15) identifiees par ICT (Inner Circle Trader) comme des moments ou les algorithmes institutionnels executent des ordres significatifs. Pendant ces fenetres, le prix a tendance a effectuer des mouvements directionnels forts — prises de liquidite, manipulations, ou expansions.
+    </p>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3 style="color:#FF9800">Macros Horaires (XX:45 - XX+1:15)</h3>
+        <p>Fenetres de 30 minutes centrees sur le changement d'heure. C'est le moment ou les algorithmes recalibrent et prennent la liquidite. <strong>24 macros</strong> couvrent les 24h.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:#00BCD4">Macros Demi-Heure (XX:20 - XX:40)</h3>
+        <p>Fenetres de 20 minutes au milieu de l'heure. Plus courtes mais souvent explosives. <strong>6 macros cles</strong> : London (03:20), US Open (08:20, 09:20, 10:20), PM (13:20, 15:20).</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:#9C27B0">ICT Power Hour (15:15 - 15:45)</h3>
+        <p>La fenetre speciale de la derniere heure de trading US. Souvent le moment du mouvement final de la journee — reversal ou continuation vers la cloture.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--green)">Calendrier Forex Factory</h3>
+        <p>Integration en temps reel des evenements economiques via Forex Factory. Filtrage par impact (rouge/orange/jaune) et par devise (USD, EUR, GBP). Affichage dans un tableau integre.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MACROS CLES -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--blue)"></span> Macros Cles par Session (Heure NY)</div>
+    <div class="macro-timeline">
+      <div class="macro-row" style="border-color:#FF9800"><span class="time">02:45 - 03:15</span><span class="desc">Pre-London — Liquidite asiatique, setup de la session London</span></div>
+      <div class="macro-row" style="border-color:#2196F3"><span class="time">03:45 - 04:15</span><span class="desc">London Open — Expansion majeure, direction du jour souvent definie ici</span></div>
+      <div class="macro-row" style="border-color:#FF9800"><span class="time">04:45 - 05:15</span><span class="desc">London Continuation — Confirmation ou reversal du mouvement d'ouverture</span></div>
+      <div class="macro-row" style="border-color:#00BCD4"><span class="time">09:20 - 09:40</span><span class="desc">Pre-US (demi-heure) — Manipulation avant le vrai mouvement US</span></div>
+      <div class="macro-row" style="border-color:#2196F3"><span class="time">09:45 - 10:15</span><span class="desc">NY AM Session — Mouvement principal US, souvent le high/low du jour</span></div>
+      <div class="macro-row" style="border-color:#FF9800"><span class="time">10:45 - 11:15</span><span class="desc">Silver Bullet — Fenetre de retournement classique ICT</span></div>
+      <div class="macro-row" style="border-color:#FF9800"><span class="time">12:45 - 13:15</span><span class="desc">Lunch Manipulation — Faux mouvement pendant le lunch US</span></div>
+      <div class="macro-row" style="border-color:#2196F3"><span class="time">13:45 - 14:15</span><span class="desc">PM Session Open — Debut de la session PM, nouvelle impulsion</span></div>
+      <div class="macro-row" style="border-color:#9C27B0"><span class="time">15:15 - 15:45</span><span class="desc">ICT Power Hour — Mouvement final, reversal ou cloture directionnelle</span></div>
+      <div class="macro-row" style="border-color:#FF9800"><span class="time">15:45 - 16:15</span><span class="desc">Close — Derniere prise de liquidite avant la cloture NYSE</span></div>
+    </div>
+  </div>
+
+  <!-- MODE -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Modes d'Affichage</div>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3 style="color:var(--blue)">Mode "On Chart"</h3>
+        <p>Les macros sont dessinees directement sur le chart sous forme de <strong>boites verticales</strong> (open-close) qui suivent le prix. Les labels indiquent "MACRO" avec l'heure. Ideal pour voir la relation prix/temps.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--green)">Mode "New Pane"</h3>
+        <p>Les macros sont affichees dans un <strong>volet separe</strong> sous le chart, sous forme de lignes horizontales. Plus propre, ne surcharge pas le chart principal. Inclut les projections futures.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEWS -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--red)"></span> Calendrier Economique Integre</div>
+    <p style="color:var(--t2);line-height:1.7;margin-bottom:12px;">
+      L'indicateur integre le calendrier Forex Factory via les librairies <code style="color:var(--cyan)">toodegrees/forex_factory_utility</code> et <code style="color:var(--cyan)">forex_factory_decoding</code>. Les evenements sont affiches dans un tableau avec code couleur par impact.
+    </p>
+    <table>
+      <tr><th>IMPACT</th><th>COULEUR</th><th>DESCRIPTION</th></tr>
+      <tr><td>High</td><td style="color:#EF5350">Rouge</td><td>NFP, FOMC, CPI — Mouvements majeurs, eviter ou trader la volatilite</td></tr>
+      <tr><td>Medium</td><td style="color:#FF9800">Orange</td><td>PMI, Retail Sales — Impact modere, peut accelerer un mouvement en cours</td></tr>
+      <tr><td>Low</td><td style="color:#FDD835">Jaune</td><td>Donnees secondaires — Impact faible, generalement ignore</td></tr>
+      <tr><td>Holiday</td><td style="color:#9E9E9E">Gris</td><td>Jours feries — Liquidite reduite, pas de trades idealement</td></tr>
+    </table>
+    <ul class="list-styled" style="margin-top:16px;">
+      <li><strong>Auto Currency :</strong> Filtre automatiquement les news selon la paire que vous tradez (ex: EUR/USD → affiche EUR + USD)</li>
+      <li><strong>Historique :</strong> "Today" (jour), "This Week" (semaine), ou "Manual" (X jours personnalises)</li>
+      <li><strong>Timeline :</strong> Surligne en temps reel l'evenement en cours dans le tableau</li>
+    </ul>
+  </div>
+
+  <!-- UTILISATION -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--green)"></span> Comment Utiliser</div>
+    <ul class="list-styled">
+      <li><strong>Confluence Macro + DRT :</strong> Quand une macro s'aligne avec un niveau DRT (EQ, 75%, 25%), la probabilite d'un mouvement significatif augmente fortement.</li>
+      <li><strong>Eviter les news :</strong> Ne pas entrer en position 15 minutes avant un evenement rouge. Attendre la reaction et trader la continuation.</li>
+      <li><strong>Silver Bullet (10:45-11:15) :</strong> Cherchez un FVG (Fair Value Gap) pendant cette fenetre — c'est la strategie ICT la plus connue.</li>
+      <li><strong>Lignes verticales :</strong> Activez-les sur les macros cles pour voir visuellement ou commencent les mouvements.</li>
+      <li><strong>Projections futures :</strong> En mode "New Pane", les macros a venir sont tracees pour planifier vos entrees.</li>
+    </ul>
+  </div>
+
+  <!-- INPUTS -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--cyan)"></span> Parametres Principaux</div>
+    <table>
+      <tr><th>PARAMETRE</th><th>DEFAUT</th><th>DESCRIPTION</th></tr>
+      <tr><td>Mode</td><td>New Pane</td><td>"On Chart" (overlay) ou "New Pane" (volet separe)</td></tr>
+      <tr><td>Largeur de ligne</td><td>2px</td><td>Epaisseur des lignes de macro (1-4px)</td></tr>
+      <tr><td>Labels</td><td>ON</td><td>Afficher le texte "MACRO" sur chaque fenetre</td></tr>
+      <tr><td>Temps</td><td>OFF</td><td>Ajouter l'heure au label (ex: "MACRO 09:45 - 10:15")</td></tr>
+      <tr><td>Projections</td><td>OFF</td><td>Tracer des lignes pointillees vers les extremes du prix pendant la macro</td></tr>
+      <tr><td>Vertical Lines</td><td>ON</td><td>Lignes verticales au debut de chaque macro</td></tr>
+      <tr><td>Show Events</td><td>ON</td><td>Afficher le tableau du calendrier economique</td></tr>
+      <tr><td>Auto Currency</td><td>ON</td><td>Filtrer auto les news selon la paire du chart</td></tr>
+      <tr><td>History</td><td>This Week</td><td>Periode d'affichage des evenements</td></tr>
+    </table>
+  </div>
+
+  <!-- MACROS COMPLETES -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:#FF9800"></span> Liste Complete des 24 Macros Horaires</div>
+    <p style="color:var(--t2);margin-bottom:12px;">Toutes les heures en heure de New York (EST/EDT). Chaque macro dure 30 minutes.</p>
+    <table>
+      <tr><th>MACRO</th><th>HEURE NY</th><th>ACTIF PAR DEFAUT</th><th>COULEUR</th></tr>
+      <tr><td>1</td><td>00:45 - 01:15</td><td>Non</td><td style="color:#FF9800">Orange</td></tr>
+      <tr><td>2</td><td>01:45 - 02:15</td><td>Non</td><td style="color:#FF9800">Orange</td></tr>
+      <tr><td>3</td><td>02:45 - 03:15</td><td>Oui</td><td style="color:#FF9800">Orange</td></tr>
+      <tr><td>4</td><td>03:45 - 04:15</td><td>Oui</td><td style="color:#2196F3">Bleu</td></tr>
+      <tr><td>5</td><td>04:45 - 05:15</td><td>Oui</td><td style="color:#FF9800">Orange</td></tr>
+      <tr><td>6-9</td><td>05:45 - 09:15</td><td>Non</td><td style="color:#FF9800">Orange</td></tr>
+      <tr><td>10</td><td>09:45 - 10:15</td><td>Oui</td><td style="color:#2196F3">Bleu</td></tr>
+      <tr><td>11</td><td>10:45 - 11:15</td><td>Oui</td><td style="color:#FF9800">Orange</td></tr>
+      <tr><td>12</td><td>11:45 - 12:15</td><td>Oui</td><td style="color:#9E9E9E">Gris</td></tr>
+      <tr><td>13</td><td>12:45 - 13:15</td><td>Oui</td><td style="color:#FF9800">Orange</td></tr>
+      <tr><td>14</td><td>13:45 - 14:15</td><td>Oui</td><td style="color:#2196F3">Bleu</td></tr>
+      <tr><td>15</td><td>14:45 - 15:15</td><td>Oui</td><td style="color:#FF9800">Orange</td></tr>
+      <tr><td>PH</td><td>15:15 - 15:45</td><td>Oui</td><td style="color:#9C27B0">Violet</td></tr>
+      <tr><td>16</td><td>15:45 - 16:15</td><td>Oui</td><td style="color:#FF9800">Orange</td></tr>
+      <tr><td>17-24</td><td>16:45 - 00:15</td><td>Non</td><td style="color:#FF9800">Orange</td></tr>
+    </table>
+  </div>
+
+  <!-- DEMI HEURE -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:#00BCD4"></span> Macros Demi-Heure (XX:20 - XX:40)</div>
+    <table>
+      <tr><th>MACRO</th><th>HEURE NY</th><th>SESSION</th><th>ACTIF</th></tr>
+      <tr><td>HM1</td><td>03:20 - 03:40</td><td>London</td><td>Non</td></tr>
+      <tr><td>HM2</td><td>08:20 - 08:40</td><td>US Pre-Market</td><td>Non</td></tr>
+      <tr><td>HM3</td><td>09:20 - 09:40</td><td>US Open</td><td>Oui</td></tr>
+      <tr><td>HM4</td><td>10:20 - 10:40</td><td>US AM</td><td>Oui</td></tr>
+      <tr><td>HM5</td><td>13:20 - 13:40</td><td>US PM</td><td>Oui</td></tr>
+      <tr><td>HM6</td><td>15:20 - 15:40</td><td>US PM</td><td>Oui</td></tr>
+    </table>
+  </div>
+
+  <!-- CODE -->
+  <div class="section" id="code-section">
+    <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Code Source Pine Script v5</div>
+    <p style="color:var(--t2);margin-bottom:8px;">
+      <strong>Note :</strong> Cet indicateur utilise les librairies externes <code style="color:var(--cyan)">toodegrees/forex_factory_utility</code> et <code style="color:var(--cyan)">toodegrees/forex_factory_decoding</code>. Il faut les importer depuis TradingView (elles sont publiques).
+    </p>
+    <div class="btn-row" style="margin-top:0;margin-bottom:12px;">
+      <button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('pine-code').textContent).then(()=>this.textContent='Copie !')">Copier le code</button>
+    </div>
+    <div class="code-block">
+      <pre id="pine-code">// This source code is subject to the terms of the Mozilla Public License 2.0
+// https://mozilla.org/MPL/2.0/
+// &copy; toodegrees — adapted by mmxm
+
+import toodegrees/forex_factory_utility/16 as ffUtil
+import toodegrees/forex_factory_decoding/39 as ffDec
+
+//@version=5
+indicator("ICT Macro Tracker&deg; + News | mmxm"
+         , shorttitle       = "Macro+News&deg;"
+         , overlay          = false
+         , max_lines_count  = 500
+         , max_labels_count = 500
+         , max_boxes_count  = 500)
+
+//#region --- TIMEFRAME CHECK ---
+if timeframe.in_seconds(timeframe.period) &gt; 86400
+    runtime.error("Go to the Daily Timeframe or lower!")
+else if timeframe.in_seconds(timeframe.period) &lt; 30
+    runtime.error("Go to the 30-Second Timeframe or higher!")
+//#endregion
+
+//#region --- GLOBAL ---
+oneDayMS = 86400000
+oneBarMS = time_close - time
+noColor  = color.new(#ffffff, 100)
+one      = ta.highest(timeframe.in_seconds("15") / timeframe.in_seconds(timeframe.period)) + syminfo.mintick * 10
+y_btm    = one
+y_top    = one + syminfo.mintick * 5
+var line[]  EXT = array.new_line()
+var label[] LBL = array.new_label()
+var line[]  VL  = array.new_line()
+var line[]  FUT = array.new_line()
+var mdnCheck = false
+if hour(time, "America/New_York") == 0 and hour(time[1], "America/New_York") != 0 and not mdnCheck
+    mdnCheck := true
+newDay = mdnCheck ? hour(time, "America/New_York") == 0 and hour(time[1], "America/New_York") != 0 : timeframe.change("D")
+//#endregion
+
+// --- Le code complet fait ~700 lignes ---
+// --- Voir le fichier .pine original pour le code integral ---
+// --- Les sections suivantes sont incluses : ---
+//   - INPUTS (Settings, Vertical Lines, News Calendar)
+//   - FUNCTIONS (time_isMacro, macroNP, macroOC, drawFutureNP)
+//   - MACRO DEFINITIONS (24 macros horaires + 6 demi-heure + Power Hour)
+//   - NEWS DATA (Forex Factory integration via request.seed)
+//   - PLOT (On Chart / New Pane rendering)
+//   - MEMORY CLEANUP
+
+// -----------------------------------------------
+// Le code source complet est disponible dans le
+// fichier ICT_Macro_News.pine fourni avec ce cours.
+// Copiez-le directement dans l'editeur Pine de TV.
+// -----------------------------------------------</pre>
+    </div>
+    <p style="color:var(--t2);margin-top:12px;font-size:11px;">
+      Le code complet (~700 lignes) est trop volumineux pour etre affiche ici integralement. Le fichier <code>.pine</code> est fourni separement. Les sections principales ont ete documentees ci-dessus.
+    </p>
+  </div>
+
+</div>
+</body>
+</html>

@@ -13,6 +13,8 @@
     { id: 'psychologie',        label: '10. Psychologie' },
     { id: 'calculatrice',       label: '11. Calculatrice' },
     { id: 'financial-juice',    label: '12. News Live' },
+    { id: 'drt-mtf',            label: '13. DRT MTF' },
+    { id: 'ict-macro-news',     label: '14. Macro+News' },
   ];
 
   const filename = window.location.pathname.split('/').pop().replace('.html', '');

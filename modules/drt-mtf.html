@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="../auth.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRT MTF — Dealing Range Theory Multi-Timeframe</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #07080b;
+    --s1: #0e1116;
+    --s2: #13171e;
+    --s3: #191e27;
+    --bd: #1c2230;
+    --bd2: #232c3a;
+    --gold: #c8a228;
+    --gold2: #e5bc3c;
+    --blue: #3d82e0;
+    --green: #2ec974;
+    --red: #e05050;
+    --orange: #e08830;
+    --purple: #9b72e0;
+    --cyan: #28bfcf;
+    --text: #cdd5e2;
+    --t2: #8594a8;
+    --t3: #4a5668;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; }
+
+  .banner { background: var(--s1); border-bottom: 1px solid var(--bd2); padding: 36px 56px 32px; position: relative; }
+  .banner::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg, transparent 0%, var(--gold) 30%, var(--gold2) 50%, var(--gold) 70%, transparent 100%); }
+  .banner-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+  .banner h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: #fff; line-height: 1.1; }
+  .banner h1 em { color: var(--gold2); font-style: normal; }
+  .banner-sub { margin-top: 10px; color: var(--t2); font-size: 13px; max-width: 700px; line-height: 1.6; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 40px; }
+
+  .section { background: var(--s1); border: 1px solid var(--bd); border-radius: 10px; padding: 28px 32px; margin-bottom: 24px; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section-title .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  @media(max-width:800px) { .concept-grid { grid-template-columns: 1fr; } .container { padding: 16px; } .banner { padding: 24px; } }
+
+  .concept-card { background: var(--s2); border: 1px solid var(--bd); border-radius: 8px; padding: 18px 20px; }
+  .concept-card h3 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--gold2); margin-bottom: 8px; }
+  .concept-card p { color: var(--t2); line-height: 1.7; font-size: 12px; }
+  .concept-card.full { grid-column: 1 / -1; }
+
+  .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 9px; padding: 2px 8px; border-radius: 4px; margin-right: 4px; margin-bottom: 4px; }
+  .tag-blue { background: rgba(61,130,224,0.12); color: var(--blue); }
+  .tag-green { background: rgba(46,201,116,0.10); color: var(--green); }
+  .tag-orange { background: rgba(224,136,48,0.10); color: var(--orange); }
+  .tag-red { background: rgba(224,80,80,0.10); color: var(--red); }
+  .tag-purple { background: rgba(155,114,224,0.10); color: var(--purple); }
+  .tag-cyan { background: rgba(40,191,207,0.10); color: var(--cyan); }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 12px; }
+  th { text-align: left; padding: 8px 12px; background: var(--s2); color: var(--gold); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1px; border-bottom: 1px solid var(--bd); }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--bd); color: var(--t2); }
+  tr:hover td { color: var(--text); background: rgba(255,255,255,0.02); }
+
+  .code-block { background: #0d1117; border: 1px solid var(--bd); border-radius: 8px; padding: 20px; margin-top: 12px; overflow-x: auto; max-height: 500px; overflow-y: auto; }
+  .code-block pre { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #c9d1d9; line-height: 1.6; white-space: pre; }
+  .code-block::-webkit-scrollbar { width: 6px; height: 6px; }
+  .code-block::-webkit-scrollbar-track { background: transparent; }
+  .code-block::-webkit-scrollbar-thumb { background: var(--bd2); border-radius: 3px; }
+
+  .btn-row { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+  .btn { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 10px 22px; border-radius: 6px; border: 1px solid var(--bd); background: var(--s2); color: var(--text); cursor: pointer; transition: all 0.15s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+  .btn:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-gold { border-color: var(--gold); color: var(--gold); }
+  .btn-gold:hover { background: rgba(200,162,40,0.1); }
+
+  .list-styled { padding-left: 20px; margin-top: 8px; }
+  .list-styled li { color: var(--t2); line-height: 1.8; font-size: 12px; }
+  .list-styled li strong { color: var(--text); }
+
+  .highlight { color: var(--gold2); font-weight: 500; }
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+<link rel="stylesheet" href="../readability.css">
+
+<div class="banner">
+  <div class="banner-eyebrow">Module 13 &mdash; Indicateur Pine Script</div>
+  <h1>DRT MTF &mdash; <em>Dealing Range Theory</em></h1>
+  <p class="banner-sub">
+    Indicateur multi-timeframe base sur la theorie des Dealing Ranges (mickes). Identifie les ranges de prix via les pivots de liquidite et affiche les niveaux High, Low, EQ (50%), 75% et 25% sur 8 timeframes simultanement.
+  </p>
+  <div class="btn-row">
+    <a class="btn btn-gold" href="../pdf/drt-mtf-guide.html" target="_blank">Telecharger le Guide PDF</a>
+    <button class="btn" onclick="document.getElementById('code-section').scrollIntoView({behavior:'smooth'})">Voir le Code Source</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- CONCEPT -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--gold)"></span> Qu'est-ce que le DRT ?</div>
+    <p style="color:var(--t2);line-height:1.7;">
+      La <span class="highlight">Dealing Range Theory</span> identifie les zones de prix ou les institutions ont effectue des transactions significatives. Un Dealing Range se forme lorsqu'un pivot de prix <strong>prend la liquidite</strong> d'un pivot precedent — creant ainsi un range institutionnel entre le High et le Low de ces pivots.
+    </p>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3>Pivot de Liquidite (Buyside)</h3>
+        <p>Un pivot haut qui represente un pool de liquidite acheteuse. Lorsqu'un nouveau pivot haut depasse ce niveau, il "prend" cette liquidite et definit le <strong>High du Dealing Range</strong>.</p>
+      </div>
+      <div class="concept-card">
+        <h3>Pivot de Liquidite (Sellside)</h3>
+        <p>Un pivot bas qui represente un pool de liquidite vendeuse. Lorsqu'un nouveau pivot bas casse ce niveau, il "prend" cette liquidite et definit le <strong>Low du Dealing Range</strong>.</p>
+      </div>
+      <div class="concept-card">
+        <h3>Equilibrium (EQ / 50%)</h3>
+        <p>Le milieu exact du Dealing Range. C'est le niveau le plus important — il separe la zone <span style="color:var(--red)">Premium</span> (au-dessus) de la zone <span style="color:var(--green)">Discount</span> (en-dessous). Le prix est attire vers cet equilibre.</p>
+      </div>
+      <div class="concept-card">
+        <h3>Niveaux 75% / 25%</h3>
+        <p>Niveaux intermediaires qui servent de reperes pour les entrees et sorties. <strong>75%</strong> = deep premium, <strong>25%</strong> = deep discount. Les meilleurs trades ICT se font a ces extremes.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMEFRAMES -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--blue)"></span> Multi-Timeframe : 8 TF Simultanes</div>
+    <p style="color:var(--t2);line-height:1.7;margin-bottom:12px;">
+      L'indicateur calcule le Dealing Range sur chaque timeframe via <code style="color:var(--cyan)">request.security()</code> et les affiche tous simultanement sur votre chart. Chaque TF a sa propre couleur configurable.
+    </p>
+    <table>
+      <tr><th>TF</th><th>COULEUR</th><th>USAGE</th></tr>
+      <tr><td><span class="tag tag-green">5m</span></td><td style="color:#26A69A">#26A69A</td><td>Scalping, entrees precises</td></tr>
+      <tr><td><span class="tag tag-blue">15m</span></td><td style="color:#42A5F5">#42A5F5</td><td>Macro windows, confirmations</td></tr>
+      <tr><td><span class="tag tag-purple">30m</span></td><td style="color:#5C6BC0">#5C6BC0</td><td>Sessions, structure intermediaire</td></tr>
+      <tr><td><span class="tag tag-orange">1H</span></td><td style="color:#FFA726">#FFA726</td><td>Biais intraday, dealing ranges primaires</td></tr>
+      <tr><td><span class="tag tag-red">4H</span></td><td style="color:#EF5350">#EF5350</td><td>Swing, ranges journaliers</td></tr>
+      <tr><td><span class="tag tag-purple">D</span></td><td style="color:#AB47BC">#AB47BC</td><td>Biais daily, structure HTF</td></tr>
+      <tr><td><span class="tag tag-red">W</span></td><td style="color:#EC407A">#EC407A</td><td>Weekly ranges, HTF narrative</td></tr>
+      <tr><td><span class="tag tag-orange">M</span></td><td style="color:#8D6E63">#8D6E63</td><td>Monthly dealing ranges</td></tr>
+    </table>
+  </div>
+
+  <!-- ZONES -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--red)"></span> Zones Premium / Discount</div>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3 style="color:var(--red)">Zone Premium (au-dessus EQ)</h3>
+        <p>Zone ou le prix est "cher" par rapport au Dealing Range. C'est la zone ideale pour <strong>vendre</strong> (shorts). Le tableau affiche <span style="color:var(--red)">Premium</span> en rouge quand le prix est dans cette zone.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--green)">Zone Discount (en-dessous EQ)</h3>
+        <p>Zone ou le prix est "pas cher". C'est la zone ideale pour <strong>acheter</strong> (longs). Le tableau affiche <span style="color:var(--green)">Discount</span> en vert quand le prix est dans cette zone.</p>
+      </div>
+      <div class="concept-card full">
+        <h3>Tableau de Synthese (Top Right)</h3>
+        <p>Un tableau en haut a droite du chart affiche en temps reel pour chaque TF actif : le <strong>TF</strong>, la <strong>zone</strong> (Premium/Discount/Above/Below) et le niveau <strong>EQ</strong>. Cela permet de voir d'un coup d'oeil l'alignement multi-timeframe.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- UTILISATION -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--green)"></span> Comment Utiliser</div>
+    <ul class="list-styled">
+      <li><strong>Confluence MTF :</strong> Cherchez un alignement — si 1H, 4H et D sont tous en "Discount", c'est un signal fort pour un long.</li>
+      <li><strong>EQ comme target :</strong> Quand le prix est en discount extreme (25%), visez l'EQ (50%) comme premier objectif.</li>
+      <li><strong>Rejection aux niveaux :</strong> Les lignes High/Low/75%/25% agissent comme S/R dynamiques. Cherchez des rejections avec volume.</li>
+      <li><strong>Combinaison :</strong> Utilisez avec les ICT Macros (Module 14) pour timer vos entrees dans les fenetres macro au sein du dealing range.</li>
+      <li><strong>Parametres pivots :</strong> Pivot Length de 20 par defaut — augmentez pour des ranges plus larges (swing), reduisez pour du scalping.</li>
+    </ul>
+  </div>
+
+  <!-- INPUTS -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--cyan)"></span> Parametres (Inputs)</div>
+    <table>
+      <tr><th>PARAMETRE</th><th>DEFAUT</th><th>DESCRIPTION</th></tr>
+      <tr><td>Pivot Length</td><td>20 / 20</td><td>Nombre de barres gauche/droite pour detecter les pivots de dealing range</td></tr>
+      <tr><td>Liquidity Length</td><td>1 / 1</td><td>Nombre de barres pour detecter les pivots de liquidite (plus sensible)</td></tr>
+      <tr><td>Closed Bar Only</td><td>OFF</td><td>N'utiliser que les barres fermees pour la detection</td></tr>
+      <tr><td>Timeframes</td><td>1H + 4H</td><td>Cochez les TF a afficher (5m, 15m, 30m, 1H, 4H, D, W, M)</td></tr>
+      <tr><td>DRT Levels</td><td>Tous ON</td><td>Choisir quels niveaux afficher (High, Low, 75%, 50% EQ, 25%)</td></tr>
+      <tr><td>Line Width</td><td>1</td><td>Epaisseur des lignes (1-4)</td></tr>
+      <tr><td>Extend Right</td><td>8</td><td>Extension des lignes a droite du prix actuel</td></tr>
+      <tr><td>Zone Shading</td><td>ON</td><td>Coloration Premium (rouge) / Discount (vert) entre les niveaux</td></tr>
+      <tr><td>Table</td><td>ON</td><td>Tableau recapitulatif en haut a droite</td></tr>
+    </table>
+  </div>
+
+  <!-- CODE -->
+  <div class="section" id="code-section">
+    <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Code Source Pine Script v6</div>
+    <p style="color:var(--t2);margin-bottom:8px;">Copier/coller dans l'editeur Pine de TradingView. Base sur le code <strong>mickes</strong> pour la logique DRT core.</p>
+    <div class="btn-row" style="margin-top:0;margin-bottom:12px;">
+      <button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('pine-code').textContent).then(()=>this.textContent='Copie !')">Copier le code</button>
+    </div>
+    <div class="code-block">
+      <pre id="pine-code">//@version=6
+indicator("DRT MTF – Dealing Range Theory", shorttitle="DRT MTF", overlay=true,
+         max_lines_count=500, max_labels_count=500, max_boxes_count=500)
+
+// ─── INPUTS ──────────────────────────────────────────────────
+grp_dr = "Dealing Range"
+_leftLength            = input.int(20, "Pivot Length", inline="len", group=grp_dr)
+_rightLength           = input.int(20, "", inline="len", group=grp_dr)
+_leftLiquidityLength   = input.int(1, "Liquidity Length", inline="liq", group=grp_dr)
+_rightLiquidityLength  = input.int(1, "", inline="liq", group=grp_dr)
+_forceClosedBar        = input.bool(false, "Closed Bar Only", group=grp_dr)
+
+grp_tf = "Timeframes"
+show_cur  = input.bool(false, "Current TF", group=grp_tf, tooltip="Active le DRT du TF actuel du chart.")
+show_5m   = input.bool(false, "5m",   inline="tf1", group=grp_tf)
+show_15m  = input.bool(false, "15m",  inline="tf1", group=grp_tf)
+show_30m  = input.bool(false, "30m",  inline="tf1", group=grp_tf)
+show_1h   = input.bool(true,  "1H",   inline="tf2", group=grp_tf)
+show_4h   = input.bool(true,  "4H",   inline="tf2", group=grp_tf)
+show_D    = input.bool(false, "D",    inline="tf2", group=grp_tf)
+show_W    = input.bool(false, "W",    inline="tf3", group=grp_tf)
+show_M    = input.bool(false, "M",    inline="tf3", group=grp_tf)
+
+grp_levels = "DRT Levels"
+showHigh  = input.bool(true, "High",    inline="lv1", group=grp_levels)
+showLow   = input.bool(true, "Low",     inline="lv1", group=grp_levels)
+show75    = input.bool(true, "75%",     inline="lv2", group=grp_levels)
+show50    = input.bool(true, "50% EQ",  inline="lv2", group=grp_levels)
+show25    = input.bool(true, "25%",     inline="lv2", group=grp_levels)
+
+grp_style = "Lines"
+lineW        = input.int(1, "Line Width", minval=1, maxval=4, group=grp_style)
+colLine      = input.string("TF Color", "Line Color", options=["TF Color","White","Gray","Custom"], group=grp_style)
+colLineCustom = input.color(color.new(#FFFFFF, 0), "Custom Line Color", group=grp_style)
+rightBuf     = input.int(8, "Extend Right", minval=1, maxval=50, group=grp_style)
+
+grp_lbl = "Labels"
+showLabels   = input.bool(true,  "Show Labels",  group=grp_lbl)
+colLabel     = input.color(color.white, "Label Text Color", group=grp_lbl)
+labelSzIn    = input.string("Tiny", "Label Size", options=["Tiny","Small","Normal","Large","Huge"], group=grp_lbl)
+lblShowH     = input.bool(true, "Label High",  inline="lb1", group=grp_lbl)
+lblShowL     = input.bool(true, "Label Low",   inline="lb1", group=grp_lbl)
+lblShow75    = input.bool(true, "Label 75%",   inline="lb2", group=grp_lbl)
+lblShow50    = input.bool(true, "Label EQ",    inline="lb2", group=grp_lbl)
+lblShow25    = input.bool(true, "Label 25%",   inline="lb2", group=grp_lbl)
+
+grp_zone = "Zones"
+showZones    = input.bool(true,  "Zone Shading", group=grp_zone)
+premiumCol   = input.color(color.new(color.red, 80),  "Premium",  inline="zc", group=grp_zone)
+discountCol  = input.color(color.new(color.teal, 80), "Discount", inline="zc", group=grp_zone)
+showTable    = input.bool(true,  "Table",        group=grp_zone)
+
+grp_col = "TF Colors"
+col_cur = input.color(color.new(#FFFFFF, 0), "Current", group=grp_col)
+col_5m  = input.color(color.new(#26A69A, 0), "5m",  inline="cc1", group=grp_col)
+col_15m = input.color(color.new(#42A5F5, 0), "15m", inline="cc1", group=grp_col)
+col_30m = input.color(color.new(#5C6BC0, 0), "30m", inline="cc1", group=grp_col)
+col_1h  = input.color(color.new(#FFA726, 0), "1H",  inline="cc2", group=grp_col)
+col_4h  = input.color(color.new(#EF5350, 0), "4H",  inline="cc2", group=grp_col)
+col_D   = input.color(color.new(#AB47BC, 0), "D",   inline="cc2", group=grp_col)
+col_W   = input.color(color.new(#EC407A, 0), "W",   inline="cc3", group=grp_col)
+col_M   = input.color(color.new(#8D6E63, 0), "M",   inline="cc3", group=grp_col)
+
+// ─── HELPERS ────────────────────────────────────────────────
+f_lsz(string sz) =>
+    switch sz
+        "Tiny"   => size.tiny
+        "Small"  => size.small
+        "Normal" => size.normal
+        "Large"  => size.large
+        "Huge"   => size.huge
+        => size.tiny
+
+labelSz = f_lsz(labelSzIn)
+
+f_lineCol(color tfCol) =>
+    switch colLine
+        "TF Color" => tfCol
+        "White"    => color.white
+        "Gray"     => color.gray
+        "Custom"   => colLineCustom
+        => tfCol
+
+// ─── TYPES (from mickes) ────────────────────────────────────
+type Pivot
+    float Price
+    int   Time
+    int   TimeClose
+    string Timeframe
+
+type DealingRangePivot
+    bool  New
+    float Price
+    int   Time
+    Pivot TakenLiquidityPivot
+
+type DealingRangeData
+    array&lt;Pivot&gt; BuysideLiquidityPivots
+    array&lt;Pivot&gt; SellsideLiquidityPivots
+    DealingRangePivot High
+    DealingRangePivot Low
+
+type Settings
+    int  PivotLeftLength
+    int  PivotRightLength
+    bool ForceClosedBar
+    int  LiquidityPivotLeftLength
+    int  LiquidityPivotRightLength
+
+// ─── CORE FUNCTIONS (from mickes) ───────────────────────────
+CreateLiquidityPivots(Settings settings) =>
+    pivotHigh = ta.pivothigh(settings.LiquidityPivotLeftLength, settings.LiquidityPivotRightLength)
+    pivotLow  = ta.pivotlow(settings.LiquidityPivotLeftLength, settings.LiquidityPivotRightLength)
+    pivotHighPivot = (settings.ForceClosedBar and barstate.isconfirmed) or not settings.ForceClosedBar ?
+      Pivot.new(pivotHigh, time[settings.LiquidityPivotRightLength], time_close[settings.LiquidityPivotRightLength], timeframe.period) : na
+    pivotLowPivot = (settings.ForceClosedBar and barstate.isconfirmed) or not settings.ForceClosedBar ?
+      Pivot.new(pivotLow, time[settings.LiquidityPivotRightLength], time_close[settings.LiquidityPivotRightLength], timeframe.period) : na
+    [pivotHighPivot, pivotLowPivot]
+
+Liquidity(DealingRangeData dr, Pivot pivotHigh, Pivot pivotLow) =>
+    if not na(pivotHigh) and not na(pivotHigh.Price)
+        dr.BuysideLiquidityPivots.unshift(pivotHigh)
+    if not na(pivotLow) and not na(pivotLow.Price)
+        dr.SellsideLiquidityPivots.unshift(pivotLow)
+
+CreateDealingRangePivots(Settings settings) =>
+    pivotHigh = ta.pivothigh(settings.PivotLeftLength, settings.PivotRightLength)
+    pivotLow  = ta.pivotlow(settings.PivotLeftLength, settings.PivotRightLength)
+    pivotHighPivot = (settings.ForceClosedBar and barstate.isconfirmed) or not settings.ForceClosedBar ?
+      Pivot.new(pivotHigh, time[settings.PivotRightLength], time_close[settings.PivotRightLength], timeframe.period) : na
+    pivotLowPivot = (settings.ForceClosedBar and barstate.isconfirmed) or not settings.ForceClosedBar ?
+      Pivot.new(pivotLow, time[settings.PivotRightLength], time_close[settings.PivotRightLength], timeframe.period) : na
+    [pivotHighPivot, pivotLowPivot]
+
+DealingRangeCalc(DealingRangeData dr, Pivot pivotHigh, Pivot pivotLow) =>
+    if not na(pivotHigh) and not na(pivotHigh.Price)
+        for liquidityPivot in dr.BuysideLiquidityPivots
+            if pivotHigh.Time > liquidityPivot.Time and pivotHigh.Price > liquidityPivot.Price
+                readdLiquidityPivot = dr.BuysideLiquidityPivots.shift()
+                dr.BuysideLiquidityPivots.clear()
+                dr.BuysideLiquidityPivots.unshift(readdLiquidityPivot)
+                dr.High := DealingRangePivot.new(true, pivotHigh.Price, pivotHigh.Time, liquidityPivot)
+                break
+    if not na(pivotLow) and not na(pivotLow.Price)
+        for liquidityPivot in dr.SellsideLiquidityPivots
+            if pivotLow.Time > liquidityPivot.Time and pivotLow.Price &lt; liquidityPivot.Price
+                readdLiquidityPivot = dr.SellsideLiquidityPivots.shift()
+                dr.SellsideLiquidityPivots.clear()
+                dr.SellsideLiquidityPivots.unshift(readdLiquidityPivot)
+                dr.Low := DealingRangePivot.new(true, pivotLow.Price, pivotLow.Time, liquidityPivot)
+                break
+
+drt_full(Settings settings) =>
+    var DealingRangeData dr = DealingRangeData.new(
+      array.new&lt;Pivot&gt;(), array.new&lt;Pivot&gt;(),
+      DealingRangePivot.new(), DealingRangePivot.new())
+    [liqH, liqL] = CreateLiquidityPivots(settings)
+    Liquidity(dr, liqH, liqL)
+    [drH, drL] = CreateDealingRangePivots(settings)
+    DealingRangeCalc(dr, drH, drL)
+    float h = not na(dr.High) ? dr.High.Price : na
+    float l = not na(dr.Low)  ? dr.Low.Price  : na
+    [h, l]
+
+var Settings sett = Settings.new(_leftLength, _rightLength, _forceClosedBar, _leftLiquidityLength, _rightLiquidityLength)
+
+[h_cur, l_cur] = drt_full(sett)
+[h_5m,  l_5m_v]  = request.security(syminfo.tickerid, "5",   drt_full(sett), lookahead=barmerge.lookahead_off)
+[h_15m, l_15m_v] = request.security(syminfo.tickerid, "15",  drt_full(sett), lookahead=barmerge.lookahead_off)
+[h_30m, l_30m_v] = request.security(syminfo.tickerid, "30",  drt_full(sett), lookahead=barmerge.lookahead_off)
+[h_1h,  l_1h_v]  = request.security(syminfo.tickerid, "60",  drt_full(sett), lookahead=barmerge.lookahead_off)
+[h_4h,  l_4h_v]  = request.security(syminfo.tickerid, "240", drt_full(sett), lookahead=barmerge.lookahead_off)
+[h_D,   l_D_v]   = request.security(syminfo.tickerid, "D",   drt_full(sett), lookahead=barmerge.lookahead_off)
+[h_W,   l_W_v]   = request.security(syminfo.tickerid, "W",   drt_full(sett), lookahead=barmerge.lookahead_off)
+[h_M,   l_M_v]   = request.security(syminfo.tickerid, "M",   drt_full(sett), lookahead=barmerge.lookahead_off)
+
+f_draw(bool show, string tfStr, float rH, float rL, color col, int rEdge,
+       array&lt;line&gt; aL, array&lt;label&gt; aLb, array&lt;box&gt; aB) =>
+    if show and not na(rH) and not na(rL) and rH != rL
+        float rng  = rH - rL
+        float lv75 = rL + rng * 0.75
+        float lv50 = rL + rng * 0.50
+        float lv25 = rL + rng * 0.25
+        int   lft  = bar_index
+        color lCol = f_lineCol(col)
+        int   eqW  = lineW + 1 > 4 ? 4 : lineW + 1
+        if showHigh
+            aL.push(line.new(lft, rH, rEdge, rH, color=lCol, width=lineW, style=line.style_solid))
+        if showLow
+            aL.push(line.new(lft, rL, rEdge, rL, color=lCol, width=lineW, style=line.style_solid))
+        if show75
+            aL.push(line.new(lft, lv75, rEdge, lv75, color=lCol, width=lineW, style=line.style_dotted))
+        if show50
+            aL.push(line.new(lft, lv50, rEdge, lv50, color=lCol, width=eqW, style=line.style_dashed))
+        if show25
+            aL.push(line.new(lft, lv25, rEdge, lv25, color=lCol, width=lineW, style=line.style_dotted))
+        if showLabels
+            if lblShowH
+                aLb.push(label.new(rEdge + 1, rH, "High", style=label.style_none, textcolor=colLabel, size=labelSz))
+            if lblShowL
+                aLb.push(label.new(rEdge + 1, rL, "Low", style=label.style_none, textcolor=colLabel, size=labelSz))
+            if lblShow75
+                aLb.push(label.new(rEdge + 1, lv75, "0.75", style=label.style_none, textcolor=colLabel, size=labelSz))
+            if lblShow50
+                aLb.push(label.new(rEdge + 1, lv50, tfStr + " EQ", style=label.style_none, textcolor=colLabel, size=labelSz))
+            if lblShow25
+                aLb.push(label.new(rEdge + 1, lv25, "0.25", style=label.style_none, textcolor=colLabel, size=labelSz))
+        if showZones
+            aB.push(box.new(lft, rH,   rEdge, lv50, bgcolor=premiumCol,  border_color=color.new(color.white, 100)))
+            aB.push(box.new(lft, lv50, rEdge, rL,   bgcolor=discountCol, border_color=color.new(color.white, 100)))
+
+zoneText(float rH, float rL, float c) =>
+    if na(rH) or na(rL) or rH == rL
+        "—"
+    else
+        float lv50 = rL + (rH - rL) * 0.50
+        c >= rH ? "Above" : c >= lv50 ? "Premium" : c >= rL ? "Discount" : "Below"
+
+zoneColor(float rH, float rL, float c) =>
+    if na(rH) or na(rL) or rH == rL
+        color.gray
+    else
+        float lv50 = rL + (rH - rL) * 0.50
+        c >= lv50 ? #EF5350 : #26A69A
+
+var table tbl = table.new(position.top_right, 3, 10,
+                          bgcolor=color.new(#131722, 0), border_width=1,
+                          border_color=color.new(#363A45, 0), frame_width=1,
+                          frame_color=color.new(#363A45, 0))
+
+fillRow(table t, int row, bool show, string tfStr, float rH, float rL, color col) =>
+    if show and not na(rH) and not na(rL) and rH != rL
+        string zt = zoneText(rH, rL, close)
+        color  zc = zoneColor(rH, rL, close)
+        float  eq = rL + (rH - rL) * 0.50
+        table.cell(t, 0, row, tfStr, text_color=col, text_size=size.small, bgcolor=color.new(#131722, 0))
+        table.cell(t, 1, row, zt, text_color=color.white, text_size=size.small, bgcolor=color.new(zc, 60))
+        table.cell(t, 2, row, str.tostring(eq, format.mintick), text_color=color.new(color.white, 20), text_size=size.small, bgcolor=color.new(#131722, 0))
+
+var array&lt;line&gt;  _lines  = array.new&lt;line&gt;()
+var array&lt;label&gt; _labels = array.new&lt;label&gt;()
+var array&lt;box&gt;   _boxes  = array.new&lt;box&gt;()
+
+if barstate.islast
+    for ln in _lines
+        line.delete(ln)
+    _lines.clear()
+    for lb in _labels
+        label.delete(lb)
+    _labels.clear()
+    for bx in _boxes
+        box.delete(bx)
+    _boxes.clear()
+    int rEdge = bar_index + rightBuf
+    f_draw(show_cur, "CUR", h_cur,  l_cur,   col_cur, rEdge, _lines, _labels, _boxes)
+    f_draw(show_5m,  "5m",  h_5m,   l_5m_v,  col_5m,  rEdge, _lines, _labels, _boxes)
+    f_draw(show_15m, "15m", h_15m,  l_15m_v, col_15m, rEdge, _lines, _labels, _boxes)
+    f_draw(show_30m, "30m", h_30m,  l_30m_v, col_30m, rEdge, _lines, _labels, _boxes)
+    f_draw(show_1h,  "1H",  h_1h,   l_1h_v,  col_1h,  rEdge, _lines, _labels, _boxes)
+    f_draw(show_4h,  "4H",  h_4h,   l_4h_v,  col_4h,  rEdge, _lines, _labels, _boxes)
+    f_draw(show_D,   "D",   h_D,    l_D_v,   col_D,   rEdge, _lines, _labels, _boxes)
+    f_draw(show_W,   "W",   h_W,    l_W_v,   col_W,   rEdge, _lines, _labels, _boxes)
+    f_draw(show_M,   "M",   h_M,    l_M_v,   col_M,   rEdge, _lines, _labels, _boxes)
+    if showTable
+        table.cell(tbl, 0, 0, "TF",   text_color=color.new(color.white, 40), text_size=size.small, bgcolor=color.new(#1E222D, 0))
+        table.cell(tbl, 1, 0, "Zone", text_color=color.new(color.white, 40), text_size=size.small, bgcolor=color.new(#1E222D, 0))
+        table.cell(tbl, 2, 0, "EQ",   text_color=color.new(color.white, 40), text_size=size.small, bgcolor=color.new(#1E222D, 0))
+        fillRow(tbl, 1, show_cur, "CUR", h_cur,  l_cur,   col_cur)
+        fillRow(tbl, 2, show_5m,  "5m",  h_5m,   l_5m_v,  col_5m)
+        fillRow(tbl, 3, show_15m, "15m", h_15m,  l_15m_v, col_15m)
+        fillRow(tbl, 4, show_30m, "30m", h_30m,  l_30m_v, col_30m)
+        fillRow(tbl, 5, show_1h,  "1H",  h_1h,   l_1h_v,  col_1h)
+        fillRow(tbl, 6, show_4h,  "4H",  h_4h,   l_4h_v,  col_4h)
+        fillRow(tbl, 7, show_D,   "D",   h_D,    l_D_v,   col_D)
+        fillRow(tbl, 8, show_W,   "W",   h_W,    l_W_v,   col_W)
+        fillRow(tbl, 9, show_M,   "M",   h_M,    l_M_v,   col_M)
+
+plot(h_cur, "CUR High", display=display.data_window, color=col_cur)
+plot(l_cur, "CUR Low",  display=display.data_window, color=col_cur)
+plot(h_1h,  "1H High",  display=display.data_window, color=col_1h)
+plot(l_1h_v,"1H Low",   display=display.data_window, color=col_1h)
+plot(h_4h,  "4H High",  display=display.data_window, color=col_4h)
+plot(l_4h_v,"4H Low",   display=display.data_window, color=col_4h)
+plot(h_D,   "D High",   display=display.data_window, color=col_D)
+plot(l_D_v, "D Low",    display=display.data_window, color=col_D)</pre>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

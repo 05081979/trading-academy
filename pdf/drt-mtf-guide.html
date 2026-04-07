@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide DRT MTF — Dealing Range Theory Multi-Timeframe</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  @page { size: A4; margin: 20mm 18mm; }
+  @media print {
+    .no-print { display: none !important; }
+    body { background: #fff !important; color: #1a1a2e !important; font-size: 11px !important; }
+    .page-break { page-break-before: always; }
+    h1, h2, h3 { color: #1a1a2e !important; }
+    .card { border: 1px solid #ddd !important; background: #f8f9fa !important; }
+    .header { background: #1a1a2e !important; }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0a0d14;
+    color: #cdd5e2;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .no-print {
+    position: fixed; top: 16px; right: 16px; z-index: 9999;
+    display: flex; gap: 8px;
+  }
+  .no-print button {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; padding: 10px 24px;
+    border-radius: 6px; border: 1px solid #c8a228;
+    background: rgba(200,162,40,0.1); color: #e5bc3c;
+    cursor: pointer; transition: 0.15s;
+  }
+  .no-print button:hover { background: rgba(200,162,40,0.2); }
+
+  .header {
+    background: linear-gradient(135deg, #0e1116 0%, #141926 100%);
+    padding: 48px 56px;
+    border-bottom: 2px solid #c8a228;
+  }
+  .header-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 3px; color: #c8a228;
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+  .header h1 {
+    font-size: 32px; font-weight: 800; color: #fff;
+    margin-bottom: 8px;
+  }
+  .header h1 span { color: #e5bc3c; }
+  .header p { color: #8594a8; font-size: 14px; max-width: 600px; }
+
+  .content { max-width: 900px; margin: 0 auto; padding: 40px; }
+
+  h2 {
+    font-size: 20px; font-weight: 700; color: #fff;
+    margin: 36px 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid #232c3a;
+  }
+  h2 .num {
+    display: inline-block; width: 28px; height: 28px;
+    background: rgba(200,162,40,0.15); color: #e5bc3c;
+    border-radius: 6px; text-align: center; line-height: 28px;
+    font-size: 13px; font-weight: 700; margin-right: 10px;
+  }
+
+  h3 {
+    font-size: 14px; font-weight: 600; color: #e5bc3c;
+    margin: 20px 0 8px;
+  }
+
+  p { margin-bottom: 12px; color: #8594a8; }
+  strong { color: #cdd5e2; }
+
+  .card {
+    background: #13171e;
+    border: 1px solid #1c2230;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width:700px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .mini-card {
+    background: #191e27;
+    border: 1px solid #232c3a;
+    border-radius: 6px;
+    padding: 14px 18px;
+  }
+  .mini-card h4 {
+    font-size: 12px; font-weight: 600; margin-bottom: 6px;
+  }
+  .mini-card p { font-size: 11px; margin-bottom: 0; }
+
+  table {
+    width: 100%; border-collapse: collapse;
+    margin: 12px 0; font-size: 12px;
+  }
+  th {
+    text-align: left; padding: 8px 12px;
+    background: #191e27; color: #c8a228;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 1px;
+    border-bottom: 1px solid #232c3a;
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #1c2230;
+    color: #8594a8;
+  }
+
+  ul { padding-left: 20px; margin: 8px 0 16px; }
+  li { margin-bottom: 6px; color: #8594a8; }
+  li strong { color: #cdd5e2; }
+
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; background: rgba(40,191,207,0.08);
+    color: #28bfcf; padding: 1px 6px; border-radius: 3px;
+  }
+
+  .premium { color: #EF5350; font-weight: 600; }
+  .discount { color: #26A69A; font-weight: 600; }
+  .eq { color: #e5bc3c; font-weight: 600; }
+
+  .example-box {
+    background: #0d1117;
+    border: 1px solid #1c2230;
+    border-left: 3px solid #c8a228;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 12px;
+  }
+  .example-box .title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; color: #c8a228;
+    letter-spacing: 2px; margin-bottom: 8px;
+  }
+
+  .footer {
+    text-align: center; padding: 32px;
+    color: #4a5668; font-size: 11px;
+    border-top: 1px solid #1c2230;
+    margin-top: 40px;
+  }
+</style>
+</head>
+<body>
+
+<div class="no-print">
+  <button onclick="window.print()">Imprimer / Sauvegarder en PDF</button>
+</div>
+
+<div class="header">
+  <div class="header-tag">Guide Complet en Francais</div>
+  <h1>DRT MTF — <span>Dealing Range Theory</span></h1>
+  <p>Indicateur Pine Script v6 — Multi-Timeframe — Base sur le code mickes</p>
+</div>
+
+<div class="content">
+
+  <!-- 1. INTRODUCTION -->
+  <h2><span class="num">1</span> Introduction</h2>
+  <p>
+    Le <strong>DRT MTF</strong> (Dealing Range Theory Multi-Timeframe) est un indicateur Pine Script qui identifie automatiquement les <strong>Dealing Ranges</strong> — les zones de prix ou les institutions ont execute des transactions — sur 8 timeframes simultanement.
+  </p>
+  <p>
+    Base sur la theorie des Dealing Ranges de <strong>mickes</strong>, cet indicateur detecte les moments ou le prix "prend" la liquidite d'un pivot precedent, creant ainsi un range institutionnel avec des niveaux cles : High, Low, 50% (Equilibrium), 75% et 25%.
+  </p>
+
+  <div class="card">
+    <h3>Pourquoi c'est important ?</h3>
+    <p>Les Dealing Ranges revelent les zones ou les <strong>market makers</strong> et <strong>algorithmes institutionnels</strong> ont execute des ordres. Le prix a tendance a revenir vers l'equilibre (50%) de ces ranges, et les niveaux 75%/25% servent de zones d'entree/sortie optimales.</p>
+  </div>
+
+  <!-- 2. THEORIE -->
+  <h2><span class="num">2</span> Theorie des Dealing Ranges</h2>
+
+  <h3>2.1 — Formation d'un Dealing Range</h3>
+  <p>Un Dealing Range se forme en deux etapes :</p>
+  <ul>
+    <li><strong>Etape 1 — Detection des pivots de liquidite :</strong> L'indicateur identifie les pivots hauts (buyside liquidity) et bas (sellside liquidity) avec une sensibilite configurable (<code>Liquidity Length</code>).</li>
+    <li><strong>Etape 2 — Prise de liquidite :</strong> Lorsqu'un nouveau pivot majeur (<code>Pivot Length</code>) depasse un pivot de liquidite precedent, il "prend" cette liquidite. Le High du nouveau pivot et le Low (ou inversement) definissent le Dealing Range.</li>
+  </ul>
+
+  <h3>2.2 — Les 5 Niveaux</h3>
+  <div class="grid-2">
+    <div class="mini-card">
+      <h4 style="color:#EF5350">High (100%)</h4>
+      <p>Sommet du Dealing Range. Niveau ou la liquidite buyside a ete prise. Resistance institutionnelle.</p>
+    </div>
+    <div class="mini-card">
+      <h4 style="color:#FF9800">75% (Deep Premium)</h4>
+      <p>Zone premium profonde. Ideal pour les shorts. Si le prix atteint ce niveau et rejette, forte probabilite de retour vers EQ.</p>
+    </div>
+    <div class="mini-card">
+      <h4 style="color:#e5bc3c">50% — Equilibrium (EQ)</h4>
+      <p>Le coeur du range. Le prix est naturellement attire vers ce niveau. Separe Premium (au-dessus) et Discount (en-dessous).</p>
+    </div>
+    <div class="mini-card">
+      <h4 style="color:#2196F3">25% (Deep Discount)</h4>
+      <p>Zone discount profonde. Ideal pour les longs. Meilleur rapport risque/rendement pour les achats.</p>
+    </div>
+  </div>
+  <div class="mini-card" style="margin-top:16px;">
+    <h4 style="color:#26A69A">Low (0%)</h4>
+    <p>Base du Dealing Range. Niveau ou la liquidite sellside a ete prise. Support institutionnel.</p>
+  </div>
+
+  <h3>2.3 — Premium vs Discount</h3>
+  <div class="card">
+    <p><span class="premium">Zone Premium</span> (au-dessus de EQ) : Le prix est relativement "cher". Les traders institutionnels cherchent a <strong>vendre</strong> dans cette zone. Strategiquement, c'est la zone pour les <strong>positions short</strong>.</p>
+    <p><span class="discount">Zone Discount</span> (en-dessous de EQ) : Le prix est relativement "pas cher". Les institutions cherchent a <strong>acheter</strong>. Zone ideale pour les <strong>positions long</strong>.</p>
+    <p><span class="eq">Equilibrium (EQ)</span> : Le point de basculement. Un prix qui traverse l'EQ change de regime — de premium a discount ou inversement. C'est souvent un <strong>objectif de prix</strong> naturel.</p>
+  </div>
+
+  <!-- 3. MULTI-TIMEFRAME -->
+  <div class="page-break"></div>
+  <h2><span class="num">3</span> Fonctionnement Multi-Timeframe</h2>
+  <p>
+    L'indicateur utilise <code>request.security()</code> pour calculer le DRT sur chaque timeframe independamment, puis affiche tous les resultats sur votre chart actuel. Cela permet de voir la structure institutionnelle a travers toutes les echelles de temps.
+  </p>
+
+  <table>
+    <tr><th>TIMEFRAME</th><th>COULEUR</th><th>USAGE PRINCIPAL</th></tr>
+    <tr><td>5 minutes</td><td style="color:#26A69A">#26A69A (Vert)</td><td>Scalping, entrees precises sur FVG</td></tr>
+    <tr><td>15 minutes</td><td style="color:#42A5F5">#42A5F5 (Bleu clair)</td><td>Confirmations dans les macros ICT</td></tr>
+    <tr><td>30 minutes</td><td style="color:#5C6BC0">#5C6BC0 (Indigo)</td><td>Structure de session, ranges intermediaires</td></tr>
+    <tr><td>1 heure</td><td style="color:#FFA726">#FFA726 (Orange)</td><td>Biais intraday, dealing ranges primaires</td></tr>
+    <tr><td>4 heures</td><td style="color:#EF5350">#EF5350 (Rouge)</td><td>Swing trading, ranges journaliers</td></tr>
+    <tr><td>Daily</td><td style="color:#AB47BC">#AB47BC (Violet)</td><td>Biais daily, narratif HTF</td></tr>
+    <tr><td>Weekly</td><td style="color:#EC407A">#EC407A (Rose)</td><td>Weekly ranges, context long terme</td></tr>
+    <tr><td>Monthly</td><td style="color:#8D6E63">#8D6E63 (Brun)</td><td>Structure mensuelle, macro narrative</td></tr>
+  </table>
+
+  <div class="example-box">
+    <div class="title">EXEMPLE PRATIQUE</div>
+    <p>Vous etes sur un chart 5 minutes. L'indicateur affiche simultanement :</p>
+    <ul>
+      <li>Le DRT 1H avec EQ a <strong>1.0850</strong> (orange)</li>
+      <li>Le DRT 4H avec EQ a <strong>1.0820</strong> (rouge)</li>
+      <li>Le tableau montre : 1H = <span class="discount">Discount</span>, 4H = <span class="discount">Discount</span></li>
+    </ul>
+    <p><strong>Interpretation :</strong> Les deux TF sont en discount = biais haussier. Cherchez un long avec un objectif vers les EQ respectifs.</p>
+  </div>
+
+  <!-- 4. TABLEAU -->
+  <h2><span class="num">4</span> Tableau de Synthese</h2>
+  <p>
+    Le tableau en haut a droite du chart affiche en temps reel pour chaque TF actif :
+  </p>
+  <ul>
+    <li><strong>TF</strong> — Le timeframe avec sa couleur dediee</li>
+    <li><strong>Zone</strong> — La position du prix : <span class="premium">Premium</span>, <span class="discount">Discount</span>, Above (au-dessus du range), Below (en-dessous)</li>
+    <li><strong>EQ</strong> — Le prix exact de l'equilibre (50%) pour ce TF</li>
+  </ul>
+
+  <div class="card">
+    <h3>Lecture du Tableau pour le Biais</h3>
+    <p>Si la majorite des TF affichent <span class="discount">Discount</span> → le prix est globalement "pas cher" → <strong>biais haussier</strong>.</p>
+    <p>Si la majorite affichent <span class="premium">Premium</span> → le prix est "cher" → <strong>biais baissier</strong>.</p>
+    <p>Si les TF sont mixtes → <strong>pas de biais clair</strong>, attendre une convergence ou trader le range.</p>
+  </div>
+
+  <!-- 5. PARAMETRES -->
+  <h2><span class="num">5</span> Configuration des Parametres</h2>
+  <table>
+    <tr><th>GROUPE</th><th>PARAMETRE</th><th>DEFAUT</th><th>EXPLICATION</th></tr>
+    <tr><td>Dealing Range</td><td>Pivot Length (L/R)</td><td>20/20</td><td>Nombre de barres gauche/droite pour les pivots majeurs. Plus c'est grand, plus le range est large et stable.</td></tr>
+    <tr><td>Dealing Range</td><td>Liquidity Length</td><td>1/1</td><td>Sensibilite des pivots de liquidite. 1 = tres sensible, detecte chaque micro-pivot.</td></tr>
+    <tr><td>Dealing Range</td><td>Closed Bar Only</td><td>OFF</td><td>Si ON, attend la cloture de la barre pour valider un pivot. Plus fiable mais plus lent.</td></tr>
+    <tr><td>Timeframes</td><td>5m/15m/30m/1H/4H/D/W/M</td><td>1H+4H</td><td>Cochez les TF a afficher. Evitez d'en activer trop a la fois pour la lisibilite.</td></tr>
+    <tr><td>DRT Levels</td><td>High/Low/75%/50%/25%</td><td>Tous ON</td><td>Choisissez quels niveaux afficher. Minimum recommande : EQ (50%) + High + Low.</td></tr>
+    <tr><td>Lines</td><td>Extend Right</td><td>8</td><td>Extension des lignes a droite du prix. Augmentez si vous voulez plus de visibilite future.</td></tr>
+    <tr><td>Zones</td><td>Zone Shading</td><td>ON</td><td>Coloration rouge (premium) / vert (discount) entre les niveaux.</td></tr>
+    <tr><td>Zones</td><td>Table</td><td>ON</td><td>Tableau recapitulatif en haut a droite avec zone + EQ par TF.</td></tr>
+  </table>
+
+  <!-- 6. STRATEGIES -->
+  <div class="page-break"></div>
+  <h2><span class="num">6</span> Strategies d'Utilisation</h2>
+
+  <h3>6.1 — Confluence Multi-TF</h3>
+  <div class="card">
+    <p><strong>Regle :</strong> Plus il y a de TF alignes dans la meme zone (tous Discount ou tous Premium), plus le signal est fort.</p>
+    <ul>
+      <li>3+ TF en Discount → fort biais long, chercher des achats au 25%</li>
+      <li>3+ TF en Premium → fort biais short, chercher des ventes au 75%</li>
+      <li>TF HTF (D/W) en Discount + TF LTF (15m/1H) en Premium → retracement temporaire dans une tendance haussiere, attendre le retour en discount sur le LTF</li>
+    </ul>
+  </div>
+
+  <h3>6.2 — EQ comme Objectif</h3>
+  <div class="card">
+    <p>Quand le prix est au 25% (deep discount), le premier objectif est l'<span class="eq">EQ (50%)</span>. C'est un objectif conservateur mais a haute probabilite. L'inverse pour les shorts depuis le 75%.</p>
+  </div>
+
+  <h3>6.3 — Combinaison DRT + ICT Macros</h3>
+  <div class="card">
+    <p>La meilleure utilisation du DRT est en combinaison avec les <strong>fenetres macro ICT</strong> (Module 14). Le DRT vous donne le <strong>"ou"</strong> (quel niveau), les macros vous donnent le <strong>"quand"</strong> (quelle fenetre temporelle).</p>
+    <p><strong>Setup ideal :</strong> Prix au 25% du DRT 1H + Macro 09:45-10:15 (NY Open) → entree long avec stop sous le Low du DR, target EQ.</p>
+  </div>
+
+  <h3>6.4 — Rejection aux Niveaux</h3>
+  <div class="card">
+    <p>Les niveaux DRT (surtout High, Low et EQ) agissent comme des S/R dynamiques. Cherchez des <strong>rejections</strong> (wicks, FVG, order blocks) a ces niveaux pour confirmer vos entrees.</p>
+  </div>
+
+  <!-- 7. NOTES TECHNIQUES -->
+  <h2><span class="num">7</span> Notes Techniques</h2>
+  <ul>
+    <li><strong>Version :</strong> Pine Script v6</li>
+    <li><strong>Overlay :</strong> Oui (s'affiche directement sur le chart)</li>
+    <li><strong>Limites :</strong> 500 lines, 500 labels, 500 boxes maximum</li>
+    <li><strong>Redessinage :</strong> Tous les dessins sont supprimes et recreees a chaque barre (<code>barstate.islast</code>) pour rester a jour</li>
+    <li><strong>Data Window :</strong> Les valeurs High/Low des principaux TF sont visibles dans la fenetre de donnees de TradingView</li>
+    <li><strong>Base de code :</strong> Logique DRT core par mickes, enveloppe MTF et affichage personnalise</li>
+  </ul>
+
+  <div class="footer">
+    Algorithmic Academy — Guide DRT MTF<br>
+    Indicateur Pine Script v6 — Dealing Range Theory Multi-Timeframe
+  </div>
+
+</div>
+</body>
+</html>
