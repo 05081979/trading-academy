@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide AA Liquidity &amp; Inducements — Structure, Liquidite, IDM</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  @page { size: A4; margin: 20mm 18mm; }
+  @media print {
+    .no-print { display: none !important; }
+    body { background: #fff !important; color: #1a1a2e !important; font-size: 11px !important; }
+    .page-break { page-break-before: always; }
+    h1, h2, h3 { color: #1a1a2e !important; }
+    .card { border: 1px solid #ddd !important; background: #f8f9fa !important; }
+    .header { background: #1a1a2e !important; }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #0a0d14; color: #cdd5e2; font-size: 13px; line-height: 1.7; }
+
+  .no-print { position: fixed; top: 16px; right: 16px; z-index: 9999; }
+  .no-print button { font-family: 'IBM Plex Mono', monospace; font-size: 12px; padding: 10px 24px; border-radius: 6px; border: 1px solid #00e676; background: rgba(0,230,118,0.1); color: #00e676; cursor: pointer; transition: 0.15s; }
+  .no-print button:hover { background: rgba(0,230,118,0.2); }
+
+  .header { background: linear-gradient(135deg, #0e1116 0%, #0f1a14 100%); padding: 48px 56px; border-bottom: 2px solid #00e676; }
+  .header-tag { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 3px; color: #00e676; text-transform: uppercase; margin-bottom: 12px; }
+  .header h1 { font-size: 32px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+  .header h1 span { color: #00e676; }
+  .header p { color: #8594a8; font-size: 14px; max-width: 600px; }
+
+  .content { max-width: 900px; margin: 0 auto; padding: 40px; }
+
+  h2 { font-size: 20px; font-weight: 700; color: #fff; margin: 36px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #232c3a; }
+  h2 .num { display: inline-block; width: 28px; height: 28px; background: rgba(0,230,118,0.15); color: #00e676; border-radius: 6px; text-align: center; line-height: 28px; font-size: 13px; font-weight: 700; margin-right: 10px; }
+  h3 { font-size: 14px; font-weight: 600; color: #00e676; margin: 20px 0 8px; }
+  p { margin-bottom: 12px; color: #8594a8; }
+  strong { color: #cdd5e2; }
+
+  .card { background: #13171e; border: 1px solid #1c2230; border-radius: 8px; padding: 20px 24px; margin: 16px 0; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width:700px) { .grid-2 { grid-template-columns: 1fr; } }
+  .mini-card { background: #191e27; border: 1px solid #232c3a; border-radius: 6px; padding: 14px 18px; }
+  .mini-card h4 { font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+  .mini-card p { font-size: 11px; margin-bottom: 0; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+  th { text-align: left; padding: 8px 12px; background: #191e27; color: #00e676; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1px; border-bottom: 1px solid #232c3a; }
+  td { padding: 8px 12px; border-bottom: 1px solid #1c2230; color: #8594a8; }
+
+  ul { padding-left: 20px; margin: 8px 0 16px; }
+  li { margin-bottom: 6px; color: #8594a8; }
+  li strong { color: #cdd5e2; }
+  code { font-family: 'IBM Plex Mono', monospace; font-size: 11px; background: rgba(40,191,207,0.08); color: #28bfcf; padding: 1px 6px; border-radius: 3px; }
+
+  .example-box { background: #0d1117; border: 1px solid #1c2230; border-left: 3px solid #00e676; border-radius: 6px; padding: 16px 20px; margin: 16px 0; font-size: 12px; }
+  .example-box .title { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #00e676; letter-spacing: 2px; margin-bottom: 8px; }
+
+  .footer { text-align: center; padding: 32px; color: #4a5668; font-size: 11px; border-top: 1px solid #1c2230; margin-top: 40px; }
+</style>
+</head>
+<body>
+
+<div class="no-print">
+  <button onclick="window.print()">Imprimer / Sauvegarder en PDF</button>
+</div>
+
+<div class="header">
+  <div class="header-tag">Guide Complet en Francais</div>
+  <h1>AA Liquidity &amp; <span>Inducements</span></h1>
+  <p>Indicateur Pine Script v6 — Structure, Liquidite, Inducement — mickes/PriceAction + UAlgo</p>
+</div>
+
+<div class="content">
+
+  <h2><span class="num">1</span> Introduction</h2>
+  <p>L'indicateur <strong>AA Liquidity &amp; Inducements</strong> est un outil tout-en-un qui detecte automatiquement la <strong>structure de marche</strong> (BoS/ChoCh), les <strong>zones de liquidite</strong> (Grabs, Sweeps, BSL/SSL, Equal H/L, Turtle Soups) et les <strong>inducements</strong> (pieges de liquidite) sur votre chart TradingView.</p>
+  <p>Il combine deux moteurs : la librairie <code>mickes/PriceAction/4</code> pour la structure formelle, et le systeme <strong>UAlgo</strong> pour les micro-inducements via inside bars.</p>
+
+  <div class="card">
+    <h3>Pourquoi cet indicateur ?</h3>
+    <p>En ICT/SMC, comprendre <strong>ou se trouve la liquidite</strong> et <strong>quels niveaux sont des pieges</strong> (inducements) est la cle pour anticiper les mouvements du market maker. Cet indicateur automatise cette detection.</p>
+  </div>
+
+  <h2><span class="num">2</span> Market Structure</h2>
+  <p>La structure est detectee via des <strong>pivots</strong> (swing highs et swing lows) avec une longueur configurable (defaut: 5 barres gauche/droite).</p>
+
+  <div class="grid-2">
+    <div class="mini-card">
+      <h4 style="color:#26A69A">BoS — Break of Structure</h4>
+      <p>Le prix casse un pivot dans la direction de la tendance. <strong>Uptrend</strong> : nouveau high > previous high. <strong>Downtrend</strong> : nouveau low < previous low. Signal de continuation.</p>
+    </div>
+    <div class="mini-card">
+      <h4 style="color:#EF5350">ChoCh — Change of Character</h4>
+      <p>Le prix casse un pivot dans la direction opposee a la tendance. Signal de retournement. C'est la premiere etape d'un reversal potentiel.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Tendance</h3>
+    <p>L'indicateur maintient un <strong>trend</strong> interne (1 = bullish, -1 = bearish) qui est mis a jour a chaque BoS (continuation) ou ChoCh (flip). Ce trend influence comment les equal H/L sont classifies ($$$ ou IDM) et comment les inducements sont crees.</p>
+  </div>
+
+  <h2><span class="num">3</span> Les 5 Types de Liquidite</h2>
+
+  <h3>3.1 — Grabs ($$$)</h3>
+  <div class="card">
+    <p><strong>Detection :</strong> Le prix fait un wick a travers un pivot, puis <strong>cloture de l'autre cote</strong> (retour). C'est une prise de liquidite rapide — les stops ont ete touches mais le prix est revenu.</p>
+    <p><strong>Visuellement :</strong> Zone coloree entre le pivot et le wick, avec label "$$$".</p>
+    <p><strong>Parametres :</strong> Pivot Left/Right (3/3), Lookback (5), Timeframe (configurable).</p>
+  </div>
+
+  <h3>3.2 — Big Grabs ($$$)</h3>
+  <div class="card">
+    <p>Identique aux Grabs mais avec des <strong>pivots plus larges</strong> (defaut: 10/10). Detecte les prises de liquidite <strong>HTF</strong> (Higher Timeframe). Utilisez un timeframe superieur pour encore plus de precision.</p>
+  </div>
+
+  <h3>3.3 — Sweeps ($)</h3>
+  <div class="card">
+    <p><strong>Detection :</strong> Le prix fait un wick a travers un pivot ET <strong>cloture au-dela</strong>. Contrairement au grab, le prix ne revient pas — c'est un sweep confirme.</p>
+    <p><strong>Couleurs :</strong> Bullish (sweep d'un low = vert) / Bearish (sweep d'un high = rouge).</p>
+    <p><strong>Filtre :</strong> Les sweeps qui coincident avec un BoS ne sont pas affiches (c'est de la structure, pas de la liquidite).</p>
+  </div>
+
+  <h3>3.4 — Turtle Soups</h3>
+  <div class="card">
+    <p><strong>Detection :</strong> Un sweep suivi d'un <strong>ChoCh dans la direction opposee</strong>. C'est le setup ICT classique — le prix prend la liquidite puis reverse.</p>
+    <p><strong>Confirmation :</strong> Option pour exiger un ChoCh confirme (recommande ON).</p>
+    <p><strong>Parametres :</strong> Pivot (1/1), Lookback (5), Timeframe configurable.</p>
+  </div>
+
+  <h3>3.5 — Equal Highs/Lows</h3>
+  <div class="card">
+    <p><strong>Detection :</strong> Deux pivots dont le prix est dans une tolerance ATR (defaut: 0.5x ATR). Ce sont des <strong>double tops/bottoms</strong> qui concentrent la liquidite.</p>
+    <p><strong>Classification par tendance :</strong></p>
+    <ul>
+      <li>En <strong>downtrend</strong>, des equal highs = <span style="color:#e08830">$$$ (liquidite buyside)</span> — le prix ira les chercher</li>
+      <li>En <strong>downtrend</strong>, des equal lows = <span style="color:#26A69A">IDM (inducement)</span> — piege pour les vendeurs</li>
+      <li>En <strong>uptrend</strong>, des equal lows = <span style="color:#e08830">$$$ (liquidite sellside)</span></li>
+      <li>En <strong>uptrend</strong>, des equal highs = <span style="color:#EF5350">IDM (inducement)</span> — piege pour les acheteurs</li>
+    </ul>
+    <p><strong>Sweep :</strong> Quand le prix prend un equal H/L classe comme IDM, il est marque comme $$$ (liquidite prise).</p>
+  </div>
+
+  <div class="page-break"></div>
+  <h2><span class="num">4</span> BSL &amp; SSL (External Liquidity)</h2>
+  <div class="card">
+    <p><strong>BSL (Buyside Liquidity) :</strong> Pools au-dessus des swing highs de structure. Lignes pointillees vertes etendues vers la droite. Effacees quand le prix les atteint.</p>
+    <p><strong>SSL (Sellside Liquidity) :</strong> Pools en-dessous des swing lows de structure. Lignes pointillees rouges. Meme comportement.</p>
+    <p><strong>Show Last N :</strong> Configurable — n'affiche que les N derniers pools pour garder le chart propre (defaut: 1).</p>
+  </div>
+
+  <h2><span class="num">5</span> Inducements (IDM) — Double Systeme</h2>
+
+  <h3>5.1 — Retracement IDM (mickes)</h3>
+  <div class="card">
+    <p><strong>Principe :</strong> Apres un BoS ou ChoCh, le <strong>premier pullback</strong> (premier pivot dans la direction opposee) est marque comme inducement. C'est le niveau ou les "early traders" se font pieger.</p>
+    <p><strong>Lifecycle :</strong></p>
+    <ul>
+      <li><strong>Creation :</strong> Premier pivot de retracement apres un structure break</li>
+      <li><strong>Actif :</strong> Ligne pointillee etendue vers la droite avec label "IDM"</li>
+      <li><strong>Swept :</strong> Quand le prix atteint le niveau → ligne arretee, confirmation que la liquidite a ete prise</li>
+      <li><strong>Invalide :</strong> Au prochain BoS/ChoCh → ligne grisee, n'est plus pertinent</li>
+    </ul>
+    <p><strong>Parametres :</strong> Pivot (1/1), Lookback (5), Timeframe, couleurs bull/bear, option garder les invalides.</p>
+  </div>
+
+  <h3>5.2 — UAlgo IDM (inside-bar + legs)</h3>
+  <div class="card">
+    <p><strong>Principe :</strong> Systeme independant base sur le tracking des <strong>legs de prix</strong> et les <strong>inside bars</strong>. Quand le prix fait un pullback dans une leg puis que la leg continue (nouveau high/low), le pullback est confirme comme inducement.</p>
+    <p><strong>Mecanisme detaille :</strong></p>
+    <ul>
+      <li><strong>Inside bar :</strong> Barre dont le high est sous le high precedent ET le low au-dessus du low precedent. Ces barres sont ignorees (pas de nouvelle information).</li>
+      <li><strong>Leg tracking :</strong> En uptrend, le systeme traque le leg high. Un pullback (low plus bas) est enregistre comme potentiel IDM.</li>
+      <li><strong>Confirmation :</strong> Quand le prix fait un nouveau leg high, le pullback precedent est confirme comme IDM (label "IDM ✗").</li>
+      <li><strong>Sweep :</strong> Quand le prix revient et prend l'IDM → "IDM ✓" (ligne pointillee, couleur attenuee).</li>
+      <li><strong>Trend flip :</strong> Si le prix casse le leg low (en uptrend), le trend flip et les pullbacks sont reinitialises.</li>
+    </ul>
+  </div>
+
+  <div class="example-box">
+    <div class="title">EXEMPLE — UALGO IDM EN UPTREND</div>
+    <p>1. Le prix monte de 100 a 110 (leg high = 110)</p>
+    <p>2. Pullback a 105 (enregistre comme potentiel IDM)</p>
+    <p>3. Le prix remonte a 112 (nouveau leg high) → le pullback a 105 est confirme : <strong>IDM ✗ a 105</strong></p>
+    <p>4. Plus tard, le prix redescend a 104 → <strong>IDM ✓</strong> (swept, la liquidite des acheteurs a 105 a ete prise)</p>
+    <p>5. C'est souvent le moment d'un reversal ou d'une continuation forte apres cette prise de liquidite.</p>
+  </div>
+
+  <div class="page-break"></div>
+  <h2><span class="num">6</span> Strategies d'Utilisation</h2>
+
+  <h3>6.1 — Setup Reversal (Phase 1 du 2-Phase Theorem)</h3>
+  <div class="card">
+    <p>Les IDM sont la <strong>Phase 1</strong> du 2-Phase Inducement Theorem :</p>
+    <ul>
+      <li>Identifiez un IDM non-swept (IDM ✗) pres d'un orderblock valide</li>
+      <li>Attendez que le prix sweep l'IDM (IDM ✓) = Phase 1 complete</li>
+      <li>Cherchez un ChoCh apres le sweep = MSS (Market Structure Shift)</li>
+      <li>Entrez dans la direction du ChoCh avec stop sous/au-dessus du sweep</li>
+    </ul>
+  </div>
+
+  <h3>6.2 — Setup Continuation (IPB)</h3>
+  <div class="card">
+    <p>Apres un reversal confirme (2 phases), tradez les <strong>continuations</strong> :</p>
+    <ul>
+      <li>Apres un BoS, attendez le retracement IDM (mickes)</li>
+      <li>Quand l'IDM est swept, cherchez une entree dans la direction du trend</li>
+      <li>Target : prochain BSL/SSL ou equal H/L marque comme $$$</li>
+    </ul>
+  </div>
+
+  <h3>6.3 — Turtle Soup</h3>
+  <div class="card">
+    <p>Le setup le plus propre :</p>
+    <ul>
+      <li>Le prix sweep un pivot (Turtle Soup detecte)</li>
+      <li>Un ChoCh confirme le retournement</li>
+      <li>Entree sur le retest de la zone de sweep</li>
+      <li>Stop sous le sweep, target = prochain pool de liquidite oppose</li>
+    </ul>
+  </div>
+
+  <h3>6.4 — Confluence avec les autres modules</h3>
+  <div class="card">
+    <table>
+      <tr><th>CONFLUENCE</th><th>MODULE</th><th>COMMENT</th></tr>
+      <tr><td>IDM + Dealing Range</td><td>Module 13 (DRT MTF)</td><td>IDM a un niveau DRT (EQ, 75%, 25%) = haute probabilite</td></tr>
+      <tr><td>Sweep + Macro</td><td>Module 14 (Macro+News)</td><td>Sweep pendant une fenetre macro = manipulation algorithmique</td></tr>
+      <tr><td>BSL/SSL + PD</td><td>Premium/Discount</td><td>BSL en zone premium = target pour les shorts</td></tr>
+    </table>
+  </div>
+
+  <h2><span class="num">7</span> Reference des Parametres</h2>
+  <table>
+    <tr><th>GROUPE</th><th>PARAMETRE</th><th>DEFAUT</th><th>DESCRIPTION</th></tr>
+    <tr><td>Market Structure</td><td>Pivot Left/Right</td><td>5/5</td><td>Sensibilite de la structure. Plus grand = moins de pivots mais plus fiables</td></tr>
+    <tr><td>Liquidity ($$$)</td><td>Grabs / Big Grabs / Sweeps / Turtle Soups / Equal H/L / BSL&amp;SSL</td><td>Tous ON</td><td>Activer/desactiver chaque type de liquidite</td></tr>
+    <tr><td>Grabs</td><td>Pivot (3/3), Lookback (5), TF</td><td>Varies</td><td>Sensibilite et timeframe pour les grabs</td></tr>
+    <tr><td>Big Grabs</td><td>Pivot (10/10), Lookback (5), TF</td><td>Varies</td><td>Grabs HTF avec pivots plus larges</td></tr>
+    <tr><td>Sweeps</td><td>Pivot (3/3), Lookback (5), TF</td><td>Varies</td><td>Sensibilite et timeframe pour les sweeps</td></tr>
+    <tr><td>Turtle Soups</td><td>Pivot (1/1), Lookback (5), Confirmation</td><td>ON</td><td>Exiger ChoCh pour confirmer le turtle soup</td></tr>
+    <tr><td>Equal H/L</td><td>Pivot (1/1), ATR Factor (0.5), Lookback (3)</td><td>Varies</td><td>Tolerance pour equal pivots + profondeur de recherche</td></tr>
+    <tr><td>BSL &amp; SSL</td><td>Show (1)</td><td>1</td><td>Nombre de pools a afficher par direction</td></tr>
+    <tr><td>Inducement (IDM)</td><td>Retracement ON, Pivot (1/1), Lookback (5)</td><td>ON</td><td>Premier pullback apres structure break</td></tr>
+    <tr><td>UAlgo Inducement</td><td>ON, Bull/Bear colors</td><td>ON</td><td>Inside-bar leg tracking inducements</td></tr>
+    <tr><td>Display</td><td>Font sizes, Line style</td><td>7, dotted</td><td>Apparence des labels et lignes</td></tr>
+  </table>
+
+  <h2><span class="num">8</span> Notes Techniques</h2>
+  <ul>
+    <li><strong>Version :</strong> Pine Script v6</li>
+    <li><strong>Dependance :</strong> <code>mickes/PriceAction/4</code> (importee automatiquement)</li>
+    <li><strong>Types custom :</strong> EqualPivotInducement, Liquidity, LiquidityGrabs, LiquiditySweeps, RetracementInducement, ExternalLiquidity, UAlgoIDM</li>
+    <li><strong>Methods :</strong> drawUAlgo(), checkSweepUAlgo(), LiquidationGrabbed(), LiquidationSwept(), etc.</li>
+    <li><strong>Multi-TF :</strong> Chaque module utilise <code>request.security()</code> avec son propre input timeframe</li>
+    <li><strong>Limites :</strong> 500 labels + 500 lignes max. Les anciens objets sont nettoyes automatiquement.</li>
+    <li><strong>UAlgo limit :</strong> 50 IDM actifs simultanes. Les plus anciens sont supprimes en premier.</li>
+  </ul>
+
+  <div class="footer">
+    Algorithmic Academy — Guide AA Liquidity &amp; Inducements<br>
+    Indicateur Pine Script v6 — mickes/PriceAction + UAlgo Inducement
+  </div>
+
+</div>
+</body>
+</html>

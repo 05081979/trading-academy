@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="../auth.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA Liquidity &amp; Inducements — Liquidite, IDM, Sweeps, Structure</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #07080b; --s1: #0e1116; --s2: #13171e; --s3: #191e27;
+    --bd: #1c2230; --bd2: #232c3a;
+    --gold: #c8a228; --gold2: #e5bc3c;
+    --blue: #3d82e0; --green: #2ec974; --red: #e05050;
+    --orange: #e08830; --purple: #9b72e0; --cyan: #28bfcf;
+    --text: #cdd5e2; --t2: #8594a8; --t3: #4a5668;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; }
+
+  .banner { background: var(--s1); border-bottom: 1px solid var(--bd2); padding: 36px 56px 32px; position: relative; }
+  .banner::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg, transparent 0%, #00e676 30%, #26A69A 50%, #00e676 70%, transparent 100%); }
+  .banner-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 3px; color: #00e676; text-transform: uppercase; margin-bottom: 10px; }
+  .banner h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: #fff; line-height: 1.1; }
+  .banner h1 em { color: #00e676; font-style: normal; }
+  .banner-sub { margin-top: 10px; color: var(--t2); font-size: 13px; max-width: 700px; line-height: 1.6; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 40px; }
+
+  .section { background: var(--s1); border: 1px solid var(--bd); border-radius: 10px; padding: 28px 32px; margin-bottom: 24px; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section-title .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  @media(max-width:800px) { .concept-grid { grid-template-columns: 1fr; } .container { padding: 16px; } .banner { padding: 24px; } }
+
+  .concept-card { background: var(--s2); border: 1px solid var(--bd); border-radius: 8px; padding: 18px 20px; }
+  .concept-card h3 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .concept-card p { color: var(--t2); line-height: 1.7; font-size: 12px; }
+  .concept-card.full { grid-column: 1 / -1; }
+
+  .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 9px; padding: 2px 8px; border-radius: 4px; margin-right: 4px; margin-bottom: 4px; }
+  .tag-green { background: rgba(46,201,116,0.10); color: var(--green); }
+  .tag-red { background: rgba(224,80,80,0.10); color: var(--red); }
+  .tag-blue { background: rgba(61,130,224,0.12); color: var(--blue); }
+  .tag-orange { background: rgba(224,136,48,0.10); color: var(--orange); }
+  .tag-purple { background: rgba(155,114,224,0.10); color: var(--purple); }
+  .tag-cyan { background: rgba(40,191,207,0.10); color: var(--cyan); }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 12px; }
+  th { text-align: left; padding: 8px 12px; background: var(--s2); color: #00e676; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1px; border-bottom: 1px solid var(--bd); }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--bd); color: var(--t2); }
+  tr:hover td { color: var(--text); background: rgba(255,255,255,0.02); }
+
+  .code-block { background: #0d1117; border: 1px solid var(--bd); border-radius: 8px; padding: 20px; margin-top: 12px; overflow-x: auto; max-height: 500px; overflow-y: auto; }
+  .code-block pre { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #c9d1d9; line-height: 1.6; white-space: pre; }
+  .code-block::-webkit-scrollbar { width: 6px; height: 6px; }
+  .code-block::-webkit-scrollbar-track { background: transparent; }
+  .code-block::-webkit-scrollbar-thumb { background: var(--bd2); border-radius: 3px; }
+
+  .btn-row { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+  .btn { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 10px 22px; border-radius: 6px; border: 1px solid var(--bd); background: var(--s2); color: var(--text); cursor: pointer; transition: all 0.15s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+  .btn:hover { border-color: #00e676; color: #00e676; }
+  .btn-accent { border-color: #00e676; color: #00e676; }
+  .btn-accent:hover { background: rgba(0,230,118,0.1); }
+
+  .list-styled { padding-left: 20px; margin-top: 8px; }
+  .list-styled li { color: var(--t2); line-height: 1.8; font-size: 12px; }
+  .list-styled li strong { color: var(--text); }
+  .highlight { color: #00e676; font-weight: 500; }
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+<link rel="stylesheet" href="../readability.css">
+
+<div class="banner">
+  <div class="banner-eyebrow">Module 15 &mdash; Indicateur Pine Script</div>
+  <h1>AA Liquidity &amp; <em>Inducements</em></h1>
+  <p class="banner-sub">
+    Indicateur tout-en-un : Market Structure (BoS/ChoCh), Liquidite (Grabs, Sweeps, BSL/SSL, Equal H/L, Turtle Soups), Inducements (Retracement IDM + UAlgo inside-bar). Base sur la librairie mickes/PriceAction.
+  </p>
+  <div class="btn-row">
+    <a class="btn btn-accent" href="../pdf/aa-liquidity-inducement-guide.html" target="_blank">Telecharger le Guide PDF</a>
+    <button class="btn" onclick="document.getElementById('code-section').scrollIntoView({behavior:'smooth'})">Voir le Code Source</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- STRUCTURE -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:#00e676"></span> Market Structure (BoS / ChoCh)</div>
+    <p style="color:var(--t2);line-height:1.7;">
+      La base de tout : la <span class="highlight">structure de marche</span> est detectee via la librairie <code style="color:var(--cyan)">mickes/PriceAction/4</code>. L'indicateur identifie les pivots (swing H/L), puis detecte les <strong>Break of Structure (BoS)</strong> et <strong>Change of Character (ChoCh)</strong> pour determiner la tendance.
+    </p>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3 style="color:#26A69A">BoS (Break of Structure)</h3>
+        <p>Le prix casse un pivot structural dans la <strong>meme direction</strong> que la tendance. Confirme la continuation. En uptrend : nouveau high au-dessus du previous high.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:#EF5350">ChoCh (Change of Character)</h3>
+        <p>Le prix casse un pivot structural dans la <strong>direction opposee</strong> a la tendance. Signal de retournement potentiel. En uptrend : low casse le previous low.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIQUIDITY -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--orange)"></span> Liquidite ($$$)</div>
+    <p style="color:var(--t2);line-height:1.7;margin-bottom:12px;">
+      L'indicateur detecte 5 types de liquidite differents, chacun avec son propre mecanisme de detection et son propre timeframe configurable.
+    </p>
+    <table>
+      <tr><th>TYPE</th><th>MECANISME</th><th>LABEL</th></tr>
+      <tr><td><span class="tag tag-orange">Grabs</span></td><td>Wick a travers un pivot, puis cloture de l'autre cote — prise de liquidite rapide</td><td>$$$</td></tr>
+      <tr><td><span class="tag tag-cyan">Big Grabs</span></td><td>Meme chose mais avec des pivots plus larges (HTF) — liquidite majeure</td><td>$$$</td></tr>
+      <tr><td><span class="tag tag-green">Sweeps</span></td><td>Wick a travers un pivot ET cloture au-dela — sweep confirme avec direction</td><td>$</td></tr>
+      <tr><td><span class="tag tag-purple">Turtle Soups</span></td><td>Sweep suivi d'un ChoCh — retournement apres prise de liquidite (avec confirmation optionnelle)</td><td>Zone coloree</td></tr>
+      <tr><td><span class="tag tag-blue">Equal H/L</span></td><td>Pivots a prix egal (double top/bottom) — affiche $$$ (liquidite) ou IDM (inducement) selon la tendance</td><td>$$$ / IDM</td></tr>
+    </table>
+  </div>
+
+  <!-- BSL SSL -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--red)"></span> BSL &amp; SSL (External Liquidity)</div>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3 style="color:#26A69A">BSL (Buyside Liquidity)</h3>
+        <p>Pools de liquidite acheteuse au-dessus des swing highs de structure. Ce sont les <strong>stop-loss des vendeurs</strong> et les <strong>buy-stops des breakout traders</strong>. Le prix est attire vers ces niveaux.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:#EF5350">SSL (Sellside Liquidity)</h3>
+        <p>Pools de liquidite vendeuse en-dessous des swing lows de structure. Ce sont les <strong>stop-loss des acheteurs</strong>. Le market maker cible ces niveaux pour alimenter ses positions.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- INDUCEMENTS -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:#00e676"></span> Inducements (IDM) — Double Systeme</div>
+    <p style="color:var(--t2);line-height:1.7;margin-bottom:12px;">
+      L'indicateur combine <strong>deux systemes</strong> de detection d'inducement complementaires :
+    </p>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3 style="color:#26A69A">1. Retracement IDM (mickes)</h3>
+        <p>Le <strong>premier pullback</strong> apres un BoS ou ChoCh est marque comme inducement. Ce retracement piege les traders qui entrent trop tot dans le mouvement. L'IDM est invalide au prochain structure break.</p>
+        <p style="margin-top:8px;"><span class="tag tag-green">IDM</span> avec ligne pointillee etendue jusqu'a invalidation ou sweep.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:#00e676">2. UAlgo IDM (inside-bar + legs)</h3>
+        <p>Systeme base sur les <strong>inside bars</strong> et le tracking des legs. Detecte les pullbacks dans les legs de prix et les marque comme inducement quand le prix fait un nouveau high/low. Sweep detection automatique.</p>
+        <p style="margin-top:8px;"><span class="tag tag-green">IDM ✗</span> = actif, <span class="tag tag-orange">IDM ✓</span> = swept (pris).</p>
+      </div>
+      <div class="concept-card full">
+        <h3 style="color:var(--orange)">Pourquoi deux systemes ?</h3>
+        <p>Le systeme mickes est lie a la <strong>structure formelle</strong> (pivots confirmes avec right length). Le systeme UAlgo est plus <strong>reactif</strong> (inside bars, pas de confirmation). Ensemble, ils couvrent les inducements a differentes echelles — le mickes pour les swings confirmes, UAlgo pour les micro-inducements intra-leg.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMENT UTILISER -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--blue)"></span> Comment Utiliser</div>
+    <ul class="list-styled">
+      <li><strong>Lecture de la structure :</strong> Identifiez la tendance via les BoS. Un ChoCh signale un retournement potentiel — cherchez une confirmation.</li>
+      <li><strong>Zones de liquidite :</strong> Les BSL/SSL vous montrent ou le prix est attire. Tradez AVEC la liquidite, pas contre elle.</li>
+      <li><strong>Grabs vs Sweeps :</strong> Un Grab ($$$) = le prix a pris la liquidite et est revenu. Un Sweep ($) = le prix a traverse et continue. Distinction cruciale pour le biais.</li>
+      <li><strong>IDM comme targets :</strong> Les inducements sont des niveaux de piege. Quand un IDM est marque, attendez qu'il soit sweep (IDM ✓) avant de trader dans la direction opposee.</li>
+      <li><strong>Turtle Soups :</strong> Un sweep suivi d'un ChoCh = signal de retournement fort. C'est le setup ICT classique.</li>
+      <li><strong>Equal H/L :</strong> Les equal highs/lows sont des aimants a liquidite. Quand ils apparaissent comme "$$$", le prix ira probablement les chercher.</li>
+      <li><strong>Confluence :</strong> Combinez avec le DRT MTF (Module 13) pour les niveaux, les Macros (Module 14) pour le timing.</li>
+    </ul>
+  </div>
+
+  <!-- PARAMETRES -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--cyan)"></span> Parametres Principaux</div>
+    <table>
+      <tr><th>GROUPE</th><th>PARAMETRE</th><th>DEFAUT</th><th>DESCRIPTION</th></tr>
+      <tr><td>Market Structure</td><td>Pivot Left/Right</td><td>5/5</td><td>Longueur des pivots pour la structure (BoS/ChoCh/tendance)</td></tr>
+      <tr><td>Liquidity ($$$)</td><td>Grabs</td><td>ON</td><td>Prise de liquidite rapide (wick + retour)</td></tr>
+      <tr><td>Liquidity ($$$)</td><td>Big Grabs</td><td>ON</td><td>Grabs avec pivots plus larges (HTF)</td></tr>
+      <tr><td>Liquidity ($$$)</td><td>Sweeps</td><td>ON</td><td>Sweep confirme (wick + continuation)</td></tr>
+      <tr><td>Liquidity ($$$)</td><td>Turtle Soups</td><td>ON</td><td>Sweep + ChoCh = retournement</td></tr>
+      <tr><td>Liquidity ($$$)</td><td>Equal H/L</td><td>ON</td><td>Double tops/bottoms comme liquidite ou IDM</td></tr>
+      <tr><td>Liquidity ($$$)</td><td>BSL &amp; SSL</td><td>ON</td><td>Pools de liquidite externe aux pivots de structure</td></tr>
+      <tr><td>Inducement (IDM)</td><td>Retracement</td><td>ON</td><td>Premier pullback apres BoS = inducement</td></tr>
+      <tr><td>UAlgo Inducement</td><td>UAlgo IDM</td><td>ON</td><td>Inducement via inside-bar + leg tracking</td></tr>
+      <tr><td>Grabs</td><td>Pivot / Lookback / TF</td><td>3/5/current</td><td>Sensibilite et timeframe des grabs</td></tr>
+      <tr><td>Sweeps</td><td>Pivot / Lookback / TF</td><td>3/5/current</td><td>Sensibilite et timeframe des sweeps</td></tr>
+      <tr><td>Equal H/L</td><td>ATR Factor</td><td>0.5</td><td>Tolerance pour considerer deux pivots comme "egaux"</td></tr>
+    </table>
+  </div>
+
+  <!-- DEPENDANCES -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Notes Techniques</div>
+    <ul class="list-styled">
+      <li><strong>Version :</strong> Pine Script v6</li>
+      <li><strong>Dependance :</strong> <code style="color:var(--cyan)">mickes/PriceAction/4</code> (librairie publique TradingView)</li>
+      <li><strong>Overlay :</strong> Oui (directement sur le chart)</li>
+      <li><strong>Limites :</strong> 500 labels, 500 lignes</li>
+      <li><strong>Multi-TF :</strong> Chaque module (Grabs, Sweeps, Equal H/L, etc.) a son propre input timeframe via <code style="color:var(--cyan)">request.security()</code></li>
+      <li><strong>UAlgo max :</strong> 50 IDM actifs simultanes avec cleanup auto</li>
+    </ul>
+  </div>
+
+  <!-- CODE -->
+  <div class="section" id="code-section">
+    <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Code Source</div>
+    <p style="color:var(--t2);margin-bottom:8px;">
+      Le code complet (~700 lignes) est fourni dans le fichier <code>.pine</code>. Il combine la librairie mickes/PriceAction avec le systeme UAlgo Inducement.
+    </p>
+    <div class="btn-row" style="margin-top:0;margin-bottom:12px;">
+      <button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('pine-code').textContent).then(()=>this.textContent='Copie !')">Copier le code</button>
+    </div>
+    <div class="code-block">
+      <pre id="pine-code">// Le code source complet est disponible dans le fichier
+// AA_Liquidity_Inducements.pine fourni avec ce cours.
+//
+// Principales sections :
+//
+// 1. MARKET STRUCTURE (mickes/PriceAction/4)
+//    - Pivot detection, BoS, ChoCh, trend tracking
+//
+// 2. LIQUIDITY GRABS ($$$)
+//    - Wick through pivot + close back = grab confirmed
+//    - Configurable pivot length, lookback, timeframe
+//
+// 3. BIG GRABS ($$$)
+//    - Same as grabs but with larger pivot settings (HTF)
+//
+// 4. LIQUIDITY SWEEPS ($)
+//    - Wick through pivot + close beyond = sweep confirmed
+//    - Filtered: excluded if pivot is a structure break point
+//
+// 5. TURTLE SOUPS
+//    - Sweep + optional ChoCh confirmation = reversal setup
+//
+// 6. EQUAL HIGHS/LOWS
+//    - Pivots within ATR tolerance = equal
+//    - Labeled as $$$ (liquidity) or IDM (inducement) based on trend
+//    - Sweep detection: when price takes the equal level
+//
+// 7. BSL &amp; SSL (External Liquidity)
+//    - Buyside/Sellside pools at structure pivots
+//    - Auto-cleared when price takes the level
+//    - Configurable: show last N pools
+//
+// 8. RETRACEMENT INDUCEMENTS (mickes)
+//    - First pullback pivot after BoS/ChoCh = IDM
+//    - Extended line until swept or invalidated
+//    - Invalidated on next structure break
+//
+// 9. UALGO INDUCEMENT (inside-bar + legs)
+//    - Mother candle tracking (inside bar detection)
+//    - Leg high/low tracking with pullback detection
+//    - IDM created when pullback is confirmed by new leg extreme
+//    - Sweep detection: IDM ✗ (active) → IDM ✓ (swept)
+//    - Max 50 active IDMs with auto cleanup
+//
+// Copiez le fichier .pine complet dans l'editeur Pine de TradingView.
+// La librairie mickes/PriceAction/4 sera importee automatiquement.</pre>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

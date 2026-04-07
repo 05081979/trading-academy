@@ -15,6 +15,7 @@
     { id: 'financial-juice',    label: '12. News Live' },
     { id: 'drt-mtf',            label: '13. DRT MTF' },
     { id: 'ict-macro-news',     label: '14. Macro+News' },
+    { id: 'aa-liquidity-inducement', label: '15. Liquidity+IDM' },
   ];
 
   const filename = window.location.pathname.split('/').pop().replace('.html', '');
