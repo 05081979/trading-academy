@@ -344,7 +344,7 @@
         </div>
 
         <div class="divider"></div>
-        <div class="gb-sub">Confluence Goldbach (optionnel)</div>
+        <div class="gb-sub">Confluence PO3 (optionnel)</div>
 
         <div class="row">
           <div class="field">
@@ -416,7 +416,7 @@
         <div class="step-cell">
           <div class="step-n">4</div>
           <div class="step-title">Croiser</div>
-          <div class="step-desc">Vérifier le niveau Goldbach sur la cible</div>
+          <div class="step-desc">Vérifier le niveau PO3 sur la cible</div>
         </div>
         <div class="step-cell">
           <div class="step-n">5</div>
@@ -478,7 +478,7 @@ let entries = JSON.parse(localStorage.getItem('txp_entries') || '[]');
 let lastResult = null;
 let lastInputs  = {};
 
-const GOLDBACH = [0,3,11,17,23,29,35,41,47,50,53,59,65,71,77,83,89,97,100];
+const PO3 = [0,3,11,17,23,29,35,41,47,50,53,59,65,71,77,83,89,97,100];
 const GB_NAMES = {
   0:"Low",3:"Reject",11:"Order Block",17:"Gap",23:"Void NGB",
   29:"Liquidity Void",35:"Breaker NGB",41:"Breaker",47:"Mitigation",
@@ -507,7 +507,7 @@ function showTab(id, btn) {
 function nearestGB(rh, rl, price) {
   if (!rh || !rl || rh <= rl) return null;
   const pct = ((price - rl) / (rh - rl)) * 100;
-  const closest = GOLDBACH.reduce((a,b) => Math.abs(b-pct) < Math.abs(a-pct) ? b : a);
+  const closest = PO3.reduce((a,b) => Math.abs(b-pct) < Math.abs(a-pct) ? b : a);
   return { pct: pct.toFixed(1), level: closest, name: GB_NAMES[closest] };
 }
 
@@ -753,7 +753,7 @@ function renderProgress() {
   const phase = total < 5 ? 1 : total < 10 ? 2 : total < 15 ? 3 : total < 20 ? 4 : 5;
   const PHASES = [
     { n:1, title:"Apprendre à mesurer",     goal:5,  desc:"5 moves analysés en arrière" },
-    { n:2, title:"Ajouter les niveaux",      goal:10, desc:"10 exemples avec confluence Goldbach" },
+    { n:2, title:"Ajouter les niveaux",      goal:10, desc:"10 exemples avec confluence PO3" },
     { n:3, title:"Anticiper en temps réel", goal:15, desc:"15 anticipations avant la session" },
     { n:4, title:"Validation finale",        goal:20, desc:"20 exemples — 70% timing correct" },
   ];
