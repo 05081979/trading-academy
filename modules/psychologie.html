@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="../auth.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psychologie du Trading — Guide Complet</title>
+<link rel="stylesheet" href="../readability.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060a12;
+  --bg2: #0b1120;
+  --bg3: #101828;
+  --bg4: #162040;
+  --border: #1a2440;
+  --border2: #243055;
+  --blue: #4a7cff;
+  --blue2: #6b9aff;
+  --blue-dim: rgba(74,124,255,0.08);
+  --gold: #e9b84c;
+  --green: #2dd67a;
+  --red: #f04545;
+  --orange: #f08044;
+  --purple: #9b6cf0;
+  --teal: #38c9b0;
+  --text: #e4e8f2;
+  --text2: #8892a8;
+  --text3: #4a5568;
+  --sans: 'Inter', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+}
+
+/* ── LAYOUT ── */
+.app { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: 52px;
+  bottom: 0;
+  overflow-y: auto;
+  z-index: 50;
+}
+
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+.sidebar-header {
+  padding: 20px 18px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-header h2 {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--blue);
+  margin-bottom: 4px;
+}
+
+.sidebar-header p {
+  font-size: 11px;
+  color: var(--text3);
+  font-family: var(--mono);
+}
+
+.sidebar-search {
+  margin: 12px 14px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 12px;
+  font-family: var(--sans);
+  width: calc(100% - 28px);
+  outline: none;
+}
+.sidebar-search:focus { border-color: var(--blue); }
+.sidebar-search::placeholder { color: var(--text3); }
+
+.nav-group { padding: 8px 0; }
+
+.nav-group-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 8px 18px 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text2);
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+
+.nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text); }
+.nav-item.active { background: var(--blue-dim); color: var(--blue); border-left-color: var(--blue); font-weight: 600; }
+
+.nav-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.nav-count {
+  margin-left: auto;
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--text3);
+}
+
+/* ── MAIN ── */
+.main {
+  flex: 1;
+  margin-left: 260px;
+  padding: 32px 40px 60px;
+  max-width: 900px;
+}
+
+.section { margin-bottom: 48px; }
+
+.section-id { scroll-margin-top: 70px; }
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.section h2 {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  color: #f0f2f8;
+}
+
+.section-intro {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 24px;
+  max-width: 700px;
+}
+
+/* ── CONCEPT CARDS ── */
+.concepts { display: flex; flex-direction: column; gap: 12px; }
+
+.concept {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  transition: all 0.2s;
+}
+
+.concept:hover {
+  border-color: var(--border2);
+  background: var(--bg3);
+}
+
+.concept-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.concept-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.concept-abbr {
+  font-size: 11px;
+  font-family: var(--mono);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--blue-dim);
+  color: var(--blue);
+}
+
+.concept-body {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.75;
+}
+
+.concept-body strong { color: var(--text); }
+
+.concept-rules {
+  margin-top: 10px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--text2);
+}
+
+.concept-rules li { margin-bottom: 4px; }
+.concept-rules li::marker { color: var(--blue); }
+
+.rule-label {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--mono);
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-right: 4px;
+}
+
+.bullish { background: rgba(45,214,122,0.12); color: var(--green); }
+.bearish { background: rgba(240,69,69,0.12); color: var(--red); }
+.key { background: rgba(74,124,255,0.12); color: var(--blue); }
+.warning { background: rgba(240,128,68,0.12); color: var(--orange); }
+.danger { background: rgba(240,69,69,0.12); color: var(--red); }
+.tip { background: rgba(45,214,122,0.12); color: var(--green); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding: 20px 16px 40px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <h2>Psychologie du Trading</h2>
+    <p>Guide Complet — 8 Chapitres</p>
+  </div>
+  <input type="text" class="sidebar-search" id="search" placeholder="Rechercher un concept..." oninput="filterConcepts()">
+
+  <div class="nav-group">
+    <div class="nav-group-title">Fondamentaux</div>
+    <div class="nav-item active" onclick="goTo('pieges')"><div class="nav-dot" style="background:#f04545"></div>Les Pieges Psychologiques<span class="nav-count">8</span></div>
+    <div class="nav-item" onclick="goTo('discipline')"><div class="nav-dot" style="background:#4a7cff"></div>Discipline & Routines<span class="nav-count">7</span></div>
+    <div class="nav-item" onclick="goTo('emotions')"><div class="nav-dot" style="background:#2dd67a"></div>Gestion des Emotions<span class="nav-count">8</span></div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title">Progression</div>
+    <div class="nav-item" onclick="goTo('journaling')"><div class="nav-dot" style="background:#e9b84c"></div>Journaling & Auto-Evaluation<span class="nav-count">6</span></div>
+    <div class="nav-item" onclick="goTo('mindset')"><div class="nav-dot" style="background:#9b6cf0"></div>Mindset de Performance<span class="nav-count">7</span></div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title">Biais & Pertes</div>
+    <div class="nav-item" onclick="goTo('biais')"><div class="nav-dot" style="background:#f08044"></div>Biais Cognitifs<span class="nav-count">7</span></div>
+    <div class="nav-item" onclick="goTo('perte-gain')"><div class="nav-dot" style="background:#38c9b0"></div>Psychologie Perte & Gain<span class="nav-count">5</span></div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title">Pratique</div>
+    <div class="nav-item" onclick="goTo('techniques')"><div class="nav-dot" style="background:#4a7cff"></div>Techniques Pratiques<span class="nav-count">10</span></div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 1. LES PIEGES PSYCHOLOGIQUES -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="pieges">
+  <div class="section-badge" style="background:rgba(240,69,69,0.1);color:#f04545;">Chapitre 01</div>
+  <h2>Les Pieges Psychologiques</h2>
+  <p class="section-intro">Le trading est un champ de mines psychologiques. Chaque piege est une croyance limitante deguisee en evidence. Les identifier est la premiere etape pour s'en liberer et trader avec clarte.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="prediction expectation filtrage selectif">
+      <div class="concept-header">
+        <span class="concept-name">Le Piege de la Prediction</span>
+        <span class="concept-abbr">PREDICTION</span>
+      </div>
+      <div class="concept-body">
+        Croire qu'il faut <strong>predire le marche</strong> pour gagner est le piege le plus repandu. Le cerveau fabrique une attente (expectation trap), puis filtre selectivement les informations qui la confirment. Le trader ne voit plus la realite, il voit ce qu'il veut voir.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Piege</span> L'expectation trap : creer un scenario et s'y attacher emotionnellement</li>
+          <li><span class="rule-label danger">Piege</span> Le filtrage selectif : ignorer les signaux contraires a sa these</li>
+          <li><span class="rule-label key">Regle</span> Le trading est un jeu de probabilites, pas de predictions</li>
+          <li><span class="rule-label tip">Solution</span> Reagir a ce que le marche fait, pas a ce qu'on pense qu'il fera</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="ego estime de soi performance deresponsabilisation">
+      <div class="concept-header">
+        <span class="concept-name">Le Piege de l'Ego</span>
+        <span class="concept-abbr">EGO</span>
+      </div>
+      <div class="concept-body">
+        Quand la <strong>performance = estime de soi</strong>, chaque perte devient une attaque personnelle. L'ego pousse a la deresponsabilisation : c'est le marche, le broker, la news. Tant que l'ego dirige, la progression est bloquee.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Piege</span> Associer sa valeur personnelle a ses resultats de trading</li>
+          <li><span class="rule-label danger">Piege</span> Deresponsabilisation : blamer des facteurs externes</li>
+          <li><span class="rule-label tip">Solution</span> Juger son execution, pas le resultat monetaire</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="argent objectifs monetaires r-multiples consequence">
+      <div class="concept-header">
+        <span class="concept-name">Le Piege de l'Argent</span>
+        <span class="concept-abbr">ARGENT</span>
+      </div>
+      <div class="concept-body">
+        Se fixer des <strong>objectifs monetaires</strong> quotidiens pousse a forcer des trades. L'argent est la <strong>consequence</strong> d'une bonne execution, pas l'objectif. Penser en <strong>R-multiples</strong> deconnecte l'emotion de la taille du compte.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Piege</span> "Je dois faire 500 EUR aujourd'hui" → force des trades inexistants</li>
+          <li><span class="rule-label key">Regle</span> Penser en R-multiples, pas en euros/dollars</li>
+          <li><span class="rule-label tip">Solution</span> L'argent est la consequence du process, pas le but</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="fomo fear of missing out impulsif trade rate">
+      <div class="concept-header">
+        <span class="concept-name">Le Piege du FOMO</span>
+        <span class="concept-abbr">FOMO</span>
+      </div>
+      <div class="concept-body">
+        Le <strong>trade rate</strong> (frequence de trades) est un indicateur neutre. C'est le <strong>trade impulsif</strong> qui est destructeur. Le FOMO pousse a entrer sans setup, par peur de rater un mouvement. La meilleure reponse au FOMO : <strong>quitter l'ecran</strong>.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Piege</span> Le trade impulsif = destructeur, meme s'il gagne</li>
+          <li><span class="rule-label key">Regle</span> Le trade rate est neutre — c'est la qualite qui compte</li>
+          <li><span class="rule-label tip">Solution</span> Quitter l'ecran quand le FOMO se manifeste</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="revenge trading spirale destructrice reaction perte">
+      <div class="concept-header">
+        <span class="concept-name">Le Piege du Revenge Trading</span>
+        <span class="concept-abbr">REVENGE</span>
+      </div>
+      <div class="concept-body">
+        La <strong>spirale destructrice</strong> : perte → colere → trade pour se refaire → plus grosse perte → explosion. Ce n'est pas la perte qui tue le compte, c'est la <strong>reaction a la perte</strong>. Le revenge trading est le symptome d'une incapacite a accepter le risque.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Piege</span> Spirale : perte → colere → surtrading → destruction</li>
+          <li><span class="rule-label key">Regle</span> C'est la reaction qui tue, pas la perte initiale</li>
+          <li><span class="rule-label tip">Solution</span> Apres un SL, pause obligatoire minimum 30 minutes</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="surconfiance augmenter risque gains journal regression">
+      <div class="concept-header">
+        <span class="concept-name">Le Piege de la Surconfiance</span>
+        <span class="concept-abbr">SURCONFIANCE</span>
+      </div>
+      <div class="concept-body">
+        Apres une serie de gains, le trader se sent <strong>invincible</strong>. Il augmente le risque, arrete de journaliser, relache ses regles. C'est exactement la que la <strong>regression</strong> commence. L'arret du journal est le premier signal d'alarme.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Piege</span> Augmenter le risque apres une serie gagnante</li>
+          <li><span class="rule-label danger">Piege</span> Arreter le journal = debut de la regression</li>
+          <li><span class="rule-label tip">Solution</span> Money management constant, journal quotidien sans exception</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="mode survie createur systeme nerveux peur">
+      <div class="concept-header">
+        <span class="concept-name">Le Piege du Mode Survie</span>
+        <span class="concept-abbr">SURVIE</span>
+      </div>
+      <div class="concept-body">
+        Le systeme nerveux est <strong>binaire</strong> : mode survie ou mode createur. En mode survie, le cortex prefrontal se deconnecte, l'amygdale prend le controle. <strong>Trader par peur</strong> (de perdre, de rater) active le mode survie et rend incapable de prendre de bonnes decisions.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Piege</span> Mode survie = amygdale aux commandes, decisions reactives</li>
+          <li><span class="rule-label key">Regle</span> Le systeme nerveux ne distingue pas menace physique et perte financiere</li>
+          <li><span class="rule-label tip">Solution</span> Activer le mode createur : respiration, ancrage, coherence cardiaque</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="suractivite overtrading moins de trades resultats">
+      <div class="concept-header">
+        <span class="concept-name">Le Piege de la Suractivite</span>
+        <span class="concept-abbr">OVERTRADING</span>
+      </div>
+      <div class="concept-body">
+        Le paradoxe du trading : <strong>moins de trades = plus de resultats</strong>. Trader 20 fois par jour ne produit que du bruit, des commissions et du stress. Les meilleurs traders executent <strong>2-3 trades par semaine</strong> avec une precision chirurgicale.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Piege</span> Confondre activite et productivite</li>
+          <li><span class="rule-label key">Regle</span> 2-3 trades/semaine de qualite > 20 trades/jour de bruit</li>
+          <li><span class="rule-label tip">Solution</span> Definir un nombre maximum de trades par jour/semaine</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 2. DISCIPLINE & ROUTINES -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="discipline">
+  <div class="section-badge" style="background:rgba(74,124,255,0.1);color:#4a7cff;">Chapitre 02</div>
+  <h2>Discipline & Routines</h2>
+  <p class="section-intro">La discipline n'est pas une contrainte mais un levier. Elle se construit progressivement avec des routines solides. C'est le ciment entre la strategie et l'execution.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="discipline echelle inchworm ecart meilleur pire">
+      <div class="concept-header">
+        <span class="concept-name">La Discipline sur une Echelle</span>
+        <span class="concept-abbr">INCHWORM</span>
+      </div>
+      <div class="concept-body">
+        Le <strong>principe de l'inchworm</strong> (ver de terre) : la progression ne vient pas d'augmenter son meilleur jour, mais de <strong>reduire l'ecart entre le meilleur et le pire</strong>. La discipline consiste a remonter le plancher, pas le plafond.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Mesurer l'ecart entre votre meilleur et pire jour de la semaine</li>
+          <li><span class="rule-label key">Regle</span> L'objectif est de reduire cet ecart chaque semaine</li>
+          <li><span class="rule-label tip">Solution</span> Focus sur la consistance, pas sur les coups d'eclat</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="cout discipline liberte levier contrainte">
+      <div class="concept-header">
+        <span class="concept-name">Cout de la Discipline</span>
+        <span class="concept-abbr">COUT</span>
+      </div>
+      <div class="concept-body">
+        Le trading offre une <strong>liberte totale</strong> : pas de patron, pas d'horaires, pas de regles imposees. Cette liberte est un poison sans discipline. La discipline est un <strong>levier</strong>, pas une contrainte — elle libere du chaos emotionnel.
+        <ul class="concept-rules">
+          <li><span class="rule-label warning">Attention</span> La liberte totale du trading est son plus grand danger</li>
+          <li><span class="rule-label key">Regle</span> La discipline est un levier de performance, pas une prison</li>
+          <li><span class="rule-label tip">Solution</span> S'imposer des regles = se liberer de l'indecision</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="rituel pre-trading meditation visualisation coherence cardiaque telephone avion">
+      <div class="concept-header">
+        <span class="concept-name">Rituel Pre-Trading</span>
+        <span class="concept-abbr">PRE-SESSION</span>
+      </div>
+      <div class="concept-body">
+        Un rituel pre-trading ancre l'etat mental optimal <strong>avant</strong> de toucher les charts. Il prepare le systeme nerveux au mode createur, pas au mode survie.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Etape 1</span> Meditation 2-5 minutes : calmer le systeme nerveux</li>
+          <li><span class="rule-label key">Etape 2</span> Coherence cardiaque 3 minutes (inspirer 5s, expirer 5s)</li>
+          <li><span class="rule-label key">Etape 3</span> Visualisation du plan : se voir executer parfaitement</li>
+          <li><span class="rule-label key">Etape 4</span> Relecture des regles : rappeler les non-negociables</li>
+          <li><span class="rule-label key">Etape 5</span> Telephone en mode avion : eliminer les distractions</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="rituel post-trading pensees automatiques journaliser analyser decisions">
+      <div class="concept-header">
+        <span class="concept-name">Rituel Post-Trading</span>
+        <span class="concept-abbr">POST-SESSION</span>
+      </div>
+      <div class="concept-body">
+        Le rituel post-trading est le moment de l'<strong>apprentissage reel</strong>. Sans lui, les erreurs se repetent et les lecons se perdent.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Etape 1</span> Noter les pensees automatiques apparues pendant la session</li>
+          <li><span class="rule-label key">Etape 2</span> Journaliser chaque trade : setup, execution, emotions</li>
+          <li><span class="rule-label key">Etape 3</span> Analyser les decisions : ai-je suivi le plan ?</li>
+          <li><span class="rule-label tip">Solution</span> Faire ce rituel immediatement, pas "plus tard"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="3 non 3 oui top bottom picking emotionnel plan series">
+      <div class="concept-header">
+        <span class="concept-name">Les 3 Non et 3 Oui</span>
+        <span class="concept-abbr">3/3</span>
+      </div>
+      <div class="concept-body">
+        Regles cardinales simplifiees en <strong>3 interdits absolus</strong> et <strong>3 obligations</strong> pour chaque session de trading.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Non 1</span> Jamais de top/bottom picking — ne pas deviner les extremes</li>
+          <li><span class="rule-label danger">Non 2</span> Jamais de trade emotionnel — pas de revenge, pas de FOMO</li>
+          <li><span class="rule-label danger">Non 3</span> Jamais changer les regles en cours de trade</li>
+          <li><span class="rule-label bullish">Oui 1</span> Toujours suivre le plan a la lettre</li>
+          <li><span class="rule-label bullish">Oui 2</span> Toujours penser en series de trades (20+)</li>
+          <li><span class="rule-label bullish">Oui 3</span> Toujours journaliser chaque trade</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="post-it regles cardinales setup revenge changer regles">
+      <div class="concept-header">
+        <span class="concept-name">Post-it Regles Cardinales</span>
+        <span class="concept-abbr">POST-IT</span>
+      </div>
+      <div class="concept-body">
+        Des <strong>post-it physiques</strong> colles sur l'ecran ou le bureau servent de rappels visuels permanents. Ils court-circuitent les pensees automatiques destructrices au moment critique.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Post-it 1</span> "Jamais sans setup" — pas de trade sans confluence</li>
+          <li><span class="rule-label danger">Post-it 2</span> "Jamais de revenge" — apres SL, pause obligatoire</li>
+          <li><span class="rule-label danger">Post-it 3</span> "Jamais changer les regles en cours" — plan = plan</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="punition recompense respect plan pause manquement">
+      <div class="concept-header">
+        <span class="concept-name">Systeme Punition/Recompense</span>
+        <span class="concept-abbr">P/R</span>
+      </div>
+      <div class="concept-body">
+        Le cerveau fonctionne avec des <strong>boucles de renforcement</strong>. Creer un systeme concret de consequences pour conditionner la discipline au fil du temps.
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">Recompense</span> Respect du plan pendant 1 semaine complete = se faire plaisir</li>
+          <li><span class="rule-label danger">Punition</span> Manquement aux regles = pause obligatoire de 1 jour minimum</li>
+          <li><span class="rule-label key">Regle</span> La punition n'est pas monetaire — c'est l'arret temporaire du trading</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 3. GESTION DES EMOTIONS -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="emotions">
+  <div class="section-badge" style="background:rgba(45,214,122,0.1);color:#2dd67a;">Chapitre 03</div>
+  <h2>Gestion des Emotions</h2>
+  <p class="section-intro">Les emotions ne viennent pas du marche. Elles viennent de nos croyances sur le marche. Apprendre a les gerer n'est pas les supprimer — c'est les comprendre et les canaliser.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="emotions croyances cycle autosabotage amygdale reaction">
+      <div class="concept-header">
+        <span class="concept-name">Les Emotions Viennent des Croyances</span>
+        <span class="concept-abbr">CROYANCES</span>
+      </div>
+      <div class="concept-body">
+        Ce n'est pas le marche qui cree l'emotion, c'est <strong>l'interpretation du marche</strong>. Le meme mouvement peut generer de la joie ou de la panique selon les croyances du trader. Le cycle d'autosabotage : croyance → emotion → action impulsive → confirmation de la croyance. La reaction de l'<strong>amygdale</strong> (fight/flight) est automatique et doit etre interceptee.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> L'emotion vient de la croyance, pas de l'evenement</li>
+          <li><span class="rule-label warning">Attention</span> L'amygdale reagit en 12ms — le cortex prefrontal en 500ms</li>
+          <li><span class="rule-label tip">Solution</span> Identifier la croyance sous-jacente a l'emotion</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="neurobiologie dopamine cortisol cortex prefrontal amygdale alpha">
+      <div class="concept-header">
+        <span class="concept-name">Neurobiologie du Trading</span>
+        <span class="concept-abbr">NEURO</span>
+      </div>
+      <div class="concept-body">
+        La perte est ressentie <strong>2.5x plus intensement</strong> que le gain (aversion a la perte). La <strong>dopamine</strong> cree l'addiction au trade, le <strong>cortisol</strong> paralyse ou pousse au revenge. Le <strong>cortex prefrontal</strong> (decisions rationnelles) vs l'<strong>amygdale</strong> (reactions emotionnelles) sont en competition constante. L'etat <strong>alpha</strong> (calme alerte) est l'etat optimal pour trader.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> La perte est 2.5x plus intense que le gain — c'est biologique</li>
+          <li><span class="rule-label warning">Attention</span> La dopamine du "trade qui gagne" cree une addiction reelle</li>
+          <li><span class="rule-label tip">Solution</span> Viser l'etat alpha par la respiration et la preparation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="tilt mecanisme scenario pensee positive negative spirale emotions secondaires">
+      <div class="concept-header">
+        <span class="concept-name">Le Mecanisme du Tilt</span>
+        <span class="concept-abbr">TILT</span>
+      </div>
+      <div class="concept-body">
+        Scenario type : perte → <strong>2eme pensee</strong> (positive : "normal, prochain trade" vs negative : "je suis nul"). La pensee negative declenche des <strong>emotions secondaires</strong> (honte, colere, frustration) qui s'alimentent en spirale. Le tilt n'est pas la premiere emotion, c'est la <strong>reaction a la premiere emotion</strong>.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> La 1ere emotion est automatique — c'est la 2eme pensee qui decide</li>
+          <li><span class="rule-label danger">Piege</span> Les emotions secondaires creent la spirale destructrice</li>
+          <li><span class="rule-label tip">Solution</span> Intercepter la 2eme pensee : "C'est normal, next trade"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="a-game b-game c-game grille technique psycho erreurs tableau">
+      <div class="concept-header">
+        <span class="concept-name">Grille A-Game / B-Game / C-Game</span>
+        <span class="concept-abbr">A/B/C</span>
+      </div>
+      <div class="concept-body">
+        Classifier ses etats de trading en 3 niveaux pour chaque dimension : <strong>technique</strong>, <strong>psychologique</strong>, et <strong>erreurs typiques</strong>.
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">A-Game</span> Technique : setup parfait, patience. Psycho : calme, confiant. Erreurs : aucune ou mineure</li>
+          <li><span class="rule-label warning">B-Game</span> Technique : setup correct, execution imprecise. Psycho : legere impatience. Erreurs : entree prematuree</li>
+          <li><span class="rule-label danger">C-Game</span> Technique : pas de setup. Psycho : tilt, revenge. Erreurs : tout ce qui n'est pas dans le plan</li>
+          <li><span class="rule-label key">Regle</span> En B-Game : reduire la taille. En C-Game : ARRETER de trader</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="respiration 4-2-6 inspirer retenir expirer 5 ans">
+      <div class="concept-header">
+        <span class="concept-name">Technique Respiration 4-2-6</span>
+        <span class="concept-abbr">4-2-6</span>
+      </div>
+      <div class="concept-body">
+        Technique de <strong>respiration structuree</strong> pour desactiver la reponse de stress et reactiver le cortex prefrontal. Simple, rapide, efficace en situation de tilt.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Etape 1</span> Inspirer par le nez pendant 4 secondes</li>
+          <li><span class="rule-label key">Etape 2</span> Retenir le souffle pendant 2 secondes</li>
+          <li><span class="rule-label key">Etape 3</span> Expirer lentement par la bouche pendant 6 secondes</li>
+          <li><span class="rule-label key">Etape 4</span> Repeter 3-5 cycles, puis se poser la question :</li>
+          <li><span class="rule-label tip">Question</span> "Dans 5 ans, ce trade aura-t-il de l'importance ?"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="acceptation verbale risque machine a sous perte cliquer">
+      <div class="concept-header">
+        <span class="concept-name">Acceptation Verbale du Risque</span>
+        <span class="concept-abbr">ACCEPT</span>
+      </div>
+      <div class="concept-body">
+        Comme une <strong>machine a sous</strong>, chaque trade est un tirage independant. Avant de cliquer, <strong>accepter verbalement la perte</strong> : "Je suis pret a perdre ce montant." Si on ne peut pas le dire a voix haute, la taille est trop grande.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Dire a voix haute : "J'accepte de perdre [montant du SL]"</li>
+          <li><span class="rule-label warning">Attention</span> Si ca bloque dans la gorge → taille trop grande</li>
+          <li><span class="rule-label tip">Solution</span> Accepter la perte AVANT de cliquer, pas apres</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="pause consciente espace declencheur reponse">
+      <div class="concept-header">
+        <span class="concept-name">La Pause Consciente</span>
+        <span class="concept-abbr">PAUSE</span>
+      </div>
+      <div class="concept-body">
+        Entre le <strong>declencheur</strong> (evenement marche) et la <strong>reponse</strong> (action du trader), il y a un espace. Cet espace est la liberte. La pause consciente consiste a elargir cet espace pour choisir au lieu de reagir.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Declencheur → PAUSE → Choix conscient → Action</li>
+          <li><span class="rule-label tip">Solution</span> 3 respirations avant toute action de trading</li>
+          <li><span class="rule-label tip">Solution</span> Se lever de la chaise 30 secondes si l'emotion est forte</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="dimensionner tolerance emotionnelle taille executer parfaitement">
+      <div class="concept-header">
+        <span class="concept-name">Dimensionner selon Tolerance Emotionnelle</span>
+        <span class="concept-abbr">SIZING</span>
+      </div>
+      <div class="concept-body">
+        La bonne taille de position n'est pas celle que le money management autorise, c'est celle qu'on peut <strong>executer parfaitement</strong> sans perturbation emotionnelle. Si la taille empeche de suivre le plan, elle est trop grande.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Taille correcte = celle qui permet une execution parfaite</li>
+          <li><span class="rule-label warning">Attention</span> Si vous regardez le P&L au lieu du chart → taille trop grande</li>
+          <li><span class="rule-label tip">Solution</span> Reduire jusqu'a ne plus ressentir de stress sur le SL</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 4. JOURNALING & AUTO-EVALUATION -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="journaling">
+  <div class="section-badge" style="background:rgba(233,184,76,0.1);color:#e9b84c;">Chapitre 04</div>
+  <h2>Journaling & Auto-Evaluation</h2>
+  <p class="section-intro">Le journal de trading est le miroir du trader. Sans lui, on repete les memes erreurs en boucle. Avec lui, chaque trade — gagnant ou perdant — devient une lecon structuree.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="journal obligatoire progresser regression lecon trade">
+      <div class="concept-header">
+        <span class="concept-name">Le Journal est Obligatoire</span>
+        <span class="concept-abbr">JOURNAL</span>
+      </div>
+      <div class="concept-body">
+        Comment progresser sans <strong>mesurer</strong> ? Le journal est l'equivalent des donnees pour un athlete. <strong>Arreter le journal = regression garantie</strong>. Chaque trade est une lecon — le journal la capture avant qu'elle disparaisse.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Pas de journal = pas de progression possible</li>
+          <li><span class="rule-label danger">Piege</span> Arreter de journaliser apres une bonne serie = regression</li>
+          <li><span class="rule-label tip">Solution</span> Journaliser CHAQUE trade, sans exception, gagnant ou perdant</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="fiche pattern avant pendant apres etat physique emotionnel declencheur qualite">
+      <div class="concept-header">
+        <span class="concept-name">Fiche Pattern</span>
+        <span class="concept-abbr">PATTERN</span>
+      </div>
+      <div class="concept-body">
+        Un template complet pour analyser chaque trade sur 3 phases : <strong>AVANT</strong>, <strong>PENDANT</strong>, et <strong>APRES</strong>.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">AVANT</span> Etat physique (sommeil, energie) / Etat emotionnel / Pensees dominantes / Objectif de la session</li>
+          <li><span class="rule-label key">PENDANT</span> Declencheur du trade / Pensee au moment du clic / Emotions ressenties / Sensations corporelles / Action prise / Qualite d'execution (/10)</li>
+          <li><span class="rule-label key">APRES</span> Erreurs identifiees / Lecon a retenir / Pattern repere / Vision a long terme / Strategie de recuperation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="scoring quotidien 50 avant session pendant apres baremes">
+      <div class="concept-header">
+        <span class="concept-name">Scoring Quotidien sur 50</span>
+        <span class="concept-abbr">SCORE /50</span>
+      </div>
+      <div class="concept-body">
+        Un systeme de <strong>notation objective</strong> pour mesurer la qualite de chaque session de trading independamment du resultat monetaire.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Avant /20</span> Preparation mentale, plan de session, etat physique</li>
+          <li><span class="rule-label key">Pendant /5</span> Respect du plan, qualite d'execution par trade</li>
+          <li><span class="rule-label key">Fin /25</span> Journal rempli, lecons notees, etat emotionnel stable</li>
+          <li><span class="rule-label danger">0-30</span> Zone rouge : revoir fondamentaux, pause recommandee</li>
+          <li><span class="rule-label warning">31-40</span> Zone orange : axes d'amelioration identifies</li>
+          <li><span class="rule-label bullish">41-50</span> Zone verte : execution professionnelle, maintenir</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="3 questions post-session discipline perdue excuse benefice cache">
+      <div class="concept-header">
+        <span class="concept-name">3 Questions Post-Session</span>
+        <span class="concept-abbr">3Q</span>
+      </div>
+      <div class="concept-body">
+        Trois questions a se poser <strong>apres chaque session</strong> pour identifier les patterns destructeurs avant qu'ils ne s'installent.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Question 1</span> "Ou ai-je perdu ma discipline ?" — identifier le moment precis</li>
+          <li><span class="rule-label key">Question 2</span> "Quelle excuse me suis-je donnee ?" — traquer la rationalisation</li>
+          <li><span class="rule-label key">Question 3</span> "Quel benefice cache ai-je tire de cette erreur ?" — trouver le gain secondaire</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="journal discipline ecarts plan etat emotionnel pourquoi">
+      <div class="concept-header">
+        <span class="concept-name">Journal de Discipline</span>
+        <span class="concept-abbr">J-DISC</span>
+      </div>
+      <div class="concept-body">
+        Separe du journal de trades, le journal de discipline traque les <strong>ecarts au plan</strong>, l'etat emotionnel, et pose la question fondamentale : <strong>"Pourquoi ai-je fait ca ?"</strong>
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Noter chaque ecart au plan, meme mineur</li>
+          <li><span class="rule-label key">Regle</span> Etat emotionnel au moment de l'ecart (1-10)</li>
+          <li><span class="rule-label key">Regle</span> "Pourquoi ai-je fait ca ?" — aller au-dela de l'excuse superficielle</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="mental hand history 5 pourquoi protective behaviors correction temps reel reconnaitre interrompre">
+      <div class="concept-header">
+        <span class="concept-name">Mental Hand History</span>
+        <span class="concept-abbr">MHH</span>
+      </div>
+      <div class="concept-body">
+        Technique d'analyse profonde des patterns mentaux, inspiree du poker. <strong>Les 5 pourquoi</strong> : creuser chaque erreur jusqu'a la racine. Identifier les <strong>protective behaviors</strong> (mecanismes de defense). Correction en <strong>temps reel</strong> en 4 etapes.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Etape 1</span> Reconnaitre : "Je suis en train de devier du plan"</li>
+          <li><span class="rule-label key">Etape 2</span> Interrompre : stopper l'action en cours physiquement</li>
+          <li><span class="rule-label key">Etape 3</span> Logique : "Quelle est la decision rationnelle ici ?"</li>
+          <li><span class="rule-label key">Etape 4</span> Rappels : relire les post-it, le plan, les regles</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 5. MINDSET DE PERFORMANCE -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="mindset">
+  <div class="section-badge" style="background:rgba(155,108,240,0.1);color:#9b6cf0;">Chapitre 05</div>
+  <h2>Mindset de Performance</h2>
+  <p class="section-intro">Le mindset est le systeme d'exploitation du trader. Une strategie parfaite avec un mauvais mindset produit des resultats mediocres. Un mindset solide transforme une strategie moyenne en machine a performer.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="probabilites 20 trades adherence resultat puzzle">
+      <div class="concept-header">
+        <span class="concept-name">Penser en Probabilites</span>
+        <span class="concept-abbr">PROBA</span>
+      </div>
+      <div class="concept-body">
+        Chaque trade est un evenement aleatoire dans une <strong>serie de 20+</strong>. Juger l'<strong>adherence au plan</strong>, pas le resultat individuel. Chaque trade est une piece du puzzle — une seule piece ne revele pas l'image.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Penser en termes de 20 prochains trades, pas du trade en cours</li>
+          <li><span class="rule-label key">Regle</span> Juger l'adherence au plan, jamais le resultat monetaire</li>
+          <li><span class="rule-label tip">Solution</span> Chaque trade = une piece du puzzle probabiliste</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="marche neutre doit rien comportement edge execution prediction">
+      <div class="concept-header">
+        <span class="concept-name">Le Marche est Neutre</span>
+        <span class="concept-abbr">NEUTRE</span>
+      </div>
+      <div class="concept-body">
+        Le marche <strong>ne doit rien</strong> a personne. Il n'est ni pour ni contre vous. Le seul element maitrisable est votre <strong>comportement</strong>. La formule gagnante : <strong>Edge + Execution > Prediction</strong>.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Le marche est neutre — il ne connait pas votre existence</li>
+          <li><span class="rule-label key">Regle</span> Seul comportement maitrisable : le votre</li>
+          <li><span class="rule-label tip">Solution</span> Edge + Execution systematique > toute prediction</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="responsabilite 100 honnetete accountability partenaire">
+      <div class="concept-header">
+        <span class="concept-name">Responsabilite 100%</span>
+        <span class="concept-abbr">100%</span>
+      </div>
+      <div class="concept-body">
+        Prendre la <strong>responsabilite totale</strong> de chaque resultat. L'honnetete avec soi-meme est le prerequis de toute progression. Un <strong>partenaire d'accountability</strong> externe empeche les angles morts de l'ego.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> 100% responsable de chaque trade, gagnant ou perdant</li>
+          <li><span class="rule-label key">Regle</span> Honnetete brutale avec soi-meme — pas d'excuses</li>
+          <li><span class="rule-label tip">Solution</span> Trouver un partenaire d'accountability pour revues hebdomadaires</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="mentalite hedge fund froid discipline professionnel decembre visualiser">
+      <div class="concept-header">
+        <span class="concept-name">Mentalite Hedge Fund</span>
+        <span class="concept-abbr">HF-MIND</span>
+      </div>
+      <div class="concept-body">
+        Trader avec la mentalite d'un <strong>professionnel institutionnel</strong> : froid, discipline, detache emotionnellement. Se visualiser en decembre, avec une annee complete de resultats — c'est cette vision qui guide chaque decision.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Froid, discipline, professionnel — chaque session</li>
+          <li><span class="rule-label key">Regle</span> Se visualiser en decembre : que dirai-je de ce trade ?</li>
+          <li><span class="rule-label tip">Solution</span> Agir comme si un auditeur regardait chaque decision</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="protection capital meilleurs perdent moins augmenter risque money management constant">
+      <div class="concept-header">
+        <span class="concept-name">Protection du Capital</span>
+        <span class="concept-abbr">CAPITAL</span>
+      </div>
+      <div class="concept-body">
+        Les meilleurs traders ne gagnent pas plus — ils <strong>perdent le moins</strong>. Jamais augmenter le risque apres un TP. Le <strong>money management doit rester constant</strong> quelle que soit la serie en cours.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Les meilleurs = ceux qui perdent le moins</li>
+          <li><span class="rule-label danger">Piege</span> Jamais augmenter le risque apres un TP</li>
+          <li><span class="rule-label tip">Solution</span> Money management constant, quoi qu'il arrive</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="aptitude mentale sport competition dormi dangereux">
+      <div class="concept-header">
+        <span class="concept-name">Aptitude Mentale</span>
+        <span class="concept-abbr">APT</span>
+      </div>
+      <div class="concept-body">
+        Le trading est un <strong>sport de competition mentale</strong>. Comme un athlete, l'etat physique affecte directement la performance. <strong>Mal dormi = pas trader.</strong> "Ces jours-la, tu es dangereux pour ton propre compte."
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Le trading est un sport — traiter le corps en consequence</li>
+          <li><span class="rule-label danger">Piege</span> Mal dormi, malade, stresse = ne PAS trader</li>
+          <li><span class="rule-label warning">Attention</span> "Ces jours-la tu es dangereux" — accepter et s'abstenir</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="perseverance abandonner ennuyeux repetition maitrise">
+      <div class="concept-header">
+        <span class="concept-name">La Perseverance</span>
+        <span class="concept-abbr">GRIND</span>
+      </div>
+      <div class="concept-body">
+        Refuser d'abandonner quand ca devient difficile. Le trading <strong>bien fait est ennuyeux</strong> — c'est la repetition methodique qui mene a la maitrise. L'excitation est l'ennemi du trader profitable.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Si c'est excitant, quelque chose ne va pas</li>
+          <li><span class="rule-label key">Regle</span> Repetition = maitrise. Pas de raccourci</li>
+          <li><span class="rule-label tip">Solution</span> Refuser d'abandonner — les resultats viennent apres la douleur</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 6. BIAIS COGNITIFS -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="biais">
+  <div class="section-badge" style="background:rgba(240,128,68,0.1);color:#f08044;">Chapitre 06</div>
+  <h2>Biais Cognitifs</h2>
+  <p class="section-intro">Le cerveau humain n'est pas concu pour le trading. Il utilise des raccourcis mentaux (heuristiques) qui deviennent des pieges dans un environnement probabiliste. Connaitre ses biais est le premier pas pour les neutraliser.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="biais confirmation filtrer information confirmantes ignorer contradictions">
+      <div class="concept-header">
+        <span class="concept-name">Biais de Confirmation</span>
+        <span class="concept-abbr">CONFIRM</span>
+      </div>
+      <div class="concept-body">
+        Le cerveau <strong>filtre les informations</strong> pour ne retenir que celles qui confirment la these deja etablie. Les signaux contraires sont ignores ou minimises. Ce biais est amplifie apres avoir pris position.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Piege</span> Chercher des confirmations apres avoir decide → vision tunnel</li>
+          <li><span class="rule-label tip">Solution</span> Chercher activement les raisons pour lesquelles le trade pourrait echouer</li>
+          <li><span class="rule-label tip">Solution</span> "Quel est le scenario contraire ?" avant chaque trade</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="aversion perte douleur 2.5x couper gagnants laisser courir perdants">
+      <div class="concept-header">
+        <span class="concept-name">Aversion a la Perte</span>
+        <span class="concept-abbr">LOSS-AVERS</span>
+      </div>
+      <div class="concept-body">
+        La douleur d'une perte est <strong>2.5x plus intense</strong> que le plaisir d'un gain equivalent. Consequence : on <strong>coupe les gagnants trop tot</strong> (pour securiser le plaisir) et on <strong>laisse courir les perdants</strong> (pour eviter la douleur).
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Piege</span> Couper les gagnants trop tot pour "prendre ses profits"</li>
+          <li><span class="rule-label danger">Piege</span> Laisser courir les perdants en esperant un retournement</li>
+          <li><span class="rule-label tip">Solution</span> SL et TP predetermines, executes mecaniquement</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="biais recence focus dernier trade ignorer ensemble performance">
+      <div class="concept-header">
+        <span class="concept-name">Biais de Recence</span>
+        <span class="concept-abbr">RECENCE</span>
+      </div>
+      <div class="concept-body">
+        Le cerveau accorde un <strong>poids disproportionne au dernier evenement</strong>. Un SL recent colore toute la session, meme apres 5 TP. Ce biais empeche de voir l'ensemble de la performance sur la serie.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Piege</span> Un seul SL efface le souvenir de 5 TP precedents</li>
+          <li><span class="rule-label tip">Solution</span> Revenir au journal : regarder les 20 derniers trades, pas le dernier</li>
+          <li><span class="rule-label tip">Solution</span> "Ce trade n'est qu'un parmi 1000" — perspective long terme</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="biais ancrage fixation prix entree objectif monetaire">
+      <div class="concept-header">
+        <span class="concept-name">Biais d'Ancrage</span>
+        <span class="concept-abbr">ANCRAGE</span>
+      </div>
+      <div class="concept-body">
+        Le cerveau se <strong>fixe sur un chiffre de reference</strong> (ancre) et juge tout par rapport a lui. En trading : le prix d'entree, un objectif monetaire quotidien, ou le high/low de la session. Ces ancres faussent le jugement.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Piege</span> Refuser de couper car "je suis a -50, je veux revenir a 0"</li>
+          <li><span class="rule-label danger">Piege</span> Objectif monetaire quotidien = ancre artificielle</li>
+          <li><span class="rule-label tip">Solution</span> Decider en fonction du chart, pas du P&L</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="illusion controle croire controler resultat execution risque plan">
+      <div class="concept-header">
+        <span class="concept-name">Illusion de Controle</span>
+        <span class="concept-abbr">CTRL</span>
+      </div>
+      <div class="concept-body">
+        Croire qu'on peut <strong>controler le resultat</strong> d'un trade est une illusion. On ne controle que 3 choses : l'<strong>execution</strong>, le <strong>risque</strong>, et le <strong>plan</strong>. Tout le reste appartient au marche.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Piege</span> Croire qu'une meilleure analyse = resultat garanti</li>
+          <li><span class="rule-label key">Regle</span> On controle : execution, risque, plan. C'est TOUT</li>
+          <li><span class="rule-label tip">Solution</span> Lacher le resultat, se concentrer sur le processus</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="biais surconfiance gains invincibilite journal relachement regles">
+      <div class="concept-header">
+        <span class="concept-name">Biais de Surconfiance</span>
+        <span class="concept-abbr">OVERCONF</span>
+      </div>
+      <div class="concept-body">
+        Apres une serie de gains, le cerveau active un <strong>sentiment d'invincibilite</strong>. Les symptomes : arret du journal, relachement des regles, augmentation du risque. C'est le moment le plus dangereux du cycle.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Piege</span> Serie gagnante → "Je suis imbattable" → grosse perte</li>
+          <li><span class="rule-label warning">Attention</span> Le moment ou tu te sens invincible = moment le plus dangereux</li>
+          <li><span class="rule-label tip">Solution</span> Apres 3 TP consecutifs : relire ses pires trades du journal</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="dissonance cognitive cerveau mentir resoudre probleme">
+      <div class="concept-header">
+        <span class="concept-name">Dissonance Cognitive</span>
+        <span class="concept-abbr">DISSONANCE</span>
+      </div>
+      <div class="concept-body">
+        Quand les actions contredisent les croyances, le cerveau <strong>prefere mentir</strong> (rationaliser) que resoudre le vrai probleme. "J'ai bouge mon SL parce que le marche allait revenir" — le cerveau cree une histoire coherente pour justifier l'erreur.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Piege</span> Rationaliser une erreur au lieu de l'admettre</li>
+          <li><span class="rule-label danger">Piege</span> "C'etait different cette fois" — la phrase la plus dangereuse</li>
+          <li><span class="rule-label tip">Solution</span> Le journal force la confrontation avec la realite</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 7. PSYCHOLOGIE PERTE & GAIN -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="perte-gain">
+  <div class="section-badge" style="background:rgba(56,201,176,0.1);color:#38c9b0;">Chapitre 07</div>
+  <h2>Psychologie Perte & Gain</h2>
+  <p class="section-intro">La relation a la perte et au gain definit le trader. Ceux qui maitrisent cette relation accedent a un niveau de liberte qui transforme leur trading. Redefinir la perte est un acte de liberation.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="redefinir perte cout operationnel echec setup SL reaction">
+      <div class="concept-header">
+        <span class="concept-name">Redefinir la Perte</span>
+        <span class="concept-abbr">REDEFINE</span>
+      </div>
+      <div class="concept-body">
+        La perte n'est pas un echec — c'est un <strong>cout operationnel</strong>, comme le loyer d'un commerce. Meme un setup A+ parfait peut toucher le SL. Ce n'est pas la perte qui compte, c'est la <strong>reaction a la perte</strong>.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Perte = cout operationnel, pas echec personnel</li>
+          <li><span class="rule-label key">Regle</span> Meme le meilleur setup peut etre un SL — c'est normal</li>
+          <li><span class="rule-label tip">Solution</span> Juger la qualite de l'execution, pas le resultat</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="tolerer accepter risque prison liberte exercice verbal series 20">
+      <div class="concept-header">
+        <span class="concept-name">Tolerer vs Accepter le Risque</span>
+        <span class="concept-abbr">ACCEPT-R</span>
+      </div>
+      <div class="concept-body">
+        <strong>Tolerer</strong> le risque = endurer la douleur en serrant les dents → prison mentale. <strong>Accepter</strong> le risque = integrer la possibilite de perte comme fait neutre → liberte totale. L'exercice verbal et la pensee en <strong>series de 20</strong> aident a faire cette transition.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Tolerer</span> "J'espere que ca va marcher" → tension, stress, tilt</li>
+          <li><span class="rule-label bullish">Accepter</span> "Je sais que ce trade peut etre un SL, et c'est OK" → liberte</li>
+          <li><span class="rule-label tip">Solution</span> Exercice verbal avant chaque trade + penser en series de 20</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="cycle gains pertes saisons cyclique drawdown souffrir refuser">
+      <div class="concept-header">
+        <span class="concept-name">Cycle Gains et Pertes</span>
+        <span class="concept-abbr">CYCLES</span>
+      </div>
+      <div class="concept-body">
+        La performance est <strong>cyclique comme les saisons</strong>. Il y a des periodes de gains et des periodes de drawdown. On souffre parce qu'on <strong>refuse les saisons de drawdown</strong>. Identifier sa "saison interieure" permet d'adapter son comportement.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Les drawdowns sont des saisons normales, pas des anomalies</li>
+          <li><span class="rule-label warning">Attention</span> Refuser le drawdown = amplifier la souffrance</li>
+          <li><span class="rule-label tip">Solution</span> Identifier sa saison interieure : expansion ou contraction ?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="dissocier valeur personnelle resultats correlation estime piege">
+      <div class="concept-header">
+        <span class="concept-name">Dissocier Valeur Personnelle des Resultats</span>
+        <span class="concept-abbr">DISSOCIER</span>
+      </div>
+      <div class="concept-body">
+        La <strong>correlation performance/estime de soi</strong> est le piege ultime. "Je gagne = je suis bon / Je perds = je suis nul." Cette equation detruit le trader car elle transforme chaque trade en jugement existentiel.
+        <ul class="concept-rules">
+          <li><span class="rule-label danger">Piege</span> Performance = valeur personnelle → chaque trade est un jugement</li>
+          <li><span class="rule-label key">Regle</span> Vous n'etes pas vos resultats de trading</li>
+          <li><span class="rule-label tip">Solution</span> Definir sa valeur par le processus, pas par le P&L</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="gerer grosse perte visualiser long terme mentalite pro rattraper">
+      <div class="concept-header">
+        <span class="concept-name">Gerer une Grosse Perte</span>
+        <span class="concept-abbr">BIG LOSS</span>
+      </div>
+      <div class="concept-body">
+        Apres une grosse perte, <strong>visualiser le long terme</strong> : dans 6 mois, 200 trades plus tard, cette perte sera un point sur la courbe. Adopter la <strong>mentalite professionnelle</strong> : c'est un evenement, pas une catastrophe. Regle absolue : <strong>jamais essayer de rattraper</strong>.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Visualiser la courbe de capital dans 6 mois → cette perte est un point</li>
+          <li><span class="rule-label danger">Piege</span> JAMAIS essayer de rattraper une grosse perte</li>
+          <li><span class="rule-label tip">Solution</span> Pause 24h minimum, puis revenir avec taille reduite</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 8. TECHNIQUES PRATIQUES -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="techniques">
+  <div class="section-badge" style="background:rgba(74,124,255,0.1);color:#4a7cff;">Chapitre 08</div>
+  <h2>Techniques Pratiques</h2>
+  <p class="section-intro">Des techniques concretes et applicables immediatement pour transformer la theorie en pratique quotidienne. Chaque technique est un outil a ajouter a votre arsenal mental.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="exercice pre-trade 5 etapes risque predefini tort profits accepter cliquer">
+      <div class="concept-header">
+        <span class="concept-name">Exercice Pre-Trade en 5 Etapes</span>
+        <span class="concept-abbr">5-STEPS</span>
+      </div>
+      <div class="concept-body">
+        Un protocole en 5 etapes a executer <strong>avant chaque trade</strong> pour s'assurer que la decision est rationnelle, pas emotionnelle.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Etape 1</span> Risque predefini : "Mon SL est a [X], je risque [Y]"</li>
+          <li><span class="rule-label key">Etape 2</span> Ou avoir tort : "Le trade est invalide si [condition]"</li>
+          <li><span class="rule-label key">Etape 3</span> Comment prendre les profits : "TP1 a [X], TP2 a [Y]"</li>
+          <li><span class="rule-label key">Etape 4</span> Accepter verbalement : "J'accepte de perdre [Y]"</li>
+          <li><span class="rule-label key">Etape 5</span> ENSUITE seulement, cliquer</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="coherence cardiaque 3 minutes observer noter pensees">
+      <div class="concept-header">
+        <span class="concept-name">Coherence Cardiaque</span>
+        <span class="concept-abbr">CC</span>
+      </div>
+      <div class="concept-body">
+        Technique de regulation du systeme nerveux autonome en <strong>3 temps</strong>. Simple, mesurable, et prouvee scientifiquement pour reduire le cortisol et augmenter la clarte mentale.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Avant</span> 3 minutes de respiration rythmee (5s inspire, 5s expire)</li>
+          <li><span class="rule-label key">Pendant</span> Observer les sensations sans juger, maintenir le rythme</li>
+          <li><span class="rule-label key">Apres</span> Noter les pensees qui sont apparues — elles revelent l'etat reel</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="pratique deliberee intentionnel element semaines thematiques travail talent">
+      <div class="concept-header">
+        <span class="concept-name">Pratique Deliberee</span>
+        <span class="concept-abbr">DELIB</span>
+      </div>
+      <div class="concept-body">
+        La pratique deliberee est <strong>intentionnelle</strong> : on travaille un <strong>element par element</strong>, pas tout en meme temps. Organiser en <strong>semaines thematiques</strong> (semaine 1 : entries, semaine 2 : gestion, etc.). Le travail delibere > le talent naturel.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Un seul element a la fois — pas tout en meme temps</li>
+          <li><span class="rule-label key">Regle</span> Semaines thematiques : focus sur un aspect specifique</li>
+          <li><span class="rule-label tip">Solution</span> Travail delibere > talent — la repetition consciente cree la maitrise</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="revision espacee lendemain 2 jours semaine mois entropie">
+      <div class="concept-header">
+        <span class="concept-name">Revision Espacee</span>
+        <span class="concept-abbr">SRS</span>
+      </div>
+      <div class="concept-body">
+        Le cerveau oublie — c'est biologique. La <strong>revision espacee</strong> lutte contre l'entropie des apprentissages : revoir a intervalles croissants pour ancrer les lecons dans la memoire long terme.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">J+1</span> Relire le journal du jour precedent</li>
+          <li><span class="rule-label key">J+2</span> Revoir les lecons de l'avant-veille</li>
+          <li><span class="rule-label key">J+7</span> Synthese hebdomadaire des patterns identifies</li>
+          <li><span class="rule-label key">J+30</span> Revision mensuelle : ou en suis-je vs mes objectifs ?</li>
+          <li><span class="rule-label tip">Solution</span> Lutter activement contre l'entropie des connaissances</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="yerkes-dodson stress ennui blocage performance montant modere reel">
+      <div class="concept-header">
+        <span class="concept-name">Loi Yerkes-Dodson</span>
+        <span class="concept-abbr">Y-D</span>
+      </div>
+      <div class="concept-body">
+        La performance suit une <strong>courbe en U inverse</strong> par rapport au stress. Trop peu de stress = ennui, desengagement. Trop de stress = blocage, paralysie. Le <strong>juste milieu</strong> = performance optimale. En trading : un montant <strong>modere en reel</strong> active le bon niveau de stress.
+        <ul class="concept-rules">
+          <li><span class="rule-label warning">Trop peu</span> Ennui → prise de risques inutiles pour "sentir quelque chose"</li>
+          <li><span class="rule-label danger">Trop</span> Blocage → paralysie, incapacite a executer</li>
+          <li><span class="rule-label bullish">Optimal</span> Juste milieu : alerte, concentre, mais pas stresse</li>
+          <li><span class="rule-label tip">Solution</span> Montant modere en reel = le bon niveau d'activation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="guerison trauma trading revivre amplifier analyser declarations correctives casser pattern repeter">
+      <div class="concept-header">
+        <span class="concept-name">Guerison Trauma Trading</span>
+        <span class="concept-abbr">TRAUMA</span>
+      </div>
+      <div class="concept-body">
+        Les experiences traumatisantes en trading (grosse perte, liquidation) laissent des <strong>empreintes emotionnelles</strong> qui biaisent les decisions futures. Un processus en 6 etapes pour les traiter.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Etape 1</span> Revivre : decrire l'evenement factuellement par ecrit</li>
+          <li><span class="rule-label key">Etape 2</span> Amplifier : identifier et nommer chaque emotion ressentie</li>
+          <li><span class="rule-label key">Etape 3</span> Analyser : quelles croyances se sont formees ce jour-la ?</li>
+          <li><span class="rule-label key">Etape 4</span> Declarations correctives : remplacer la croyance toxique</li>
+          <li><span class="rule-label key">Etape 5</span> Casser le pattern : changer la reponse comportementale</li>
+          <li><span class="rule-label key">Etape 6</span> Repeter : revisiter jusqu'a neutralisation emotionnelle</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="phrase recentrage respire observe execute plan detection tilt">
+      <div class="concept-header">
+        <span class="concept-name">Phrase de Recentrage</span>
+        <span class="concept-abbr">MANTRA</span>
+      </div>
+      <div class="concept-body">
+        Une phrase courte et puissante a repeter des la <strong>detection du tilt</strong>. Elle court-circuite la spirale emotionnelle et ramene au processus. A personnaliser, mais le principe reste : <strong>observer, respirer, executer</strong>.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Phrase</span> "Respire, observe, execute le plan"</li>
+          <li><span class="rule-label key">Regle</span> Utiliser des la premiere detection du tilt</li>
+          <li><span class="rule-label tip">Solution</span> L'ecrire sur un post-it visible pendant les sessions</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="zone profile etat optimal facteurs favorisants routine declencheurs sortie">
+      <div class="concept-header">
+        <span class="concept-name">Zone Profile</span>
+        <span class="concept-abbr">ZONE</span>
+      </div>
+      <div class="concept-body">
+        Decrire precisement son <strong>etat optimal de trading</strong> (la "zone") : comment on se sent, quels facteurs y menent, quelle routine l'active, et quels declencheurs en font sortir. Connaitre sa zone permet d'y revenir consciemment.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Definir</span> Decrire l'etat physique, mental, emotionnel quand on est "dans la zone"</li>
+          <li><span class="rule-label key">Facteurs</span> Quels elements favorisent cet etat ? (sommeil, routine, environnement)</li>
+          <li><span class="rule-label key">Routine</span> Quelle sequence d'actions active la zone ?</li>
+          <li><span class="rule-label warning">Sortie</span> Quels declencheurs font sortir de la zone ? Les identifier et les prevenir</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="cartographie big five discipline peur avidite confiance tilt schemas racine corriger">
+      <div class="concept-header">
+        <span class="concept-name">Cartographie Big Five</span>
+        <span class="concept-abbr">BIG-5</span>
+      </div>
+      <div class="concept-body">
+        Cartographier ses 5 dimensions psychologiques en trading : <strong>discipline, peur, avidite, confiance, tilt</strong>. Pour chaque dimension, identifier les schemas recurrents, trouver la racine, et construire un plan correctif.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Discipline</span> Cartographier les moments de rupture et les declencheurs</li>
+          <li><span class="rule-label key">Peur</span> Identifier les peurs specifiques : perte, ratage, jugement</li>
+          <li><span class="rule-label key">Avidite</span> Quand et comment l'avidite se manifeste-t-elle ?</li>
+          <li><span class="rule-label key">Confiance</span> Trop / pas assez — trouver l'equilibre</li>
+          <li><span class="rule-label key">Tilt</span> Cartographier le scenario type et les signes avant-coureurs</li>
+          <li><span class="rule-label tip">Solution</span> Trouver la racine de chaque schema et corriger a la source</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="echos anciens schemas reviennent normal reconnaitre corriger effort">
+      <div class="concept-header">
+        <span class="concept-name">Les Echos</span>
+        <span class="concept-abbr">ECHOS</span>
+      </div>
+      <div class="concept-body">
+        Les <strong>anciens schemas</strong> ne disparaissent jamais totalement. Ils reviennent sous forme d'<strong>echos</strong> — des versions attenuees des anciens patterns destructeurs. C'est <strong>normal</strong>. La difference est qu'on les reconnait plus vite et on les corrige avec moins d'effort a chaque fois.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Les echos sont normaux — les anciens patterns reviennent periodiquement</li>
+          <li><span class="rule-label key">Regle</span> Chaque fois, la reconnaissance est plus rapide</li>
+          <li><span class="rule-label tip">Solution</span> Reconnaitre, corriger, avancer — avec de moins en moins d'effort</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<script src="../nav.js"></script>
+
+<script>
+function goTo(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+// Scroll spy
+window.addEventListener('scroll', () => {
+  const sections = document.querySelectorAll('.section');
+  const navItems = document.querySelectorAll('.nav-item');
+  let current = 0;
+  sections.forEach((s, i) => {
+    if (window.scrollY >= s.offsetTop - 100) current = i;
+  });
+  navItems.forEach((n, i) => {
+    n.classList.toggle('active', i === current);
+  });
+});
+
+// Search
+function filterConcepts() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.concept').forEach(c => {
+    const text = (c.textContent + ' ' + (c.dataset.search || '')).toLowerCase();
+    c.style.display = text.includes(q) ? '' : 'none';
+  });
+}
+</script>
+
+</body>
+</html>
