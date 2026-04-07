@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="../auth.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiches Avancees &mdash; Concepts ICT &mdash; Algorithmic Academy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #07080b; --s1: #0e1116; --s2: #13171e; --s3: #191e27;
+    --bd: #1c2230; --bd2: #232c3a;
+    --gold: #c8a228; --gold2: #e5bc3c;
+    --blue: #3d82e0; --green: #2ec974; --red: #e05050;
+    --orange: #e08830; --purple: #9b72e0; --cyan: #28bfcf;
+    --text: #cdd5e2; --t2: #8594a8; --t3: #4a5668;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; }
+
+  .banner { background: var(--s1); border-bottom: 1px solid var(--bd2); padding: 36px 56px 32px; position: relative; }
+  .banner::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg, transparent 0%, var(--cyan) 30%, var(--blue) 50%, var(--cyan) 70%, transparent 100%); }
+  .banner-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 3px; color: var(--cyan); text-transform: uppercase; margin-bottom: 10px; }
+  .banner h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: #fff; line-height: 1.1; }
+  .banner h1 em { color: var(--cyan); font-style: normal; }
+  .banner-sub { margin-top: 10px; color: var(--t2); font-size: 13px; max-width: 700px; line-height: 1.6; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 40px; }
+
+  .section { background: var(--s1); border: 1px solid var(--bd); border-radius: 10px; padding: 28px 32px; margin-bottom: 24px; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section-title .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .section-ref { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 1px; color: var(--t2); margin-bottom: 14px; text-transform: uppercase; }
+
+  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  @media(max-width:800px) { .concept-grid { grid-template-columns: 1fr; } .container { padding: 16px; } .banner { padding: 24px; } }
+
+  .concept-card { background: var(--s2); border: 1px solid var(--bd); border-radius: 8px; padding: 18px 20px; }
+  .concept-card h3 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .concept-card p { color: var(--t2); line-height: 1.7; font-size: 12px; }
+  .concept-card.full { grid-column: 1 / -1; }
+
+  .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 9px; padding: 2px 8px; border-radius: 4px; margin-right: 4px; margin-bottom: 4px; }
+  .tag-gold { background: rgba(200,162,40,0.12); color: var(--gold); }
+  .tag-blue { background: rgba(61,130,224,0.12); color: var(--blue); }
+  .tag-green { background: rgba(46,201,116,0.10); color: var(--green); }
+  .tag-red { background: rgba(224,80,80,0.10); color: var(--red); }
+  .tag-orange { background: rgba(224,136,48,0.10); color: var(--orange); }
+  .tag-purple { background: rgba(155,114,224,0.10); color: var(--purple); }
+  .tag-cyan { background: rgba(40,191,207,0.10); color: var(--cyan); }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 12px; }
+  th { text-align: left; padding: 8px 12px; background: var(--s2); color: var(--gold); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1px; border-bottom: 1px solid var(--bd); }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--bd); color: var(--t2); }
+  tr:hover td { color: var(--text); background: rgba(255,255,255,0.02); }
+
+  .list-styled { padding-left: 20px; margin-top: 8px; }
+  .list-styled li { color: var(--t2); line-height: 1.8; font-size: 12px; }
+  .list-styled li strong { color: var(--text); }
+  .highlight { color: var(--gold2); font-weight: 500; }
+
+  .sub-section { margin-top: 16px; padding: 16px 20px; background: var(--s2); border: 1px solid var(--bd); border-radius: 8px; }
+  .sub-section h4 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .sub-section p, .sub-section > ul { color: var(--t2); font-size: 12px; line-height: 1.7; }
+  .sub-num { font-family: 'IBM Plex Mono', monospace; font-size: 10px; background: rgba(200,162,40,0.15); color: var(--gold); padding: 2px 8px; border-radius: 4px; }
+
+  .checklist { padding-left: 20px; margin-top: 8px; }
+  .checklist li { color: var(--t2); line-height: 1.8; font-size: 12px; list-style: none; position: relative; padding-left: 4px; }
+  .checklist li::before { content: '\2713'; color: var(--green); position: absolute; left: -16px; }
+
+  .callout { background: var(--s3); border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0; padding: 14px 18px; margin-top: 12px; margin-bottom: 12px; }
+  .callout p { color: var(--t2); font-size: 12px; line-height: 1.7; font-style: italic; }
+  .callout strong { color: var(--gold2); font-style: normal; }
+
+  .setup-box { background: var(--s3); border: 1px solid var(--bd2); border-radius: 8px; padding: 18px 20px; margin-top: 12px; }
+  .setup-box h4 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .setup-box p { color: var(--t2); font-size: 12px; line-height: 1.7; }
+
+  h3.sub-heading { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: #fff; margin-top: 20px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--bd); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+  @media(max-width:800px) { .two-col { grid-template-columns: 1fr; } }
+
+  .key-point { color: var(--cyan); font-weight: 500; }
+  .key-green { color: var(--green); font-weight: 500; }
+  .key-red { color: var(--red); font-weight: 500; }
+  .key-orange { color: var(--orange); font-weight: 500; }
+  .key-purple { color: var(--purple); font-weight: 500; }
+  .key-gold { color: var(--gold2); font-weight: 500; }
+
+  .toc { background: var(--s2); border: 1px solid var(--bd); border-radius: 8px; padding: 20px 24px; margin-bottom: 24px; }
+  .toc h3 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+  .toc-list { list-style: none; padding: 0; }
+  .toc-list li { padding: 6px 0; border-bottom: 1px solid var(--bd); }
+  .toc-list li:last-child { border-bottom: none; }
+  .toc-list a { color: var(--t2); text-decoration: none; font-size: 12px; transition: color 0.15s; display: flex; align-items: center; gap: 8px; }
+  .toc-list a:hover { color: var(--cyan); }
+  .toc-list .toc-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .toc-num { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--t3); min-width: 20px; }
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+<link rel="stylesheet" href="../readability.css">
+
+<div class="banner">
+  <div class="banner-eyebrow">Module 18 &mdash; Fiches Avancees</div>
+  <h1>Fiches Avancees &mdash; <em>Concepts ICT</em></h1>
+  <p class="banner-sub">
+    Fiches de reference avancees couvrant les hauts/bas proteges, le framework PD Arrays, la methode 20 jours, l'Opening Range Theory, la liquidite differee, le Stophunt Equilibrium, les PD Arrays imbriques et les cles pour des configurations infinies. Contenu complet pour une maitrise algorithmique du prix.
+  </p>
+</div>
+
+<div class="container">
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h3>Sommaire</h3>
+    <ul class="toc-list">
+      <li><a href="#s1"><span class="toc-num">01</span><span class="toc-dot" style="background:var(--green)"></span> Hauts et Bas Proteges</a></li>
+      <li><a href="#s2"><span class="toc-num">02</span><span class="toc-dot" style="background:var(--purple)"></span> Framework &mdash; PD Arrays</a></li>
+      <li><a href="#s3"><span class="toc-num">03</span><span class="toc-dot" style="background:var(--blue)"></span> PD Array Revele &mdash; Methode 20 Jours</a></li>
+      <li><a href="#s4"><span class="toc-num">04</span><span class="toc-dot" style="background:var(--orange)"></span> Open Range Theory (OPR)</a></li>
+      <li><a href="#s5"><span class="toc-num">05</span><span class="toc-dot" style="background:var(--red)"></span> Liquidite Differee</a></li>
+      <li><a href="#s6"><span class="toc-num">06</span><span class="toc-dot" style="background:var(--cyan)"></span> Stophunt Equilibrium</a></li>
+      <li><a href="#s7"><span class="toc-num">07</span><span class="toc-dot" style="background:var(--gold)"></span> PD Arrays Imbriques &amp; IFVG</a></li>
+      <li><a href="#s8"><span class="toc-num">08</span><span class="toc-dot" style="background:var(--green)"></span> Les Cles pour des Configurations Infinies</a></li>
+    </ul>
+  </div>
+
+
+  <!-- ==================== SECTION 1: HAUTS ET BAS PROTEGES ==================== -->
+  <div class="section" id="s1">
+    <div class="section-title"><span class="dot" style="background:var(--green)"></span> Hauts et Bas Proteges</div>
+    <div class="section-ref">Ref. Module 1-2 &mdash; Algorithmic Academy</div>
+
+    <h3 class="sub-heading">Definitions cles</h3>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3 style="color:var(--green)">Haut Protege (Protected High)</h3>
+        <p>Un sommet de swing (swing high) qui a <strong>peu de chances d'etre revisite</strong> avant que le prix ne continue plus bas. Il est confirme par une correlation SMT ou une chasse de liquidite du haut de session, suivie d'un deplacement vers le bas.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--red)">Bas Protege (Protected Low)</h3>
+        <p>Un creux de swing (swing low) qui a <strong>peu de chances d'etre revisite</strong> avant que le prix ne continue plus haut. Il est confirme par une chasse du plus bas de session ou un SMT, avec un second point d'attraction de liquidite situe au-dessus.</p>
+      </div>
+    </div>
+
+    <h3 class="sub-heading">Importance et signification</h3>
+    <p style="color:var(--t2);font-size:12px;line-height:1.7;margin-bottom:8px;">Les hauts et bas proteges sont cruciaux pour :</p>
+    <ul class="list-styled">
+      <li>Identifier la <strong>dealing range correcte</strong> dans laquelle le prix opere actuellement</li>
+      <li>Identifier correctement la <strong>prime (premium)</strong> pour les ventes et la <strong>decote (discount)</strong> pour les achats</li>
+      <li>Determiner si le prix se dirigera vers le haut ou le bas de la dealing range</li>
+      <li>Etablir la bonne <strong>orientation directionnelle</strong> et comprendre le flux de liquidite</li>
+    </ul>
+
+    <h3 class="sub-heading">Criteres d'identification</h3>
+    <div class="two-col">
+      <div class="sub-section">
+        <h4><span class="sub-num">A</span> Identification d'un Haut Protege</h4>
+        <p>Rechercher un ou deux elements cles du cote gauche du graphique :</p>
+        <ul class="list-styled">
+          <li>Une <strong>correlation SMT</strong> (Smart Money Tool), par exemple NASDAQ avec ES</li>
+          <li>Une <strong>chasse de liquidite du haut de session</strong> (session high sweep) : plus haut du jour precedent, plus haut de Londres ou zone de liquidite acheteuse importante</li>
+          <li>Ces elements doivent etre suivis par un <strong>mouvement de deplacement vers le bas</strong> (displacement lower)</li>
+          <li>Le bas de la dealing range doit <strong>echouer</strong> a atteindre un deuxieme point d'attraction de liquidite (plus bas de session, ouverture de minuit, ouverture de la nouvelle semaine, ou nouveau gap d'ouverture)</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <h4><span class="sub-num">B</span> Identification d'un Bas Protege</h4>
+        <p>Rechercher :</p>
+        <ul class="list-styled">
+          <li>Une <strong>chasse du plus bas de session</strong> ou un SMT (divergence entre deux instruments correles)</li>
+          <li>Un <strong>second point d'attraction de liquidite</strong> situe au-dessus du haut de la dealing range</li>
+          <li>Une confirmation que ce bas doit tenir, basee sur les <strong>signatures de retournement</strong> (reversal signatures)</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="sub-heading">Modele de trading &mdash; Macro Power of Three</h3>
+    <div class="two-col">
+      <div class="setup-box" style="border-left:3px solid var(--red);">
+        <h4 style="color:var(--red)">Setup Vendeur (Short)</h4>
+        <ul class="list-styled">
+          <li>Identifier un <strong>haut protege</strong> et un <strong>bas artificiellement cree</strong> (engineered low)</li>
+          <li>Attendre une chasse de liquidite dans la <strong>zone premium</strong> de la dealing range pendant une fenetre macro (ex. 9h50-10h10, ou 10h50-11h10)</li>
+          <li>Confirmer avec une <strong>cloture sous l'inversion</strong> (bearish FVG ou BISI)</li>
+          <li>Placer le stop-loss au-dessus du swing high situe au-dessus de l'inversion</li>
+          <li>Cibler le <strong>bassin de liquidite vendeuse</strong> artificiel</li>
+        </ul>
+      </div>
+      <div class="setup-box" style="border-left:3px solid var(--green);">
+        <h4 style="color:var(--green)">Setup Acheteur (Long)</h4>
+        <ul class="list-styled">
+          <li>Identifier un <strong>bas protege</strong> et un <strong>haut artificiel</strong> (engineered high)</li>
+          <li>Attendre une chasse de liquidite en <strong>zone discount</strong> pendant une fenetre macro</li>
+          <li>Confirmer avec une <strong>cloture au-dessus de l'inversion</strong> (bullish FVG ou SIBBY)</li>
+          <li>Placer le stop-loss en dessous du swing low sous l'inversion</li>
+          <li>Cibler le <strong>bassin de liquidite acheteuse</strong> artificiel et les autres points d'attraction secondaires</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="sub-heading">Etudes de cas</h3>
+    <div class="sub-section">
+      <h4><span class="sub-num">1</span> Bas protege (macro 4h50)</h4>
+      <ul class="list-styled">
+        <li>SMT identifie comme signature de retournement</li>
+        <li>Le haut de la dealing range s'arrete avant le haut asiatique (second point d'attraction)</li>
+        <li>Entree sur cloture au-dessus de l'inversion apres une chasse sous l'ouverture macro</li>
+        <li>Livraison jusqu'au haut de la dealing range et au haut asiatique</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h4><span class="sub-num">2</span> Haut protege</h4>
+      <ul class="list-styled">
+        <li>Le plus haut du jour precedent est chasse, formant un V clair (point de retournement)</li>
+        <li>Le bas de la dealing range s'arrete avant le plus bas de la session AM, l'ouverture de minuit et le plus bas de Londres (plusieurs points d'attraction)</li>
+        <li>Entree sur cloture sous le BISI apres une chasse en zone premium</li>
+        <li>Livraison jusqu'a tous les niveaux cibles</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h4><span class="sub-num">3</span> Haut protege (macro 12h50)</h4>
+      <ul class="list-styled">
+        <li>SMT identifie sur le haut de range</li>
+        <li>Deux points d'attraction : le plus bas du lunch et le bas de la dealing range</li>
+        <li>Entree a 50 % de la dealing range apres cloture sous le BISI</li>
+        <li>Livraison vers le lunch low et le range low</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h4><span class="sub-num">4</span> Haut protege (macro 9h50)</h4>
+      <ul class="list-styled">
+        <li>SMT maintenu tout au long de la fenetre macro</li>
+        <li>Le bas de la dealing range s'arrete avant le data low, le London low et le Asia low (quatre aimants de prix)</li>
+        <li>Entree sur cloture sous le BISI</li>
+        <li>Livraison a travers tous les niveaux cibles</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h4><span class="sub-num">5</span> Haut protege</h4>
+      <ul class="list-styled">
+        <li>SMT tres net observe</li>
+        <li>Le bas de la dealing range s'arrete avant le plus bas du jour precedent</li>
+        <li>Entree sur cloture sous le BISI apres chasse en premium</li>
+        <li>Livraison vers le pool de liquidite vendeuse artificiel</li>
+      </ul>
+    </div>
+
+    <h3 class="sub-heading">Unites de temps et principes cles</h3>
+    <div class="two-col">
+      <div class="sub-section">
+        <h4><span class="sub-num">TF</span> Timeframes</h4>
+        <ul class="list-styled">
+          <li>Timeframe principal d'entree : <strong>graphique 1 minute</strong></li>
+          <li>Utilisation occasionnelle des 2 ou 3 minutes quand aucun setup clair n'apparait sur 1m</li>
+          <li>Un contexte sur timeframe superieur est toujours necessaire</li>
+          <li>Le modele est applicable sur les <strong>sessions de Londres et de New York</strong></li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <h4><span class="sub-num">CLE</span> Principes fondamentaux</h4>
+        <ul class="list-styled">
+          <li>La <strong>patience</strong> est la competence la plus importante</li>
+          <li>Se concentrer sur l'alignement du <strong>temps et du prix</strong></li>
+          <li>Eviter de trader pendant les periodes intermediaires sans setup clair</li>
+          <li>Ne pas chercher un taux de reussite de 100 % : viser des setups de haute qualite</li>
+          <li>Eviter le trading emotionnel et le FOMO</li>
+          <li>Attendre des hauts et bas proteges clairs, avec un flux de liquidite identifie</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== SECTION 2: ICT FRAMEWORK ==================== -->
+  <div class="section" id="s2">
+    <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Framework &mdash; PD Arrays</div>
+    <div class="section-ref">Ref. Module 4 &mdash; Algorithmic Academy</div>
+
+    <h3 class="sub-heading">Premium &amp; Discount Arrays &mdash; Hierarchie</h3>
+    <div class="two-col">
+      <div class="setup-box" style="border-left:3px solid var(--red);">
+        <h4 style="color:var(--red)">Zone Premium (au-dessus du 50 %) &mdash; Contexte vendeur</h4>
+        <ul class="list-styled">
+          <li><strong>Old High</strong></li>
+          <li>Bearish Rejection Block</li>
+          <li>Bearish Order Block</li>
+          <li>Bearish FVG</li>
+          <li>Bearish Liquidity Void</li>
+          <li>Bearish Breaker</li>
+          <li>Mitigation Block</li>
+        </ul>
+      </div>
+      <div class="setup-box" style="border-left:3px solid var(--green);">
+        <h4 style="color:var(--green)">Zone Discount (en dessous du 50 %) &mdash; Contexte acheteur</h4>
+        <ul class="list-styled">
+          <li><strong>Old Low</strong></li>
+          <li>Bullish Rejection Block</li>
+          <li>Bullish Order Block</li>
+          <li>Bullish FVG</li>
+          <li>Bullish Liquidity Void</li>
+          <li>Bullish Breaker</li>
+          <li>Mitigation Block</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout">
+      <p>Ces tableaux servent a <strong>classer les points d'interet institutionnels</strong> selon la zone de prix : premium pour les ventes, discount pour les achats.</p>
+    </div>
+
+    <h3 class="sub-heading">IPDA &mdash; Cycle de Livraison 24 Heures</h3>
+    <p style="color:var(--t2);font-size:12px;line-height:1.7;margin-bottom:12px;">Le cycle de 24h du marche represente la structure du temps a laquelle l'algorithme livre la liquidite :</p>
+    <table>
+      <thead>
+        <tr><th>Phase</th><th>Horaire (NY)</th><th>Role</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Midnight Open</strong></td><td>00:00</td><td>Point d'ancrage de la journee, reference de juste valeur. Le prix se reequilibre souvent dessus.</td></tr>
+        <tr><td><strong>Asian Range</strong></td><td>20:00 &ndash; 02:00</td><td>Accumulation, range serre pour construire la liquidite. Londres vient souvent raider les extremes asiatiques.</td></tr>
+        <tr><td><strong>London Open</strong></td><td>02:00 &ndash; 05:00</td><td>Phase de manipulation. Raid des highs/lows asiatiques. Determine la direction du jour apres le stop raid.</td></tr>
+        <tr><td><strong>London Lunch</strong></td><td>05:00 &ndash; 07:00</td><td>Volume faible, consolidation. Smart Money se repose avant New York.</td></tr>
+        <tr><td><strong>New York Open</strong></td><td>08:00 &ndash; 11:00</td><td>Zone cle de livraison. Donnees economiques, ouverture des indices US. Forme souvent le haut ou bas du jour (70-80 %).</td></tr>
+        <tr><td><strong>New York Lunch</strong></td><td>11:30 &ndash; 13:00</td><td>Volume diminue, reequilibrage possible vers le FVG ou l'open du matin.</td></tr>
+        <tr><td><strong>PM Session / Judas Swing</strong></td><td>13:00 &ndash; 15:00</td><td>Deuxieme fenetre de livraison. Piege final du jour, opposee au mouvement NY AM.</td></tr>
+        <tr><td><strong>End of Day</strong></td><td>16:00 &ndash; 17:00</td><td>Cloture de cycle, retour vers l'open / fair value. Sert de repere pour le cycle suivant.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub-heading">Tableau Periodique des PD Arrays &mdash; 7 familles</h3>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3 style="color:var(--red)">1. Liquidity Arrays (carburant)</h3>
+        <p>Old/Equal highs &amp; lows, session highs/lows, buy/sell stops.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--blue)">2. Inefficiency Arrays (reequilibrage)</h3>
+        <p>FVG, Liquidity Voids, Volume Imbalance, Breakaway Gaps.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--purple)">3. Order Flow Arrays (empreinte institutionnelle)</h3>
+        <p>Order Blocks, Breakers, Mitigation Blocks, Reversal Blocks.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--green)">4. Range Arrays (zones d'equilibre)</h3>
+        <p>Premium/Discount, BPR, Equilibrium (mean threshold).</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--orange)">5. Time Arrays (timing de livraison)</h3>
+        <p>Daily/weekly opens, session opens, killzones (02-05, 08:30-11, 13-15).</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--cyan)">6. Displacement Arrays (confirmation de direction)</h3>
+        <p>MSS, BOS, bougie impulsive forte, Judas swing.</p>
+      </div>
+      <div class="concept-card full">
+        <h3 style="color:var(--gold)">7. Higher-Timeframe Arrays</h3>
+        <p>Ancres mensuelles/trimestrielles, cycles saisonniers, Order Blocks en cascade. Chaque Array agit comme une adresse dans le langage de l'algorithme &mdash; il determine <strong>ou</strong> et <strong>quand</strong> le prix doit etre delivre.</p>
+      </div>
+    </div>
+
+    <h3 class="sub-heading">Logique Fondamentale &mdash; Temps &amp; Prix</h3>
+    <div class="callout">
+      <p>Negocier pendant ou apres la manipulation. Utiliser : <strong>Pools de liquidite</strong> (type de manipulation), <strong>Niveaux cles</strong> (ou elle se produit), <strong>Temps</strong> (quand elle se produit et pour filtrer les faux mouvements).</p>
+      <p style="margin-top:8px;"><strong>Le temps filtre, le niveau localise, la liquidite confirme.</strong></p>
+    </div>
+
+    <h3 class="sub-heading">Power of Three (PO3) &mdash; Accumulation / Manipulation / Distribution</h3>
+    <div class="sub-section">
+      <h4><span class="sub-num">ACC</span> Accumulation</h4>
+      <p>Range serre, construction de liquidite. Typiquement session asiatique ou lundi/mardi.</p>
+    </div>
+    <div class="sub-section">
+      <h4><span class="sub-num">MAN</span> Manipulation</h4>
+      <p>Faux breakout, stop raid (London session). Cree l'illusion d'une direction &mdash; les traders sont pieges.</p>
+    </div>
+    <div class="sub-section">
+      <h4><span class="sub-num">DIS</span> Distribution</h4>
+      <p>Mouvement reel (New York session). Livraison de prix vers un PD Array (OB, FVG, High/Low...).</p>
+    </div>
+
+    <h3 class="sub-heading">Applications temporelles du PO3</h3>
+    <table>
+      <thead>
+        <tr><th>Echelle</th><th>Accumulation</th><th>Manipulation</th><th>Distribution</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Intraday</strong></td><td>Asie</td><td>Londres</td><td>New York</td></tr>
+        <tr><td><strong>Weekly</strong></td><td>Lundi-Mardi</td><td>Mercredi</td><td>Jeudi-Vendredi</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub-heading">Modeles d'entree</h3>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3 style="color:var(--blue)">FVG</h3>
+        <p>Rebalance apres impulsion. Le prix revient combler le gap avant de continuer.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--orange)">Breaker Block (BRK)</h3>
+        <p>Ancienne structure brisee qui agit maintenant comme support/resistance.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--purple)">Order Block (OB)</h3>
+        <p>Empreinte institutionnelle &mdash; derniere bougie avant un mouvement impulsif.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--green)">Balanced Price Range (BPR)</h3>
+        <p>Zone d'equilibration ou deux FVG opposees se superposent.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--red)">Market Structure Shift (MSS)</h3>
+        <p>Changement de structure confirme par un deplacement impulsif.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--cyan)">Turtle Soup (FU)</h3>
+        <p>Fake breakout de highs/lows &mdash; prise de liquidite avant retournement.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== SECTION 3: PD ARRAY REVELE ==================== -->
+  <div class="section" id="s3">
+    <div class="section-title"><span class="dot" style="background:var(--blue)"></span> PD Array Revele &mdash; Methode 20 Jours</div>
+    <div class="section-ref">Ref. Module 4 &mdash; Algorithmic Academy</div>
+
+    <h3 class="sub-heading">Concept general</h3>
+    <p style="color:var(--t2);font-size:12px;line-height:1.7;">Approche reglee basee sur le temps et le prix, centree sur des <strong>plages glissantes de 20 jours</strong> (ou 40-60 jours pour les marches paraboliques comme l'or). La notation premium/discount (au-dessus / en-dessous du midpoint) et les <strong>quadrants de chandeliers</strong> (25 %, 50 %, 75 %) permettent de reperer les zones de reaction probables, en confluence avec les PD Arrays : Fair Value Gaps, Order Blocks, Suspension Blocks.</p>
+
+    <h3 class="sub-heading">Lecture inter-marches (DXY et indices)</h3>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3 style="color:var(--green)">DXY en baisse = Risk-On</h3>
+        <p>NASDAQ haussier. Les reactions du DXY dans ses anciens desequilibres guident les mouvements probables des indices.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--red)">DXY en hausse = Risk-Off</h3>
+        <p>NASDAQ baissier. Exemple : rupture d'un ancien plus bas DXY implique probabilite elevee de retour sur les sommets du NASDAQ.</p>
+      </div>
+    </div>
+
+    <h3 class="sub-heading">Methode de Grading &mdash; 20-Day Look-back</h3>
+    <div class="sub-section">
+      <h4><span class="sub-num">ETAPES</span> Application concrete</h4>
+      <ul class="checklist">
+        <li>Compter <strong>20 jours en arriere</strong> a partir de la cloture actuelle</li>
+        <li>Tracer le plus haut et le plus bas de la plage = <strong>range principal</strong></li>
+        <li>Diviser a <strong>50 % (midpoint)</strong> : au-dessus = premium zone, en dessous = discount zone</li>
+        <li>Se concentrer sur la zone <strong>25 % a 75 %</strong> (le coeur du range)</li>
+        <li>Reporter ces niveaux sur les unites inferieures pour anticiper les setups</li>
+      </ul>
+    </div>
+
+    <h3 class="sub-heading">Vision algorithmique</h3>
+    <ul class="list-styled">
+      <li>Chaque jour (O/H/L/C) forme un <strong>"data array"</strong></li>
+      <li>L'algorithme de prix se refere en permanence a ces arrays sur 20 jours</li>
+      <li>Il "note" les hauts/bas et oriente la prochaine livraison du prix selon ces reperes</li>
+      <li>Ce comportement peut etre modelise et anticipe par le trader</li>
+    </ul>
+
+    <h3 class="sub-heading">Lecture des chandeliers &mdash; Quadrants</h3>
+    <table>
+      <thead>
+        <tr><th>Zone</th><th>Sens</th><th>Lecture</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>0-25 %</strong></td><td>Discount profond</td><td>Zone d'achat institutionnelle potentielle</td></tr>
+        <tr><td><strong>25-50 %</strong></td><td>Discount</td><td>Base de soutien</td></tr>
+        <tr><td><strong>50-75 %</strong></td><td>Premium</td><td>Zone de prise de profits</td></tr>
+        <tr><td><strong>75-100 %</strong></td><td>Premium extreme</td><td>Rejet probable</td></tr>
+      </tbody>
+    </table>
+    <p style="color:var(--t2);font-size:12px;line-height:1.7;margin-top:10px;">Les quadrants (25 %, 50 %, 75 %) definissent les zones. <strong>Premium width</strong> = du close au high. <strong>Discount width</strong> = du close au low. 90 % des setups se forment dans un quadrant, un Fair Value Gap qui recoupe ce quadrant, ou un Order Block superpose. <strong>Inversion logic</strong> : trader au-dessus d'un Suspension Block cree son inversion.</p>
+
+    <h3 class="sub-heading">Order Blocks &amp; FVGs</h3>
+    <ul class="list-styled">
+      <li><strong>OB haussier</strong> : series de chandeliers a cloture baissiere. La livraison change d'etat quand le prix revisite l'ouverture de l'OB. Ideal : maintenir le prix dans la moitie superieure de l'OB.</li>
+      <li><strong>FVG haute probabilite</strong> : il faut qu'il recoupe un niveau de quadrant, pas seulement l'effleurer.</li>
+    </ul>
+
+    <h3 class="sub-heading">Horaires cles et Power of Three</h3>
+    <table>
+      <thead>
+        <tr><th>Fenetre</th><th>Role</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>07h &ndash; 10h</strong></td><td>Mise en place du range</td></tr>
+        <tr><td><strong>10h &ndash; 14h</strong></td><td>Expansion principale</td></tr>
+        <tr><td><strong>14h50 &ndash; 15h10</strong></td><td>Fenetre de scalp sur liquidite</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p>Attendre que les bandes de volatilite soient epuisees. <strong>Power of Three (AMD)</strong> : Accumulate &rarr; Manipulate &rarr; Distribute. Le marche est un systeme d'ingenierie algorithmique, pas aleatoire.</p>
+    </div>
+
+    <h3 class="sub-heading">Gestion du risque</h3>
+    <ul class="list-styled">
+      <li>Proteger les profits ; eviter de garder des "partials" non securises</li>
+      <li>Les gaps peuvent invalider les stops &mdash; preferer petite taille et sorties actives</li>
+      <li>Micro-contrats et levier minimal recommandes</li>
+    </ul>
+
+    <h3 class="sub-heading">Points d'action</h3>
+    <ul class="checklist">
+      <li>Appliquer la methode du <strong>20-day grading</strong> sur tous les marches : NASDAQ, EUR/USD, GBP/USD</li>
+      <li>Eviter de trader quand le prix flotte entre les quadrants</li>
+      <li>Ne pas chercher a attraper le plus bas ; attendre confirmation structurelle</li>
+      <li>Travailler proprement, petit, discipline</li>
+    </ul>
+
+    <div class="callout">
+      <p><strong>"C'est le code source du marche."</strong> En comprenant le grading 20 jours + quadrants + PD Arrays, le marche ne peut plus rien cacher. Ce framework est la colonne vertebrale de toute l'approche algorithmique.</p>
+    </div>
+
+    <h3 class="sub-heading">Framework d'execution detaille</h3>
+    <div class="sub-section">
+      <h4><span class="sub-num">1</span> Structure ICT &mdash; 20-Day Grading System</h4>
+      <p>L'algorithme regarde les 20 derniers jours pour calculer son contexte de liquidite. Vous devez voir le marche a travers cette fenetre, construite comme un circuit de donnees.</p>
+      <ul class="list-styled">
+        <li>Sur le Daily : compter 20 jours en arriere a partir de vendredi</li>
+        <li>Tracer le plus haut (HH) et le plus bas (LL)</li>
+        <li>Ajouter le midpoint (EQ) a 50 %</li>
+        <li>Decouper en quadrants : 25 % (Discount), 50 % (Equilibre), 75 % (Premium)</li>
+        <li>Classer le marche : prix en discount = biais longs, prix en premium = biais shorts, entre 50 % et 61.8 % = no trade zone</li>
+      </ul>
+    </div>
+
+    <div class="sub-section">
+      <h4><span class="sub-num">2</span> Alignement temporel &mdash; PO3 journalier</h4>
+      <table>
+        <thead><tr><th>Phase</th><th>Heure (CME)</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Accumulate</strong></td><td>00h &ndash; 07h</td><td>Construction du range asiatique / London discount</td></tr>
+          <tr><td><strong>Manipulate</strong></td><td>07h &ndash; 09h30</td><td>Stop-hunt / creation du piege</td></tr>
+          <tr><td><strong>Distribute</strong></td><td>09h30 &ndash; 14h</td><td>Expansion du jour / mouvement directionnel</td></tr>
+          <tr><td><strong>Close-out</strong></td><td>14h50 &ndash; 15h10</td><td>Fenetre scalp / draw final sur liquidite</td></tr>
+          <tr><td><strong>Reset</strong></td><td>16h CME</td><td>Cloture, creation du point d'ancrage du lendemain</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-section">
+      <h4><span class="sub-num">3</span> Filtre macro &mdash; Lecture inter-marches</h4>
+      <ul class="list-styled">
+        <li><strong>DXY en baisse</strong> &rarr; Risk-On &rarr; NASDAQ / ES / BTC peuvent monter</li>
+        <li><strong>DXY en hausse</strong> &rarr; Risk-Off &rarr; NASDAQ / ES / BTC sous pression</li>
+        <li>Regarder ou le DXY se situe dans son propre 20-day grading : DXY en discount quadrant inferieur = NASDAQ en expansion, DXY en premium quadrant superieur = NASDAQ en retracement</li>
+      </ul>
+    </div>
+
+    <div class="sub-section">
+      <h4><span class="sub-num">4</span> Regles d'engagement</h4>
+      <p>Ne trader que si <strong>3 conditions</strong> sont reunies :</p>
+      <ul class="checklist">
+        <li>Biais directionnel clair (via 20-day range)</li>
+        <li>Confluence PDA (OB, FVG, CE) sur un quadrant actif</li>
+        <li>Heure de volatilite valide (AMD / Power of Three)</li>
+      </ul>
+      <p style="margin-top:10px;"><strong>Entree :</strong> Longs en discount quadrant + FVG sur bas de range. Shorts en premium quadrant + OB sur haut de range. Entree uniquement quand la structure M15 ou M5 confirme un shift de structure (MSS / BOS).</p>
+      <p style="margin-top:6px;"><strong>Stop :</strong> En dehors du quadrant (1 quadrant complet au-dela de l'entry). Max 0.5 % de risque par trade.</p>
+      <p style="margin-top:6px;"><strong>Take Profit :</strong> 1er TP a l'equilibre (EQ). 2e TP au quadrant oppose. Sortie totale si une nouvelle inefficiency est comblee.</p>
+    </div>
+
+    <h3 class="sub-heading">Gestion du risque avancee</h3>
+    <table>
+      <thead><tr><th>Regle</th><th>Discipline</th></tr></thead>
+      <tbody>
+        <tr><td>Ne jamais ajouter a une perte</td><td>"L'algorithme ne negocie pas avec l'emotion."</td></tr>
+        <tr><td>Pas plus de 2 trades par jour</td><td>"Plus on trade, plus on s'eloigne du code."</td></tr>
+        <tr><td>TP obligatoire au 1er objectif</td><td>"Le marche paye les patients, pas les arrogants."</td></tr>
+        <tr><td>Prix entre quadrants = NO TRADE</td><td>"Pas de signal = signal d'attente."</td></tr>
+        <tr><td>Chaque vendredi = revue 20-day range</td><td>"Faire le bilan, pas du FOMO."</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- ==================== SECTION 4: OPEN RANGE THEORY ==================== -->
+  <div class="section" id="s4">
+    <div class="section-title"><span class="dot" style="background:var(--orange)"></span> Open Range Theory (OPR)</div>
+    <div class="section-ref">Ref. Module 3 &mdash; Algorithmic Academy</div>
+
+    <h3 class="sub-heading">Analyse multi-timeframe du NASDAQ Futures</h3>
+    <div class="sub-section">
+      <h4><span class="sub-num">W</span> Weekly</h4>
+      <ul class="list-styled">
+        <li>Presence d'un <strong>volume imbalance haussier</strong> (VID) &rarr; flux acheteur sous-jacent</li>
+        <li>Une grande bougie baissiere agit comme <strong>bullish Order Block</strong></li>
+        <li>Le changement d'etat de livraison (CSD) se situe a l'open</li>
+        <li>Le prix descend dans l'OB puis remonte dans le volume imbalance &rarr; signe de force haussiere</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h4><span class="sub-num">D</span> Daily</h4>
+      <ul class="list-styled">
+        <li>"Premium wick" marquee comme reference</li>
+        <li>Le corps des bougies respecte la zone de volume imbalance hebdomadaire</li>
+        <li>Le prix est descendu en discount sans atteindre la partie premium &rarr; <strong>biais haussier confirme</strong></li>
+        <li>Rejet net a la zone d'equilibre &rarr; le marche reste "fort"</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h4><span class="sub-num">H1</span> Hourly</h4>
+      <ul class="list-styled">
+        <li>Identification des zones Buy Side / Sell Side</li>
+        <li>Le Sell Side a ete pris, puis le prix a rebondi dans un <strong>bullish FVG</strong></li>
+        <li>La reaction s'arrete au sommet du FVG &rarr; structure propre</li>
+        <li>Un nouveau <strong>weekly opening gap</strong> (WOG) est note</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h4><span class="sub-num">M15</span> 15 minutes</h4>
+      <ul class="list-styled">
+        <li>Presence d'un Buy-side liquidity pool intermediaire et d'un Sell-side resting liquidity sous le prix</li>
+        <li>Nouveau WOG cree</li>
+        <li>Si le prix atteint la <strong>moitie superieure du volume imbalance</strong> et s'y maintient &rarr; bullish</li>
+        <li>S'il reste bloque dans la moitie inferieure &rarr; bearish</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h4><span class="sub-num">M5</span> 5 minutes</h4>
+      <ul class="list-styled">
+        <li>Les excursions hors du volume imbalance sont normales</li>
+        <li>Observation de la sensibilite premium/discount</li>
+        <li><strong>Consequent Encroachment</strong> = point d'equilibre du FVG (milieu de la zone d'inefficience)</li>
+        <li>Objectifs journaliers : Sell-side ~25 455 / Buy-side ~25 825</li>
+      </ul>
+    </div>
+
+    <h3 class="sub-heading">Theorie de l'Opening Range</h3>
+    <div class="sub-section">
+      <h4 style="color:var(--orange)"><span class="sub-num">LDN</span> London Session (1h30 &ndash; 2h00 ET)</h4>
+      <ul class="list-styled">
+        <li><strong>Opening Range = 30 minutes</strong> (jamais 5 ou 15 min)</li>
+        <li>Applicable a Forex, indices, commodities, devises</li>
+        <li>On cherche : la prise de liquidite initiale (Buy Side ou Sell Side), un <strong>deplacement clair</strong> (displacement) creant un FVG</li>
+        <li>Ce FVG est "tethered" a un shift de structure (MSS)</li>
+        <li><strong>Premier FVG</strong> = "First Presented Fair Value Gap" &rarr; base de la logique du jour</li>
+        <li>Si la premiere bougie du range est baissiere avec buy-side imbalance + sell-side efficiency, alors dans 90 % des cas, ce FVG agit comme <strong>inversion FVG baissier</strong></li>
+        <li>Le prix doit s'arreter au Consequent Encroachment (milieu du gap) sans cloturer au-dessus</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h4 style="color:var(--blue)"><span class="sub-num">NY</span> New York Open Kill Zone (7h &ndash; 9h ET)</h4>
+      <ul class="list-styled">
+        <li>Reference a 6h30 ET pour observer la premiere prise de liquidite</li>
+        <li>7h &ndash; 7h30 : fenetre d'ouverture commune (indices, forex, metaux, energies)</li>
+        <li><strong>Tous les algorithmes se declenchent a 7h</strong></li>
+        <li>Logique : il faut une prise de liquidite opposee avant le move principal &rarr; ex. run Buy-Side avant un move bearish = Low-Resistance Liquidity Run</li>
+        <li>Buy-side pris a 6h30 &rarr; MSS baissier a 7h &rarr; FVG forme = zone d'entree</li>
+        <li>Retour eventuel au Consequent Encroachment, puis extension vers le Sell Side Target</li>
+        <li>C'est le moment ou le marche attire les traders retail &rarr; creation de liquidite institutionnelle</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h4 style="color:var(--green)"><span class="sub-num">EQ</span> Equities Open Range (9h30 &ndash; 10h00 ET)</h4>
+      <ul class="list-styled">
+        <li>Meme logique de <strong>30 min range</strong></li>
+        <li>Displacement + premier FVG = cle</li>
+        <li>Periode la plus volatile ou les traders reagissent aux faux signaux (false breakouts / turtle soup)</li>
+      </ul>
+    </div>
+
+    <h3 class="sub-heading">Concepts techniques cles</h3>
+    <table>
+      <thead>
+        <tr><th>Concept</th><th>Definition / Utilisation</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Opening Range (30 min)</strong></td><td>Fenetre de reference pour detecter le 1er FVG valide apres une prise de liquidite</td></tr>
+        <tr><td><strong>First Presented FVG</strong></td><td>Premier gap forme apres MSS dans l'opening range &rarr; definit le biais</td></tr>
+        <tr><td><strong>Inversion FVG</strong></td><td>1re bougie du range agissant comme inversion (90 % des cas)</td></tr>
+        <tr><td><strong>Consequent Encroachment (CE)</strong></td><td>Milieu du FVG &rarr; zone d'equilibre servant de repere pour reactions du prix</td></tr>
+        <tr><td><strong>Displacement</strong></td><td>Mouvement impulsif qui confirme le shift de structure et valide le FVG</td></tr>
+        <tr><td><strong>Engineered Liquidity</strong></td><td>Prise volontaire de stops (buy/sell side) pour alimenter le move institutionnel</td></tr>
+        <tr><td><strong>Low Resistance Liquidity Run</strong></td><td>Mouvement directionnel fort precede d'un sweep oppose</td></tr>
+        <tr><td><strong>Time-Based Delivery</strong></td><td>Les mouvements de prix sont "programmes" : 1h30, 7h, 9h30 = fenetres de declenchement</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub-heading">Logique d'application pratique</h3>
+    <ul class="checklist">
+      <li>Identifier la session (London / NY / Equities)</li>
+      <li>Marquer les <strong>30 min d'ouverture</strong></li>
+      <li>Observer la premiere prise de liquidite</li>
+      <li>Detecter la premiere inefficience creee apres le MSS &rarr; <strong>First FVG</strong></li>
+      <li>Tracer le CE (equilibre du gap)</li>
+      <li>Utiliser la reaction sur CE pour valider le biais du jour : defense du haut = bullish, defense du bas = bearish</li>
+      <li>Cibler les extremes journaliers (Buy/Sell Side Targets)</li>
+    </ul>
+
+    <div class="callout">
+      <p><strong>Le marche suit des regles temporelles fixes.</strong> La premiere inefficience dans la fenetre d'ouverture est la cle algorithmique du jour. Tout ce qui precede (sweeps, MSS, FVG, CE) forme un modele repetitif &mdash; une "signature d'algorithme". Maitriser cette logique permet de trader avec les institutions, pas contre elles.</p>
+    </div>
+  </div>
+
+
+  <!-- ==================== SECTION 5: LIQUIDITE DIFFEREE ==================== -->
+  <div class="section" id="s5">
+    <div class="section-title"><span class="dot" style="background:var(--red)"></span> Liquidite Differee</div>
+    <div class="section-ref">Ref. Module 15 &mdash; Algorithmic Academy</div>
+
+    <h3 class="sub-heading">Definition</h3>
+    <div class="callout">
+      <p>La <strong>liquidite differee</strong> est une signature dans l'action du prix lorsque le marche devie de sa trajectoire et attire la liquidite dans la direction opposee pendant une periode de temps afin d'executer les stops.</p>
+    </div>
+
+    <h3 class="sub-heading">Modeles de comportement du marche</h3>
+    <div class="two-col">
+      <div class="setup-box" style="border-left:3px solid var(--green);">
+        <h4 style="color:var(--green)">Quand haussier</h4>
+        <p>Aux niveaux de liquidite a haute resistance, les <strong>bougies hautes de cloture haussiere</strong> seront utilisees pour differer la livraison en dessous des sell stops (stops vendeurs). Le marche continue ensuite plus haut avec une <strong>course de liquidite a faible resistance</strong>.</p>
+      </div>
+      <div class="setup-box" style="border-left:3px solid var(--red);">
+        <h4 style="color:var(--red)">Quand baissier</h4>
+        <p>Aux niveaux de liquidite a haute resistance, les <strong>bougies basses de cloture baissiere</strong> seront utilisees pour differer la livraison au-dessus des buy stops (stops acheteurs). Le marche continue ensuite avec une <strong>course de liquidite a faible resistance</strong>.</p>
+      </div>
+    </div>
+
+    <h3 class="sub-heading">Caracteristiques d'une course de liquidite</h3>
+    <ul class="list-styled">
+      <li>Les <strong>failure swings</strong> (balancements d'echec) sont des lignes de tendance de course de liquidite a faible resistance</li>
+      <li>Le marche traverse la liquidite a faible resistance <strong>rapidement</strong></li>
+      <li>La liquidite a haute resistance se produit lorsque le marche passe sous les stops accumules et confirme un order block</li>
+    </ul>
+
+    <h3 class="sub-heading">Analyse de la structure du marche</h3>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3 style="color:var(--red)">Cote vendeur de la courbe</h3>
+        <p>Tout ce qui est <strong>a gauche</strong> est le cote vendeur de la courbe.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--green)">Cote acheteur de la courbe</h3>
+        <p>Tout ce qui est <strong>a droite</strong> est le cote acheteur de la courbe.</p>
+      </div>
+    </div>
+
+    <h3 class="sub-heading">Processus de livraison differee</h3>
+    <div class="sub-section">
+      <h4><span class="sub-num">ETAPES</span> Sequence complete</h4>
+      <ul class="checklist">
+        <li>Le marche atteint une zone de <strong>liquidite a haute resistance</strong></li>
+        <li>La plus haute bougie de cloture haussiere (quand le marche est haussier) differe la livraison en dessous d'un plus bas a court terme</li>
+        <li>Le marche execute les <strong>sell stops</strong></li>
+        <li>Cette action cree plus de liquidite au-dessus des plus hauts</li>
+        <li>Cela cree des <strong>hauts relativement egaux</strong> qui deviennent une liquidite a faible resistance</li>
+        <li>Le marche passe d'une liquidite a haute resistance a une liquidite a faible resistance</li>
+      </ul>
+    </div>
+
+    <h3 class="sub-heading">Application pratique &mdash; Implications pour le trading</h3>
+    <ul class="list-styled">
+      <li>Lorsqu'on aborde la session AM a des niveaux cles, reconnaitre les schemas de livraison differee</li>
+      <li>Les traders qui essaient de vendre (short) en se basant sur le respect d'un fair value gap <strong>sans comprendre le risque de livraison differee se font demolir</strong></li>
+      <li>Il faut chercher les buy stops lorsqu'on trade dans les bougies de cloture baissiere les plus basses aux niveaux de liquidite a haute resistance</li>
+      <li>Le marche prendra d'abord les sell stops, puis attaquera les buy stops</li>
+    </ul>
+
+    <h3 class="sub-heading">Exigences d'analyse graphique</h3>
+    <ul class="checklist">
+      <li>Identifier les <strong>order blocks confirmes</strong> par des clotures au-dessus/en dessous des bougies</li>
+      <li>Reconnaitre quand le marche atteint les plus hauts journaliers</li>
+      <li>Surveiller le <strong>SMT</strong> (Smart Money Technique)</li>
+      <li>Suivre la formation des <strong>fair value gaps</strong></li>
+      <li>Anticiper la formation de <strong>hauts/bas relativement egaux</strong></li>
+    </ul>
+  </div>
+
+
+  <!-- ==================== SECTION 6: STOPHUNT EQUILIBRIUM ==================== -->
+  <div class="section" id="s6">
+    <div class="section-title"><span class="dot" style="background:var(--cyan)"></span> Stophunt Equilibrium</div>
+    <div class="section-ref">Ref. Module 5 &mdash; Algorithmic Academy</div>
+
+    <h3 class="sub-heading">Idee centrale</h3>
+    <div class="callout">
+      <p>A l'equilibre, l'algorithme declenche des <strong>chasses aux stops</strong>. Lorsque le marche atteint l'equilibre, on doit s'attendre a une chasse aux stops. Ce comportement se produit <strong>100 % du temps</strong> dans les mouvements historiques de prix. L'equilibre est un precurseur des mouvements de prise de liquidite.</p>
+    </div>
+
+    <h3 class="sub-heading">Mecanisme detaille</h3>
+    <div class="sub-section">
+      <h4><span class="sub-num">1</span> Synthese du concept</h4>
+      <p>L'equilibre de marche precede les chasses aux stops. Un Fair Value Gap d'inversion agit comme point d'entree potentiel apres la chasse.</p>
+    </div>
+
+    <div class="sub-section">
+      <h4><span class="sub-num">2</span> Exemple specifique de confluence</h4>
+      <p>Une chasse aux stops s'est produite <strong>deux fois</strong>, puis le prix est revenu dans un Fair Value Gap d'inversion. Ce gap respectait :</p>
+      <ul class="list-styled">
+        <li>Un <strong>order block</strong> (specifiquement, un order block "repris/reconquis")</li>
+        <li>Le <strong>plus bas d'une bougie</strong></li>
+        <li>Un <strong>ancien gap</strong></li>
+      </ul>
+      <p style="margin-top:8px;">Cette configuration &mdash; en particulier la confluence autour du Fair Value Gap d'inversion &mdash; a ete identifiee comme un <strong>point d'entree potentiel</strong>.</p>
+    </div>
+
+    <h3 class="sub-heading">Transcription du concept</h3>
+    <div class="callout">
+      <p>"Voici l'equilibre. Nous sommes exactement a l'equilibre. Lorsque cela se produit, l'equilibre est l'endroit ou vous allez anticiper, predire, vous attendre a une chasse aux stops. C'est ce que fera l'algorithme. Retournez voir les anciens mouvements de prix. Vous allez voir cela a chaque fois, 100 % du temps."</p>
+    </div>
+    <div class="callout">
+      <p>"Une chasse aux stops. Celle-ci a lieu deux fois, mais elle revient dans quoi ? Dans ce fair value gap, qui est un <strong>fair value gap d'inversion</strong>. Qu'est-ce qu'il respecte ? Cet order block reconquis, mais c'est aussi en concordance avec le plus bas de cette bougie. Il respecte cet ancien gap. Donc, cela en fait une entree basee sur ce <strong>fair value gap d'inversion</strong>."</p>
+    </div>
+
+    <h3 class="sub-heading">Regles d'application</h3>
+    <ul class="checklist">
+      <li>Identifier l'<strong>equilibre</strong> (50 % du range ou de la dealing range)</li>
+      <li>Anticiper une <strong>chasse aux stops</strong> quand le prix atteint ce niveau</li>
+      <li>Chercher le retour dans un <strong>FVG d'inversion</strong></li>
+      <li>Verifier la confluence avec un <strong>order block reconquis</strong> et/ou un ancien gap</li>
+      <li>Utiliser le FVG d'inversion comme point d'entree</li>
+      <li>Valider sur les mouvements historiques pour confirmer la repetition du pattern</li>
+    </ul>
+  </div>
+
+
+  <!-- ==================== SECTION 7: PD ARRAYS IMBRIQUES & IFVG ==================== -->
+  <div class="section" id="s7">
+    <div class="section-title"><span class="dot" style="background:var(--gold)"></span> PD Arrays Imbriques &amp; IFVG</div>
+    <div class="section-ref">Ref. Module 4 &mdash; Algorithmic Academy</div>
+
+    <h3 class="sub-heading">Synthese globale</h3>
+    <p style="color:var(--t2);font-size:12px;line-height:1.7;">Discussion technique sur l'identification des Fair Value Gaps (FVG), les PD Arrays imbriques, les Inversion FVG (IFVG), les order blocks bearish, et l'importance de la narration de marche et de la <strong>confluence multi-timeframe</strong> pour renforcer les zones de niveau. Le journaling et le backtesting sont non negociables.</p>
+
+    <h3 class="sub-heading">Identification des Fair Value Gaps</h3>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3 style="color:var(--red)">SIBI</h3>
+        <p><strong>Sell-side imbalance, buy-side inefficiency</strong> &mdash; FVG cree par une bougie baissiere. Le prix remonte dans le gap pour le combler avant de continuer a baisser.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--green)">BISI</h3>
+        <p><strong>Buy-side imbalance, sell-side inefficiency</strong> &mdash; FVG cree par une bougie haussiere. Le prix descend dans le gap pour le combler avant de continuer a monter.</p>
+      </div>
+    </div>
+
+    <h3 class="sub-heading">PD Arrays imbriques &amp; convergence</h3>
+    <ul class="list-styled">
+      <li>Insistance sur la <strong>confluence entre differents PD Arrays et timeframes</strong> : convergence = niveau plus fort</li>
+      <li>Exemple : un <strong>Daily SIBI</strong> formant dans la moitie inferieure d'un <strong>Monthly FVG SIBI</strong>, avec le haut du Daily proche de la consequent encroachment du Monthly &mdash; signal de confluence</li>
+      <li>Converger les niveaux (Daily dans Monthly) cree des <strong>zones d'interet elevees</strong></li>
+    </ul>
+
+    <h3 class="sub-heading">Inversion Fair Value Gap (IFVG)</h3>
+    <div class="sub-section">
+      <h4 style="color:var(--gold)">Definition et comportement</h4>
+      <ul class="list-styled">
+        <li>Un FVG devient un <strong>IFVG</strong> si le prix le traverse puis le <strong>reteste depuis l'autre cote</strong>, en coherence avec la narration</li>
+        <li>Le <strong>midpoint d'un IFVG</strong> est un niveau important a surveiller</li>
+        <li>Dans un contexte baissier, si le prix transperce le bas d'un IFVG, on peut anticiper un <strong>retest du midpoint</strong> (consequent encroachment)</li>
+        <li>Identification d'une possible zone de <strong>breakaway gap</strong> entre un high d'IFVG daily et le low d'une bougie conviviale</li>
+      </ul>
+    </div>
+
+    <h3 class="sub-heading">Order Blocks bearish (OB)</h3>
+    <ul class="list-styled">
+      <li>Criteres clairs pour valider un OB bearish au-dela d'une simple bougie englobante : <strong>l'ouverture de la bougie</strong> est un element cle</li>
+      <li>Le <strong>point moyen (midpoint)</strong> d'un OB est un niveau significatif</li>
+      <li>La midpoint d'un IFVG et le midpoint d'un OB ont une <strong>valeur tactique</strong> (entrees, stops, targets)</li>
+    </ul>
+
+    <h3 class="sub-heading">Narration du marche &amp; comportement des prix</h3>
+    <ul class="list-styled">
+      <li>La <strong>narration</strong> oriente le choix de niveaux, la tolerance aux meches (wicks) et les limites de risque</li>
+      <li>En condition baissiere, eviter d'entrer excessivement sur des zones premium (hauts d'IFVG, OB bearish) ; rester vigilant aux meches "Mohawk" (petites meches acceptables selon dynamique)</li>
+      <li>Adopter une <strong>tolerance mesuree aux meches</strong> selon la narration</li>
+    </ul>
+
+    <h3 class="sub-heading">Regle des trois PD Arrays</h3>
+    <div class="callout">
+      <p><strong>Regle de risque :</strong> si un trade bearish traverse <strong>trois PD arrays premium</strong>, il est probable qu'il soit invalide &mdash; couper le risque immediatement. Appliquer la regle des 3 PD arrays pour couper rapidement les trades perdants.</p>
+    </div>
+
+    <h3 class="sub-heading">IOFED &amp; Breakaway Gap</h3>
+    <ul class="list-styled">
+      <li><strong>IOFED</strong> (Institutional Order Flow Entry Drill) observe autour des imbalances &mdash; exemple : price entrant dans une SIBI au-dessus d'un high precedent</li>
+      <li>Identification d'une possible zone de breakaway gap entre un high d'IFVG daily et le low d'une bougie conviviale</li>
+    </ul>
+
+    <h3 class="sub-heading">Weekly Premium Wick &mdash; Consequent Encroachment</h3>
+    <p style="color:var(--t2);font-size:12px;line-height:1.7;">Un niveau premium weekly tenu par les <strong>corps de bougies</strong> (les meches ont oversteppe mais les corps restent) : respecter ces encroachments. Si le prix descend, la zone de propulsion du weekly bullish OB peut etre la prochaine cible.</p>
+
+    <h3 class="sub-heading">Takeaways pratiques</h3>
+    <ul class="checklist">
+      <li>Converger les niveaux (Daily dans Monthly) cree des zones d'interet elevees</li>
+      <li>La midpoint d'un IFVG et la midpoint d'un OB ont une valeur tactique (entrees, stops, targets)</li>
+      <li>Adopter une tolerance mesuree aux meches selon la narration</li>
+      <li>Appliquer la <strong>regle des 3 PD arrays</strong> pour couper rapidement les trades perdants</li>
+      <li>Le travail de fond (<strong>journaling, backtests, etudes</strong>) reste le facteur cle de maitrise</li>
+    </ul>
+  </div>
+
+
+  <!-- ==================== SECTION 8: CLES CONFIGURATIONS INFINIES ==================== -->
+  <div class="section" id="s8">
+    <div class="section-title"><span class="dot" style="background:var(--green)"></span> Les Cles pour des Configurations Infinies</div>
+    <div class="section-ref">Ref. Module 7 &mdash; Algorithmic Academy</div>
+
+    <p style="color:var(--t2);font-size:12px;line-height:1.7;margin-bottom:12px;"><strong>Theme :</strong> methodologie de trading fondee sur le temps, la discipline et la livraison algorithmique du prix (IPDA). Objectif : quitter le monde des indicateurs pour comprendre le rythme du marche.</p>
+
+    <h3 class="sub-heading">1. De l'indicateur au temps</h3>
+    <ul class="list-styled">
+      <li>Les indicateurs classiques (moyennes mobiles, stochastiques, divergences) <strong>retardent la lecture du prix</strong> et creent anxiete et indecision</li>
+      <li>La cle : remplacer la lecture d'indicateurs par la <strong>lecture du temps et du comportement du prix</strong></li>
+      <li>"Cesser de chercher la frequence des indicateurs, et commencer a etudier la <strong>frequence de livraison des prix</strong>."</li>
+    </ul>
+
+    <h3 class="sub-heading">2. La logique temporelle</h3>
+    <ul class="list-styled">
+      <li>Observer <strong>quand</strong> les structures se forment, non pas seulement ou</li>
+      <li>Fenetres de livraison : <strong>9h30-11h30</strong> pour les indices, <strong>2h-5h</strong> pour Londres</li>
+      <li>Comprendre que les FVG (Fair Value Gaps) et les ecarts d'ouverture sont des points de "livraison" quotidienne du prix</li>
+      <li>Le marche repete des comportements a des horaires specifiques, selon un <strong>calendrier fractal</strong></li>
+    </ul>
+
+    <h3 class="sub-heading">3. Les PD Arrays (Price Delivery Arrays)</h3>
+    <ul class="list-styled">
+      <li>Volonte de codifier le marche a travers des tableaux PD Arrays</li>
+      <li>Chaque tableau identifie le <strong>moment exact</strong> ou le prix doit delivrer une impulsion (selon le programme buy/sell)</li>
+      <li>"Ne plus penser, juste executer quand le temps et le prix sont alignes."</li>
+      <li>Les PD Arrays sont un <strong>langage code du marche</strong> &mdash; une grille temporelle de livraison</li>
+    </ul>
+
+    <h3 class="sub-heading">4. Discipline et psychologie</h3>
+    <div class="sub-section">
+      <h4 style="color:var(--gold)">Principes mentaux fondamentaux</h4>
+      <ul class="list-styled">
+        <li>L'obsession du "manque" (<strong>FOMO</strong>) est destructrice</li>
+        <li>Il faut accepter les pertes et ne pas modifier un modele gagnant</li>
+        <li>Le perfectionnisme empeche d'avancer : il faut viser la <strong>constance, pas la perfection</strong></li>
+        <li>La vraie cle est la presence au bon moment : "Etre a l'heure &mdash; devant les graphiques quand ils doivent bouger."</li>
+      </ul>
+    </div>
+
+    <h3 class="sub-heading">5. Etude et auto-discipline</h3>
+    <ul class="checklist">
+      <li><strong>Backtesting</strong> des comportements recurrents</li>
+      <li>Analyse des <strong>30 premieres minutes</strong> de chaque journee, ou naissent souvent les FVG initiaux</li>
+      <li><strong>Journal de trading</strong> pour mesurer la repetition des patterns temporels</li>
+      <li>Auto-evaluation continue, sans se laisser influencer par l'exterieur</li>
+    </ul>
+
+    <h3 class="sub-heading">6. Defi de coherence</h3>
+    <div class="sub-section">
+      <h4><span class="sub-num">EXERCICE</span> Exercice concret</h4>
+      <ul class="list-styled">
+        <li>Trader sur <strong>compte demo</strong> une session complete (matin, apres-midi ou Londres)</li>
+        <li>Rester en position toute la session pour comprendre la <strong>structure de livraison</strong></li>
+        <li>Objectif : s'impregner du tempo algorithmique</li>
+      </ul>
+    </div>
+
+    <h3 class="sub-heading">7. Risque et execution</h3>
+    <ul class="list-styled">
+      <li>Les stops doivent etre places sous les <strong>swings logiques</strong></li>
+      <li>Toujours prevoir la sortie <strong>avant l'entree</strong></li>
+      <li>Ne jamais improviser sous l'emotion</li>
+      <li>Penser comme l'algorithme : si le prix atteint un point precis a un moment precis, l'ordre est execute</li>
+    </ul>
+
+    <h3 class="sub-heading">8. Philosophie de la methodologie</h3>
+    <div class="callout">
+      <p>"Le marche repete les memes phenomenes encore et encore. J'ai cesse d'observer les indicateurs pour observer le temps, et <strong>tout a change</strong>."</p>
+    </div>
+    <ul class="list-styled">
+      <li>Il existe un appel interieur a observer le <strong>temps du marche</strong></li>
+      <li>Le lien entre <strong>foi, patience et trading</strong></li>
+      <li>Les sequences temporelles sont guidees et la comprehension vient avec la discipline</li>
+    </ul>
+
+    <h3 class="sub-heading">9. Le message final</h3>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3 style="color:var(--green)">Simplifier</h3>
+        <p>Un seul modele, un seul plan. Eliminer le bruit et se concentrer sur le timing, la livraison et la repetition fractale.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--cyan)">Observer le temps</h3>
+        <p>Quand le prix livre. Etre a l'heure, c'est etre dans le flux algorithmique.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--purple)">Devenir autonome</h3>
+        <p>Cesser de courir apres les autres. Etudier le "quand" avant le "ou".</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--gold)">Discipline et foi</h3>
+        <p>La discipline et la foi remplacent la recherche constante de nouvelles methodes. Les PD Arrays et les cycles temporels codifient cette mecanique.</p>
+      </div>
+    </div>
+
+    <h3 class="sub-heading">Synthese finale</h3>
+    <table>
+      <thead><tr><th>Element</th><th>Sens</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Le prix</strong></td><td>Est livre par le temps, pas par les indicateurs</td></tr>
+        <tr><td><strong>La cle du succes</strong></td><td>Etudier le "quand" avant le "ou"</td></tr>
+        <tr><td><strong>Les PD Arrays</strong></td><td>Codifient la mecanique de livraison algorithmique</td></tr>
+        <tr><td><strong>La discipline</strong></td><td>Remplace la recherche constante de nouvelles methodes</td></tr>
+        <tr><td><strong>Etre a l'heure</strong></td><td>C'est etre dans le flux algorithmique</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="text-align:center; padding: 32px 0 48px; color:var(--t3); font-size:11px; font-family:'IBM Plex Mono',monospace;">
+    Algorithmic Academy &mdash; Module 18 &mdash; Fiches Avancees
+  </div>
+
+</div>
+</body>
+</html>

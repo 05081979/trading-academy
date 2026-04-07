@@ -18,6 +18,7 @@
     { id: 'aa-liquidity-inducement', label: '15. Liquidity+IDM' },
     { id: 'fiches-ict',            label: '16. Fiches ICT' },
     { id: 'fiches-catalogue',      label: '17. Catalogue PDFs' },
+    { id: 'fiches-avancees',       label: '18. Fiches Avancees' },
   ];
 
   const filename = window.location.pathname.split('/').pop().replace('.html', '');
