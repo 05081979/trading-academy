@@ -17,6 +17,7 @@
     { id: 'ict-macro-news',     label: '14. Macro+News' },
     { id: 'aa-liquidity-inducement', label: '15. Liquidity+IDM' },
     { id: 'fiches-ict',            label: '16. Fiches ICT' },
+    { id: 'fiches-catalogue',      label: '17. Catalogue PDFs' },
   ];
 
   const filename = window.location.pathname.split('/').pop().replace('.html', '');
