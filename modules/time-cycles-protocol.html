@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="../auth.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time & Price Cycles — Protocole Complet</title>
+<link rel="stylesheet" href="../readability.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060a12;
+  --bg2: #0b1120;
+  --bg3: #101828;
+  --bg4: #162040;
+  --border: #1a2440;
+  --border2: #243055;
+  --blue: #4a7cff;
+  --blue2: #6b9aff;
+  --blue-dim: rgba(74,124,255,0.08);
+  --gold: #e9b84c;
+  --green: #2dd67a;
+  --red: #f04545;
+  --orange: #f08044;
+  --purple: #9b6cf0;
+  --teal: #38c9b0;
+  --text: #e4e8f2;
+  --text2: #8892a8;
+  --text3: #4a5568;
+  --sans: 'Inter', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+}
+
+/* ── LAYOUT ── */
+.app { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: 52px;
+  bottom: 0;
+  overflow-y: auto;
+  z-index: 50;
+}
+
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+.sidebar-header {
+  padding: 20px 18px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-header h2 {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+.sidebar-header p {
+  font-size: 11px;
+  color: var(--text3);
+  font-family: var(--mono);
+}
+
+.sidebar-search {
+  margin: 12px 14px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 12px;
+  font-family: var(--sans);
+  width: calc(100% - 28px);
+  outline: none;
+}
+.sidebar-search:focus { border-color: var(--blue); }
+.sidebar-search::placeholder { color: var(--text3); }
+
+.nav-group { padding: 8px 0; }
+
+.nav-group-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 8px 18px 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 18px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text2);
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text); }
+.nav-item.active { background: var(--blue-dim); color: var(--blue); border-left-color: var(--blue); font-weight: 600; }
+
+.nav-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.nav-num {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--text3);
+  min-width: 18px;
+}
+
+.nav-item.active .nav-num { color: var(--blue); }
+
+/* ── MAIN ── */
+.main {
+  flex: 1;
+  margin-left: 280px;
+  padding: 32px 40px 60px;
+  max-width: 960px;
+}
+
+.page-title {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 6px;
+  background: linear-gradient(135deg, var(--gold), var(--orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: var(--text3);
+  font-family: var(--mono);
+  margin-bottom: 40px;
+}
+
+.section { margin-bottom: 56px; }
+
+.section-id { scroll-margin-top: 70px; }
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.badge-protocol { background: rgba(233,184,76,0.1); color: var(--gold); }
+.badge-env { background: rgba(56,201,176,0.1); color: var(--teal); }
+.badge-htf { background: rgba(74,124,255,0.1); color: var(--blue); }
+.badge-ltf { background: rgba(155,108,240,0.1); color: var(--purple); }
+.badge-exec { background: rgba(45,214,122,0.1); color: var(--green); }
+.badge-optim { background: rgba(240,128,68,0.1); color: var(--orange); }
+
+.section h2 {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  color: #f0f2f8;
+}
+
+.section-desc {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 20px;
+  max-width: 700px;
+}
+
+/* ── VIDEO ── */
+.video-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 6px;
+  margin-bottom: 20px;
+}
+
+.video-wrap iframe {
+  width: 100%;
+  height: 420px;
+  border: none;
+  border-radius: 12px;
+  display: block;
+}
+
+/* ── KEY CONCEPTS ── */
+.concepts-list {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 24px;
+}
+
+.concepts-list h3 {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 12px;
+}
+
+.concepts-list ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.concepts-list li {
+  font-size: 13px;
+  color: var(--text2);
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.concepts-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--blue);
+  opacity: 0.5;
+}
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: -300px;
+    width: 280px;
+    top: 52px;
+    transition: left 0.3s;
+    z-index: 100;
+  }
+  .sidebar.open { left: 0; }
+  .main { margin-left: 0; padding: 20px 16px 60px; }
+  .video-wrap iframe { height: 240px; }
+  .page-title { font-size: 24px; }
+  .mobile-toggle {
+    display: flex !important;
+  }
+}
+
+.mobile-toggle {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  border: none;
+  cursor: pointer;
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 4px 20px rgba(74,124,255,0.4);
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 90;
+}
+.overlay.show { display: block; }
+
+/* ── DIVIDER ── */
+.group-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 32px 0;
+}
+
+/* hidden by search */
+.section.hidden { display: none; }
+.nav-item.hidden { display: none; }
+.nav-group.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<button class="mobile-toggle" id="mobileToggle">&#9776;</button>
+<div class="overlay" id="overlay"></div>
+
+<div class="app">
+
+<!-- ─── SIDEBAR ─── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h2>Time & Price Cycles</h2>
+    <p>18 LECONS &middot; PROTOCOLE COMPLET</p>
+  </div>
+  <input type="text" class="sidebar-search" id="searchInput" placeholder="Rechercher une lecon...">
+
+  <!-- Group 1 -->
+  <div class="nav-group" data-group="protocol">
+    <div class="nav-group-title">Le Protocole</div>
+    <div class="nav-item" data-index="0" data-section="s1">
+      <span class="nav-num">01</span> Le Protocole
+    </div>
+  </div>
+
+  <!-- Group 2 -->
+  <div class="nav-group" data-group="env">
+    <div class="nav-group-title">Selection d'Environnement</div>
+    <div class="nav-item" data-index="1" data-section="s2">
+      <span class="nav-num">02</span> Calendrier Economique
+    </div>
+    <div class="nav-item" data-index="2" data-section="s3">
+      <span class="nav-num">2b</span> Alignement des Timeframes
+    </div>
+    <div class="nav-item" data-index="3" data-section="s4">
+      <span class="nav-num">03</span> Sessions d'Interet
+    </div>
+    <div class="nav-item" data-index="4" data-section="s5">
+      <span class="nav-num">04</span> Relations Intermarches
+    </div>
+  </div>
+
+  <!-- Group 3 -->
+  <div class="nav-group" data-group="htf">
+    <div class="nav-group-title">Analyse HTF</div>
+    <div class="nav-item" data-index="5" data-section="s6">
+      <span class="nav-num">05</span> Order Flow Institutionnel
+    </div>
+    <div class="nav-item" data-index="6" data-section="s7">
+      <span class="nav-num">06</span> Draw on Liquidity
+    </div>
+    <div class="nav-item" data-index="7" data-section="s8">
+      <span class="nav-num">07</span> Point d'Interet
+    </div>
+    <div class="nav-item" data-index="8" data-section="s9">
+      <span class="nav-num">08</span> Synthese HTF
+    </div>
+  </div>
+
+  <!-- Group 4 -->
+  <div class="nav-group" data-group="ltf">
+    <div class="nav-group-title">Analyse LTF</div>
+    <div class="nav-item" data-index="9" data-section="s10">
+      <span class="nav-num">09</span> Le Temps en LTF
+    </div>
+    <div class="nav-item" data-index="10" data-section="s11">
+      <span class="nav-num">10</span> CSD en LTF
+    </div>
+    <div class="nav-item" data-index="11" data-section="s12">
+      <span class="nav-num">11</span> SMT en LTF
+    </div>
+  </div>
+
+  <!-- Group 5 -->
+  <div class="nav-group" data-group="exec">
+    <div class="nav-group-title">Execution</div>
+    <div class="nav-item" data-index="12" data-section="s13">
+      <span class="nav-num">12</span> Les Entrees
+    </div>
+    <div class="nav-item" data-index="13" data-section="s14">
+      <span class="nav-num">13</span> Niveaux d'Invalidation
+    </div>
+    <div class="nav-item" data-index="14" data-section="s15">
+      <span class="nav-num">14</span> Targets HTF & LTF
+    </div>
+    <div class="nav-item" data-index="15" data-section="s16">
+      <span class="nav-num">15</span> Risk Management
+    </div>
+  </div>
+
+  <!-- Group 6 -->
+  <div class="nav-group" data-group="optim">
+    <div class="nav-group-title">Optimisation</div>
+    <div class="nav-item" data-index="16" data-section="s17">
+      <span class="nav-num">16</span> Resultats
+    </div>
+    <div class="nav-item" data-index="17" data-section="s18">
+      <span class="nav-num">17</span> Journaling
+    </div>
+    <div class="nav-item" data-index="18" data-section="s19">
+      <span class="nav-num">18</span> Optimisation
+    </div>
+  </div>
+</aside>
+
+<!-- ─── MAIN CONTENT ─── -->
+<main class="main">
+  <h1 class="page-title">Time & Price Cycles</h1>
+  <p class="page-subtitle">Protocole Complet &mdash; 18 Etapes</p>
+
+  <!-- 1 -->
+  <div class="section" id="s1">
+    <div class="section-id"></div>
+    <div class="section-badge badge-protocol">Chapitre 01 &mdash; Le Protocole</div>
+    <h2>Le Protocole</h2>
+    <p class="section-desc">Vue d'ensemble du protocole de trading complet en 18 etapes. Ce premier module presente la structure globale et la logique derriere chaque phase.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Structure globale du protocole</li>
+        <li>Les 4 phases : Environnement, Analyse, Execution, Optimisation</li>
+        <li>Pourquoi chaque etape est obligatoire</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="group-divider"></div>
+
+  <!-- 2 -->
+  <div class="section" id="s2">
+    <div class="section-id"></div>
+    <div class="section-badge badge-env">Chapitre 02 &mdash; Environnement</div>
+    <h2>Calendrier Economique</h2>
+    <p class="section-desc">Comment filtrer les jours de trading selon les evenements macro. Apprenez a identifier les periodes favorables et les jours a eviter absolument.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Identifier les high impact news</li>
+        <li>Jours a eviter (veille FOMC, NFP, CPI)</li>
+        <li>Impact du calendrier sur le biais</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="section" id="s3">
+    <div class="section-id"></div>
+    <div class="section-badge badge-env">Chapitre 2b &mdash; Environnement</div>
+    <h2>Alignement des Timeframes</h2>
+    <p class="section-desc">Quel timeframe utiliser pour chaque etape de l'analyse. La coherence multi-timeframe est la cle d'une lecture de marche fiable.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=2" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Grille d'alignement HTF vers LTF</li>
+        <li>Le bon timeframe pour le MMXM</li>
+        <li>Coherence multi-timeframe</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="section" id="s4">
+    <div class="section-id"></div>
+    <div class="section-badge badge-env">Chapitre 03 &mdash; Environnement</div>
+    <h2>Sessions d'Interet</h2>
+    <p class="section-desc">Les fenetres temporelles ou trader. Identifiez les killzones et les macro windows qui concentrent le volume institutionnel.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=3" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Killzones et horaires precis</li>
+        <li>Macro windows</li>
+        <li>Sessions a privilegier selon le setup</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="section" id="s5">
+    <div class="section-id"></div>
+    <div class="section-badge badge-env">Chapitre 04 &mdash; Environnement</div>
+    <h2>Relations Intermarches</h2>
+    <p class="section-desc">Comment utiliser les correlations entre actifs. Les divergences intermarches sont un filtre puissant pour confirmer ou invalider un biais.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=4" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>NQ vs ES, DXY vs Forex</li>
+        <li>Divergences SMT intermarche</li>
+        <li>Confirmation par les actifs correles</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="group-divider"></div>
+
+  <!-- 6 -->
+  <div class="section" id="s6">
+    <div class="section-id"></div>
+    <div class="section-badge badge-htf">Chapitre 05 &mdash; Analyse HTF</div>
+    <h2>Order Flow Institutionnel HTF</h2>
+    <p class="section-desc">Identifier la direction du flux institutionnel. Distinguez les Buy Programs des Sell Programs pour trader dans le sens du courant.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=5" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Buy Program vs Sell Program</li>
+        <li>Structure de marche HTF</li>
+        <li>BOS et direction dominante</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 7 -->
+  <div class="section" id="s7">
+    <div class="section-id"></div>
+    <div class="section-badge badge-htf">Chapitre 06 &mdash; Analyse HTF</div>
+    <h2>Draw on Liquidity HTF</h2>
+    <p class="section-desc">Identifier l'objectif de prix. Le Draw on Liquidity definit ou le prix veut aller, et c'est la premiere question a se poser.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=6" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Pools de liquidite cibles</li>
+        <li>PDH/PDL, PWH/PWL comme DOL</li>
+        <li>Hierarchie des objectifs</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 8 -->
+  <div class="section" id="s8">
+    <div class="section-id"></div>
+    <div class="section-badge badge-htf">Chapitre 07 &mdash; Analyse HTF</div>
+    <h2>Point d'Interet HTF</h2>
+    <p class="section-desc">Trouver la zone de reaction. Les PD Arrays HTF sont les zones ou le prix est susceptible de reagir avec force.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=7" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>PD Arrays HTF (OB, FVG, Breaker)</li>
+        <li>Confluence des niveaux</li>
+        <li>Zone d'attente pour le retournement</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 9 -->
+  <div class="section" id="s9">
+    <div class="section-id"></div>
+    <div class="section-badge badge-htf">Chapitre 08 &mdash; Analyse HTF</div>
+    <h2>Synthese HTF</h2>
+    <p class="section-desc">Assembler toutes les pieces HTF. Cette etape valide votre lecture globale avant de descendre en timeframe.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=8" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>IOF + DOL + POI ensemble</li>
+        <li>Checklist HTF complete</li>
+        <li>Passage au LTF</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="group-divider"></div>
+
+  <!-- 10 -->
+  <div class="section" id="s10">
+    <div class="section-id"></div>
+    <div class="section-badge badge-ltf">Chapitre 09 &mdash; Analyse LTF</div>
+    <h2>Le Temps en LTF</h2>
+    <p class="section-desc">Les cycles temporels sur le LTF. Comprenez les cycles de 90 minutes et les fenetres de precision pour timer votre entree.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=9" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Cycles de 90 minutes</li>
+        <li>Macros et fenetres de precision</li>
+        <li>Timing de l'entree</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 11 -->
+  <div class="section" id="s11">
+    <div class="section-id"></div>
+    <div class="section-badge badge-ltf">Chapitre 10 &mdash; Analyse LTF</div>
+    <h2>CSD en LTF</h2>
+    <p class="section-desc">Detecter le changement de programme. Le Change in State of Delivery confirme que le flux a bascule en votre faveur.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=10" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Change in State of Delivery</li>
+        <li>Confirmation du retournement LTF</li>
+        <li>Cloture a travers les bougies opposees</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 12 -->
+  <div class="section" id="s12">
+    <div class="section-id"></div>
+    <div class="section-badge badge-ltf">Chapitre 11 &mdash; Analyse LTF</div>
+    <h2>SMT en LTF</h2>
+    <p class="section-desc">Divergence Smart Money en LTF. La SMT est le filtre ultime pour confirmer un retournement dans la killzone.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=11" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>SMT NQ vs ES en temps reel</li>
+        <li>Confirmation de la SMT dans la killzone</li>
+        <li>Filtres de validation</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="group-divider"></div>
+
+  <!-- 13 -->
+  <div class="section" id="s13">
+    <div class="section-id"></div>
+    <div class="section-badge badge-exec">Chapitre 12 &mdash; Execution</div>
+    <h2>Les Entrees</h2>
+    <p class="section-desc">Comment et ou entrer en position. L'entree est le fruit de toute l'analyse precedente, avec precision sur le LTF.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=12" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>IFVG, Breaker, OB pour l'entree</li>
+        <li>Precision de l'entree sur le LTF</li>
+        <li>Confirmation avant le clic</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 14 -->
+  <div class="section" id="s14">
+    <div class="section-id"></div>
+    <div class="section-badge badge-exec">Chapitre 13 &mdash; Execution</div>
+    <h2>Niveaux d'Invalidation</h2>
+    <p class="section-desc">Ou placer le stop loss. Un stop bien place protege le capital sans se faire sortir sur le bruit du marche.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=13" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Stop sous/au-dessus du sweep</li>
+        <li>Invalidation structurelle</li>
+        <li>Quand sortir avant le stop</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 15 -->
+  <div class="section" id="s15">
+    <div class="section-id"></div>
+    <div class="section-badge badge-exec">Chapitre 14 &mdash; Execution</div>
+    <h2>Targets HTF & LTF</h2>
+    <p class="section-desc">Comment definir les objectifs. Savoir ou prendre ses profits est aussi important que savoir ou entrer.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=14" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Targets LTF (prochain FVG, session H/L)</li>
+        <li>Targets HTF (PDH/PDL, Standard Deviations)</li>
+        <li>Partials et gestion des profits</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 16 -->
+  <div class="section" id="s16">
+    <div class="section-id"></div>
+    <div class="section-badge badge-exec">Chapitre 15 &mdash; Execution</div>
+    <h2>Risk Management</h2>
+    <p class="section-desc">Gestion du risque. Sans risk management, meme le meilleur setup ne vaut rien sur le long terme.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=15" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Risque par trade (1% max)</li>
+        <li>Drawdown rules</li>
+        <li>Regles de non-trade</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="group-divider"></div>
+
+  <!-- 17 -->
+  <div class="section" id="s17">
+    <div class="section-id"></div>
+    <div class="section-badge badge-optim">Chapitre 16 &mdash; Optimisation</div>
+    <h2>Resultats</h2>
+    <p class="section-desc">Analyser ses resultats. Les metriques objectives sont le seul moyen de savoir si votre edge est reel.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=16" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Metriques a suivre</li>
+        <li>Taux de reussite vs R:R</li>
+        <li>Evolution dans le temps</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 18 -->
+  <div class="section" id="s18">
+    <div class="section-id"></div>
+    <div class="section-badge badge-optim">Chapitre 17 &mdash; Optimisation</div>
+    <h2>Journaling</h2>
+    <p class="section-desc">Tenir son journal de trading. Le journal est l'outil numero un pour progresser et identifier ses patterns recurrents.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=17" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Quoi noter a chaque trade</li>
+        <li>Analyse post-session</li>
+        <li>Patterns recurrents</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 19 -->
+  <div class="section" id="s19">
+    <div class="section-id"></div>
+    <div class="section-badge badge-optim">Chapitre 18 &mdash; Optimisation</div>
+    <h2>Optimisation</h2>
+    <p class="section-desc">Ameliorer son trading. L'optimisation est un processus continu base sur le backtesting, la revision et la progression par etapes.</p>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/videoseries?list=PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w&index=18" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Identifier les faiblesses</li>
+        <li>Backtesting et revision</li>
+        <li>Progression par etapes</li>
+      </ul>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<script>
+(function() {
+  const PLAYLIST = 'PL1iwLpkUbmrXOynzVijV3HyRmtNNLHq-w';
+  const navItems = document.querySelectorAll('.nav-item');
+  const sections = document.querySelectorAll('.section');
+  const searchInput = document.getElementById('searchInput');
+  const sidebar = document.getElementById('sidebar');
+  const mobileToggle = document.getElementById('mobileToggle');
+  const overlay = document.getElementById('overlay');
+
+  // ── Click nav → scroll + load video ──
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const sectionId = item.dataset.section;
+      const index = item.dataset.index;
+      const section = document.getElementById(sectionId);
+      if (!section) return;
+
+      // Update iframe src
+      const iframe = section.querySelector('iframe');
+      if (iframe) {
+        const newSrc = `https://www.youtube.com/embed/videoseries?list=${PLAYLIST}&index=${index}`;
+        if (iframe.src !== newSrc) iframe.src = newSrc;
+      }
+
+      // Scroll
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Activate nav
+      setActive(item);
+
+      // Close mobile sidebar
+      sidebar.classList.remove('open');
+      overlay.classList.remove('show');
+    });
+  });
+
+  function setActive(activeItem) {
+    navItems.forEach(n => n.classList.remove('active'));
+    activeItem.classList.add('active');
+  }
+
+  // ── Scroll spy ──
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        updateScrollSpy();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  function updateScrollSpy() {
+    let current = null;
+    sections.forEach(sec => {
+      const rect = sec.getBoundingClientRect();
+      if (rect.top <= 120) current = sec.id;
+    });
+    if (current) {
+      navItems.forEach(item => {
+        item.classList.toggle('active', item.dataset.section === current);
+      });
+    }
+  }
+
+  // ── Search ──
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.toLowerCase().trim();
+    const navGroups = document.querySelectorAll('.nav-group');
+
+    navItems.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      const match = !q || text.includes(q);
+      item.classList.toggle('hidden', !match);
+    });
+
+    // Hide empty groups
+    navGroups.forEach(group => {
+      const visibleItems = group.querySelectorAll('.nav-item:not(.hidden)');
+      group.classList.toggle('hidden', visibleItems.length === 0);
+    });
+
+    // Hide/show sections
+    sections.forEach(sec => {
+      const h2 = sec.querySelector('h2');
+      const desc = sec.querySelector('.section-desc');
+      const text = ((h2 ? h2.textContent : '') + ' ' + (desc ? desc.textContent : '')).toLowerCase();
+      sec.classList.toggle('hidden', q && !text.includes(q));
+    });
+  });
+
+  // ── Mobile toggle ──
+  mobileToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+  });
+
+  // Init first item active
+  if (navItems.length > 0) navItems[0].classList.add('active');
+})();
+</script>
+<script src="../nav.js"></script>
+</body>
+</html>

@@ -3,15 +3,16 @@
   const MODULES = [
     { id: 'ict-trainer',        label: '1. Fondations ICT' },
     { id: 'ict-mentorship',     label: '2. ICT Mentorship' },
-    { id: 'ipda-trainer',       label: '3. Framework IPDA' },
-    { id: 'inducement-theorem', label: '4. Inducement' },
-    { id: 'hub-cours',          label: '5. Bibliotheque' },
-    { id: 'methodologie',       label: '6. Methodologie' },
-    { id: 'role-outils',        label: '7. Outils Pratiques' },
-    { id: 'time-price',         label: '8. Calculateur' },
-    { id: 'psychologie',        label: '9. Psychologie' },
-    { id: 'calculatrice',       label: '10. Calculatrice' },
-    { id: 'financial-juice',    label: '11. News Live' },
+    { id: 'time-cycles-protocol',label: '3. Time Cycles Video' },
+    { id: 'ipda-trainer',       label: '4. Framework IPDA' },
+    { id: 'inducement-theorem', label: '5. Inducement' },
+    { id: 'hub-cours',          label: '6. Bibliotheque' },
+    { id: 'methodologie',       label: '7. Methodologie' },
+    { id: 'role-outils',        label: '8. Outils Pratiques' },
+    { id: 'time-price',         label: '9. Calculateur' },
+    { id: 'psychologie',        label: '10. Psychologie' },
+    { id: 'calculatrice',       label: '11. Calculatrice' },
+    { id: 'financial-juice',    label: '12. News Live' },
   ];
 
   const filename = window.location.pathname.split('/').pop().replace('.html', '');
