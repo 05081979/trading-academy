@@ -10,7 +10,8 @@
     { id: 'role-outils',        label: '7. Outils Pratiques' },
     { id: 'time-price',         label: '8. Calculateur' },
     { id: 'psychologie',        label: '9. Psychologie' },
-    { id: 'financial-juice',    label: '10. News Live' },
+    { id: 'calculatrice',       label: '10. Calculatrice' },
+    { id: 'financial-juice',    label: '11. News Live' },
   ];
 
   const filename = window.location.pathname.split('/').pop().replace('.html', '');
