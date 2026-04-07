@@ -1,16 +1,14 @@
 /* ── ALGORITHMIC ACADEMY — Shared Navigation Bar ── */
 (function() {
   const MODULES = [
-    { id: 'hub-cours',          label: 'Hub de Cours' },
-    { id: 'ict-trainer',        label: 'ICT Trainer' },
-    { id: 'ipda-trainer',       label: 'IPDA Trainer' },
-    { id: 'time-price',         label: 'Time x Price' },
-    { id: 'modules-interactifs',label: 'Modules Interactifs' },
-    { id: 'inducement-theorem', label: 'Inducement Theorem' },
-    { id: 'trading-hub-v8',     label: 'Trading Hub NQ v8' },
-    { id: 'financial-juice',    label: 'Financial Juice' },
-    { id: 'methodologie',       label: 'Methodologie' },
-    { id: 'role-outils',        label: 'Role Outils' },
+    { id: 'ict-trainer',        label: '1. Fondations ICT' },
+    { id: 'ipda-trainer',       label: '2. Framework IPDA' },
+    { id: 'inducement-theorem', label: '3. Inducement' },
+    { id: 'hub-cours',          label: '4. Bibliotheque' },
+    { id: 'methodologie',       label: '5. Methodologie' },
+    { id: 'role-outils',        label: '6. Outils Pratiques' },
+    { id: 'time-price',         label: '7. Calculateur' },
+    { id: 'financial-juice',    label: '8. News Live' },
   ];
 
   const filename = window.location.pathname.split('/').pop().replace('.html', '');
