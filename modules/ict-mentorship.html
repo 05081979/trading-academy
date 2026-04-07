@@ -292,7 +292,7 @@ body {
 <nav class="sidebar">
   <div class="sidebar-header">
     <h2>ICT Mentorship</h2>
-    <p>Index Complet — 18 Chapitres</p>
+    <p>Index Complet — 22 Chapitres</p>
   </div>
   <input type="text" class="sidebar-search" id="search" placeholder="Rechercher un concept..." oninput="filterConcepts()">
 
@@ -338,8 +338,16 @@ body {
   </div>
 
   <div class="nav-group">
+    <div class="nav-group-title">Templates & Models</div>
+    <div class="nav-item" onclick="goTo('opening-range')"><div class="nav-dot" style="background:#e9b84c"></div>Opening Range Theory<span class="nav-count">5</span></div>
+    <div class="nav-item" onclick="goTo('templates')"><div class="nav-dot" style="background:#f04545"></div>Intraday Templates<span class="nav-count">7</span></div>
+    <div class="nav-item" onclick="goTo('daily-bias')"><div class="nav-dot" style="background:#4a7cff"></div>Daily Bias Framework<span class="nav-count">5</span></div>
+    <div class="nav-item" onclick="goTo('tf-alignment')"><div class="nav-dot" style="background:#38c9b0"></div>Timeframe Alignment<span class="nav-count">4</span></div>
+  </div>
+
+  <div class="nav-group">
     <div class="nav-group-title">Reference</div>
-    <div class="nav-item" onclick="goTo('glossary')"><div class="nav-dot" style="background:#e9b84c"></div>Glossaire A-Z<span class="nav-count">70+</span></div>
+    <div class="nav-item" onclick="goTo('glossary')"><div class="nav-dot" style="background:#e9b84c"></div>Glossaire A-Z<span class="nav-count">75+</span></div>
   </div>
 </nav>
 
@@ -2154,6 +2162,369 @@ body {
 </div>
 
 <!-- ═══════════════════════════════════════ -->
+<!-- CHAPITRE 19: OPENING RANGE THEORY -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="opening-range">
+  <div class="section-badge" style="background:rgba(233,184,76,0.1);color:#e9b84c;">Chapitre 19</div>
+  <h2>Opening Range Theory</h2>
+  <p class="section-intro">Les Opening Ranges sont les fenetres de 30 minutes qui definissent le biais directionnel de chaque session. Le FPFVG a l'interieur de ces ranges est le signal d'entree principal.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="opening range london ny equities 30 minutes opr session open">
+      <div class="concept-header">
+        <span class="concept-name">3 Opening Ranges</span>
+      </div>
+      <div class="concept-body">
+        Les trois fenetres d'ouverture de 30 minutes qui programment la direction de chaque session :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">London OPR</span> <strong>1h30 — 2h00 AM EST</strong> — fenetre de 30 minutes, definit le biais de la session London</li>
+          <li><span class="rule-label key">NY Open KZ</span> <strong>7h00 — 7h30 AM EST</strong> — fenetre de 30 minutes, definit le biais de la session NY AM</li>
+          <li><span class="rule-label key">Equities Open</span> <strong>9h30 — 10h00 AM EST</strong> — fenetre de 30 minutes, definit le biais du marche regulier</li>
+          <li><span class="rule-label warning">Regle</span> Toutes les OPR durent exactement <strong>30 minutes</strong> — l'action de prix dans cette fenetre est algorithmique</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="fpfvg first presented fvg displacement mss breakaway gap">
+      <div class="concept-header">
+        <span class="concept-name">First Presented FVG (FPFVG)</span>
+      </div>
+      <div class="concept-body">
+        Le premier FVG de displacement forme a l'interieur de l'Opening Range — c'est le signal d'entree principal :
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">Definition</span> Le FPFVG doit etre <strong>attache a un MSS</strong> a l'interieur de l'Opening Range — pas n'importe quel FVG</li>
+          <li><span class="rule-label key">Nature</span> C'est le <strong>FVG de DISPLACEMENT</strong> — la bougie de force qui cree le desequilibre directionnel</li>
+          <li><span class="rule-label warning">Breakaway Gap</span> Si le FVG est un Breakaway Gap = <strong>ne PAS trader dessus</strong> = signal de force directionnelle, pas d'entree</li>
+          <li><span class="rule-label key">Utilisation</span> Le FPFVG sert de zone de retour pour l'entree — le prix doit y revenir avant de continuer</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="90 percent rule first candle opr bearish bisi ifvg ce body">
+      <div class="concept-header">
+        <span class="concept-name">Regle du 90%</span>
+      </div>
+      <div class="concept-body">
+        Regle statistique puissante sur la premiere bougie de l'Opening Range :
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">Regle</span> Si la premiere bougie de l'OPR est <strong>bearish avec un BISI</strong>, elle agit comme un <strong>IFVG 90% du temps</strong></li>
+          <li><span class="rule-label warning">Condition</span> Le prix ne doit <strong>PAS quitter le corps de la bougie au-dessus du CE</strong> pour que la regle reste valide</li>
+          <li><span class="rule-label key">Application</span> Utiliser le CE de cette bougie comme <strong>invalidation</strong> — si le prix cloture au-dessus = la regle est invalidee</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="london opr strategy nq asian midnight mor fpfvg m15 m1 bias 2h50 4h10">
+      <div class="concept-header">
+        <span class="concept-name">London OPR Strategy</span>
+      </div>
+      <div class="concept-body">
+        Strategie complete pour la session London sur NQ :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Fenetre</span> <strong>2h50 — 4h10 AM NY</strong> sur NQ — c'est la fenetre d'execution</li>
+          <li><span class="rule-label key">Preparation</span> Tracer la <strong>session Asiatique + FPFVG M15</strong> | Tracer le <strong>Midnight Opening Range 0h00-0h30 + FPFVG M1</strong></li>
+          <li><span class="rule-label bullish">Biais Buy</span> Prix <strong>au-dessus du MOR</strong> a 2h50 = <strong>BUY</strong></li>
+          <li><span class="rule-label bearish">Biais Sell</span> Prix <strong>en-dessous du MOR</strong> a 2h50 = <strong>SELL</strong></li>
+          <li><span class="rule-label warning">Carryover</span> Si le FPFVG Asiatique est <strong>non touche pendant London</strong> = il sera <strong>revisite pendant NY AM</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="9am crt candle range trap turtle soup 1h m15 1m ob htf bias key level confirm reactive">
+      <div class="concept-header">
+        <span class="concept-name">9AM CRT Model</span>
+      </div>
+      <div class="concept-body">
+        Le Candle Range Trap — un modele reactif sur la bougie 1H de 9AM :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Definition</span> CRT = <strong>Candle Range Trap</strong> — la bougie 1H de 9AM raid le high ou low de la bougie de 8AM = setup turtle soup</li>
+          <li><span class="rule-label key">Confirmation</span> Confirmer avec le <strong>M15 a l'interieur du CRT</strong> — le M15 doit montrer le retournement</li>
+          <li><span class="rule-label bullish">Checklist</span> 1) HTF Bias | 2) HTF Key Level | 3) CRT 1H | 4) M15 confirm | 5) 1M OB entry</li>
+          <li><span class="rule-label warning">Nature</span> Ce modele est <strong>REACTIF pas predictif</strong> — attendre que le CRT se forme, ne pas anticiper</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- CHAPITRE 20: INTRADAY TEMPLATES -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="templates">
+  <div class="section-badge" style="background:rgba(240,69,69,0.1);color:#f04545;">Chapitre 20</div>
+  <h2>Intraday Templates</h2>
+  <p class="section-intro">Les 6 templates intraday couvrent tous les scenarios possibles d'une journee de trading. Identifier le template en cours permet d'anticiper les mouvements et de savoir quand NE PAS trader.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="template 1 classic buy london monday wednesday drop open lod daily range">
+      <div class="concept-header">
+        <span class="concept-name">Template 1 — Classic Buy</span>
+      </div>
+      <div class="concept-body">
+        Le template haussier classique, le plus frequent en debut de semaine :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Jours</span> <strong>Lundi a Mercredi</strong> — favorise en debut de semaine</li>
+          <li><span class="rule-label key">Session</span> <strong>London session</strong> — le mouvement principal se forme a Londres</li>
+          <li><span class="rule-label bullish">Action</span> Drop de <strong>15-30 pips sous l'open</strong>, LOD forme pendant London, puis rally</li>
+          <li><span class="rule-label key">Duree</span> Le daily range dure <strong>7-8 heures</strong> du LOD au HOD</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="template 2 london swing z day thursday consolidation take profits ny">
+      <div class="concept-header">
+        <span class="concept-name">Template 2 — London Swing to Z Day</span>
+      </div>
+      <div class="concept-body">
+        Template de mid-swing avec consolidation en fin de journee :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Jour</span> Habituellement <strong>Jeudi</strong> — mid-swing de la semaine</li>
+          <li><span class="rule-label key">Action</span> Drop sous l'open, puis run au-dessus, puis <strong>consolidation</strong></li>
+          <li><span class="rule-label warning">Regle</span> <strong>PRENDRE LES PROFITS au debut de NY</strong> — la consolidation commence apres</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="template 3 london swing nyo lc reversal htf ob fvg lod hod breaks">
+      <div class="concept-header">
+        <span class="concept-name">Template 3 — London Swing to NYO/LC Reversal</span>
+      </div>
+      <div class="concept-body">
+        Template avec reversal a New York — le plus trompeur :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Debut</span> Commence comme un <strong>Classic Buy</strong> — rally pendant London</li>
+          <li><span class="rule-label key">Reversal</span> Le rally atteint un <strong>HTF OB/FVG</strong>, puis NY reverse completement</li>
+          <li><span class="rule-label bearish">Resultat</span> London cree le <strong>LOD</strong>, NY cree le <strong>HOD</strong>, puis <strong>casse le LOD de London</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="template 4 range nyo lc rally nfp fomc consolidation lows raided explosive upside">
+      <div class="concept-header">
+        <span class="concept-name">Template 4 — Range to NYO/LC Rally</span>
+      </div>
+      <div class="concept-body">
+        Template des jours de news majeures avec explosion directionnelle :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Contexte</span> Jours de <strong>NFP / FOMC</strong> — consolidation initiale</li>
+          <li><span class="rule-label key">Action</span> Les <strong>lows sont raides</strong> pendant la consolidation, puis <strong>explosion haussiere</strong></li>
+          <li><span class="rule-label warning">Patience</span> Attendre le raid des lows avant d'entrer — ne pas anticiper le mouvement</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="template 5 consolidation raid news fomc buying opportunity">
+      <div class="concept-header">
+        <span class="concept-name">Template 5 — Consolidation Raid on News</span>
+      </div>
+      <div class="concept-body">
+        Template de raid sur consolidation lors des annonces :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Contexte</span> <strong>FOMC</strong> et autres annonces majeures</li>
+          <li><span class="rule-label key">Action</span> Le <strong>low de consolidation est pris</strong> par la news</li>
+          <li><span class="rule-label bullish">Opportunite</span> Bon pour <strong>acheter apres le raid</strong> — le stop hunt cree l'opportunite</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="template 6 seek destroy do not trade london open buy fails both sides hunted end swing">
+      <div class="concept-header">
+        <span class="concept-name">Template 6 — Seek & Destroy</span>
+      </div>
+      <div class="concept-body">
+        Le template le plus dangereux — a eviter absolument :
+        <ul class="concept-rules">
+          <li><span class="rule-label bearish">REGLE</span> <strong>NE PAS TRADER</strong> — ce template est concu pour pieger les deux cotes</li>
+          <li><span class="rule-label key">Signature</span> London Open buy qui <strong>echoue</strong> — signe de fin de mouvement directionnel</li>
+          <li><span class="rule-label warning">Danger</span> <strong>Les deux cotes sont chassees</strong> — acheteurs ET vendeurs sont pieges</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="daily profiles london reversal ny continuation manipulation cisd smt 1h key level distribute">
+      <div class="concept-header">
+        <span class="concept-name">3 Daily Profiles</span>
+      </div>
+      <div class="concept-body">
+        Les trois profils journaliers qui englobent tous les templates :
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">Profile 1</span> <strong>London Reversal → NY Continuation</strong> — London set le HOD/LOD a un key level 1H+, confirme par SMT/CISD, NY protege et continue</li>
+          <li><span class="rule-label key">Profile 2</span> <strong>NY Reversal</strong> — London echoue a atteindre un key level 1H valide, NY cree le HOD/LOD et distribue</li>
+          <li><span class="rule-label warning">Profile 3</span> <strong>NY Manipulation</strong> — journee de manipulation ou les deux sessions piègent les traders</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- CHAPITRE 21: DAILY BIAS FRAMEWORK -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="daily-bias">
+  <div class="section-badge" style="background:rgba(74,124,255,0.1);color:#4a7cff;">Chapitre 21</div>
+  <h2>Daily Bias Framework</h2>
+  <p class="section-intro">Le biais quotidien est la fondation de chaque journee de trading. Sans biais clair, il n'y a pas de trade. Ce framework systematise l'identification du biais et des conditions low-probability.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="relevant swings failure swing price separation look-back 30 candles extreme ignore">
+      <div class="concept-header">
+        <span class="concept-name">Relevant Swings</span>
+      </div>
+      <div class="concept-body">
+        Systeme en 3 etapes pour identifier les swings qui comptent reellement :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Etape 1 — Failure Swings</span> Deep run dans le high/low initial = <strong>IGNORER</strong>, focus uniquement sur les <strong>extremes</strong></li>
+          <li><span class="rule-label key">Etape 2 — Price Separation</span> Si engager un swing cree un failure vers le suivant = <strong>seul l'extreme compte</strong></li>
+          <li><span class="rule-label key">Etape 3 — Look-back</span> Maximum <strong>30 bougies daily</strong> — au-dela, les swings perdent leur pertinence algorithmique</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="reactions relevant swings manipulation breakout range neutral reversal continuation directional">
+      <div class="concept-header">
+        <span class="concept-name">Reactions aux Relevant Swings</span>
+      </div>
+      <div class="concept-body">
+        Comment interpreter la reaction du prix aux swings identifies :
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">Manipulation</span> La bougie daily <strong>penetre le swing, cloture a l'interieur du range</strong> = reversal + continuation</li>
+          <li><span class="rule-label key">Breakout</span> <strong>Deep close a travers le swing</strong> = continuation directionnelle</li>
+          <li><span class="rule-label warning">Range</span> Failure swings des deux cotes = <strong>NEUTRE, ne pas trader</strong> jusqu'a ce qu'un extreme soit engage</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="low probability conditions cpi fomc nfp fed bank holiday large range day asia nwog sync">
+      <div class="concept-header">
+        <span class="concept-name">Low Probability Conditions</span>
+      </div>
+      <div class="concept-body">
+        Les 7 conditions qui reduisent drastiquement la probabilite de succes :
+        <ul class="concept-rules">
+          <li><span class="rule-label bearish">1</span> <strong>Veille de CPI/FOMC/NFP/Fed Speaks</strong> — marche en attente, mouvements erratiques</li>
+          <li><span class="rule-label bearish">2</span> <strong>Matin apres un jour ferie bancaire</strong> — liquidite reduite, spreads elargis</li>
+          <li><span class="rule-label bearish">3</span> <strong>Objectif Daily/Weekly atteint avant CME 9h30</strong> — le mouvement est deja fait</li>
+          <li><span class="rule-label bearish">4</span> <strong>Jour apres un Large Range Day</strong> — epuisement directionnel probable</li>
+          <li><span class="rule-label bearish">5</span> <strong>Asia H et L tous deux pris pendant London</strong> — seek & destroy en cours</li>
+          <li><span class="rule-label bearish">6</span> <strong>Multiple NWOG convergent dans le meme range intraday</strong> — zone de confusion algorithmique</li>
+          <li><span class="rule-label bearish">7</span> <strong>ES/NQ pas en sync</strong> — absence de confirmation inter-marche</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="cisd detail change state delivery single candle series combo manipulation sweep ob fvg entry">
+      <div class="concept-header">
+        <span class="concept-name">CISD Detail</span>
+      </div>
+      <div class="concept-body">
+        Precision avancee sur le Change in State of Delivery :
+        <ul class="concept-rules">
+          <li><span class="rule-label warning">Attention</span> Une seule bougie up-close avant une livraison sell n'est <strong>PAS toujours un CISD</strong></li>
+          <li><span class="rule-label key">Serie</span> Si serie de bougies up/down close avant le changement = <strong>la serie entiere est le CISD</strong></li>
+          <li><span class="rule-label bullish">Combo</span> Manipulation sweep + <strong>CISD close a travers les bougies opposees</strong> + Entree sur OB/FVG de la bougie CISD</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="algorithmic signatures smooth edges jagged gauntlet ifvg breaker volume imbalance fvg extension price delivery continuum htf ltf">
+      <div class="concept-header">
+        <span class="concept-name">Key Algorithmic Signatures</span>
+      </div>
+      <div class="concept-body">
+        Les signatures algorithmiques qui revelent l'intention du prix :
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">Smooth Edges</span> Bords lisses sur le price action = <strong>DOL fort</strong> — le prix veut y aller</li>
+          <li><span class="rule-label bearish">Jagged Edges</span> Bords irreguliers = <strong>trader dans la direction opposee</strong></li>
+          <li><span class="rule-label key">Gauntlet IFVG</span> L'IFVG dans le leg de stop hunt est <strong>PLUS IMPORTANT que le breaker</strong></li>
+          <li><span class="rule-label key">Volume Imbalance</span> VI a l'interieur d'un FVG = <strong>toujours l'inclure</strong> dans la zone</li>
+          <li><span class="rule-label key">FVG Extension</span> Les niveaux FVG sont <strong>reutilises des deux cotes</strong> de la courbe</li>
+          <li><span class="rule-label key">Price Delivery Continuum</span> L'algo commence en HTF, offre des <strong>entrees en continu en LTF</strong> jusqu'a la cible</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- CHAPITRE 22: TIMEFRAME ALIGNMENT -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="tf-alignment">
+  <div class="section-badge" style="background:rgba(56,201,176,0.1);color:#38c9b0;">Chapitre 22</div>
+  <h2>Timeframe Alignment</h2>
+  <p class="section-intro">L'alignement des timeframes est le pont entre l'analyse HTF et l'execution LTF. Chaque niveau a un role precis : PDA pour le biais, MMXM pour la confirmation, Entry TF pour l'execution.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="grille alignement weekly 4h 15m daily 1h 5m 1m pda mmxm entry timeframe">
+      <div class="concept-header">
+        <span class="concept-name">Grille d'Alignement</span>
+      </div>
+      <div class="concept-body">
+        La matrice d'alignement PDA → MMXM → Entry pour chaque niveau :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Niveau 1</span> <strong>Weekly PDA → 4H MMXM → 15m Entry</strong></li>
+          <li><span class="rule-label key">Niveau 2</span> <strong>Daily PDA → 1H MMXM → 5m Entry</strong></li>
+          <li><span class="rule-label key">Niveau 3</span> <strong>4H PDA → 15m MMXM → 1m Entry</strong></li>
+          <li><span class="rule-label key">Niveau 4</span> <strong>1H PDA → 5m MMXM → sub-1m Entry</strong></li>
+          <li><span class="rule-label key">Niveau 5</span> <strong>15m PDA → 1m MMXM</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="right timeframe rule mmxm dealing range cleanest volatility 2m 1m ltf">
+      <div class="concept-header">
+        <span class="concept-name">Right Timeframe Rule</span>
+      </div>
+      <div class="concept-body">
+        Comment choisir le bon timeframe d'execution :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Le bon TF est celui ou le <strong>MMXM actuel est le plus propre</strong> dans le dealing range</li>
+          <li><span class="rule-label warning">Volatilite</span> Si haute volatilite et le MMXM se forme en LTF, le <strong>2m est parfois plus propre que le 1m</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="entry model checklist clean bias m15 order flow macro time stop hunt smt ifvg breaker reversal double entry tp rr">
+      <div class="concept-header">
+        <span class="concept-name">Entry Model Checklist</span>
+      </div>
+      <div class="concept-body">
+        Les 5 points de validation avant chaque entree :
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">1. Clean Bias</span> Le biais HTF est clair et non ambigu</li>
+          <li><span class="rule-label bullish">2. M15 Order Flow</span> Le flux M15 est <strong>aligne avec le biais</strong></li>
+          <li><span class="rule-label bullish">3. Macro Time</span> L'entree se fait pendant une <strong>fenetre macro active</strong></li>
+          <li><span class="rule-label bullish">4. Stop Hunt/SMT</span> Un <strong>stop hunt ou SMT</strong> confirme le retournement</li>
+          <li><span class="rule-label bullish">5. IFVG/Breaker</span> Entree sur <strong>IFVG ou Breaker</strong> — quand la bougie cloture au-dessus/en-dessous, attendre le <strong>REVERSAL sur la 2eme bougie</strong>, executer sur la meme bougie sans attendre le close</li>
+          <li><span class="rule-label key">Double Entry</span> 1ere entree au reversal, 2eme apres confirmation — <strong>TP minimum 1:2 RR</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="time-based liquidity hierarchy month week day session 8h30 9h30 opening price cme dol cascade pdh pwh">
+      <div class="concept-header">
+        <span class="concept-name">Time-Based Liquidity Hierarchy</span>
+      </div>
+      <div class="concept-body">
+        La hierarchie temporelle de la liquidite et la cascade des DOL :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Hierarchie</span> <strong>Month H/L > Week H/L > Day H/L > Session H/L</strong></li>
+          <li><span class="rule-label warning">Double Open</span> <strong>8h30 ET 9h30</strong> sont TOUS DEUX des prix d'ouverture — 8h30 news embargo peut creer un mouvement manipulatif avant le vrai CME Open</li>
+          <li><span class="rule-label bullish">DOL Cascade</span> Quand on casse un Session High en ligne avec le narratif, le DOL devient le <strong>prochain session high au-dessus ou PDH/PWH</strong></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
 <!-- 11. GLOSSAIRE A-Z -->
 <!-- ═══════════════════════════════════════ -->
 <div class="section" id="glossary">
@@ -2171,6 +2542,7 @@ body {
     <div class="gloss-item"><span class="gloss-term">CBDR</span><span class="gloss-def">Central Bank Dealer Range — range 14:00-20:00 NY, base des projections STDV</span></div>
     <div class="gloss-item"><span class="gloss-term">CE</span><span class="gloss-def">Consequent Encroachment — 50% d'un FVG</span></div>
     <div class="gloss-item"><span class="gloss-term">COT</span><span class="gloss-def">Commitment of Traders — rapport hebdomadaire des positions institutionnelles</span></div>
+    <div class="gloss-item"><span class="gloss-term">CRT</span><span class="gloss-def">Candle Range Trap — bougie 1H qui raid le high/low de l'heure precedente</span></div>
     <div class="gloss-item"><span class="gloss-term">ChoCh</span><span class="gloss-def">Change of Character — premier signe de retournement</span></div>
     <div class="gloss-item"><span class="gloss-term">CSD</span><span class="gloss-def">Change in State of Delivery — changement de programme</span></div>
     <div class="gloss-item"><span class="gloss-term">DOL</span><span class="gloss-def">Draw on Liquidity — objectif de prix cible</span></div>
@@ -2179,6 +2551,7 @@ body {
     <div class="gloss-item"><span class="gloss-term">GI</span><span class="gloss-def">Gap Imbalance — vrai gap de prix sans aucune livraison</span></div>
     <div class="gloss-item"><span class="gloss-term">EQL</span><span class="gloss-def">Equal Lows — creux au meme niveau = liquidite</span></div>
     <div class="gloss-item"><span class="gloss-term">ERL</span><span class="gloss-def">External Range Liquidity — liquidite aux extremes du range</span></div>
+    <div class="gloss-item"><span class="gloss-term">FPFVG</span><span class="gloss-def">First Presented FVG — premier FVG de displacement dans l'Opening Range</span></div>
     <div class="gloss-item"><span class="gloss-term">FVG</span><span class="gloss-def">Fair Value Gap — zone de desequilibre entre 3 bougies</span></div>
     <div class="gloss-item"><span class="gloss-term">HRLR</span><span class="gloss-def">High Resistance Liquidity Run — mouvement avec resistance</span></div>
     <div class="gloss-item"><span class="gloss-term">HTF</span><span class="gloss-def">Higher Time Frame — timeframe eleve (H4, Daily, Weekly)</span></div>
@@ -2198,12 +2571,14 @@ body {
     <div class="gloss-item"><span class="gloss-term">MB</span><span class="gloss-def">Mitigation Block — zone de cloture des pertes institutionnelles</span></div>
     <div class="gloss-item"><span class="gloss-term">MMBM</span><span class="gloss-def">Market Maker Buy Model — modele haussier en 7 phases</span></div>
     <div class="gloss-item"><span class="gloss-term">MMSM</span><span class="gloss-def">Market Maker Sell Model — modele baissier en 7 phases</span></div>
+    <div class="gloss-item"><span class="gloss-term">MOR</span><span class="gloss-def">Midnight Opening Range — range de 0h00 a 0h30 ET</span></div>
     <div class="gloss-item"><span class="gloss-term">MSS</span><span class="gloss-def">Market Structure Shift — cassure + displacement</span></div>
     <div class="gloss-item"><span class="gloss-term">MT</span><span class="gloss-def">Mean Threshold — 50% d'un Order Block</span></div>
     <div class="gloss-item"><span class="gloss-term">NDOG</span><span class="gloss-def">New Day Opening Gap — gap entre cloture et ouverture du jour suivant</span></div>
     <div class="gloss-item"><span class="gloss-term">NWOG</span><span class="gloss-def">New Week Opening Gap — gap entre vendredi et dimanche</span></div>
     <div class="gloss-item"><span class="gloss-term">OB</span><span class="gloss-def">Order Block — derniere bougie opposee avant displacement</span></div>
     <div class="gloss-item"><span class="gloss-term">OSOK</span><span class="gloss-def">One Shot One Kill — un seul trade par session, objectif unique</span></div>
+    <div class="gloss-item"><span class="gloss-term">OPR</span><span class="gloss-def">Opening Range — fenetre de 30 minutes d'ouverture de session</span></div>
     <div class="gloss-item"><span class="gloss-term">OTE</span><span class="gloss-def">Optimal Trade Entry — zone Fibonacci 62-79%</span></div>
     <div class="gloss-item"><span class="gloss-term">PD</span><span class="gloss-def">Premium / Discount — au-dessus ou en-dessous de 50% du range</span></div>
     <div class="gloss-item"><span class="gloss-term">PDH/PDL</span><span class="gloss-def">Previous Day High/Low — extremes du jour precedent</span></div>
