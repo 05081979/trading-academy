@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <script src="../auth.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IPTA Algorithmic Framework — Trainer Hub</title>
+<title>IPDA Algorithmic Framework — Trainer Hub</title>
 <style>
 :root {
   --dark:   #0D1117;
@@ -206,7 +206,7 @@ main { flex: 1; overflow-y: auto; padding: 32px; }
 <body>
 
 <header>
-  <div class="logo">IPTA <span>TRAINER</span></div>
+  <div class="logo">IPDA <span>TRAINER</span></div>
   <div class="score-bar">
     <span class="score-pill good" id="sc-correct">✓ 0</span>
     <span class="score-pill bad"  id="sc-wrong">✗ 0</span>
@@ -242,7 +242,7 @@ main { flex: 1; overflow-y: auto; padding: 32px; }
 
 <!-- ═══ HOME ═══ -->
 <div id="page-home">
-  <div class="section-title">📊 IPTA Algorithmic Framework</div>
+  <div class="section-title">📊 IPDA Algorithmic Framework</div>
   <p class="section-subtitle">Synthèse complète — PXH/PXL · Time Course · Algorithmic Precision</p>
 
   <div class="rule-box">
@@ -915,7 +915,7 @@ jusqu'à sortir du range vers le haut ou le bas.
 <span class="hl-red">SIGNAL PSYCHOLOGIQUE DE SORTIE :</span>
   Battements accélérés + sueur + doutes + incertitude
   → Sortir IMMÉDIATEMENT
-  → IPTA ne livre pas comme anticipé</div>
+  → IPDA ne livre pas comme anticipé</div>
 </div>
 
 <!-- ═══ M12 : RISK MANAGEMENT ═══ -->
@@ -943,7 +943,7 @@ jusqu'à sortir du range vers le haut ou le bas.
 
 <!-- ═══ FLASHCARDS ═══ -->
 <div id="page-flashcards" style="display:none">
-  <div class="section-title">🃏 Flashcards IPTA</div>
+  <div class="section-title">🃏 Flashcards IPDA</div>
   <div class="fc-area">
     <div class="fc-counter"><span id="fc-cur">1</span> / <span id="fc-tot">0</span></div>
     <div class="fc-progress"><div class="fc-progress-bar" id="fc-bar" style="width:0%"></div></div>
@@ -1001,7 +1001,7 @@ jusqu'à sortir du range vers le haut ou le bas.
 // ══ DATA ══════════════════════════════════════════════════════════════════════
 
 const FLASHCARDS = [
-  {tag:"M1",q:"Que signifie Point A et Point B dans le framework IPTA ?",a:"Point A = Inception (début du programme / Smart Money Reversal)\nPoint B = Terminus (objectif / Draw on Liquidity).\nTout trade cherche à capturer le mouvement de A vers B."},
+  {tag:"M1",q:"Que signifie Point A et Point B dans le framework IPDA ?",a:"Point A = Inception (début du programme / Smart Money Reversal)\nPoint B = Terminus (objectif / Draw on Liquidity).\nTout trade cherche à capturer le mouvement de A vers B."},
   {tag:"M1",q:"Quelle est la règle d'entrée dans un programme haussier en terme de position dans le range ?",a:"Entrer EN DESSOUS de l'équilibre (50%) du range A→B anticipé.\nDans un programme baissier : entrer AU-DESSUS de l'équilibre (50%)."},
   {tag:"M1",q:"Quelle est la différence entre Low Resistance et High Resistance Liquidity Run ?",a:"Low Resistance : expansion rapide et propre, SIBI/BISI tiennent au 1er retrace → environnement idéal.\nHigh Resistance : beaucoup de chop, retracements profonds → éviter ou gérer agressivement."},
   {tag:"M2",q:"Que signifient PXH et PXL ?",a:"PXH = Previous X High = haut du cycle précédent\nPXL = Previous X Low = bas du cycle précédent\nLe X est variable : Previous Day High, Previous Week Low, Previous 90min High, etc."},
@@ -1011,7 +1011,7 @@ const FLASHCARDS = [
   {tag:"M2",q:"Quelle est la règle pour le scénario Continuation en baissier ?",a:"Prix casse le PXL vers le bas → reteste le PXL → PXL agit comme RÉSISTANCE → continuation baissière vers la prochaine SSL."},
   {tag:"M3",q:"Qu'est-ce que la Buy Side Liquidity (BSL) et d'où vient-elle ?",a:"La BSL est resting AU-DESSUS des anciens hauts.\nSource : buy stops des vendeurs à découvert (stop-loss des shorts).\nSM pousse le prix vers ces hauts → déclenche les stops → vend contre ces acheteurs forcés."},
   {tag:"M3",q:"Qu'est-ce que la Sell Side Liquidity (SSL) et d'où vient-elle ?",a:"La SSL est resting EN-DESSOUS des anciens bas.\nSource : sell stops des acheteurs (stop-loss des longs).\nSM pousse le prix vers ces bas → déclenche les stops → achète contre ces vendeurs forcés."},
-  {tag:"M3",q:"Que signifie 'smooth highs like to be made jacked' ?",a:"Les hauts trop propres et alignés (relative equal highs) contiennent de la BSL engineérée au-dessus. IPTA sera attiré vers ces niveaux pour purger la BSL avant de continuer ou reverser."},
+  {tag:"M3",q:"Que signifie 'smooth highs like to be made jacked' ?",a:"Les hauts trop propres et alignés (relative equal highs) contiennent de la BSL engineérée au-dessus. IPDA sera attiré vers ces niveaux pour purger la BSL avant de continuer ou reverser."},
   {tag:"M4",q:"Qu'est-ce qu'un SIBI et comment se forme-t-il ?",a:"SIBI = Sell Side Imbalance, Buy Side Inefficiency.\nFVG baissier créé lors d'une expansion rapide vers le bas.\nGap entre le LOW de la bougie 1 et le HIGH de la bougie 3.\nLe marché devra revenir dans ce SIBI pour offrir du buy side delivery."},
   {tag:"M4",q:"Qu'est-ce qu'un BISI et comment se forme-t-il ?",a:"BISI = Buy Side Imbalance, Sell Side Inefficiency.\nFVG haussier créé lors d'une expansion rapide vers le haut.\nGap entre le HIGH de la bougie 1 et le LOW de la bougie 3.\nLe marché devra revenir dans ce BISI pour offrir du sell side delivery."},
   {tag:"M4",q:"Qu'est-ce qu'un Inversion FVG ?",a:"Un SIBI déplacé à la HAUSSE (prix clôture au-dessus) → le SIBI devient SUPPORT (inversion haussière).\nUn BISI déplacé à la BAISSE (prix clôture en-dessous) → le BISI devient RÉSISTANCE (inversion baissière)."},
@@ -1023,7 +1023,7 @@ const FLASHCARDS = [
   {tag:"M6",q:"Quelles sont les 3 méthodes pour définir le Draw on Liquidity ?",a:"1. Time Cycles : PXH (bullish) ou PXL (bearish) du cycle précédent, du grand vers le petit\n2. Key Levels : quadrants fixes 0%/25%/50%/75%/100% qui ne changent jamais\n3. PD Arrays : vieux SIBI/BISI non rebalancés, opening prices"},
   {tag:"M6",q:"Quelle est la différence entre les Key Levels et les PXH/PXL en termes de nature ?",a:"Key Levels = FIXES (ne changent jamais — même niveaux chaque semaine, mois, année)\nPXH/PXL = DYNAMIQUES (changent à chaque cycle — le haut de Lundi sera différent la semaine prochaine)"},
   {tag:"M6",q:"Quel est le combo idéal pour un DOL de haute probabilité ?",a:"Liquidité engineérée EN AVANCE d'un key level + un PD Array (SIBI/BISI ou vieux OB) dans la même zone = signature idéale pour un retournement de haute probabilité."},
-  {tag:"M7",q:"Que sont les Macros et quand se produisent-elles ?",a:"Les Macros sont des fenêtres de 30 minutes (XX:45 → XX:15) dans lesquelles IPTA livre des signatures algorithmiques répétables.\nNY Morning : 09h45-10h15 et 10h45-11h15\nNY PM : 13h45-14h15 et 14h45-15h15"},
+  {tag:"M7",q:"Que sont les Macros et quand se produisent-elles ?",a:"Les Macros sont des fenêtres de 30 minutes (XX:45 → XX:15) dans lesquelles IPDA livre des signatures algorithmiques répétables.\nNY Morning : 09h45-10h15 et 10h45-11h15\nNY PM : 13h45-14h15 et 14h45-15h15"},
   {tag:"M7",q:"Quelle est la règle si le SMR se forme EN DEHORS d'une fenêtre macro ?",a:"Si le Smart Money Reversal se forme hors macro → attendre la PROCHAINE fenêtre macro pour anticiper l'expansion. Ne pas entrer immédiatement après le SMR si on est hors fenêtre."},
   {tag:"M8",q:"Qu'est-ce que le SMT (Smart Money Time) et quel est son rôle dans le protocole ?",a:"SMT = divergence de corrélation entre marchés corrélés (NQ/ES) ou inversement corrélés (EUR/DXY).\nRôle = CONFIRMATION UNIQUEMENT. Le SMT ne signifie rien seul — il confirme les étapes précédentes du protocole (IOF + DOL + POI + ToI déjà en place)."},
   {tag:"M8",q:"Qu'est-ce que le Double SMT et pourquoi est-il le plus puissant ?",a:"Double SMT = Big Time Cycle SMT + Small Time Cycle SMT présents simultanément.\nLe Big cycle confirme que le swing se forme. Le Small cycle confirme que la formation est terminée. Ensemble = confirmation maximale que le swing high ou low est bien en place."},
@@ -1033,10 +1033,10 @@ const FLASHCARDS = [
   {tag:"M10",q:"Quels sont les 3 patterns d'entrée principaux et leur ordre de risque ?",a:"1. Breaker Block (le plus agressif — entrée dès le retrace dans le Breaker)\n2. Mitigation Block (même logique sans nouveau sommet/bas)\n3. SIBI/BISI (le plus fréquent — entrée dans le FVG sur 3 bougies)"},
   {tag:"M10",q:"Comment stacke-t-on les patterns d'entrée pour un signal maximal ?",a:"Breaker Block + SIBI/BISI dans la même zone = signal maximal ★★★.\nLe Breaker fournit le contexte (swing formation), le SIBI/BISI offre l'entrée précise et un stop serré."},
   {tag:"M11",q:"Quels sont les 3 éléments à prédéfinir avant toute entrée en trade ?",a:"1. Entry : le niveau exact d'entrée (Breaker / Mitigation / SIBI-BISI)\n2. Invalidation : le stop loss — où l'idée est annulée (SMR = le plus safe)\n3. Target : le DOL — la destination prédéfinie"},
-  {tag:"M11",q:"Quel signal psychologique indique qu'il faut sortir immédiatement d'une position ?",a:"Battements cardiaques accélérés + sueur + doutes + incertitude = SORTIR IMMÉDIATEMENT.\nCes signaux indiquent qu'on n'est pas aligné avec IPTA. La position ne devrait pas avoir été prise."},
+  {tag:"M11",q:"Quel signal psychologique indique qu'il faut sortir immédiatement d'une position ?",a:"Battements cardiaques accélérés + sueur + doutes + incertitude = SORTIR IMMÉDIATEMENT.\nCes signaux indiquent qu'on n'est pas aligné avec IPDA. La position ne devrait pas avoir été prise."},
   {tag:"M12",q:"Quelle est la règle de base du Regular Risk Management après un LOSS ?",a:"Réduire le risque à 0.5% (la moitié) jusqu'à la récupération complète du drawdown. Ensuite revenir à 1%. Ne jamais augmenter le risque après une perte pour 'récupérer'."},
   {tag:"M12",q:"Pourquoi utiliser 1% du capital total ne fonctionne pas sur un compte prop firm ?",a:"Exemple : max drawdown = 3000$ sur 100 000$.\n1% du capital = 1000$ de risque = 33% du drawdown en 1 trade.\n3 pertes consécutives → compte perdu.\nSolution : utiliser 10% du MAX ALLOWED DRAWDOWN comme risque par trade."},
-  {tag:"PROTO",q:"Quelle est la séquence complète du protocole IPTA ?",a:"1. Higher TF Institutional Order Flow (Buy ou Sell Program ?)\n2. Draw on Liquidity (DOL) — où va le marché ?\n3. Point of Interest (POI) — où va former le swing ?\n4. Time of Interest (Macro window)\n5. SMT (Smart Money Time — confirmation)\n6. CSD (Change in State of Delivery)\n→ ENTRÉE"},
+  {tag:"PROTO",q:"Quelle est la séquence complète du protocole IPDA ?",a:"1. Higher TF Institutional Order Flow (Buy ou Sell Program ?)\n2. Draw on Liquidity (DOL) — où va le marché ?\n3. Point of Interest (POI) — où va former le swing ?\n4. Time of Interest (Macro window)\n5. SMT (Smart Money Time — confirmation)\n6. CSD (Change in State of Delivery)\n→ ENTRÉE"},
 ];
 
 const QUIZ = [
@@ -1045,7 +1045,7 @@ const QUIZ = [
   {q:"Dans un scénario Purge & Revert haussier, quelle est la séquence ?",opts:["Prix monte au-dessus PXH → purge BSL → revient sous PXH → draw vers PXL","Prix descend sous PXL → purge SSL → remonte au-dessus PXL → draw vers PXH","Prix monte au-dessus PXH → hold PXH comme support → continue haussier","Prix descend sous PXL → hold PXL comme résistance → continue baissier"],correct:1,exp:"Purge & Revert haussier : descente sous PXL → SSL purgée → retour au-dessus du PXL (qui devient support) → draw vers le PXH."},
   {q:"Le Mean Threshold d'un Order Block est situé à :",opts:["25% du range","33% du range","50% du range","75% du range"],correct:2,exp:"Le Mean Threshold = 50% du range de l'Order Block. C'est le niveau le plus crucial : les corps ne doivent pas clôturer au-delà."},
   {q:"Le SMT (Smart Money Time) est :",opts:["Un signal d'entrée autonome","Un outil de confirmation qui nécessite les étapes précédentes","Un indicateur de volume","Un pattern de prix isolé"],correct:1,exp:"Le SMT est un outil de CONFIRMATION UNIQUEMENT. Il ne signifie rien sans que les étapes IOF + DOL + POI + ToI soient déjà en place."},
-  {q:"Quelle est la fenêtre de la macro NY Morning principale ?",opts:["08h00 → 08h30 et 09h00 → 09h30","09h45 → 10h15 et 10h45 → 11h15","10h00 → 10h30 et 11h00 → 11h30","08h30 → 09h00 et 09h30 → 10h00"],correct:1,exp:"Les macros NY Morning sont 09h45→10h15 et 10h45→11h15. Ces fenêtres de 30 minutes sont celles où IPTA livre ses signatures les plus nettes."},
+  {q:"Quelle est la fenêtre de la macro NY Morning principale ?",opts:["08h00 → 08h30 et 09h00 → 09h30","09h45 → 10h15 et 10h45 → 11h15","10h00 → 10h30 et 11h00 → 11h30","08h30 → 09h00 et 09h30 → 10h00"],correct:1,exp:"Les macros NY Morning sont 09h45→10h15 et 10h45→11h15. Ces fenêtres de 30 minutes sont celles où IPDA livre ses signatures les plus nettes."},
   {q:"La règle DOL → POI signifie :",opts:["Le POI est toujours supérieur au DOL","On définit le DOL AVANT de chercher un POI","Le DOL et le POI sont la même chose","On peut chercher un POI sans DOL défini"],correct:1,exp:"Le DOL (Draw on Liquidity) doit toujours être défini AVANT le POI. Le DOL = la destination, le POI = le point de retournement avant d'atteindre cette destination."},
   {q:"Qu'est-ce qu'un Double SMT ?",opts:["SMT sur deux marchés différents en même temps","Big Time Cycle SMT + Small Time Cycle SMT simultanément","SMT qui apparaît deux fois dans la même session","Opening SMT confirmé par un autre opening SMT"],correct:1,exp:"Le Double SMT = Big Cycle SMT (ex: relatif au PXL du jour) + Small Cycle SMT (ex: 10min cycle SMT dans le swing low). C'est la confirmation la plus forte."},
   {q:"Si le SMR se forme HORS d'une fenêtre macro, quelle est la règle ?",opts:["Entrer immédiatement sur le SMR","Ignorer complètement le trade","Attendre la PROCHAINE fenêtre macro pour l'expansion","Chercher un autre setup"],correct:2,exp:"Si le SMR se forme hors macro → attendre la prochaine fenêtre macro pour anticiper l'expansion. Le timing d'entrée sera meilleur et le risk/reward plus favorable."},
@@ -1053,7 +1053,7 @@ const QUIZ = [
   {q:"Dans le Risk Management Regular, que faire après un LOSS ?",opts:["Doubler le risque pour récupérer","Maintenir le même risque","Réduire à 0.5% jusqu'à récupération du drawdown","Arrêter de trader"],correct:2,exp:"Après un loss : réduire à 0.5% (la moitié). Si 2ème loss : maintenir 0.5%. Dès qu'on repasse en profit au-dessus du niveau de départ, revenir à 1%."},
   {q:"PM1 (11h30→13h00) dans la session PM est appelé :",opts:["The Power Hour","The Lunch Cycle","The Run Cycle","The Distribution Cycle"],correct:1,exp:"PM1 est le 'Lunch Cycle'. Il est généralement peu volatil et sert principalement à engineérer la liquidité pour PM2 et PM3. À éviter pour les entrées sur NQ."},
   {q:"Un SIBI déplacé à la HAUSSE devient :",opts:["Un BISI","Un Bearish Breaker","Un support (Inversion FVG)","Une résistance"],correct:2,exp:"Un SIBI (FVG baissier) déplacé à la hausse → l'inversion le transforme en SUPPORT (Inversion FVG haussier). Le prix devrait y trouver support pour continuer à la hausse."},
-  {q:"Quelle est la première étape du protocole IPTA ?",opts:["Identifier un SIBI ou BISI","Regarder le SMT sur NQ/ES","Définir le Higher TF Institutional Order Flow","Chercher une Macro window"],correct:2,exp:"La première étape est toujours de définir le Higher TF Institutional Order Flow (Buy Program ou Sell Program ?). Sans cela, aucune autre étape n'a de sens."},
+  {q:"Quelle est la première étape du protocole IPDA ?",opts:["Identifier un SIBI ou BISI","Regarder le SMT sur NQ/ES","Définir le Higher TF Institutional Order Flow","Chercher une Macro window"],correct:2,exp:"La première étape est toujours de définir le Higher TF Institutional Order Flow (Buy Program ou Sell Program ?). Sans cela, aucune autre étape n'a de sens."},
   {q:"Le Market Structure Shift Pattern (MSS) requiert :",opts:["Seulement un FVG et un Breaker","SIBI sur la gauche + haut formé DANS ce SIBI + déplacement au-dessus + BISI créé + BISI tenu","Un double bottom classique","Trois lower lows consécutifs"],correct:1,exp:"Le MSS haussier = SIBI gauche + haut dans ce SIBI + déplacement au-dessus avec BISI + le BISI tient comme support. Présent à CHAQUE retournement majeur sur tous les timeframes."},
 ];
 
