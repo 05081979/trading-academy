@@ -2,13 +2,14 @@
 (function() {
   const MODULES = [
     { id: 'ict-trainer',        label: '1. Fondations ICT' },
-    { id: 'ipda-trainer',       label: '2. Framework IPDA' },
-    { id: 'inducement-theorem', label: '3. Inducement' },
-    { id: 'hub-cours',          label: '4. Bibliotheque' },
-    { id: 'methodologie',       label: '5. Methodologie' },
-    { id: 'role-outils',        label: '6. Outils Pratiques' },
-    { id: 'time-price',         label: '7. Calculateur' },
-    { id: 'financial-juice',    label: '8. News Live' },
+    { id: 'ict-mentorship',     label: '2. ICT Mentorship' },
+    { id: 'ipda-trainer',       label: '3. Framework IPDA' },
+    { id: 'inducement-theorem', label: '4. Inducement' },
+    { id: 'hub-cours',          label: '5. Bibliotheque' },
+    { id: 'methodologie',       label: '6. Methodologie' },
+    { id: 'role-outils',        label: '7. Outils Pratiques' },
+    { id: 'time-price',         label: '8. Calculateur' },
+    { id: 'financial-juice',    label: '9. News Live' },
   ];
 
   const filename = window.location.pathname.split('/').pop().replace('.html', '');

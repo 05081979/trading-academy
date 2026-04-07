@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="../auth.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICT Mentorship — Index Complet</title>
+<link rel="stylesheet" href="../readability.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060a12;
+  --bg2: #0b1120;
+  --bg3: #101828;
+  --bg4: #162040;
+  --border: #1a2440;
+  --border2: #243055;
+  --blue: #4a7cff;
+  --blue2: #6b9aff;
+  --blue-dim: rgba(74,124,255,0.08);
+  --gold: #e9b84c;
+  --green: #2dd67a;
+  --red: #f04545;
+  --orange: #f08044;
+  --purple: #9b6cf0;
+  --teal: #38c9b0;
+  --text: #e4e8f2;
+  --text2: #8892a8;
+  --text3: #4a5568;
+  --sans: 'Inter', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+}
+
+/* ── LAYOUT ── */
+.app { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: 52px;
+  bottom: 0;
+  overflow-y: auto;
+  z-index: 50;
+}
+
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+.sidebar-header {
+  padding: 20px 18px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-header h2 {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--blue);
+  margin-bottom: 4px;
+}
+
+.sidebar-header p {
+  font-size: 11px;
+  color: var(--text3);
+  font-family: var(--mono);
+}
+
+.sidebar-search {
+  margin: 12px 14px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 12px;
+  font-family: var(--sans);
+  width: calc(100% - 28px);
+  outline: none;
+}
+.sidebar-search:focus { border-color: var(--blue); }
+.sidebar-search::placeholder { color: var(--text3); }
+
+.nav-group { padding: 8px 0; }
+
+.nav-group-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 8px 18px 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text2);
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+
+.nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text); }
+.nav-item.active { background: var(--blue-dim); color: var(--blue); border-left-color: var(--blue); font-weight: 600; }
+
+.nav-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.nav-count {
+  margin-left: auto;
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--text3);
+}
+
+/* ── MAIN ── */
+.main {
+  flex: 1;
+  margin-left: 260px;
+  padding: 32px 40px 60px;
+  max-width: 900px;
+}
+
+.section { margin-bottom: 48px; }
+
+.section-id { scroll-margin-top: 70px; }
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.section h2 {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  color: #f0f2f8;
+}
+
+.section-intro {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 24px;
+  max-width: 700px;
+}
+
+/* ── CONCEPT CARDS ── */
+.concepts { display: flex; flex-direction: column; gap: 12px; }
+
+.concept {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  transition: all 0.2s;
+}
+
+.concept:hover {
+  border-color: var(--border2);
+  background: var(--bg3);
+}
+
+.concept-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.concept-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.concept-abbr {
+  font-size: 11px;
+  font-family: var(--mono);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--blue-dim);
+  color: var(--blue);
+}
+
+.concept-body {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.75;
+}
+
+.concept-body strong { color: var(--text); }
+
+.concept-rules {
+  margin-top: 10px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--text2);
+}
+
+.concept-rules li { margin-bottom: 4px; }
+.concept-rules li::marker { color: var(--blue); }
+
+.rule-label {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--mono);
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-right: 4px;
+}
+
+.bullish { background: rgba(45,214,122,0.12); color: var(--green); }
+.bearish { background: rgba(240,69,69,0.12); color: var(--red); }
+.key { background: rgba(74,124,255,0.12); color: var(--blue); }
+.warning { background: rgba(240,128,68,0.12); color: var(--orange); }
+
+/* ── GLOSSARY ── */
+.glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 8px;
+}
+
+.gloss-item {
+  display: flex;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.gloss-term {
+  font-weight: 700;
+  font-family: var(--mono);
+  color: var(--blue);
+  white-space: nowrap;
+  min-width: 60px;
+}
+
+.gloss-def { color: var(--text2); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding: 20px 16px 40px; }
+  .glossary-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <h2>ICT Mentorship</h2>
+    <p>Index Complet — 11 Chapitres</p>
+  </div>
+  <input type="text" class="sidebar-search" id="search" placeholder="Rechercher un concept..." oninput="filterConcepts()">
+
+  <div class="nav-group">
+    <div class="nav-group-title">Structure & Prix</div>
+    <div class="nav-item active" onclick="goTo('structure')"><div class="nav-dot" style="background:#4a7cff"></div>Market Structure<span class="nav-count">8</span></div>
+    <div class="nav-item" onclick="goTo('liquidity')"><div class="nav-dot" style="background:#2dd67a"></div>Liquidity<span class="nav-count">9</span></div>
+    <div class="nav-item" onclick="goTo('pd-arrays')"><div class="nav-dot" style="background:#9b6cf0"></div>PD Arrays<span class="nav-count">10</span></div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title">Temps & Sessions</div>
+    <div class="nav-item" onclick="goTo('time')"><div class="nav-dot" style="background:#e9b84c"></div>Time & Sessions<span class="nav-count">9</span></div>
+    <div class="nav-item" onclick="goTo('qt')"><div class="nav-dot" style="background:#f08044"></div>Quarterly Theory<span class="nav-count">7</span></div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title">Modeles & Entries</div>
+    <div class="nav-item" onclick="goTo('models')"><div class="nav-dot" style="background:#f04545"></div>Market Maker Models<span class="nav-count">6</span></div>
+    <div class="nav-item" onclick="goTo('ote')"><div class="nav-dot" style="background:#38c9b0"></div>Optimal Trade Entry<span class="nav-count">6</span></div>
+    <div class="nav-item" onclick="goTo('smt')"><div class="nav-dot" style="background:#4a7cff"></div>SMT Divergence<span class="nav-count">5</span></div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title">Execution</div>
+    <div class="nav-item" onclick="goTo('orderflow')"><div class="nav-dot" style="background:#9b6cf0"></div>Order Flow & IPDA<span class="nav-count">7</span></div>
+    <div class="nav-item" onclick="goTo('risk')"><div class="nav-dot" style="background:#2dd67a"></div>Risk Management<span class="nav-count">6</span></div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title">Reference</div>
+    <div class="nav-item" onclick="goTo('glossary')"><div class="nav-dot" style="background:#e9b84c"></div>Glossaire A-Z<span class="nav-count">60+</span></div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 1. MARKET STRUCTURE -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="structure">
+  <div class="section-badge" style="background:rgba(74,124,255,0.1);color:#4a7cff;">Chapitre 01</div>
+  <h2>Market Structure</h2>
+  <p class="section-intro">La structure de marche est la fondation de toute analyse. Comprendre comment le prix forme des swings, des breaks et des shifts est la premiere etape pour lire le marche comme les institutions.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="swing high swing low structure">
+      <div class="concept-header">
+        <span class="concept-name">Swing High / Swing Low</span>
+        <span class="concept-abbr">STH / STL</span>
+      </div>
+      <div class="concept-body">
+        Un <strong>Swing High</strong> est un sommet de prix entoure de sommets plus bas des deux cotes. Un <strong>Swing Low</strong> est un creux entoure de creux plus hauts. Ils definissent la structure visible du marche.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Un swing high valide a des highs plus bas avant ET apres</li>
+          <li><span class="rule-label key">Regle</span> Un swing low valide a des lows plus hauts avant ET apres</li>
+          <li><span class="rule-label key">Regle</span> Plus le timeframe est eleve, plus le swing est significatif</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="intermediate term high low ith itl">
+      <div class="concept-header">
+        <span class="concept-name">Intermediate Term High / Low</span>
+        <span class="concept-abbr">ITH / ITL</span>
+      </div>
+      <div class="concept-body">
+        Points pivots intermediaires dans la structure. Un <strong>ITH</strong> est un swing high entre deux swing highs plus bas. Un <strong>ITL</strong> est un swing low entre deux swing lows plus hauts. Ils forment la structure interne des mouvements.
+      </div>
+    </div>
+
+    <div class="concept" data-search="long term high low lth ltl">
+      <div class="concept-header">
+        <span class="concept-name">Long Term High / Low</span>
+        <span class="concept-abbr">LTH / LTL</span>
+      </div>
+      <div class="concept-body">
+        Points structurels majeurs formes sur les timeframes eleves (Daily, Weekly). Un <strong>LTH</strong> est le plus haut swing dans une tendance donnee. Ils representent les objectifs de liquidite les plus significatifs.
+      </div>
+    </div>
+
+    <div class="concept" data-search="break of structure bos">
+      <div class="concept-header">
+        <span class="concept-name">Break of Structure</span>
+        <span class="concept-abbr">BOS</span>
+      </div>
+      <div class="concept-body">
+        Cassure d'un swing high ou low dans le sens de la tendance. Un BOS <strong>haussier</strong> = cassure d'un swing high precedent. Un BOS <strong>baissier</strong> = cassure d'un swing low precedent. Confirme la continuation de la tendance en cours.
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">Bull</span> Prix casse au-dessus du dernier STH → continuation haussiere</li>
+          <li><span class="rule-label bearish">Bear</span> Prix casse en-dessous du dernier STL → continuation baissiere</li>
+          <li><span class="rule-label warning">Attention</span> Un BOS seul ne suffit pas — verifier le contexte HTF</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="market structure shift mss">
+      <div class="concept-header">
+        <span class="concept-name">Market Structure Shift</span>
+        <span class="concept-abbr">MSS</span>
+      </div>
+      <div class="concept-body">
+        Changement de la direction structurelle du marche. Un MSS se produit quand le prix casse un swing <strong>dans le sens oppose</strong> a la tendance precedente, accompagne d'un <strong>displacement</strong> (mouvement agressif avec FVG).
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> MSS = BOS contre la tendance + Displacement</li>
+          <li><span class="rule-label key">Regle</span> Doit etre accompagne d'un FVG pour etre valide</li>
+          <li><span class="rule-label key">Regle</span> Chercher un MSS sur le meme timeframe que la structure cassee</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="change of character choch">
+      <div class="concept-header">
+        <span class="concept-name">Change of Character</span>
+        <span class="concept-abbr">ChoCh</span>
+      </div>
+      <div class="concept-body">
+        Premier signe de changement de direction. Le prix casse un swing key dans le sens oppose. Difference avec MSS : le ChoCh est le <strong>premier signal</strong>, le MSS est la <strong>confirmation</strong> avec displacement.
+      </div>
+    </div>
+
+    <div class="concept" data-search="premium discount equilibrium">
+      <div class="concept-header">
+        <span class="concept-name">Premium / Discount / Equilibrium</span>
+        <span class="concept-abbr">P/D</span>
+      </div>
+      <div class="concept-body">
+        Le prix oscille entre zones de <strong>Premium</strong> (au-dessus de 50% du range = cher) et <strong>Discount</strong> (en-dessous de 50% = pas cher). L'<strong>Equilibrium</strong> (50%) est le point d'equilibre.
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">Bull</span> Acheter en Discount (sous 50%), cibler le Premium</li>
+          <li><span class="rule-label bearish">Bear</span> Vendre en Premium (au-dessus 50%), cibler le Discount</li>
+          <li><span class="rule-label key">Regle</span> Utiliser le Fibonacci 0-100 du dernier swing pour tracer les zones</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="dealing range dr internal external">
+      <div class="concept-header">
+        <span class="concept-name">Dealing Range</span>
+        <span class="concept-abbr">DR</span>
+      </div>
+      <div class="concept-body">
+        Le range entre le dernier swing high et swing low significatifs. Il definit le terrain de jeu actuel du prix. <strong>Internal Range Liquidity (IRL)</strong> = FVG a l'interieur. <strong>External Range Liquidity (ERL)</strong> = les extremes du range.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Le prix alterne entre IRL et ERL</li>
+          <li><span class="rule-label key">Regle</span> Si IRL est prise → le prix va vers ERL (et inversement)</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 2. LIQUIDITY -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="liquidity">
+  <div class="section-badge" style="background:rgba(45,214,122,0.1);color:#2dd67a;">Chapitre 02</div>
+  <h2>Liquidity</h2>
+  <p class="section-intro">La liquidite est le carburant du marche. Les institutions ne peuvent pas executer d'ordres sans liquidite. Comprendre ou elle se trouve et comment elle est prise est essentiel.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="buy side liquidity bsl">
+      <div class="concept-header">
+        <span class="concept-name">Buy Side Liquidity</span>
+        <span class="concept-abbr">BSL</span>
+      </div>
+      <div class="concept-body">
+        Liquidite situee <strong>au-dessus</strong> des swing highs. Ce sont les stop-loss des vendeurs et les ordres d'achat en breakout. Les institutions <strong>poussent le prix vers le haut</strong> pour absorber cette liquidite avant de retourner.
+      </div>
+    </div>
+
+    <div class="concept" data-search="sell side liquidity ssl">
+      <div class="concept-header">
+        <span class="concept-name">Sell Side Liquidity</span>
+        <span class="concept-abbr">SSL</span>
+      </div>
+      <div class="concept-body">
+        Liquidite situee <strong>en-dessous</strong> des swing lows. Ce sont les stop-loss des acheteurs et les ordres de vente en breakout. Les institutions <strong>poussent le prix vers le bas</strong> pour absorber cette liquidite.
+      </div>
+    </div>
+
+    <div class="concept" data-search="equal highs lows eqh eql">
+      <div class="concept-header">
+        <span class="concept-name">Equal Highs / Equal Lows</span>
+        <span class="concept-abbr">EQH / EQL</span>
+      </div>
+      <div class="concept-body">
+        Quand le prix forme des sommets ou des creux au <strong>meme niveau</strong> plusieurs fois. C'est un signal de <strong>liquidite concentree</strong> — les retail traders placent leurs stops juste au-dessus/en-dessous de ces niveaux.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> EQH = aimant pour le prix — la liquidite SERA prise</li>
+          <li><span class="rule-label key">Regle</span> EQL = aimant pour le prix — la liquidite SERA prise</li>
+          <li><span class="rule-label warning">Attention</span> EQ ne veut pas dire resistance/support — c'est une cible de liquidite</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="draw on liquidity dol">
+      <div class="concept-header">
+        <span class="concept-name">Draw on Liquidity</span>
+        <span class="concept-abbr">DOL</span>
+      </div>
+      <div class="concept-body">
+        L'objectif de prix vers lequel le marche se dirige. Le DOL est determine par l'analyse HTF : c'est le <strong>pool de liquidite</strong> que l'algorithme cible. Trouver le DOL AVANT le POI (Point of Interest).
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Toujours identifier le DOL avant de chercher une entree</li>
+          <li><span class="rule-label key">Regle</span> DOL commun : PDH, PDL, PWH, PWL, EQH, EQL, old highs/lows</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="liquidity sweep purge raid">
+      <div class="concept-header">
+        <span class="concept-name">Liquidity Sweep / Purge / Raid</span>
+      </div>
+      <div class="concept-body">
+        Mouvement rapide du prix qui depasse un niveau de liquidite puis revient. <strong>Sweep</strong> = prise rapide et retour. <strong>Purge</strong> = sweep plus violent avec displacement. <strong>Raid</strong> = sweep planifie dans une killzone.
+      </div>
+    </div>
+
+    <div class="concept" data-search="inducement trap">
+      <div class="concept-header">
+        <span class="concept-name">Inducement</span>
+      </div>
+      <div class="concept-body">
+        Petit pool de liquidite <strong>intentionnellement cree</strong> pour attirer les traders avant un mouvement inverse. L'inducement est le "piege dans le piege" — il cree de la liquidite mineure pour financer le vrai mouvement.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> L'inducement se situe entre le dernier swing et l'OB</li>
+          <li><span class="rule-label warning">Attention</span> Ne pas entrer sur l'inducement — attendre qu'il soit pris</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="previous day high low pdh pdl">
+      <div class="concept-header">
+        <span class="concept-name">Previous Day / Week / Month High & Low</span>
+        <span class="concept-abbr">PDH/PDL PWH/PWL PMH/PML</span>
+      </div>
+      <div class="concept-body">
+        Les extremes des periodes precedentes sont des <strong>niveaux de liquidite majeurs</strong>. Le prix est magnetiquement attire vers ces niveaux car les ordres s'y accumulent.
+      </div>
+    </div>
+
+    <div class="concept" data-search="liquidity void lv">
+      <div class="concept-header">
+        <span class="concept-name">Liquidity Void</span>
+        <span class="concept-abbr">LV</span>
+      </div>
+      <div class="concept-body">
+        Zone ou le prix a traverse <strong>tres rapidement</strong> sans laisser de transactions significatives. Le marche tend a revenir remplir ces voids car il y a un desequilibre d'ordres.
+      </div>
+    </div>
+
+    <div class="concept" data-search="stop hunt stop run">
+      <div class="concept-header">
+        <span class="concept-name">Stop Hunt / Stop Run</span>
+      </div>
+      <div class="concept-body">
+        Mouvement delibere du prix pour <strong>declencher les stop-loss</strong> des traders retail avant de se retourner dans la direction opposee. C'est le mecanisme par lequel les institutions obtiennent la liquidite necessaire pour leurs positions.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 3. PD ARRAYS -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="pd-arrays">
+  <div class="section-badge" style="background:rgba(155,108,240,0.1);color:#9b6cf0;">Chapitre 03</div>
+  <h2>PD Arrays — Price Delivery Arrays</h2>
+  <p class="section-intro">Les PD Arrays sont les zones ou le prix est susceptible de reagir. Ils forment la grille de lecture institutionnelle du marche — chaque array a une fonction specifique dans la livraison du prix.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="order block ob bullish bearish">
+      <div class="concept-header">
+        <span class="concept-name">Order Block</span>
+        <span class="concept-abbr">OB</span>
+      </div>
+      <div class="concept-body">
+        La derniere bougie opposee avant un <strong>displacement</strong>. Un OB bullish = derniere bougie baissiere avant un mouvement haussier agressif. C'est la zone ou les institutions ont place leurs ordres.
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">Bull OB</span> Derniere bougie baissiere avant le displacement haussier — zone d'achat</li>
+          <li><span class="rule-label bearish">Bear OB</span> Derniere bougie haussiere avant le displacement baissier — zone de vente</li>
+          <li><span class="rule-label key">Regle</span> L'OB doit etre accompagne d'un FVG pour etre valide</li>
+          <li><span class="rule-label key">Regle</span> Entree optimale au 50% de l'OB (Mean Threshold)</li>
+          <li><span class="rule-label warning">Attention</span> Un OB sans displacement n'est PAS un vrai OB</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="fair value gap fvg imbalance sibi bisi">
+      <div class="concept-header">
+        <span class="concept-name">Fair Value Gap</span>
+        <span class="concept-abbr">FVG / SIBI / BISI</span>
+      </div>
+      <div class="concept-body">
+        Zone de desequilibre entre 3 bougies consecutives ou le prix n'a pas ete echange des deux cotes. <strong>SIBI</strong> (Sell-side Imbalance, Buy-side Inefficiency) = FVG baissier. <strong>BISI</strong> (Buy-side Imbalance, Sell-side Inefficiency) = FVG haussier.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Le FVG se mesure entre le high de la bougie 1 et le low de la bougie 3</li>
+          <li><span class="rule-label key">Regle</span> Le prix tend a revenir remplir le FVG (rebalancement)</li>
+          <li><span class="rule-label key">Regle</span> Le 50% du FVG (Consequent Encroachment) est la zone de reaction optimale</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="inversion fvg ifvg">
+      <div class="concept-header">
+        <span class="concept-name">Inversion FVG</span>
+        <span class="concept-abbr">IFVG</span>
+      </div>
+      <div class="concept-body">
+        Un FVG qui a ete <strong>traverse et inverse</strong>. Un ancien SIBI traverse a la hausse devient un support (IFVG haussier). Un ancien BISI traverse a la baisse devient une resistance (IFVG baissier). Signal de force et de changement de programme.
+      </div>
+    </div>
+
+    <div class="concept" data-search="breaker block bb">
+      <div class="concept-header">
+        <span class="concept-name">Breaker Block</span>
+        <span class="concept-abbr">BB</span>
+      </div>
+      <div class="concept-body">
+        Un ancien Order Block qui a ete <strong>invalide</strong> (le prix l'a traverse). Il change de polarite : un ancien OB bullish invalide devient une zone de vente (Breaker bearish), et inversement.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Le Breaker est plus fiable que l'OB car il confirme un changement de direction</li>
+          <li><span class="rule-label key">Regle</span> Attendre un retour dans le Breaker pour l'entree</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="mitigation block mb">
+      <div class="concept-header">
+        <span class="concept-name">Mitigation Block</span>
+        <span class="concept-abbr">MB</span>
+      </div>
+      <div class="concept-body">
+        Zone ou les institutions <strong>ferment leurs positions perdantes</strong>. Quand un OB echoue et que le prix revient, les institutions "mitigent" (reduisent) leurs pertes en fermant a breakeven. Cette zone devient un point de reaction.
+      </div>
+    </div>
+
+    <div class="concept" data-search="rejection block rb">
+      <div class="concept-header">
+        <span class="concept-name">Rejection Block</span>
+        <span class="concept-abbr">RB</span>
+      </div>
+      <div class="concept-body">
+        Forme par les <strong>wicks (meches)</strong> des bougies qui montrent un rejet de prix. La zone entre l'open/close et l'extreme de la meche represente une zone de rejet institutionnel. Le prix revient souvent tester cette zone.
+      </div>
+    </div>
+
+    <div class="concept" data-search="propulsion block pb">
+      <div class="concept-header">
+        <span class="concept-name">Propulsion Block</span>
+      </div>
+      <div class="concept-body">
+        Un FVG qui est <strong>immediatement reteste et qui tient</strong>. Le prix revient dans le FVG, reagit, et repart dans le meme sens. Signal de force maximale — le programme est tres agressif.
+      </div>
+    </div>
+
+    <div class="concept" data-search="balanced price range bpr">
+      <div class="concept-header">
+        <span class="concept-name">Balanced Price Range</span>
+        <span class="concept-abbr">BPR</span>
+      </div>
+      <div class="concept-body">
+        Zone ou un <strong>SIBI et un BISI se chevauchent</strong>. C'est un point d'equilibre du prix — la zone la plus "juste" selon l'algorithme. Le prix est magnetiquement attire vers le BPR.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Le BPR est la zone de chevauchement entre les deux FVG</li>
+          <li><span class="rule-label key">Regle</span> Plus le BPR est petit, plus la reaction sera precise</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="volume imbalance vi">
+      <div class="concept-header">
+        <span class="concept-name">Volume Imbalance</span>
+        <span class="concept-abbr">VI</span>
+      </div>
+      <div class="concept-body">
+        Gap entre le <strong>close d'une bougie et l'open de la suivante</strong> (pas le meme que le FVG qui utilise 3 bougies). Represente un desequilibre d'ordres entre deux sessions ou deux bougies.
+      </div>
+    </div>
+
+    <div class="concept" data-search="new week opening gap new day nwog ndog">
+      <div class="concept-header">
+        <span class="concept-name">New Week / New Day Opening Gap</span>
+        <span class="concept-abbr">NWOG / NDOG</span>
+      </div>
+      <div class="concept-body">
+        Le gap entre la <strong>cloture du vendredi et l'ouverture du dimanche</strong> (NWOG) ou entre la cloture de 17h et l'ouverture de 18h (NDOG). Agit comme un FVG institutionnel — le prix tend a revenir combler ce gap.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 4. TIME & SESSIONS -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="time">
+  <div class="section-badge" style="background:rgba(233,184,76,0.1);color:#e9b84c;">Chapitre 04</div>
+  <h2>Time & Sessions</h2>
+  <p class="section-intro">Le temps est l'element le plus important. L'algorithme opere sur des fenetres temporelles precises. Savoir QUAND trader est plus important que savoir OU trader.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="killzone kz london new york asia">
+      <div class="concept-header">
+        <span class="concept-name">Killzones</span>
+        <span class="concept-abbr">KZ</span>
+      </div>
+      <div class="concept-body">
+        Fenetres temporelles ou le volume institutionnel est maximal. C'est pendant ces periodes que les vrais mouvements se produisent.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Asia</span> 20h00 - 00h00 ET (02h - 06h Paris) — Accumulation / Range</li>
+          <li><span class="rule-label key">London</span> 02h00 - 05h00 ET (08h - 11h Paris) — Manipulation / Judas Swing</li>
+          <li><span class="rule-label key">NY AM</span> 08h30 - 11h00 ET (14h30 - 17h Paris) — Distribution / Vrai mouvement</li>
+          <li><span class="rule-label key">NY PM</span> 13h30 - 16h00 ET (19h30 - 22h Paris) — Consolidation / Reversal</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="macro time window">
+      <div class="concept-header">
+        <span class="concept-name">Macro Windows</span>
+      </div>
+      <div class="concept-body">
+        Fenetres de <strong>15-20 minutes</strong> a l'interieur des killzones ou l'algorithme initie ses mouvements. Les macros sont les fenetres de haute precision.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Macro</span> XX:33 - XX:00 (les 27 dernieres minutes de chaque heure)</li>
+          <li><span class="rule-label key">Macro</span> XX:03 - XX:15 (les 12 premieres minutes de chaque heure)</li>
+          <li><span class="rule-label key">Macro</span> Ces fenetres se repetent de maniere fractale sur tous les timeframes</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="silver bullet sb">
+      <div class="concept-header">
+        <span class="concept-name">Silver Bullet</span>
+        <span class="concept-abbr">SB</span>
+      </div>
+      <div class="concept-body">
+        Setup d'entree base sur des <strong>fenetres horaires precises</strong>. Le prix cree un FVG dans une fenetre specifique, et l'entree se fait sur le retour dans ce FVG.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">SB 1</span> 03h00 - 04h00 ET (09h - 10h Paris) — London</li>
+          <li><span class="rule-label key">SB 2</span> 10h00 - 11h00 ET (16h - 17h Paris) — NY AM</li>
+          <li><span class="rule-label key">SB 3</span> 14h00 - 15h00 ET (20h - 21h Paris) — NY PM</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="power of 3 po3 amd accumulation manipulation distribution">
+      <div class="concept-header">
+        <span class="concept-name">Power of 3 / AMD</span>
+        <span class="concept-abbr">PO3 / AMD</span>
+      </div>
+      <div class="concept-body">
+        Le cycle en 3 phases que l'algorithme repete sur chaque timeframe : <strong>Accumulation</strong> (range, construction de liquidite) → <strong>Manipulation</strong> (faux mouvement, Judas Swing) → <strong>Distribution</strong> (vrai mouvement dans la direction voulue).
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Chaque bougie est un PO3 — open = accumulation, wicks = manipulation, close = distribution</li>
+          <li><span class="rule-label key">Regle</span> Le Daily Candle suit le meme schema : Asia = A, London = M, NY = D</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="judas swing faux mouvement">
+      <div class="concept-header">
+        <span class="concept-name">Judas Swing</span>
+      </div>
+      <div class="concept-body">
+        Le <strong>faux mouvement</strong> (phase Manipulation du PO3). Le prix bouge agressivement dans la MAUVAISE direction pendant London Open pour prendre la liquidite et pieger les traders retail, avant de se retourner dans la vraie direction pendant NY.
+      </div>
+    </div>
+
+    <div class="concept" data-search="true day open tdo midnight open">
+      <div class="concept-header">
+        <span class="concept-name">True Day Open / Midnight Open</span>
+        <span class="concept-abbr">TDO</span>
+      </div>
+      <div class="concept-body">
+        Le prix d'ouverture a <strong>00h00 ET (06h00 Paris)</strong>. C'est le vrai debut du jour algorithmique. Le prix tend a revenir vers le TDO avant de partir dans sa direction journaliere.
+      </div>
+    </div>
+
+    <div class="concept" data-search="opening price op session">
+      <div class="concept-header">
+        <span class="concept-name">Opening Prices</span>
+      </div>
+      <div class="concept-body">
+        Les prix d'ouverture de chaque session agissent comme des <strong>pivots dynamiques</strong>. Si le prix est au-dessus de l'Opening Price → biais haussier. En-dessous → biais baissier. Valable pour le Daily Open, le London Open, le NY Open.
+      </div>
+    </div>
+
+    <div class="concept" data-search="cycle 90 minutes session">
+      <div class="concept-header">
+        <span class="concept-name">Cycles de 90 Minutes</span>
+      </div>
+      <div class="concept-body">
+        Le marche opere en <strong>cycles de 90 minutes</strong>. Chaque cycle contient son propre micro-AMD. Les cycles cles : AM1 (08h30-10h ET), AM2 (10h-11h30 ET), PM1 (12h-13h30 ET), PM2 (13h30-15h ET). L'AM1 est souvent la manipulation, l'AM2 le vrai mouvement.
+      </div>
+    </div>
+
+    <div class="concept" data-search="high impact news fomc nfp cpi">
+      <div class="concept-header">
+        <span class="concept-name">High Impact News</span>
+      </div>
+      <div class="concept-body">
+        Les annonces economiques majeures (FOMC, NFP, CPI, PPI) sont utilisees par l'algorithme comme <strong>catalyseurs de livraison</strong>. Le mouvement post-news est pre-programme — la news est le vehicule, pas la cause.
+        <ul class="concept-rules">
+          <li><span class="rule-label warning">Attention</span> Ne pas trader dans les 30 minutes avant/apres une news majeure</li>
+          <li><span class="rule-label key">Regle</span> Attendre la prise de liquidite post-news puis le retour dans un PD Array</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 5. QUARTERLY THEORY -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="qt">
+  <div class="section-badge" style="background:rgba(240,128,68,0.1);color:#f08044;">Chapitre 05</div>
+  <h2>Quarterly Theory</h2>
+  <p class="section-intro">Le temps est divise en 4 quarters sur chaque echelle. Chaque quarter a un role algorithmique precis. Cette theorie s'applique de maniere fractale du cycle annuel jusqu'au cycle de 90 minutes.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="quarterly theory qt q1 q2 q3 q4">
+      <div class="concept-header">
+        <span class="concept-name">Les 4 Quarters</span>
+        <span class="concept-abbr">Q1-Q4</span>
+      </div>
+      <div class="concept-body">
+        Chaque cycle temporel est divise en 4 phases avec des roles specifiques :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Q1</span> Accumulation — Formation du range, liquidite construite</li>
+          <li><span class="rule-label key">Q2</span> Manipulation — Faux mouvement, prise de liquidite (Judas)</li>
+          <li><span class="rule-label key">Q3</span> Distribution — Le vrai mouvement, expansion du prix</li>
+          <li><span class="rule-label key">Q4</span> Consolidation / Reversal — Fin de cycle, preparation du suivant</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="true open tyo tmo two tdo tso">
+      <div class="concept-header">
+        <span class="concept-name">True Opens</span>
+        <span class="concept-abbr">TYO / TMO / TWO / TDO / TSO</span>
+      </div>
+      <div class="concept-body">
+        Les vrais points de depart de chaque cycle temporel. Ils agissent comme des <strong>pivots de reference</strong> pour le biais directionnel.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">TYO</span> True Yearly Open — Ouverture de Q2 de l'annee precedente</li>
+          <li><span class="rule-label key">TMO</span> True Monthly Open — Ouverture du mois, reference mensuelle</li>
+          <li><span class="rule-label key">TWO</span> True Weekly Open — Ouverture de la semaine (dimanche soir)</li>
+          <li><span class="rule-label key">TDO</span> True Daily Open — Midnight ET (06h Paris)</li>
+          <li><span class="rule-label key">TSO</span> True Session Open — Ouverture de chaque session</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="ssmt sequential smt">
+      <div class="concept-header">
+        <span class="concept-name">Sequential SMT</span>
+        <span class="concept-abbr">SSMT</span>
+      </div>
+      <div class="concept-body">
+        Divergence SMT qui se forme <strong>de maniere sequentielle</strong> dans le temps — d'abord un actif fait un nouveau high/low, puis l'autre actif ne confirme pas. Le SSMT est la version "haute probabilite" du SMT car il integre le facteur temps.
+      </div>
+    </div>
+
+    <div class="concept" data-search="tcisd true change in state delivery">
+      <div class="concept-header">
+        <span class="concept-name">True CiSD</span>
+        <span class="concept-abbr">TCISD</span>
+      </div>
+      <div class="concept-body">
+        Le vrai changement de programme de l'algorithme, confirme par <strong>6 etapes obligatoires</strong> : 1) IOF HTF identifie, 2) DOL defini, 3) POI atteint, 4) Time of Interest valide, 5) SMT confirme, 6) CSD valide sur LTF.
+      </div>
+    </div>
+
+    <div class="concept" data-search="psp precision swing point">
+      <div class="concept-header">
+        <span class="concept-name">Precision Swing Point</span>
+        <span class="concept-abbr">PSP</span>
+      </div>
+      <div class="concept-body">
+        Le point exact ou l'algorithme <strong>change de direction</strong>. C'est le swing qui marque la transition entre deux programmes (Buy → Sell ou Sell → Buy). Le PSP est confirme quand le prix casse la structure avec displacement.
+      </div>
+    </div>
+
+    <div class="concept" data-search="smt fill confirmation fvg">
+      <div class="concept-header">
+        <span class="concept-name">SMT Fill</span>
+      </div>
+      <div class="concept-body">
+        Confirmation d'un FVG via une <strong>divergence SMT</strong>. Quand un actif comble son FVG mais pas l'actif correle, cela confirme que le FVG est un point de reaction valide. 3 variantes existent selon le contexte.
+      </div>
+    </div>
+
+    <div class="concept" data-search="stacked opens confluence">
+      <div class="concept-header">
+        <span class="concept-name">Stacked Opens</span>
+      </div>
+      <div class="concept-body">
+        Quand plusieurs True Opens (TDO, TWO, TMO) sont <strong>alignes au meme niveau</strong>. C'est une confluence temporelle maximale — le prix est tres susceptible de reagir a cette zone.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 6. MARKET MAKER MODELS -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="models">
+  <div class="section-badge" style="background:rgba(240,69,69,0.1);color:#f04545;">Chapitre 06</div>
+  <h2>Market Maker Models</h2>
+  <p class="section-intro">Les modeles de Market Maker decrivent comment les institutions construisent, manipulent et distribuent les positions. Chaque mouvement du marche suit un de ces schemas.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="mmbm market maker buy model">
+      <div class="concept-header">
+        <span class="concept-name">Market Maker Buy Model</span>
+        <span class="concept-abbr">MMBM</span>
+      </div>
+      <div class="concept-body">
+        Modele haussier en <strong>7 phases</strong> : 1) Consolidation initiale, 2) Smart Money accumule en discount, 3) Spring/Faux breakout baissier (prise de SSL), 4) MSS haussier + Displacement, 5) Accumulation Phase 1 (retracement dans BISI), 6) Accumulation Phase 2 (Silver Bullet), 7) Distribution vers les objectifs de BSL.
+      </div>
+    </div>
+
+    <div class="concept" data-search="mmsm market maker sell model">
+      <div class="concept-header">
+        <span class="concept-name">Market Maker Sell Model</span>
+        <span class="concept-abbr">MMSM</span>
+      </div>
+      <div class="concept-body">
+        Miroir du MMBM — modele baissier. Smart Money distribue en premium apres un faux breakout haussier (prise de BSL). MSS baissier + Displacement, puis distribution vers les objectifs de SSL.
+      </div>
+    </div>
+
+    <div class="concept" data-search="turtle soup ts liquidity grab reversal">
+      <div class="concept-header">
+        <span class="concept-name">ICT Turtle Soup</span>
+      </div>
+      <div class="concept-body">
+        Setup de reversal base sur la <strong>prise de liquidite d'un ancien high/low</strong> suivie d'un retournement immediat. Le prix depasse le niveau, declenche les stops, puis revient violemment dans le sens oppose. Nomme d'apres le concept original des "Turtle Traders".
+      </div>
+    </div>
+
+    <div class="concept" data-search="ict 2022 model entry displacement">
+      <div class="concept-header">
+        <span class="concept-name">Modele ICT 2022</span>
+      </div>
+      <div class="concept-body">
+        Modele d'entree en <strong>6 etapes</strong> :
+        <ul class="concept-rules">
+          <li><span class="rule-label key">1</span> Identifier la liquidite ciblee (BSL ou SSL)</li>
+          <li><span class="rule-label key">2</span> Attendre le sweep de cette liquidite</li>
+          <li><span class="rule-label key">3</span> Displacement (mouvement agressif + FVG)</li>
+          <li><span class="rule-label key">4</span> MSS confirme</li>
+          <li><span class="rule-label key">5</span> Retour dans le FVG</li>
+          <li><span class="rule-label key">6</span> Entree dans le FVG, stop sous/au-dessus du sweep</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="unicorn model breaker bpr">
+      <div class="concept-header">
+        <span class="concept-name">Unicorn Model</span>
+      </div>
+      <div class="concept-body">
+        Signature algorithmique precise : un <strong>Breaker Block situe a l'interieur d'un SIBI</strong> qui peut se replier dans un BISI, formant un BPR tres specifique. Se forme typiquement dans le wick d'une bougie H1 lors d'une purge de liquidite. Invalidation si cloture sous/au-dessus du BPR.
+      </div>
+    </div>
+
+    <div class="concept" data-search="displacement expansion retour">
+      <div class="concept-header">
+        <span class="concept-name">Displacement</span>
+      </div>
+      <div class="concept-body">
+        Mouvement de prix <strong>agressif et rapide</strong> qui cree des FVG et casse la structure. C'est la signature de l'intervention institutionnelle. Un vrai signal doit toujours etre accompagne d'un displacement — sans displacement, pas de signal.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 7. OPTIMAL TRADE ENTRY -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="ote">
+  <div class="section-badge" style="background:rgba(56,201,176,0.1);color:#38c9b0;">Chapitre 07</div>
+  <h2>Optimal Trade Entry</h2>
+  <p class="section-intro">Les methodes d'entree optimale combinent le prix, le temps et la structure pour des entrees a haute probabilite avec un risk/reward maximal.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="ote optimal trade entry fibonacci retracement">
+      <div class="concept-header">
+        <span class="concept-name">OTE — Optimal Trade Entry</span>
+        <span class="concept-abbr">OTE</span>
+      </div>
+      <div class="concept-body">
+        Zone d'entree optimale situee entre les <strong>niveaux Fibonacci 62% et 79%</strong> du dernier swing. C'est la zone ou les institutions rechargent leurs positions avant la continuation.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Regle</span> Tracer le Fibonacci du swing low au swing high (haussier) ou inversement</li>
+          <li><span class="rule-label key">Regle</span> Zone OTE = 62% - 79% de retracement</li>
+          <li><span class="rule-label key">Regle</span> Chercher un OB ou FVG DANS la zone OTE pour affiner l'entree</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="mean threshold 50 ob ce fvg">
+      <div class="concept-header">
+        <span class="concept-name">Mean Threshold / Consequent Encroachment</span>
+        <span class="concept-abbr">MT / CE</span>
+      </div>
+      <div class="concept-body">
+        Le <strong>50% d'un OB</strong> (Mean Threshold) ou le <strong>50% d'un FVG</strong> (Consequent Encroachment) sont les points d'entree les plus precis. L'algorithme reagit tres souvent a ces niveaux medians.
+      </div>
+    </div>
+
+    <div class="concept" data-search="low risk entry lre buy sell">
+      <div class="concept-header">
+        <span class="concept-name">Low Risk Entry</span>
+        <span class="concept-abbr">LRE</span>
+      </div>
+      <div class="concept-body">
+        Entree a faible risque prise sur le <strong>premier retracement</strong> apres un MSS + Displacement. Le stop est place sous le sweep de liquidite. Le ratio R:R est generalement superieur a 3:1.
+      </div>
+    </div>
+
+    <div class="concept" data-search="hrlr high resistance lrlr low resistance liquidity run">
+      <div class="concept-header">
+        <span class="concept-name">HRLR / LRLR</span>
+        <span class="concept-abbr">High/Low Resistance Liquidity Run</span>
+      </div>
+      <div class="concept-body">
+        <strong>LRLR</strong> = le prix traverse les niveaux facilement, peu de resistance → mouvement fort, continuation. <strong>HRLR</strong> = le prix a du mal a progresser, beaucoup de retracements → fin de mouvement probable.
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">LRLR</span> FVG remplis mais qui tiennent, structure intacte → rester en position</li>
+          <li><span class="rule-label bearish">HRLR</span> Retracements profonds, FVG violes → prendre des profits ou sortir</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="stop loss placement invalidation">
+      <div class="concept-header">
+        <span class="concept-name">Stop Loss Placement</span>
+      </div>
+      <div class="concept-body">
+        Le stop-loss se place <strong>au-dela du point de liquidite</strong> qui a ete pris. Pour un achat : sous le sweep de SSL. Pour une vente : au-dessus du sweep de BSL. Jamais au milieu d'un OB ou d'un FVG.
+      </div>
+    </div>
+
+    <div class="concept" data-search="target objectif -1 -2 standard deviation">
+      <div class="concept-header">
+        <span class="concept-name">Targets & Standard Deviations</span>
+      </div>
+      <div class="concept-body">
+        Les objectifs de prix sont bases sur les <strong>Standard Deviations</strong> du range de depart. -1 = 1x le range en extension. -2 = 2x le range. Les targets classiques : prochain BSL/SSL, PDH/PDL, -1 SD, -2.5 SD, -4 SD.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 8. SMT DIVERGENCE -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="smt">
+  <div class="section-badge" style="background:rgba(74,124,255,0.1);color:#4a7cff;">Chapitre 08</div>
+  <h2>SMT Divergence</h2>
+  <p class="section-intro">La Smart Money Technique (SMT) compare des actifs correles pour detecter les divergences institutionnelles. Quand deux actifs qui bougent ensemble cessent de confirmer, un retournement approche.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="smt divergence nq es correlation">
+      <div class="concept-header">
+        <span class="concept-name">SMT Divergence — Principe</span>
+        <span class="concept-abbr">SMT</span>
+      </div>
+      <div class="concept-body">
+        Quand deux actifs correles (NQ et ES, EUR/USD et GBP/USD) font des mouvements <strong>non confirmes</strong>. Exemple : NQ fait un nouveau low mais ES ne confirme pas → divergence haussiere → signal d'achat.
+        <ul class="concept-rules">
+          <li><span class="rule-label bullish">Bull SMT</span> Actif A fait un lower low, Actif B fait un higher low → achat</li>
+          <li><span class="rule-label bearish">Bear SMT</span> Actif A fait un higher high, Actif B fait un lower high → vente</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="smt paires correlees dollar">
+      <div class="concept-header">
+        <span class="concept-name">Paires SMT Classiques</span>
+      </div>
+      <div class="concept-body">
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Indices</span> NQ vs ES — la paire la plus utilisee pour les futures</li>
+          <li><span class="rule-label key">Forex</span> EUR/USD vs GBP/USD — correlation positive</li>
+          <li><span class="rule-label key">Forex</span> EUR/USD vs USD/CHF — correlation negative (inverse)</li>
+          <li><span class="rule-label key">Forex</span> AUD/USD vs NZD/USD — correlation positive</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="smt big cycle small cycle">
+      <div class="concept-header">
+        <span class="concept-name">Big Cycle / Small Cycle SMT</span>
+      </div>
+      <div class="concept-body">
+        <strong>Big Cycle</strong> = divergence sur les swings majeurs HTF (Daily/Weekly). <strong>Small Cycle</strong> = divergence sur les swings internes LTF (M15/H1). Le Big Cycle donne le biais, le Small Cycle donne l'entree.
+      </div>
+    </div>
+
+    <div class="concept" data-search="opening price smt session">
+      <div class="concept-header">
+        <span class="concept-name">Opening Price SMT</span>
+      </div>
+      <div class="concept-body">
+        Comparer la position des deux actifs par rapport a leur <strong>Opening Price de session</strong>. Si NQ est au-dessus de son Open mais ES en-dessous → divergence. Signal de faiblesse du mouvement.
+      </div>
+    </div>
+
+    <div class="concept" data-search="smt validation filtre">
+      <div class="concept-header">
+        <span class="concept-name">Filtres de Validation SMT</span>
+      </div>
+      <div class="concept-body">
+        <ul class="concept-rules">
+          <li><span class="rule-label key">1</span> La divergence doit se produire dans une killzone</li>
+          <li><span class="rule-label key">2</span> Elle doit se produire sur un PD Array HTF (OB, FVG, liquidite)</li>
+          <li><span class="rule-label key">3</span> Le timeframe des deux actifs doit etre identique</li>
+          <li><span class="rule-label key">4</span> La divergence doit etre accompagnee d'un sweep de liquidite</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 9. ORDER FLOW & IPDA -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="orderflow">
+  <div class="section-badge" style="background:rgba(155,108,240,0.1);color:#9b6cf0;">Chapitre 09</div>
+  <h2>Order Flow & IPDA</h2>
+  <p class="section-intro">L'IPDA (Interbank Price Delivery Algorithm) est le cadre conceptuel qui decrit comment le prix est livre par l'algorithme institutionnel a travers le temps et le prix.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="ipda interbank price delivery algorithm">
+      <div class="concept-header">
+        <span class="concept-name">IPDA — Interbank Price Delivery Algorithm</span>
+        <span class="concept-abbr">IPDA</span>
+      </div>
+      <div class="concept-body">
+        L'algorithme central qui gouverne la livraison du prix sur les marches. Il opere en <strong>cycles de 20, 40 et 60 jours</strong> (IPDA Data Ranges). Chaque cycle cible des pools de liquidite specifiques et utilise des PD Arrays comme points de livraison.
+      </div>
+    </div>
+
+    <div class="concept" data-search="ipda data range 20 40 60">
+      <div class="concept-header">
+        <span class="concept-name">IPDA Data Ranges</span>
+      </div>
+      <div class="concept-body">
+        L'algorithme reference les <strong>20, 40 et 60 derniers jours</strong> pour identifier les niveaux de liquidite et les PD Arrays a cibler. Les highs et lows de ces periodes sont les objectifs de prix.
+        <ul class="concept-rules">
+          <li><span class="rule-label key">20 jours</span> Le range le plus recent — objectifs a court terme</li>
+          <li><span class="rule-label key">40 jours</span> Le range intermediaire — objectifs a moyen terme</li>
+          <li><span class="rule-label key">60 jours</span> Le range etendu — objectifs majeurs</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="csd change state delivery programme">
+      <div class="concept-header">
+        <span class="concept-name">Change in State of Delivery</span>
+        <span class="concept-abbr">CSD</span>
+      </div>
+      <div class="concept-body">
+        Le moment ou l'algorithme <strong>change de programme</strong> (passe de Buy a Sell ou inversement). Le CSD est confirme par un MSS + Displacement sur le LTF dans un PD Array HTF.
+      </div>
+    </div>
+
+    <div class="concept" data-search="buy program sell program">
+      <div class="concept-header">
+        <span class="concept-name">Buy Program / Sell Program</span>
+      </div>
+      <div class="concept-body">
+        <strong>Buy Program</strong> = l'algorithme est en mode achat — il cree des higher highs et des higher lows, les BISI tiennent comme support. <strong>Sell Program</strong> = mode vente — lower lows et lower highs, les SIBI tiennent comme resistance.
+      </div>
+    </div>
+
+    <div class="concept" data-search="iof institutional order flow htf">
+      <div class="concept-header">
+        <span class="concept-name">Institutional Order Flow</span>
+        <span class="concept-abbr">IOF</span>
+      </div>
+      <div class="concept-body">
+        La direction du flux institutionnel sur le HTF. Determine par la structure (BOS direction) et les PD Arrays respectes. L'IOF HTF est le <strong>filtre numero 1</strong> — ne jamais trader contre l'IOF HTF.
+      </div>
+    </div>
+
+    <div class="concept" data-search="iofed institutional order flow entry drill">
+      <div class="concept-header">
+        <span class="concept-name">IOFED</span>
+        <span class="concept-abbr">Institutional Order Flow Entry Drill</span>
+      </div>
+      <div class="concept-body">
+        Processus systematique pour descendre du HTF au LTF : 1) Identifier l'IOF sur le HTF, 2) Trouver le PD Array cible, 3) Descendre sur le LTF pour l'entree, 4) Attendre le MSS + FVG sur le LTF dans le PD Array HTF.
+      </div>
+    </div>
+
+    <div class="concept" data-search="rebalance retracement immediate">
+      <div class="concept-header">
+        <span class="concept-name">Immediate Rebalance</span>
+      </div>
+      <div class="concept-body">
+        Apres un displacement, le prix fait un <strong>retour immediat</strong> dans le FVG cree avant de continuer. Si le prix ne rebalance PAS immediatement dans le IFVG/BISI → le programme est faible ou invalide.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 10. RISK MANAGEMENT -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="risk">
+  <div class="section-badge" style="background:rgba(45,214,122,0.1);color:#2dd67a;">Chapitre 10</div>
+  <h2>Risk Management</h2>
+  <p class="section-intro">Le risk management est ce qui separe les traders qui survivent de ceux qui explosent. Les regles sont non-negociables — elles protegent votre capital quoi qu'il arrive.</p>
+
+  <div class="concepts">
+
+    <div class="concept" data-search="risk par trade 1% 2%">
+      <div class="concept-header">
+        <span class="concept-name">Risque par Trade</span>
+      </div>
+      <div class="concept-body">
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Compte reel</span> Maximum 1% du capital par trade, jamais plus</li>
+          <li><span class="rule-label key">Prop Firm</span> Adapter au drawdown max : si 10% max DD → risquer 0.5% par trade</li>
+          <li><span class="rule-label key">Debutant</span> Commencer a 0.25-0.5% le temps de prouver la consistance</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="risk reward ratio rr">
+      <div class="concept-header">
+        <span class="concept-name">Risk : Reward Minimum</span>
+      </div>
+      <div class="concept-body">
+        Ne jamais prendre un trade avec un R:R inferieur a <strong>3:1</strong>. Idealement viser 5:1 ou plus. Un taux de reussite de 40% avec un R:R de 3:1 est suffisant pour etre rentable.
+      </div>
+    </div>
+
+    <div class="concept" data-search="drawdown max daily weekly">
+      <div class="concept-header">
+        <span class="concept-name">Regles de Drawdown</span>
+      </div>
+      <div class="concept-body">
+        <ul class="concept-rules">
+          <li><span class="rule-label key">Daily max</span> Stop apres 2 trades perdants consecutifs dans la journee</li>
+          <li><span class="rule-label key">Weekly max</span> Stop apres 3% de perte dans la semaine</li>
+          <li><span class="rule-label warning">Regle absolue</span> Si vous atteignez le max drawdown → pas de trading pendant 24-48h</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="partials trailing management">
+      <div class="concept-header">
+        <span class="concept-name">Partials & Trailing</span>
+      </div>
+      <div class="concept-body">
+        Prendre des <strong>profits partiels</strong> a chaque niveau cle : 1er partial a 2R ou au premier objectif de liquidite. Deplacer le stop a breakeven apres le 1er partial. Laisser courir le reste vers les objectifs de Standard Deviation.
+      </div>
+    </div>
+
+    <div class="concept" data-search="regles non trade no trade zone">
+      <div class="concept-header">
+        <span class="concept-name">Regles de Non-Trade</span>
+      </div>
+      <div class="concept-body">
+        <ul class="concept-rules">
+          <li><span class="rule-label warning">No trade</span> Pas de biais HTF clair → pas de trade</li>
+          <li><span class="rule-label warning">No trade</span> Hors killzone → pas de trade</li>
+          <li><span class="rule-label warning">No trade</span> News high impact dans les 30 min → pas de trade</li>
+          <li><span class="rule-label warning">No trade</span> Vendredi apres 12h ET → pas de trade</li>
+          <li><span class="rule-label warning">No trade</span> Apres 2 stops consecutifs → pas de trade pour la journee</li>
+          <li><span class="rule-label warning">No trade</span> NFP, FOMC, CPI → pas de trade le jour meme</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept" data-search="journal backtesting tracking">
+      <div class="concept-header">
+        <span class="concept-name">Journal & Backtesting</span>
+      </div>
+      <div class="concept-body">
+        Chaque trade doit etre <strong>journalise</strong> avec : date, session, setup, entree/stop/target, R:R, resultat, screenshot, et notes. Minimum 100 trades backtestes avant de passer en reel. Le journal est l'outil d'amelioration numero 1.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 11. GLOSSAIRE A-Z -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="glossary">
+  <div class="section-badge" style="background:rgba(233,184,76,0.1);color:#e9b84c;">Reference</div>
+  <h2>Glossaire A-Z</h2>
+  <p class="section-intro">Tous les termes et acronymes ICT en un seul endroit.</p>
+
+  <div class="glossary-grid">
+    <div class="gloss-item"><span class="gloss-term">AMD</span><span class="gloss-def">Accumulation, Manipulation, Distribution — cycle en 3 phases</span></div>
+    <div class="gloss-item"><span class="gloss-term">BISI</span><span class="gloss-def">Buy-side Imbalance, Sell-side Inefficiency — FVG haussier</span></div>
+    <div class="gloss-item"><span class="gloss-term">BOS</span><span class="gloss-def">Break of Structure — cassure dans le sens de la tendance</span></div>
+    <div class="gloss-item"><span class="gloss-term">BPR</span><span class="gloss-def">Balanced Price Range — chevauchement SIBI + BISI</span></div>
+    <div class="gloss-item"><span class="gloss-term">BSL</span><span class="gloss-def">Buy Side Liquidity — liquidite au-dessus des highs</span></div>
+    <div class="gloss-item"><span class="gloss-term">CE</span><span class="gloss-def">Consequent Encroachment — 50% d'un FVG</span></div>
+    <div class="gloss-item"><span class="gloss-term">ChoCh</span><span class="gloss-def">Change of Character — premier signe de retournement</span></div>
+    <div class="gloss-item"><span class="gloss-term">CSD</span><span class="gloss-def">Change in State of Delivery — changement de programme</span></div>
+    <div class="gloss-item"><span class="gloss-term">DOL</span><span class="gloss-def">Draw on Liquidity — objectif de prix cible</span></div>
+    <div class="gloss-item"><span class="gloss-term">DR</span><span class="gloss-def">Dealing Range — range entre swing high et swing low</span></div>
+    <div class="gloss-item"><span class="gloss-term">EQH</span><span class="gloss-def">Equal Highs — sommets au meme niveau = liquidite</span></div>
+    <div class="gloss-item"><span class="gloss-term">EQL</span><span class="gloss-def">Equal Lows — creux au meme niveau = liquidite</span></div>
+    <div class="gloss-item"><span class="gloss-term">ERL</span><span class="gloss-def">External Range Liquidity — liquidite aux extremes du range</span></div>
+    <div class="gloss-item"><span class="gloss-term">FVG</span><span class="gloss-def">Fair Value Gap — zone de desequilibre entre 3 bougies</span></div>
+    <div class="gloss-item"><span class="gloss-term">HRLR</span><span class="gloss-def">High Resistance Liquidity Run — mouvement avec resistance</span></div>
+    <div class="gloss-item"><span class="gloss-term">HTF</span><span class="gloss-def">Higher Time Frame — timeframe eleve (H4, Daily, Weekly)</span></div>
+    <div class="gloss-item"><span class="gloss-term">IFVG</span><span class="gloss-def">Inversion FVG — FVG traverse qui change de polarite</span></div>
+    <div class="gloss-item"><span class="gloss-term">IOF</span><span class="gloss-def">Institutional Order Flow — direction du flux institutionnel</span></div>
+    <div class="gloss-item"><span class="gloss-term">IOFED</span><span class="gloss-def">IOF Entry Drill — processus d'entree HTF vers LTF</span></div>
+    <div class="gloss-item"><span class="gloss-term">IPDA</span><span class="gloss-def">Interbank Price Delivery Algorithm — algo de livraison du prix</span></div>
+    <div class="gloss-item"><span class="gloss-term">IRL</span><span class="gloss-def">Internal Range Liquidity — FVG a l'interieur du range</span></div>
+    <div class="gloss-item"><span class="gloss-term">ITH</span><span class="gloss-def">Intermediate Term High — sommet intermediaire</span></div>
+    <div class="gloss-item"><span class="gloss-term">ITL</span><span class="gloss-def">Intermediate Term Low — creux intermediaire</span></div>
+    <div class="gloss-item"><span class="gloss-term">KZ</span><span class="gloss-def">Killzone — fenetre temporelle a fort volume</span></div>
+    <div class="gloss-item"><span class="gloss-term">LRLR</span><span class="gloss-def">Low Resistance Liquidity Run — mouvement fluide sans resistance</span></div>
+    <div class="gloss-item"><span class="gloss-term">LTF</span><span class="gloss-def">Lower Time Frame — timeframe bas (M1, M5, M15)</span></div>
+    <div class="gloss-item"><span class="gloss-term">LTH</span><span class="gloss-def">Long Term High — sommet majeur</span></div>
+    <div class="gloss-item"><span class="gloss-term">LTL</span><span class="gloss-def">Long Term Low — creux majeur</span></div>
+    <div class="gloss-item"><span class="gloss-term">LV</span><span class="gloss-def">Liquidity Void — zone traversee sans echanges</span></div>
+    <div class="gloss-item"><span class="gloss-term">MB</span><span class="gloss-def">Mitigation Block — zone de cloture des pertes institutionnelles</span></div>
+    <div class="gloss-item"><span class="gloss-term">MMBM</span><span class="gloss-def">Market Maker Buy Model — modele haussier en 7 phases</span></div>
+    <div class="gloss-item"><span class="gloss-term">MMSM</span><span class="gloss-def">Market Maker Sell Model — modele baissier en 7 phases</span></div>
+    <div class="gloss-item"><span class="gloss-term">MSS</span><span class="gloss-def">Market Structure Shift — cassure + displacement</span></div>
+    <div class="gloss-item"><span class="gloss-term">MT</span><span class="gloss-def">Mean Threshold — 50% d'un Order Block</span></div>
+    <div class="gloss-item"><span class="gloss-term">NDOG</span><span class="gloss-def">New Day Opening Gap — gap entre cloture et ouverture du jour</span></div>
+    <div class="gloss-item"><span class="gloss-term">NWOG</span><span class="gloss-def">New Week Opening Gap — gap entre vendredi et dimanche</span></div>
+    <div class="gloss-item"><span class="gloss-term">OB</span><span class="gloss-def">Order Block — derniere bougie opposee avant displacement</span></div>
+    <div class="gloss-item"><span class="gloss-term">OTE</span><span class="gloss-def">Optimal Trade Entry — zone Fibonacci 62-79%</span></div>
+    <div class="gloss-item"><span class="gloss-term">PD</span><span class="gloss-def">Premium / Discount — au-dessus ou en-dessous de 50% du range</span></div>
+    <div class="gloss-item"><span class="gloss-term">PDH/PDL</span><span class="gloss-def">Previous Day High/Low — extremes du jour precedent</span></div>
+    <div class="gloss-item"><span class="gloss-term">PO3</span><span class="gloss-def">Power of 3 — cycle AMD sur chaque bougie/session</span></div>
+    <div class="gloss-item"><span class="gloss-term">PSP</span><span class="gloss-def">Precision Swing Point — point exact de changement de direction</span></div>
+    <div class="gloss-item"><span class="gloss-term">PWH/PWL</span><span class="gloss-def">Previous Week High/Low — extremes de la semaine precedente</span></div>
+    <div class="gloss-item"><span class="gloss-term">QT</span><span class="gloss-def">Quarterly Theory — division en 4 quarters fractals</span></div>
+    <div class="gloss-item"><span class="gloss-term">RB</span><span class="gloss-def">Rejection Block — zone de rejet par les meches</span></div>
+    <div class="gloss-item"><span class="gloss-term">SB</span><span class="gloss-def">Silver Bullet — setup sur fenetre horaire precise</span></div>
+    <div class="gloss-item"><span class="gloss-term">SD</span><span class="gloss-def">Standard Deviation — extension mesurable du range</span></div>
+    <div class="gloss-item"><span class="gloss-term">SIBI</span><span class="gloss-def">Sell-side Imbalance, Buy-side Inefficiency — FVG baissier</span></div>
+    <div class="gloss-item"><span class="gloss-term">SMT</span><span class="gloss-def">Smart Money Technique — divergence entre actifs correles</span></div>
+    <div class="gloss-item"><span class="gloss-term">SSMT</span><span class="gloss-def">Sequential SMT — divergence sequentielle dans le temps</span></div>
+    <div class="gloss-item"><span class="gloss-term">SSL</span><span class="gloss-def">Sell Side Liquidity — liquidite en-dessous des lows</span></div>
+    <div class="gloss-item"><span class="gloss-term">STH</span><span class="gloss-def">Short Term High — sommet a court terme</span></div>
+    <div class="gloss-item"><span class="gloss-term">STL</span><span class="gloss-def">Short Term Low — creux a court terme</span></div>
+    <div class="gloss-item"><span class="gloss-term">TCISD</span><span class="gloss-def">True CiSD — vrai changement de programme en 6 etapes</span></div>
+    <div class="gloss-item"><span class="gloss-term">TDO</span><span class="gloss-def">True Daily Open — ouverture a minuit ET</span></div>
+    <div class="gloss-item"><span class="gloss-term">TMO</span><span class="gloss-def">True Monthly Open — ouverture mensuelle</span></div>
+    <div class="gloss-item"><span class="gloss-term">TWO</span><span class="gloss-def">True Weekly Open — ouverture hebdomadaire</span></div>
+    <div class="gloss-item"><span class="gloss-term">TYO</span><span class="gloss-def">True Yearly Open — ouverture annuelle</span></div>
+    <div class="gloss-item"><span class="gloss-term">VI</span><span class="gloss-def">Volume Imbalance — gap entre close et open consecutifs</span></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<script src="../nav.js"></script>
+
+<script>
+function goTo(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+// Scroll spy
+window.addEventListener('scroll', () => {
+  const sections = document.querySelectorAll('.section');
+  const navItems = document.querySelectorAll('.nav-item');
+  let current = 0;
+  sections.forEach((s, i) => {
+    if (window.scrollY >= s.offsetTop - 100) current = i;
+  });
+  navItems.forEach((n, i) => {
+    n.classList.toggle('active', i === current);
+  });
+});
+
+// Search
+function filterConcepts() {
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.concept').forEach(c => {
+    const text = (c.textContent + ' ' + (c.dataset.search || '')).toLowerCase();
+    c.style.display = text.includes(q) ? '' : 'none';
+  });
+  document.querySelectorAll('.gloss-item').forEach(g => {
+    g.style.display = g.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+</script>
+
+</body>
+</html>
