@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="../auth.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catalogue PDFs ICT — Fiches par Theme</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
+  :root { --bg:#07080b; --s1:#0e1116; --s2:#13171e; --s3:#191e27; --bd:#1c2230; --bd2:#232c3a; --gold:#c8a228; --gold2:#e5bc3c; --blue:#3d82e0; --green:#2ec974; --red:#e05050; --orange:#e08830; --purple:#9b72e0; --cyan:#28bfcf; --text:#cdd5e2; --t2:#8594a8; --t3:#4a5668; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:300; }
+  .banner { background:var(--s1); border-bottom:1px solid var(--bd2); padding:36px 56px 32px; position:relative; }
+  .banner::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, transparent 0%, var(--cyan) 30%, var(--blue) 50%, var(--cyan) 70%, transparent 100%); }
+  .banner-eyebrow { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:3px; color:var(--cyan); text-transform:uppercase; margin-bottom:10px; }
+  .banner h1 { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; color:#fff; line-height:1.1; }
+  .banner h1 em { color:var(--cyan); font-style:normal; }
+  .banner-sub { margin-top:10px; color:var(--t2); font-size:13px; max-width:700px; line-height:1.6; }
+  .container { max-width:1100px; margin:0 auto; padding:32px 40px; }
+  .section { background:var(--s1); border:1px solid var(--bd); border-radius:10px; padding:28px 32px; margin-bottom:24px; }
+  .section-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:#fff; margin-bottom:6px; display:flex; align-items:center; gap:10px; }
+  .section-title .dot { width:8px; height:8px; border-radius:50%; }
+  .section-ref { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--t3); margin-bottom:16px; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th { text-align:left; padding:8px 12px; background:var(--s2); color:var(--cyan); font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px; border-bottom:1px solid var(--bd); }
+  td { padding:8px 12px; border-bottom:1px solid var(--bd); color:var(--t2); }
+  tr:hover td { color:var(--text); background:rgba(255,255,255,0.02); }
+  .dl { font-family:'IBM Plex Mono',monospace; font-size:10px; padding:4px 14px; border-radius:4px; border:1px solid var(--bd); background:var(--s2); color:var(--cyan); text-decoration:none; transition:0.15s; }
+  .dl:hover { border-color:var(--cyan); background:rgba(40,191,207,0.1); }
+  @media(max-width:800px) { .container { padding:16px; } .banner { padding:24px; } }
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+<link rel="stylesheet" href="../readability.css">
+
+<div class="banner">
+  <div class="banner-eyebrow">Module 17 &mdash; Catalogue Educatif</div>
+  <h1>Catalogue des <em>Fiches ICT/SMC</em></h1>
+  <p class="banner-sub">29 PDFs organises par theme, en lien direct avec les modules du site. Chaque fiche correspond a une section de votre parcours de formation.</p>
+</div>
+
+<div class="container">
+
+  <!-- FONDATIONS (Modules 1-2) -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--green)"></span> Fondations &mdash; Structure &amp; Liquidite</div>
+    <div class="section-ref">En lien avec : Module 1 (Fondations ICT) &bull; Module 2 (ICT Mentorship)</div>
+    <table>
+      <tr><th>CONCEPT</th><th>DESCRIPTION</th><th></th></tr>
+      <tr><td>Fair Value Gaps</td><td>Gaps de juste valeur (3 bougies), identification et mitigation</td><td><a class="dl" href="../pdf/fiches/Fair_Value_Gaps.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>Order Blocks</td><td>Zones institutionnelles, derniere bougie avant impulse</td><td><a class="dl" href="../pdf/fiches/Orderblocks.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>Breaker Blocks</td><td>OB invalide qui devient zone inverse (support/resistance)</td><td><a class="dl" href="../pdf/fiches/BreakerBlocks.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>Breaker Block (Formation)</td><td>Blocs de cassure et inversion — cours approfondi</td><td><a class="dl" href="../pdf/fiches/BreakerBlock_Formation.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>Mitigation Blocks</td><td>Blocs de mitigation, re-interaction avec les zones</td><td><a class="dl" href="../pdf/fiches/Mitigation_Blocks.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>Liquidity</td><td>Concepts de liquidite : BSL, SSL, pools, sweeps</td><td><a class="dl" href="../pdf/fiches/Liquidity.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>Niveaux de Liquidite Cles</td><td>PDH/PDL, PWH/PWL, equal H/L, niveaux importants</td><td><a class="dl" href="../pdf/fiches/Important_Liquidity_Levels.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>Market Structure Shift</td><td>Confirmation de retournement de structure</td><td><a class="dl" href="../pdf/fiches/Market_Structure_Shift.pdf" target="_blank">PDF</a></td></tr>
+    </table>
+  </div>
+
+  <!-- FRAMEWORK IPDA (Modules 4-5) -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Framework IPDA &amp; Inducement</div>
+    <div class="section-ref">En lien avec : Module 4 (Framework IPDA) &bull; Module 5 (Inducement Theorem)</div>
+    <table>
+      <tr><th>CONCEPT</th><th>DESCRIPTION</th><th></th></tr>
+      <tr><td>IRL - ERL</td><td>Internal / External Range Liquidity — cycle du prix</td><td><a class="dl" href="../pdf/fiches/IRL-ERL.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>Premium &amp; Discount</td><td>Zones premium/discount, equilibre, juste valeur</td><td><a class="dl" href="../pdf/fiches/Discount__Premium.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>CISD</td><td>Change in State of Delivery — changement de regime</td><td><a class="dl" href="../pdf/fiches/CISD.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>MSS vs CISD</td><td>Difference entre Market Structure Shift et CISD</td><td><a class="dl" href="../pdf/fiches/MSS_vs_CISD.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>Inversion</td><td>FVG inverse, zone inversee (support devient resistance)</td><td><a class="dl" href="../pdf/fiches/Inversion.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>Power of Three (AMD)</td><td>Accumulation, Manipulation, Distribution</td><td><a class="dl" href="../pdf/fiches/Power_Of_Three.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>AMD &amp; Standard Deviation</td><td>AMD avec projections de deviation standard</td><td><a class="dl" href="../pdf/fiches/AMD_STD.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>OTE</td><td>Optimal Trade Entry — zone d'entree optimale (fib)</td><td><a class="dl" href="../pdf/fiches/OTE.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>SMT</td><td>Smart Money Technique — divergence inter-marches</td><td><a class="dl" href="../pdf/fiches/SMT.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>SMT (Formation)</td><td>Smart Money Technique — cours detaille</td><td><a class="dl" href="../pdf/fiches/SMT_Formation.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>Propulsion Block</td><td>Bloc de propulsion — zone d'acceleration du prix</td><td><a class="dl" href="../pdf/fiches/Propulsion_Block.pdf" target="_blank">PDF</a></td></tr>
+    </table>
+  </div>
+
+  <!-- TIME & SESSIONS (Module 3) -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--orange)"></span> Temps, Sessions &amp; Biais</div>
+    <div class="section-ref">En lien avec : Module 3 (Time Cycles) &bull; Module 14 (ICT Macro+News)</div>
+    <table>
+      <tr><th>CONCEPT</th><th>DESCRIPTION</th><th></th></tr>
+      <tr><td>Killzones</td><td>Fenetres temporelles de trading (Asia, London, NY)</td><td><a class="dl" href="../pdf/fiches/Killzones.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>Daily Bias</td><td>Biais daily — determiner la direction du jour</td><td><a class="dl" href="../pdf/fiches/Daily_Bias.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>Intraday Bias</td><td>Biais intraday — direction des sessions</td><td><a class="dl" href="../pdf/fiches/Intraday_Bias.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>MacroTime</td><td>Macro-temps et alignement des sessions</td><td><a class="dl" href="../pdf/fiches/MacroTime.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>CBDR</td><td>Central Bank Dealers Range — range de reference</td><td><a class="dl" href="../pdf/fiches/CBDR.pdf" target="_blank">PDF</a></td></tr>
+    </table>
+  </div>
+
+  <!-- MODELES & SETUPS AVANCES -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--red)"></span> Modeles &amp; Setups Avances</div>
+    <div class="section-ref">En lien avec : Module 7 (Methodologie) &bull; Module 15 (Liquidity &amp; Inducements)</div>
+    <table>
+      <tr><th>CONCEPT</th><th>DESCRIPTION</th><th></th></tr>
+      <tr><td>Silver Bullet AM</td><td>Setup Silver Bullet — session matin (10:00-11:00 NY)</td><td><a class="dl" href="../pdf/fiches/Silver_Bullet_AM.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>Unicorn Model</td><td>Modele Unicorn — breaker + FVG + OB confluence</td><td><a class="dl" href="../pdf/fiches/Unicorn_Model.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>Venom Model</td><td>Modele Venom — setup de retournement avance</td><td><a class="dl" href="../pdf/fiches/Venom_Model.pdf" target="_blank">PDF</a></td></tr>
+      <tr><td>Position Sizing</td><td>Gestion de la taille de position et du risque</td><td><a class="dl" href="../pdf/fiches/Position_Sizing.pdf" target="_blank">PDF</a></td></tr>
+    </table>
+  </div>
+
+  <!-- VUE D'ENSEMBLE -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--gold)"></span> Vue d'Ensemble</div>
+    <div class="section-ref">Synthese globale de tous les concepts</div>
+    <table>
+      <tr><th>CONCEPT</th><th>DESCRIPTION</th><th></th></tr>
+      <tr><td>Les 12 Concepts ICT</td><td>Vue d'ensemble complete des 12 concepts fondamentaux</td><td><a class="dl" href="../pdf/fiches/12_Concepts_ICT.pdf" target="_blank">PDF</a></td></tr>
+    </table>
+  </div>
+
+</div>
+</body>
+</html>
