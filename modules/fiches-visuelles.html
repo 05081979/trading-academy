@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="../auth.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiches Visuelles &mdash; Algorithmic Academy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #07080b; --s1: #0e1116; --s2: #13171e; --s3: #191e27;
+    --bd: #1c2230; --bd2: #232c3a;
+    --gold: #c8a228; --gold2: #e5bc3c;
+    --blue: #3d82e0; --green: #2ec974; --red: #e05050;
+    --orange: #e08830; --purple: #9b72e0; --cyan: #28bfcf;
+    --text: #cdd5e2; --t2: #8594a8; --t3: #4a5668;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; }
+
+  .banner { background: var(--s1); border-bottom: 1px solid var(--bd2); padding: 36px 56px 32px; position: relative; }
+  .banner::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg, transparent 0%, var(--orange) 30%, var(--gold2) 50%, var(--orange) 70%, transparent 100%); }
+  .banner-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 3px; color: var(--orange); text-transform: uppercase; margin-bottom: 10px; }
+  .banner h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: #fff; line-height: 1.1; }
+  .banner h1 em { color: var(--orange); font-style: normal; }
+  .banner-sub { margin-top: 10px; color: var(--t2); font-size: 13px; max-width: 700px; line-height: 1.6; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 40px; }
+
+  .section { background: var(--s1); border: 1px solid var(--bd); border-radius: 10px; padding: 28px 32px; margin-bottom: 24px; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section-title .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  @media(max-width:800px) { .concept-grid { grid-template-columns: 1fr; } .container { padding: 16px; } .banner { padding: 24px; } }
+
+  .concept-card { background: var(--s2); border: 1px solid var(--bd); border-radius: 8px; padding: 18px 20px; }
+  .concept-card h3 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .concept-card p { color: var(--t2); line-height: 1.7; font-size: 12px; }
+  .concept-card.full { grid-column: 1 / -1; }
+
+  .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 9px; padding: 2px 8px; border-radius: 4px; margin-right: 4px; margin-bottom: 4px; }
+  .tag-gold { background: rgba(200,162,40,0.12); color: var(--gold); }
+  .tag-blue { background: rgba(61,130,224,0.12); color: var(--blue); }
+  .tag-green { background: rgba(46,201,116,0.10); color: var(--green); }
+  .tag-red { background: rgba(224,80,80,0.10); color: var(--red); }
+  .tag-orange { background: rgba(224,136,48,0.10); color: var(--orange); }
+  .tag-purple { background: rgba(155,114,224,0.10); color: var(--purple); }
+  .tag-cyan { background: rgba(40,191,207,0.10); color: var(--cyan); }
+
+  .list-styled { padding-left: 20px; margin-top: 8px; }
+  .list-styled li { color: var(--t2); line-height: 1.8; font-size: 12px; }
+  .list-styled li strong { color: var(--text); }
+  .highlight { color: var(--gold2); font-weight: 500; }
+
+  .sub-section { margin-top: 16px; padding: 16px 20px; background: var(--s2); border: 1px solid var(--bd); border-radius: 8px; }
+  .sub-section h4 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .sub-section p, .sub-section > ul { color: var(--t2); font-size: 12px; line-height: 1.7; }
+  .sub-num { font-family: 'IBM Plex Mono', monospace; font-size: 10px; background: rgba(200,162,40,0.15); color: var(--gold); padding: 2px 8px; border-radius: 4px; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+  @media(max-width:800px) { .two-col { grid-template-columns: 1fr; } }
+
+  .key-point { color: var(--cyan); font-weight: 500; }
+  .key-green { color: var(--green); font-weight: 500; }
+  .key-red { color: var(--red); font-weight: 500; }
+  .key-orange { color: var(--orange); font-weight: 500; }
+  .key-purple { color: var(--purple); font-weight: 500; }
+  .key-gold { color: var(--gold2); font-weight: 500; }
+
+  h3.sub-heading { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: #fff; margin-top: 20px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--bd); }
+
+  .callout { background: var(--s3); border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0; padding: 14px 18px; margin-top: 12px; margin-bottom: 12px; }
+  .callout p { color: var(--t2); font-size: 12px; line-height: 1.7; font-style: italic; }
+  .callout strong { color: var(--gold2); font-style: normal; }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 12px; }
+  th { text-align: left; padding: 8px 12px; background: var(--s2); color: var(--gold); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1px; border-bottom: 1px solid var(--bd); }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--bd); color: var(--t2); }
+  tr:hover td { color: var(--text); background: rgba(255,255,255,0.02); }
+
+  .toc { background: var(--s2); border: 1px solid var(--bd); border-radius: 8px; padding: 20px 24px; margin-bottom: 24px; }
+  .toc h3 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+  .toc-list { list-style: none; padding: 0; }
+  .toc-list li { padding: 6px 0; border-bottom: 1px solid var(--bd); }
+  .toc-list li:last-child { border-bottom: none; }
+  .toc-list a { color: var(--t2); text-decoration: none; font-size: 12px; transition: color 0.15s; display: flex; align-items: center; gap: 8px; }
+  .toc-list a:hover { color: var(--orange); }
+  .toc-list .toc-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .toc-num { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--t3); min-width: 20px; }
+
+  /* ── VISUAL DIAGRAM STYLES ── */
+  .diagram-box { background: var(--s3); border: 1px solid var(--bd2); border-radius: 8px; padding: 24px; margin-top: 16px; }
+  .diagram-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 2px; text-align: center; color: var(--t2); text-transform: uppercase; margin-bottom: 20px; }
+
+  /* Price action wave drawing via SVG */
+  .wave-container { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+  .wave-box { background: var(--s2); border: 1px solid var(--bd); border-radius: 8px; padding: 16px; flex: 1; min-width: 280px; max-width: 480px; text-align: center; }
+  .wave-box h4 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .wave-box .wave-subtitle { font-size: 11px; color: var(--t2); margin-bottom: 12px; font-style: italic; }
+  .wave-box svg { width: 100%; max-height: 120px; }
+
+  /* Opening price line */
+  .op-line { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .op-dash { flex: 1; height: 1px; border-top: 1.5px dashed var(--t3); }
+  .op-label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--t2); white-space: nowrap; }
+
+  /* PD Array Matrix */
+  .pda-matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-radius: 8px; overflow: hidden; margin-top: 16px; }
+  .pda-zone { padding: 20px 24px; }
+  .pda-zone h4 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+  .pda-zone ul { list-style: none; padding: 0; }
+  .pda-zone li { font-size: 12px; line-height: 2; font-weight: 400; }
+  .pda-premium { background: rgba(224,80,80,0.08); border: 1px solid rgba(224,80,80,0.15); }
+  .pda-premium h4 { color: var(--red); }
+  .pda-premium li { color: #e08080; }
+  .pda-discount { background: rgba(46,201,116,0.06); border: 1px solid rgba(46,201,116,0.15); }
+  .pda-discount h4 { color: var(--green); }
+  .pda-discount li { color: #7dd4a0; }
+  .pda-label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; text-align: right; margin-top: 12px; }
+  .pda-center { grid-column: 1 / -1; text-align: center; padding: 10px; background: var(--s2); border: 1px solid var(--bd); font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 2px; }
+
+  /* Phase flowchart */
+  .phase-flow { display: flex; flex-direction: column; align-items: center; gap: 0; margin-top: 16px; }
+  .phase-node { border-radius: 50%; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; text-align: center; }
+  .phase-node-main { background: rgba(61,130,224,0.1); border: 2px solid var(--blue); color: var(--blue); width: 120px; height: 120px; font-size: 15px; }
+  .phase-branches { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+  .phase-branch { border-radius: 8px; padding: 12px 20px; font-family: 'Syne', sans-serif; font-weight: 600; font-size: 12px; text-align: center; min-width: 120px; }
+  .phase-green { background: rgba(46,201,116,0.08); border: 1px solid rgba(46,201,116,0.25); color: var(--green); }
+  .phase-red { background: rgba(224,80,80,0.08); border: 1px solid rgba(224,80,80,0.25); color: var(--red); }
+  .phase-gray { background: var(--s2); border: 1px dashed var(--bd2); color: var(--t2); }
+  .phase-arrow { color: var(--t3); font-size: 18px; line-height: 1; padding: 6px 0; }
+  .phase-legend { display: flex; gap: 16px; justify-content: center; margin-top: 16px; font-size: 11px; }
+  .phase-legend-item { display: flex; align-items: center; gap: 6px; }
+  .phase-legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+  /* Rules list */
+  .rule { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--bd); }
+  .rule:last-child { border-bottom: none; }
+  .rule-badge { font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 3px 10px; border-radius: 4px; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+  .rule-always { background: rgba(46,201,116,0.15); color: var(--green); }
+  .rule-can { background: rgba(61,130,224,0.12); color: var(--blue); }
+  .rule-cant { background: rgba(224,80,80,0.12); color: var(--red); }
+  .rule-text { color: var(--t2); font-size: 12px; line-height: 1.6; }
+
+  /* Breaker */
+  .breaker-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  @media(max-width:800px) { .breaker-grid { grid-template-columns: 1fr; } }
+  .breaker-card { background: var(--s2); border: 1px solid var(--bd); border-radius: 8px; padding: 18px 20px; }
+  .breaker-card h4 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+
+  .checklist { padding-left: 20px; margin-top: 8px; }
+  .checklist li { color: var(--t2); line-height: 1.8; font-size: 12px; list-style: none; position: relative; padding-left: 4px; }
+  .checklist li::before { content: '\2713'; color: var(--green); position: absolute; left: -16px; }
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+<link rel="stylesheet" href="../readability.css">
+
+<div class="banner">
+  <div class="banner-eyebrow">Module 19 &mdash; Fiches Visuelles</div>
+  <h1>Fiches Visuelles &mdash; <em>References Rapides</em></h1>
+  <p class="banner-sub">
+    7 fiches visuelles de reference : Protocole 09:30-10:30, Bougie Journaliere, Session AM, Matrice PD Arrays, Phases du Prix, Regles de Transition, Breaker Haute Probabilite. Diagrammes interactifs sans images.
+  </p>
+</div>
+
+<div class="container">
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h3>Sommaire</h3>
+    <ul class="toc-list">
+      <li><a href="#s1"><span class="toc-num">01</span><span class="toc-dot" style="background:var(--green)"></span> Protocole 09:30 &ndash; 10:30</a></li>
+      <li><a href="#s2"><span class="toc-num">02</span><span class="toc-dot" style="background:var(--blue)"></span> Bougie Journaliere (Daily Candle)</a></li>
+      <li><a href="#s3"><span class="toc-num">03</span><span class="toc-dot" style="background:var(--cyan)"></span> Session AM &mdash; Prix d'Ouverture</a></li>
+      <li><a href="#s4"><span class="toc-num">04</span><span class="toc-dot" style="background:var(--purple)"></span> Matrice PD Arrays &mdash; Premium / Discount</a></li>
+      <li><a href="#s5"><span class="toc-num">05</span><span class="toc-dot" style="background:var(--orange)"></span> Phases du Prix &mdash; Flowchart</a></li>
+      <li><a href="#s6"><span class="toc-num">06</span><span class="toc-dot" style="background:var(--gold)"></span> Regles de Transition entre Phases</a></li>
+      <li><a href="#s7"><span class="toc-num">07</span><span class="toc-dot" style="background:var(--red)"></span> Breaker Haute Probabilite</a></li>
+    </ul>
+  </div>
+
+
+  <!-- ==================== FICHE 1: PROTOCOLE 09:30-10:30 ==================== -->
+  <div class="section" id="s1">
+    <div class="section-title"><span class="dot" style="background:var(--green)"></span> Fiche 1 &mdash; Protocole 09:30 &ndash; 10:30</div>
+    <p style="color:var(--t2);line-height:1.7;margin-bottom:4px;">
+      La premiere heure apres l'ouverture de New York (09:30 &ndash; 10:30) est la fenetre cle d'execution. Le <span class="highlight">prix d'ouverture a 09:30</span> sert de pivot directionnel.
+    </p>
+
+    <div class="diagram-box">
+      <div class="diagram-title">Protocole 09:30 &ndash; 10:30</div>
+      <div class="wave-container">
+
+        <!-- Bullish -->
+        <div class="wave-box" style="border-color: rgba(46,201,116,0.3);">
+          <h4 style="color:var(--green)">Conditions Haussieres</h4>
+          <div class="wave-subtitle">"Chercher a acheter sous le prix d'ouverture"</div>
+          <svg viewBox="0 0 300 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Opening price line -->
+            <line x1="0" y1="35" x2="300" y2="35" stroke="#4a5668" stroke-width="1" stroke-dasharray="4 3"/>
+            <text x="290" y="28" fill="#8594a8" font-size="8" text-anchor="end" font-family="monospace">Prix 09:30</text>
+            <!-- Scenario 1: W pattern below then break above -->
+            <polyline points="10,30 30,70 50,45 70,85 90,50 110,95 140,25 180,20" stroke="#2ec974" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="110" cy="95" r="3" fill="#e05050"/>
+            <circle cx="180" cy="20" r="3" fill="#2ec974"/>
+            <text x="110" y="110" fill="#e05050" font-size="7" text-anchor="middle" font-family="monospace">Sweep</text>
+            <text x="180" y="14" fill="#2ec974" font-size="7" text-anchor="middle" font-family="monospace">Target</text>
+          </svg>
+          <div class="op-line"><div class="op-dash"></div><div class="op-label">OU</div><div class="op-dash"></div></div>
+          <svg viewBox="0 0 300 120" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top:8px;">
+            <line x1="0" y1="85" x2="300" y2="85" stroke="#4a5668" stroke-width="1" stroke-dasharray="4 3"/>
+            <text x="290" y="78" fill="#8594a8" font-size="8" text-anchor="end" font-family="monospace">Prix 09:30</text>
+            <!-- Scenario 2: price dips below then rallies -->
+            <polyline points="10,60 40,40 70,55 90,95 120,75 160,20 200,15" stroke="#2ec974" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="90" cy="95" r="3" fill="#e05050"/>
+            <circle cx="200" cy="15" r="3" fill="#2ec974"/>
+          </svg>
+        </div>
+
+        <!-- Bearish -->
+        <div class="wave-box" style="border-color: rgba(224,80,80,0.3);">
+          <h4 style="color:var(--red)">Conditions Baissieres</h4>
+          <div class="wave-subtitle">"Chercher a vendre au-dessus du prix d'ouverture"</div>
+          <svg viewBox="0 0 300 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="0" y1="85" x2="300" y2="85" stroke="#4a5668" stroke-width="1" stroke-dasharray="4 3"/>
+            <text x="290" y="78" fill="#8594a8" font-size="8" text-anchor="end" font-family="monospace">Prix 09:30</text>
+            <!-- M pattern above then drop below -->
+            <polyline points="10,90 30,50 50,75 70,35 90,70 110,25 140,95 180,100" stroke="#e05050" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="110" cy="25" r="3" fill="#2ec974"/>
+            <circle cx="180" cy="100" r="3" fill="#e05050"/>
+            <text x="110" y="18" fill="#2ec974" font-size="7" text-anchor="middle" font-family="monospace">Sweep</text>
+            <text x="180" y="113" fill="#e05050" font-size="7" text-anchor="middle" font-family="monospace">Target</text>
+          </svg>
+          <div class="op-line"><div class="op-dash"></div><div class="op-label">OU</div><div class="op-dash"></div></div>
+          <svg viewBox="0 0 300 120" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top:8px;">
+            <line x1="0" y1="35" x2="300" y2="35" stroke="#4a5668" stroke-width="1" stroke-dasharray="4 3"/>
+            <text x="290" y="28" fill="#8594a8" font-size="8" text-anchor="end" font-family="monospace">Prix 09:30</text>
+            <!-- price pops above then sells off -->
+            <polyline points="10,60 40,80 70,65 90,25 120,45 160,100 200,105" stroke="#e05050" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="90" cy="25" r="3" fill="#2ec974"/>
+            <circle cx="200" cy="105" r="3" fill="#e05050"/>
+          </svg>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:16px;">
+      <p><strong>Principe cle :</strong> En conditions haussieres, le prix descend sous le prix d'ouverture 09:30 pour prendre la liquidite puis remonte. En conditions baissieres, il monte au-dessus pour prendre la liquidite puis redescend. Le prix d'ouverture est le pivot de reference.</p>
+    </div>
+  </div>
+
+
+  <!-- ==================== FICHE 2: DAILY CANDLE ==================== -->
+  <div class="section" id="s2">
+    <div class="section-title"><span class="dot" style="background:var(--blue)"></span> Fiche 2 &mdash; Bougie Journaliere (Daily Candle)</div>
+    <p style="color:var(--t2);line-height:1.7;margin-bottom:4px;">
+      Le <span class="highlight">Midnight Opening Price</span> (prix d'ouverture de minuit) determine le biais de la bougie journaliere. C'est le niveau de reference pour savoir si la journee sera haussiere ou baissiere.
+    </p>
+
+    <div class="diagram-box">
+      <div class="diagram-title">Daily Candle &mdash; Midnight Opening Price</div>
+      <div class="wave-container">
+
+        <!-- Bullish Daily -->
+        <div class="wave-box" style="border-color: rgba(46,201,116,0.3);">
+          <h4 style="color:var(--green)">Conditions Haussieres</h4>
+          <div class="op-line" style="margin-bottom:16px;"><div class="op-dash" style="border-top-color:var(--green)"></div><div class="op-label" style="color:var(--green)">Midnight Opening Price &mdash; Daily Range</div><div class="op-dash" style="border-top-color:var(--green)"></div></div>
+          <p style="color:var(--t2);font-size:12px;text-align:center;line-height:1.7;">
+            Le prix est <strong style="color:var(--green)">au-dessus</strong> du Midnight Open &rarr; la journee est haussiere.<br>
+            <span style="font-style:italic;color:var(--t3);">"Chercher a acheter sous le prix d'ouverture"</span>
+          </p>
+          <svg viewBox="0 0 300 100" fill="none" style="margin-top:12px;">
+            <line x1="0" y1="70" x2="300" y2="70" stroke="#2ec974" stroke-width="1" stroke-dasharray="4 3"/>
+            <text x="150" y="82" fill="#2ec974" font-size="7" text-anchor="middle" font-family="monospace">Midnight Open</text>
+            <!-- Bullish candle body -->
+            <rect x="120" y="25" width="60" height="40" rx="2" fill="rgba(46,201,116,0.15)" stroke="#2ec974" stroke-width="1.5"/>
+            <line x1="150" y1="10" x2="150" y2="25" stroke="#2ec974" stroke-width="1.5"/>
+            <line x1="150" y1="65" x2="150" y2="75" stroke="#2ec974" stroke-width="1.5"/>
+            <text x="150" y="48" fill="#2ec974" font-size="8" text-anchor="middle" font-family="monospace">BULL</text>
+          </svg>
+        </div>
+
+        <!-- Bearish Daily -->
+        <div class="wave-box" style="border-color: rgba(224,80,80,0.3);">
+          <h4 style="color:var(--red)">Conditions Baissieres</h4>
+          <div class="op-line" style="margin-bottom:16px;"><div class="op-dash" style="border-top-color:var(--red)"></div><div class="op-label" style="color:var(--red)">Midnight Opening Price &mdash; Daily Range</div><div class="op-dash" style="border-top-color:var(--red)"></div></div>
+          <p style="color:var(--t2);font-size:12px;text-align:center;line-height:1.7;">
+            Le prix est <strong style="color:var(--red)">en-dessous</strong> du Midnight Open &rarr; la journee est baissiere.<br>
+            <span style="font-style:italic;color:var(--t3);">"Chercher a vendre au-dessus du prix d'ouverture"</span>
+          </p>
+          <svg viewBox="0 0 300 100" fill="none" style="margin-top:12px;">
+            <line x1="0" y1="30" x2="300" y2="30" stroke="#e05050" stroke-width="1" stroke-dasharray="4 3"/>
+            <text x="150" y="24" fill="#e05050" font-size="7" text-anchor="middle" font-family="monospace">Midnight Open</text>
+            <!-- Bearish candle body -->
+            <rect x="120" y="35" width="60" height="40" rx="2" fill="rgba(224,80,80,0.15)" stroke="#e05050" stroke-width="1.5"/>
+            <line x1="150" y1="25" x2="150" y2="35" stroke="#e05050" stroke-width="1.5"/>
+            <line x1="150" y1="75" x2="150" y2="90" stroke="#e05050" stroke-width="1.5"/>
+            <text x="150" y="58" fill="#e05050" font-size="8" text-anchor="middle" font-family="monospace">BEAR</text>
+          </svg>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== FICHE 3: AM SESSION ==================== -->
+  <div class="section" id="s3">
+    <div class="section-title"><span class="dot" style="background:var(--cyan)"></span> Fiche 3 &mdash; Session AM &mdash; Prix d'Ouverture 09:30</div>
+    <p style="color:var(--t2);line-height:1.7;margin-bottom:4px;">
+      Meme logique appliquee a la <span class="highlight">session AM</span>. Le prix d'ouverture a 09:30 est le pivot qui separe les conditions d'achat et de vente pour toute la session du matin.
+    </p>
+
+    <div class="diagram-box">
+      <div class="diagram-title">Session AM &mdash; Prix d'Ouverture 09:30</div>
+      <div class="wave-container">
+
+        <div class="wave-box" style="border-color: rgba(46,201,116,0.3);">
+          <h4 style="color:var(--green)">Conditions Haussieres</h4>
+          <div class="op-line" style="margin-bottom:12px;"><div class="op-dash" style="border-top-color:var(--green)"></div><div class="op-label" style="color:var(--green)">Prix d'Ouverture 09:30</div><div class="op-dash" style="border-top-color:var(--green)"></div></div>
+          <p style="color:var(--t2);font-size:12px;text-align:center;">
+            <span style="font-style:italic;color:var(--t3);">"Chercher a acheter sous le prix d'ouverture"</span>
+          </p>
+          <svg viewBox="0 0 300 80" fill="none" style="margin-top:8px;">
+            <line x1="0" y1="30" x2="300" y2="30" stroke="#2ec974" stroke-width="1.5" stroke-dasharray="5 3"/>
+            <rect x="0" y="30" width="300" height="50" fill="rgba(46,201,116,0.04)"/>
+            <text x="150" y="60" fill="#2ec974" font-size="9" text-anchor="middle" font-family="monospace" opacity="0.6">Zone d'achat</text>
+          </svg>
+        </div>
+
+        <div class="wave-box" style="border-color: rgba(224,80,80,0.3);">
+          <h4 style="color:var(--red)">Conditions Baissieres</h4>
+          <div class="op-line" style="margin-bottom:12px;"><div class="op-dash" style="border-top-color:var(--red)"></div><div class="op-label" style="color:var(--red)">Prix d'Ouverture 09:30</div><div class="op-dash" style="border-top-color:var(--red)"></div></div>
+          <p style="color:var(--t2);font-size:12px;text-align:center;">
+            <span style="font-style:italic;color:var(--t3);">"Chercher a vendre au-dessus du prix d'ouverture"</span>
+          </p>
+          <svg viewBox="0 0 300 80" fill="none" style="margin-top:8px;">
+            <line x1="0" y1="50" x2="300" y2="50" stroke="#e05050" stroke-width="1.5" stroke-dasharray="5 3"/>
+            <rect x="0" y="0" width="300" height="50" fill="rgba(224,80,80,0.04)"/>
+            <text x="150" y="30" fill="#e05050" font-size="9" text-anchor="middle" font-family="monospace" opacity="0.6">Zone de vente</text>
+          </svg>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><strong>Resume :</strong> Trois niveaux de reference avec la meme logique &mdash; <strong>Midnight Open</strong> pour le biais journalier, <strong>09:30 Open</strong> pour la session AM, et le meme 09:30 Open pour le protocole 09:30-10:30. Acheter en dessous, vendre au-dessus.</p>
+    </div>
+  </div>
+
+
+  <!-- ==================== FICHE 4: PD ARRAY MATRIX ==================== -->
+  <div class="section" id="s4">
+    <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Fiche 4 &mdash; Matrice PD Arrays &mdash; Premium / Discount</div>
+    <p style="color:var(--t2);line-height:1.7;margin-bottom:4px;">
+      La matrice des <span class="highlight">PD Arrays</span> (Premium &amp; Discount) organise tous les elements de prix institutionnels en deux zones : au-dessus du prix actuel (premium/vente) et en dessous (discount/achat).
+    </p>
+
+    <div class="diagram-box">
+      <div class="diagram-title">PD Array Matrix</div>
+
+      <!-- Premium zone -->
+      <div class="pda-matrix">
+        <div class="pda-zone pda-premium" style="border-radius:8px 0 0 0;">
+          <h4>Zone Premium (Au-dessus du prix)</h4>
+          <ul>
+            <li>Old High or Low</li>
+            <li>Rejection Block</li>
+            <li>Bearish Orderblock</li>
+            <li>Fair Value Gap</li>
+            <li>Liquidity Void</li>
+            <li>Bearish Breaker</li>
+            <li>Bearish Mitigation Block</li>
+          </ul>
+          <div class="pda-label" style="color:var(--red);">PREMIUM</div>
+        </div>
+
+        <div class="pda-zone pda-premium" style="border-radius:0 8px 0 0; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <p style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);letter-spacing:1px;">ZONE DE VENTE</p>
+          <p style="font-size:11px;color:#e08080;margin-top:8px;">On cherche a <strong>vendre</strong> dans cette zone.<br>Les PD Arrays ici sont des resistances institutionnelles.</p>
+        </div>
+
+        <!-- Center price -->
+        <div class="pda-center">Prix du Marche &mdash; Equilibrium (50%)</div>
+
+        <div class="pda-zone pda-discount" style="border-radius:0 0 0 8px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <p style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);letter-spacing:1px;">ZONE D'ACHAT</p>
+          <p style="font-size:11px;color:#7dd4a0;margin-top:8px;">On cherche a <strong>acheter</strong> dans cette zone.<br>Les PD Arrays ici sont des supports institutionnels.</p>
+        </div>
+
+        <div class="pda-zone pda-discount" style="border-radius:0 0 8px 0;">
+          <h4>Zone Discount (Sous le prix)</h4>
+          <ul>
+            <li>Bullish Mitigation Block</li>
+            <li>Bullish Breaker</li>
+            <li>Liquidity Void</li>
+            <li>Fair Value Gap</li>
+            <li>Bullish Orderblock</li>
+            <li>Rejection Block</li>
+            <li>Old Low or High</li>
+          </ul>
+          <div class="pda-label" style="color:var(--green);">DISCOUNT</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="sub-heading">Details des PD Arrays</h3>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3 style="color:var(--red)">PD Arrays Premium (Vente)</h3>
+        <ul class="list-styled">
+          <li><strong>Old High or Low</strong> &mdash; Ancien sommet ou creux, zone de liquidite</li>
+          <li><strong>Rejection Block</strong> &mdash; Bougie de rejet avec meche longue en zone premium</li>
+          <li><strong>Bearish Orderblock</strong> &mdash; Derniere bougie haussiere avant un mouvement baissier</li>
+          <li><strong>Fair Value Gap</strong> &mdash; Desequilibre de prix a 3 bougies (SIBI)</li>
+          <li><strong>Liquidity Void</strong> &mdash; Zone sans echanges, le prix doit la combler</li>
+          <li><strong>Bearish Breaker</strong> &mdash; Ancien support devenu resistance apres cassure</li>
+          <li><strong>Bearish Mitigation Block</strong> &mdash; Zone ou les pertes de Smart Money sont attenuees</li>
+        </ul>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--green)">PD Arrays Discount (Achat)</h3>
+        <ul class="list-styled">
+          <li><strong>Bullish Mitigation Block</strong> &mdash; Zone ou les pertes de Smart Money sont attenuees</li>
+          <li><strong>Bullish Breaker</strong> &mdash; Ancienne resistance devenue support apres cassure</li>
+          <li><strong>Liquidity Void</strong> &mdash; Zone sans echanges a combler</li>
+          <li><strong>Fair Value Gap</strong> &mdash; Desequilibre de prix a 3 bougies (BISI)</li>
+          <li><strong>Bullish Orderblock</strong> &mdash; Derniere bougie baissiere avant un mouvement haussier</li>
+          <li><strong>Rejection Block</strong> &mdash; Bougie de rejet avec meche longue en zone discount</li>
+          <li><strong>Old Low or High</strong> &mdash; Ancien creux ou sommet, zone de liquidite</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== FICHE 5: PHASES DU PRIX ==================== -->
+  <div class="section" id="s5">
+    <div class="section-title"><span class="dot" style="background:var(--orange)"></span> Fiche 5 &mdash; Phases du Prix &mdash; Flowchart</div>
+    <p style="color:var(--t2);line-height:1.7;margin-bottom:4px;">
+      Le prix traverse toujours l'une de ces <span class="highlight">4 phases</span> : Expansion, Consolidation, Retracement ou Reversal. Comprendre les transitions entre ces phases est fondamental.
+    </p>
+
+    <div class="diagram-box">
+      <div class="diagram-title">Phases du Prix &mdash; Flowchart</div>
+
+      <div class="phase-flow">
+        <!-- Main node -->
+        <div class="phase-node phase-node-main">Expansion</div>
+        <div class="phase-arrow">&darr;</div>
+        <p style="color:var(--t2);font-size:11px;margin-bottom:8px;">Apres une expansion, le prix peut aller vers :</p>
+
+        <!-- 4 branches -->
+        <div class="phase-branches">
+          <div class="phase-branch phase-red">
+            Expansion<br><span style="font-size:10px;opacity:0.7;">(Contre-tendance)</span>
+          </div>
+          <div class="phase-branch phase-gray">
+            Consolidation
+          </div>
+          <div class="phase-branch phase-gray">
+            Retracement
+          </div>
+          <div class="phase-branch phase-red">
+            Expansion<br><span style="font-size:10px;opacity:0.7;">(Reversal)</span>
+          </div>
+        </div>
+
+        <div class="phase-arrow">&darr;</div>
+
+        <div class="phase-branches">
+          <div class="phase-branch phase-green">
+            Expansion<br><span style="font-size:10px;opacity:0.7;">(Dans la tendance)</span>
+          </div>
+          <div class="phase-branch phase-green">
+            Expansion<br><span style="font-size:10px;opacity:0.7;">(Dans la tendance)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-legend">
+        <div class="phase-legend-item"><div class="phase-legend-dot" style="background:rgba(224,80,80,0.5);"></div> <span style="color:var(--t2);font-size:11px;">Mouvement contre la tendance</span></div>
+        <div class="phase-legend-item"><div class="phase-legend-dot" style="background:rgba(46,201,116,0.5);"></div> <span style="color:var(--t2);font-size:11px;">Mouvement dans la tendance</span></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== FICHE 6: REGLES DE TRANSITION ==================== -->
+  <div class="section" id="s6">
+    <div class="section-title"><span class="dot" style="background:var(--gold)"></span> Fiche 6 &mdash; Regles de Transition entre Phases</div>
+    <p style="color:var(--t2);line-height:1.7;margin-bottom:12px;">
+      Ces regles definissent les transitions <span class="highlight">possibles et impossibles</span> entre les phases du prix. Les connaitre evite les erreurs d'anticipation.
+    </p>
+
+    <div class="diagram-box">
+      <div class="diagram-title">Regles de Transition</div>
+
+      <div class="rule">
+        <div class="rule-badge rule-always">TOUJOURS</div>
+        <div class="rule-text">Le prix passe <strong style="color:#fff">toujours</strong> d'une consolidation a une expansion. C'est la seule transition garantie. Apres toute consolidation, il y aura une expansion.</div>
+      </div>
+
+      <div class="rule">
+        <div class="rule-badge rule-can">POSSIBLE</div>
+        <div class="rule-text">Le prix <strong style="color:#fff">peut</strong> passer d'une expansion a un <strong>retracement</strong>. C'est le cas classique : mouvement directionnel, puis pullback partiel.</div>
+      </div>
+
+      <div class="rule">
+        <div class="rule-badge rule-can">POSSIBLE</div>
+        <div class="rule-text">Le prix <strong style="color:#fff">peut</strong> passer d'une expansion a une <strong>consolidation</strong>. Le mouvement s'arrete et entre dans un range lateral.</div>
+      </div>
+
+      <div class="rule">
+        <div class="rule-badge rule-can">POSSIBLE</div>
+        <div class="rule-text">Le prix <strong style="color:#fff">peut</strong> passer d'une expansion a un <strong>reversal</strong>. Le mouvement s'inverse completement.</div>
+      </div>
+
+      <div style="margin-top:16px; padding-top:16px; border-top: 1px solid var(--bd);">
+
+        <div class="rule">
+          <div class="rule-badge rule-cant">IMPOSSIBLE</div>
+          <div class="rule-text">Le prix <strong style="color:#fff">ne peut PAS</strong> passer d'une consolidation a un <strong>retracement</strong>. Un retracement necessite d'abord une expansion.</div>
+        </div>
+
+        <div class="rule">
+          <div class="rule-badge rule-cant">IMPOSSIBLE</div>
+          <div class="rule-text">Le prix <strong style="color:#fff">ne peut PAS</strong> passer d'une consolidation a un <strong>reversal</strong>. Un reversal necessite d'abord une expansion dans la direction originale.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:16px;">
+      <p><strong>En resume :</strong> La consolidation est toujours suivie d'une expansion. Jamais directement d'un retracement ou d'un reversal. Toute transition passe obligatoirement par une phase d'expansion.</p>
+    </div>
+  </div>
+
+
+  <!-- ==================== FICHE 7: BREAKER HAUTE PROBABILITE ==================== -->
+  <div class="section" id="s7">
+    <div class="section-title"><span class="dot" style="background:var(--red)"></span> Fiche 7 &mdash; Breaker Haute Probabilite</div>
+    <p style="color:var(--t2);line-height:1.7;margin-bottom:4px;">
+      Le <span class="highlight">Breaker Block</span> est l'un des PD Arrays les plus puissants pour les entrees. Voici les conditions qui rendent un breaker haute probabilite.
+    </p>
+
+    <h3 class="sub-heading">Quand se forment les meilleurs Breakers ?</h3>
+    <div class="breaker-grid">
+      <div class="breaker-card">
+        <h4><span class="sub-num">1</span> <span style="color:var(--cyan)">Pendant les Macros</span></h4>
+        <p style="color:var(--t2);font-size:12px;line-height:1.7;">
+          On cherche les breakers pendant les <strong style="color:#fff">fenetres macro</strong> (9h50-10h10, 10h50-11h10, 13h10-13h40, 15h15-15h45). C'est durant ces moments que les retournements institutionnels se produisent.
+        </p>
+      </div>
+      <div class="breaker-card">
+        <h4><span class="sub-num">2</span> <span style="color:var(--green)">Apres un Stophunt HTF</span></h4>
+        <p style="color:var(--t2);font-size:12px;line-height:1.7;">
+          Les breakers se forment sur les <strong style="color:#fff">timeframes inferieurs</strong> apres une chasse de stop sur le timeframe superieur. Le HTF donne le contexte, le LTF donne l'entree.
+        </p>
+      </div>
+      <div class="breaker-card">
+        <h4><span class="sub-num">3</span> <span style="color:var(--orange)">Apres Construction de Liquidite</span></h4>
+        <p style="color:var(--t2);font-size:12px;line-height:1.7;">
+          Apres que le prix ait construit de la liquidite forte comme des <strong style="color:#fff">equal highs/lows</strong> ou des trendlines. Cette liquidite est le carburant du mouvement qui forme le breaker.
+        </p>
+      </div>
+      <div class="breaker-card">
+        <h4><span class="sub-num">4</span> <span style="color:var(--purple)">A un Niveau HTF</span></h4>
+        <p style="color:var(--t2);font-size:12px;line-height:1.7;">
+          Quand le prix atteint un <strong style="color:#fff">niveau HTF</strong> (Orderblock H4/Daily, FVG HTF, zone de liquidite majeure). L'alignement multi-timeframe augmente la probabilite.
+        </p>
+      </div>
+    </div>
+
+    <h3 class="sub-heading">Regles de Contexte</h3>
+    <div class="two-col">
+      <div class="sub-section" style="border-left:3px solid var(--red);">
+        <h4 style="color:var(--red)">Ventes &mdash; HTF Premium</h4>
+        <p>Les ventes fonctionnent le mieux quand le breaker se forme en <strong style="color:#fff">zone premium HTF</strong>. Le prix est au-dessus de l'equilibrium sur le timeframe superieur.</p>
+      </div>
+      <div class="sub-section" style="border-left:3px solid var(--green);">
+        <h4 style="color:var(--green)">Achats &mdash; HTF Discount</h4>
+        <p>Les achats fonctionnent le mieux quand le breaker se forme en <strong style="color:#fff">zone discount HTF</strong>. Le prix est sous l'equilibrium sur le timeframe superieur.</p>
+      </div>
+    </div>
+
+    <h3 class="sub-heading">Caracteristiques Cles</h3>
+    <div class="sub-section">
+      <ul class="checklist">
+        <li>Le breaker <strong style="color:#fff">accelere la livraison du prix</strong> &mdash; il apporte de la vitesse dans le mouvement</li>
+        <li>Le breaker fonctionne le mieux dans les conditions de <strong style="color:#fff">faible resistance a la liquidite</strong> (low resistance liquidity)</li>
+        <li>Eviter de trader les breakers dans les conditions de <strong style="color:var(--red)">haute resistance</strong> &mdash; quand il y a beaucoup d'obstacles entre l'entree et la cible</li>
+        <li>Le <strong style="color:#fff">Breaker LTF</strong> est la zone exacte d'entree &mdash; c'est l'ancien support/resistance qui a ete casse puis reteste</li>
+        <li>Confirmer avec un <strong style="color:#fff">deplacement</strong> (displacement) &mdash; un mouvement agressif qui casse la structure et laisse un FVG</li>
+      </ul>
+    </div>
+
+    <div class="diagram-box" style="margin-top:16px;">
+      <div class="diagram-title">Schema &mdash; Formation d'un Breaker (Bullish)</div>
+      <svg viewBox="0 0 500 180" fill="none" style="width:100%;max-height:200px;">
+        <!-- Downtrend -->
+        <polyline points="20,30 60,60 40,80 80,50 70,90 100,70 90,110 120,90 110,130 140,110 130,150" stroke="#e05050" stroke-width="2" fill="none" stroke-linejoin="round"/>
+        <!-- X mark at low -->
+        <line x1="125" y1="145" x2="135" y2="155" stroke="#e05050" stroke-width="2"/>
+        <line x1="135" y1="145" x2="125" y2="155" stroke="#e05050" stroke-width="2"/>
+        <text x="130" y="170" fill="#e05050" font-size="8" text-anchor="middle" font-family="monospace">Stophunt</text>
+
+        <!-- Rally -->
+        <polyline points="130,150 160,100 150,115 180,70 170,85 200,40 195,55 220,25" stroke="#2ec974" stroke-width="2" fill="none" stroke-linejoin="round"/>
+
+        <!-- Breaker zone -->
+        <rect x="230" y="65" width="120" height="25" rx="3" fill="rgba(61,130,224,0.12)" stroke="#3d82e0" stroke-width="1" stroke-dasharray="4 2"/>
+        <text x="290" y="82" fill="#3d82e0" font-size="9" text-anchor="middle" font-family="monospace">Breaker LTF</text>
+
+        <!-- Pullback into breaker -->
+        <polyline points="220,25 250,55 240,45 270,80" stroke="#8594a8" stroke-width="1.5" fill="none" stroke-dasharray="3 2"/>
+
+        <!-- Bounce from breaker -->
+        <polyline points="270,80 300,50 310,60 340,30 350,40 390,10" stroke="#2ec974" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+
+        <!-- Entry arrow -->
+        <circle cx="270" cy="80" r="4" fill="#2ec974"/>
+        <text x="270" y="100" fill="#2ec974" font-size="8" text-anchor="middle" font-family="monospace">Entree</text>
+
+        <!-- Target -->
+        <circle cx="390" cy="10" r="4" fill="#2ec974"/>
+        <text x="390" y="6" fill="#2ec974" font-size="8" text-anchor="middle" font-family="monospace">Target</text>
+      </svg>
+    </div>
+
+    <div class="callout" style="margin-top:16px;">
+      <p><strong>Resume :</strong> Un breaker haute probabilite combine : fenetre macro + stophunt HTF + construction de liquidite + niveau HTF + zone premium/discount alignee. La vitesse de livraison du prix confirme la qualite du breaker.</p>
+    </div>
+  </div>
+
+
+</div>
+
+</body>
+</html>
