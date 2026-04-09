@@ -24,6 +24,7 @@
       { id: 'role-outils',   label: 'Outils Pratiques' },
       { id: 'psychologie',   label: 'Psychologie' },
       { id: 'maitrise-liquidite', label: 'Maitrise de la Liquidite' },
+      { id: 'etudes-de-cas',      label: 'Etudes de Cas' },
     ]},
     { name: 'Outils', items: [
       { id: 'time-price',      label: 'Calculateur Time x Price' },

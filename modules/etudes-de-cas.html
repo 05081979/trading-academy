@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Etudes de Cas Pratiques</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0C0F0A;
+  --bg2:      #111510;
+  --bg3:      #181D14;
+  --border:   #1F2A1A;
+  --em:       #3D7A3A;
+  --em2:      #56A853;
+  --em-light: #A3D9A1;
+  --em-pale:  #E8F5E8;
+  --amber:    #D4882A;
+  --amber-l:  #F5C56A;
+  --red:      #C9453A;
+  --blue:     #4A90B8;
+  --muted:    #3A4535;
+  --text:     #DDE8D8;
+  --text-dim: #7D9478;
+  --serif:    'Playfair Display', serif;
+  --sans:     'Syne', sans-serif;
+  --body:     'Source Serif 4', serif;
+  --mono:     'Roboto Mono', monospace;
+  --sw: 270px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.75; display: flex; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── SIDEBAR ─────────────────────────── */
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 100;
+}
+
+.sb-logo {
+  padding: 28px 22px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sb-logo .mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--em), var(--em2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(61,122,58,.3);
+}
+
+.sb-logo h1 {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--em-light);
+  line-height: 1.25;
+}
+
+.sb-logo p {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.sb-section {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 16px 22px 5px;
+}
+
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 22px; text-decoration: none;
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 500;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.sb-link:hover { background: rgba(86,168,83,.06); color: var(--text); }
+.sb-link.active { background: rgba(86,168,83,.1); color: var(--em-light); border-left-color: var(--em2); }
+
+.sb-link .n {
+  font-family: var(--mono);
+  font-size: 0.62rem; font-weight: 500;
+  color: var(--muted); min-width: 22px;
+}
+.sb-link.active .n { color: var(--em2); }
+
+/* ── PROGRESS ────────────────────────── */
+#pbar {
+  position: fixed; top: 0; left: var(--sw); right: 0;
+  height: 2px; background: var(--border); z-index: 200;
+}
+#pfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--em), var(--em2), var(--amber));
+  width: 0%; transition: width 0.1s linear;
+}
+
+/* ── MAIN ────────────────────────────── */
+#main { margin-left: var(--sw); flex: 1; min-height: 100vh; }
+
+/* ── HERO ────────────────────────────── */
+#hero {
+  position: relative; overflow: hidden;
+  padding: 80px 64px 72px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-noise {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-lines {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 20px,
+    rgba(61,122,58,.04) 20px, rgba(61,122,58,.04) 21px
+  );
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(86,168,83,.12);
+  border: 1px solid rgba(86,168,83,.3);
+  color: var(--em-light);
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+
+#hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 5.5vw, 5rem);
+  line-height: 1.0;
+  color: #fff;
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+#hero h1 .em {
+  display: block;
+  background: linear-gradient(90deg, var(--em2), var(--em-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+#hero .sub {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 400;
+  color: var(--text-dim); max-width: 560px; margin-bottom: 44px;
+  line-height: 1.8;
+}
+
+.hero-kpis {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 14px; max-width: 560px;
+}
+
+.kpi {
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+}
+.kpi:hover { border-color: rgba(86,168,83,.35); }
+
+.kpi-v {
+  font-family: var(--mono);
+  font-size: 1.2rem; font-weight: 500;
+  color: var(--em2); margin-bottom: 2px;
+}
+.kpi-l {
+  font-family: var(--sans);
+  font-size: 0.62rem; font-weight: 600;
+  color: var(--text-dim); text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── MODULE / SECTION ───────────────── */
+.mod {
+  padding: 56px 64px;
+  border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.45s, transform 0.45s;
+}
+.mod.vis { opacity: 1; transform: none; }
+
+.mod h2 {
+  font-family: var(--serif);
+  font-size: 1.8rem; font-weight: 700;
+  color: #fff; margin-bottom: 6px;
+}
+
+.mod h3 {
+  font-family: var(--sans);
+  font-size: 1.05rem; font-weight: 700;
+  color: var(--em-light);
+  margin-top: 28px; margin-bottom: 10px;
+}
+
+.mod h4 {
+  font-family: var(--sans);
+  font-size: 0.88rem; font-weight: 700;
+  color: var(--amber-l);
+  margin-top: 22px; margin-bottom: 8px;
+}
+
+.mod-tag {
+  font-family: var(--mono);
+  font-size: 0.65rem; font-weight: 500;
+  color: var(--em2);
+  margin-bottom: 16px;
+}
+
+.mod p, .mod li {
+  font-size: 0.98rem;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.mod ul, .mod ol {
+  padding-left: 20px;
+  margin-bottom: 14px;
+}
+
+.mod li { margin-bottom: 6px; }
+
+/* ── INFO BOXES ─────────────────────── */
+.info-box {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--em2);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 18px 0;
+  font-size: 0.92rem;
+}
+
+.info-box.amber { border-left-color: var(--amber); }
+.info-box.red { border-left-color: var(--red); }
+.info-box.blue { border-left-color: var(--blue); }
+
+.info-box strong {
+  color: var(--em-light);
+  font-weight: 700;
+}
+
+.info-box.amber strong { color: var(--amber-l); }
+.info-box.red strong { color: var(--red); }
+.info-box.blue strong { color: var(--blue); }
+
+/* ── TRADE CARD ─────────────────────── */
+.trade-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 22px 26px;
+  margin: 18px 0;
+}
+
+.trade-card .label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--em2);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+
+.trade-card .value {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.trade-card .desc {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  margin-top: 6px;
+}
+
+/* ── TIMELINE ───────────────────────── */
+.timeline {
+  position: relative;
+  padding-left: 28px;
+  margin: 18px 0;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+
+.tl-item {
+  position: relative;
+  margin-bottom: 20px;
+  padding-left: 18px;
+}
+
+.tl-item::before {
+  content: '';
+  position: absolute;
+  left: -24px; top: 8px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--em2);
+  border: 2px solid var(--bg);
+}
+
+.tl-time {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--amber);
+  margin-bottom: 4px;
+}
+
+.tl-desc {
+  font-size: 0.92rem;
+  color: var(--text);
+}
+
+/* ── CHECKLIST ──────────────────────── */
+.checklist {
+  list-style: none;
+  padding-left: 0;
+}
+
+.checklist li {
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 10px;
+  font-size: 0.92rem;
+}
+
+.checklist li::before {
+  content: '\2713';
+  position: absolute;
+  left: 0; top: 0;
+  color: var(--em2);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* ── QUOTE ──────────────────────────── */
+.quote {
+  background: var(--bg3);
+  border-left: 3px solid var(--em);
+  padding: 24px 28px;
+  border-radius: 0 10px 10px 0;
+}
+.quote p {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--em-pale);
+}
+.quote cite {
+  display: block;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin-top: 10px;
+}
+
+/* ── FOOTER ─────────────────────────── */
+#footer {
+  padding: 40px 64px;
+  text-align: center;
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+/* ── RESPONSIVE ─────────────────────── */
+@media (max-width: 900px) {
+  #sidebar { transform: translateX(-270px); }
+  #sidebar.open { transform: translateX(0); }
+  #main { margin-left: 0; }
+  #pbar { left: 0; }
+  .mod { padding: 36px 22px; }
+  #hero { padding: 52px 22px 44px; }
+  .hero-kpis { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="mark">A</div>
+    <h1>Etudes de Cas<br>Pratiques</h1>
+    <p>Protocole &mdash; Algorithmic Academy</p>
+  </div>
+
+  <div class="sb-section">Introduction</div>
+  <a class="sb-link active" href="#hero"><span class="n">00</span>Vue d'ensemble</a>
+  <a class="sb-link" href="#m1"><span class="n">01</span>Pourquoi les Etudes de Cas</a>
+  <a class="sb-link" href="#m2"><span class="n">02</span>Comment Lire ces Analyses</a>
+
+  <div class="sb-section">Etude de Cas 1</div>
+  <a class="sb-link" href="#m3"><span class="n">03</span>Short NQ &mdash; 50 Handles</a>
+  <a class="sb-link" href="#m4"><span class="n">04</span>Chronologie du Trade</a>
+  <a class="sb-link" href="#m5"><span class="n">05</span>Confluences & Lecons</a>
+
+  <div class="sb-section">Etude de Cas 2</div>
+  <a class="sb-link" href="#m6"><span class="n">06</span>Setup A+ en Direct</a>
+  <a class="sb-link" href="#m7"><span class="n">07</span>Execution & Resultat</a>
+  <a class="sb-link" href="#m8"><span class="n">08</span>Analyse Post-Trade</a>
+
+  <div class="sb-section">Synthese</div>
+  <a class="sb-link" href="#m9"><span class="n">09</span>Points Cles a Retenir</a>
+  <a class="sb-link" href="#m10"><span class="n">10</span>Checklist Setup HP</a>
+  <a class="sb-link" href="#outro"><span class="n">11</span>Conclusion</a>
+</nav>
+
+<div id="pbar"><div id="pfill"></div></div>
+
+<main id="main">
+
+<!-- ── HERO ──────────────────────────── -->
+<section id="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-tag">Protocole &mdash; Etudes de Cas</div>
+  <h1>Etudes de Cas<span class="em">Pratiques</span></h1>
+  <p class="sub">Deux analyses detaillees de trades reels sur NQ, decomposees etape par etape. Niveaux algorithmiques, Quarterly Theory, SMT &mdash; la methodologie complete appliquee en conditions de marche.</p>
+  <div class="hero-kpis">
+    <div class="kpi"><div class="kpi-v">2</div><div class="kpi-l">Etudes de Cas</div></div>
+    <div class="kpi"><div class="kpi-v">NQ</div><div class="kpi-l">Instrument</div></div>
+    <div class="kpi"><div class="kpi-v">150+</div><div class="kpi-l">Handles Captures</div></div>
+  </div>
+</section>
+
+<!-- ── INTRODUCTION ──────────────────── -->
+<section class="mod" id="m1">
+  <div class="mod-tag">SECTION 01 &mdash; METHODOLOGIE</div>
+  <h2>Pourquoi les Etudes de Cas</h2>
+
+  <p>La theorie ne suffit pas. Chaque concept &mdash; niveaux algorithmiques, cycles de 90 minutes, SMT, structure fractale &mdash; ne prend tout son sens que lorsqu'il est observe en conditions reelles de marche. Les etudes de cas permettent de :</p>
+
+  <ul>
+    <li><strong>Voir la methodologie en action :</strong> comment les niveaux algorithmiques (243, 729, 2187) se combinent avec les cycles temporels pour definir un biais, une zone d'entree et des objectifs.</li>
+    <li><strong>Comprendre le processus de decision :</strong> chaque trade commence par une analyse pre-marche, se confirme par des signaux de timing, et s'execute avec une gestion du risque precise.</li>
+    <li><strong>Identifier les patterns recurrents :</strong> les setups a haute probabilite partagent des caracteristiques communes qu'il est essentiel de reconnaitre.</li>
+    <li><strong>Apprendre des erreurs :</strong> meme les bons trades contiennent des lecons sur l'entree, la patience et la gestion de position.</li>
+  </ul>
+
+  <div class="info-box">
+    <strong>Approche analytique :</strong> ces analyses sont presentees comme des revues internes. L'objectif n'est pas de montrer un resultat, mais de decomposer le raisonnement etape par etape, de l'analyse pre-marche jusqu'a la cloture de la position.
+  </div>
+</section>
+
+<section class="mod" id="m2">
+  <div class="mod-tag">SECTION 02 &mdash; GUIDE DE LECTURE</div>
+  <h2>Comment Lire ces Analyses</h2>
+
+  <p>Chaque etude de cas suit une structure identique :</p>
+
+  <ol>
+    <li><strong>Contexte pre-marche :</strong> biais directionnel issu de l'analyse HTF (hebdomadaire, journalier), identification des niveaux cles.</li>
+    <li><strong>Structure temporelle :</strong> decoupe en quarters de 90 minutes, micro-quarters de 22,5 minutes, et identification du cycle accumulation-manipulation-distribution.</li>
+    <li><strong>Confirmation SMT :</strong> divergence inter-marche validant le biais directionnel.</li>
+    <li><strong>Niveaux algorithmiques :</strong> les niveaux 243, 729 et 2187 definissent les zones de reaction, les seuils de declenchement et les objectifs.</li>
+    <li><strong>Execution :</strong> point d'entree, stop loss, take profits partiels et gestion du runner.</li>
+    <li><strong>Lecons :</strong> ce qui a fonctionne, ce qui aurait pu etre ameliore.</li>
+  </ol>
+
+  <div class="info-box blue">
+    <strong>Terminologie :</strong> FVG = Fair Value Gap &bull; IPG = Inversion Fair Value Gap &bull; SMT = Smart Money Tool (divergence) &bull; TMSO = True Market Structure Open &bull; BPR = Balanced Price Range &bull; EQ = Equilibrium (50%)
+  </div>
+</section>
+
+<!-- ── ETUDE DE CAS 1 ───────────────── -->
+<section class="mod" id="m3">
+  <div class="mod-tag">ETUDE DE CAS 01 &mdash; SHORT NQ</div>
+  <h2>Short NQ &mdash; 50 Handles Captures</h2>
+
+  <div class="trade-card">
+    <div class="label">Resume du Trade</div>
+    <div class="value">Short NQ &mdash; 50 handles / 3 contrats micro</div>
+    <div class="desc">Position courte prise a l'ouverture de New York, basee sur le plus bas de Londres comme resistance et les niveaux algorithmiques 243/2187. Objectif atteint en macro de 11h.</div>
+  </div>
+
+  <h3>Analyse Pre-Marche</h3>
+
+  <p>Avant l'ouverture, l'analyse indiquait une zone de consolidation suivie d'un potentiel rebond. Cependant, le biais etait clairement baissier si le plus bas de la session de Londres tenait comme resistance. Les elements cles du plan :</p>
+
+  <ul>
+    <li><strong>Resistance :</strong> le point bas de Londres (London Low) comme zone de rejet majeure.</li>
+    <li><strong>Niveaux algorithmiques :</strong> activite intense identifiee aux niveaux 65, 61 et 83 sur la structure fractale.</li>
+    <li><strong>Niveau 2187 :</strong> support attendu autour du niveau 53, suggerant un reequilibrage plus tard dans la journee.</li>
+    <li><strong>Objectifs :</strong> cible initiale a 24 960, cible finale a 24 840.</li>
+  </ul>
+
+  <div class="info-box amber">
+    <strong>Condition cle :</strong> le plan dependait entierement de la confirmation que le plus bas de Londres servait bien de resistance. Tant que ce rejet n'etait pas valide, aucune position n'etait prise.
+  </div>
+
+  <h3>Structure Temporelle</h3>
+
+  <p>L'analyse temporelle decoupait la session en plusieurs niveaux de precision :</p>
+
+  <ul>
+    <li><strong>Quarter de 90 minutes :</strong> le premier quarter apres l'ouverture de 9h30 affichait une phase d'accumulation suivie d'une manipulation. L'attente portait sur une distribution dans le quarter suivant.</li>
+    <li><strong>Micro-quarters de 22,5 minutes :</strong> a l'interieur du quarter principal, chaque micro-quarter permettait de raffiner le timing de la phase de distribution.</li>
+    <li><strong>TMSO (True Market Structure Open) :</strong> utilise comme point de reference pour confirmer le biais baissier intra-session.</li>
+  </ul>
+
+  <h3>Niveaux Algorithmiques en Jeu</h3>
+
+  <p>Sur l'unite de temps inferieure, la structure fractale de niveau 243 indiquait un niveau d'opportunite tres favorable. Le prix evoluait dans une zone de premium par rapport a la structure fractale globale, avec convergence de plusieurs niveaux :</p>
+
+  <ul>
+    <li>FVG (Fair Value Gap) positionne exactement sur un niveau algorithmique 243.</li>
+    <li>Confluence avec le True Open de New York.</li>
+    <li>Seuils de flux sur la structure 2187 confirmant la zone de resistance.</li>
+  </ul>
+</section>
+
+<section class="mod" id="m4">
+  <div class="mod-tag">ETUDE DE CAS 01 &mdash; CHRONOLOGIE</div>
+  <h2>Chronologie du Trade</h2>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-time">Pre-ouverture</div>
+      <div class="tl-desc">Analyse pre-marche completee. Biais baissier conditionnel : le London Low doit servir de resistance. Objectifs traces sur la structure 2187.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">9h30 &mdash; Ouverture NY</div>
+      <div class="tl-desc">Le marche ouvre et commence a vendre immediatement. Le quarter de 90 minutes demarre. Phase d'accumulation identifiee.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">~9h35 &mdash; SMT 22 minutes</div>
+      <div class="tl-desc">Un SMT sur le cycle de 22 minutes confirme la pression vendeuse. La divergence inter-marche valide le biais baissier.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">~9h40 &mdash; Manipulation</div>
+      <div class="tl-desc">Le prix monte au-dessus du niveau FVG sur le 243, meche au-dessus du True Open de New York. Phase de manipulation en cours &mdash; multiple confluences.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">~9h45 &mdash; Entree Short</div>
+      <div class="tl-desc">Premiere execution a 25 112. Trois contrats micro. Le seuil de flux est franchi a la baisse, confirme par la cloture des corps en dessous du niveau d'activite sur les graphiques 3 minutes et 9 minutes.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">~9h55 &mdash; Ajout de position</div>
+      <div class="tl-desc">Un composant SMT supplementaire (nano) confirme la continuation baissiere. Un contrat ajoute vers 25 045.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">~10h10 &mdash; Premier TP</div>
+      <div class="tl-desc">Premier objectif atteint au niveau 17 sur la structure fractale 243. Take profit partiel.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">~10h30 &mdash; Cloture du runner</div>
+      <div class="tl-desc">Detection de double SMT haussier. Le creux n'est pas casse en cloture. Decision de cloturer le runner plutot que de risquer un retournement.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">10h55 &mdash; Objectif final atteint</div>
+      <div class="tl-desc">Le prix atteint l'objectif final dans la macro de 11h. Le plan etait correct &mdash; la position aurait pu etre maintenue plus longtemps.</div>
+    </div>
+  </div>
+</section>
+
+<section class="mod" id="m5">
+  <div class="mod-tag">ETUDE DE CAS 01 &mdash; CONFLUENCES & LECONS</div>
+  <h2>Confluences et Lecons</h2>
+
+  <h3>Confluences Identifiees</h3>
+
+  <ul>
+    <li><strong>London Low comme resistance :</strong> le rejet du London Low a ete le declencheur principal du biais baissier.</li>
+    <li><strong>FVG sur niveau algorithmique 243 :</strong> le gap de valeur se trouvait exactement sur un niveau de structure fractale.</li>
+    <li><strong>True Open de New York :</strong> le prix a meche au-dessus puis a rejete ce niveau &mdash; une signature classique de manipulation.</li>
+    <li><strong>SMT sur cycle 22 minutes :</strong> divergence confirmant la pression institutionnelle vendeuse.</li>
+    <li><strong>Cycle accumulation &rarr; manipulation &rarr; distribution :</strong> le quarter de 90 minutes a suivi la sequence classique, puis la continuation a complete le mouvement.</li>
+    <li><strong>Noeud temporel algorithmique :</strong> le noeud a protege la position pendant la phase de retracement intermediaire.</li>
+  </ul>
+
+  <h3>Lecons Retenues</h3>
+
+  <div class="info-box amber">
+    <strong>Entree :</strong> un meilleur point d'entree existait au niveau du pullback apres la cassure initiale. La premiere execution etait correcte mais pas optimale &mdash; la patience pour le retest aurait permis un meilleur ratio risque/rendement.
+  </div>
+
+  <div class="info-box">
+    <strong>Gestion du runner :</strong> la position a ete cloturee avant l'objectif final par prudence (et contraintes personnelles de temps). L'objectif a finalement ete atteint a 10h55. Lecon : quand le plan est valide et les confluences sont fortes, laisser le runner travailler &mdash; ou utiliser un trailing stop.
+  </div>
+
+  <div class="info-box blue">
+    <strong>Taille de position :</strong> trois contrats micro seulement, malgre la conviction. Approche conservatrice justifiee par le sentiment de "vendre avec une decote". La gestion du risque prime toujours sur la conviction.
+  </div>
+
+  <div class="trade-card">
+    <div class="label">Resultat</div>
+    <div class="value">+50 handles sur 3 micro-contrats NQ</div>
+    <div class="desc">Duree : environ 45 minutes (entree a cloture du runner). L'objectif final a ete atteint 25 minutes apres la sortie.</div>
+  </div>
+</section>
+
+<!-- ── ETUDE DE CAS 2 ───────────────── -->
+<section class="mod" id="m6">
+  <div class="mod-tag">ETUDE DE CAS 02 &mdash; SETUP A+</div>
+  <h2>Setup A+ : Niveaux Algorithmiques x Quarterly Theory</h2>
+
+  <div class="trade-card">
+    <div class="label">Resume du Trade</div>
+    <div class="value">Short NQ &mdash; ~110 handles / position en direct</div>
+    <div class="desc">Configuration A+ combinant SMT hebdomadaire + journalier, sequence de niveaux algorithmiques complete, et confirmation par indicateur de deploy. Objectif : le plus bas precedent.</div>
+  </div>
+
+  <h3>Analyse Pre-Marche</h3>
+
+  <p>L'analyse pre-marche etablissait un biais fortement baissier a partir de plusieurs timeframes :</p>
+
+  <ul>
+    <li><strong>SMT hebdomadaire :</strong> divergence baissiere identifiee sur le graphique hebdomadaire. Signal de haute conviction indiquant une pression vendeuse sur le timeframe macro.</li>
+    <li><strong>SMT journalier :</strong> divergence confirmee egalement sur le journalier &mdash; double confluence rare qui elevait la probabilite du setup.</li>
+    <li><strong>Contexte de mardi :</strong> dans la logique des cycles hebdomadaires, le mardi etait anticipe comme journee d'accumulation, avec la distribution attendue dans la suite de la semaine.</li>
+    <li><strong>Plan :</strong> observer une montee du marche (15 minutes d'activite), puis une baisse. Premier objectif : un point d'interet identifie en amont. Objectif final : le creux precedent du marche.</li>
+  </ul>
+
+  <div class="info-box">
+    <strong>Double SMT (hebdo + daily) :</strong> cette confluence est relativement rare. Lorsqu'elle se presente, elle constitue l'un des signaux les plus fiables de la methodologie &mdash; une condition prealable pour qualifier un setup "A+".</li>
+  </div>
+
+  <h3>Observation des 90 Minutes</h3>
+
+  <p>Apres l'ouverture, la periode d'observation de 90 minutes a ete analysee en detail :</p>
+
+  <ul>
+    <li><strong>SMT sequentiel :</strong> un indicateur dedie au suivi du SMT sequentiel a confirme la divergence baissiere sur le timeframe de la transaction.</li>
+    <li><strong>Premier FVG/IPG detecte :</strong> le premier Fair Value Gap (et son inversion) a ete identifie automatiquement, servant de zone de reference pour l'entree.</li>
+    <li><strong>Niveaux algorithmiques :</strong> la sequence 81/243/729 etait active. Le prix evoluait dans la fourchette 243, avec suivi des GIP (points d'inversion) sur les graphiques 9 minutes et 27 minutes.</li>
+  </ul>
+</section>
+
+<section class="mod" id="m7">
+  <div class="mod-tag">ETUDE DE CAS 02 &mdash; EXECUTION</div>
+  <h2>Execution et Resultat</h2>
+
+  <h3>Sequence de Declenchement des Niveaux</h3>
+
+  <p>L'indicateur de niveaux a suivi une sequence precise de declenchement :</p>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-time">Etape 1 &mdash; Break des seuils</div>
+      <div class="tl-desc">Les seuils de flux (flow gates) ont ete casses un par un. L'indicateur suivait chaque cassure et attendait la prochaine confirmation.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Etape 2 &mdash; Retest attendu</div>
+      <div class="tl-desc">Apres la cassure des seuils, un retest de la cellule limite (niveau 83) etait attendu. L'indicateur affichait "Prepare" &mdash; en attente de la confluence finale.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Etape 3 &mdash; Signal "Pret a Deployer"</div>
+      <div class="tl-desc">L'indicateur a affiche "Pret a deployer" avec un signal baissier. Ce signal combinait la cassure des seuils, le retest et la direction du biais.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Etape 4 &mdash; Cellule limite touchee</div>
+      <div class="tl-desc">Le niveau 77 a ete atteint, puis le prix s'est dirige vers le niveau 83 (cellule limite). La mise en surbrillance automatique confirmait la zone optimale d'execution.</div>
+    </div>
+  </div>
+
+  <h3>Entree et Gestion</h3>
+
+  <p>L'entree s'est faite aux alentours de 9h37, immediatement apres la confirmation du SMT sur 90 minutes et le signal de l'indicateur. Les details :</p>
+
+  <ul>
+    <li><strong>Entree :</strong> prise de position short apres le signal "pret a deployer" baissier.</li>
+    <li><strong>Stop loss :</strong> place au-dessus du dollar projete (niveau de protection algorithmique).</li>
+    <li><strong>Premier TP (50% EQ) :</strong> premier take profit au niveau d'equilibre &mdash; ratio risque/rendement de 2.2.</li>
+    <li><strong>Ajout de position :</strong> apres le retracement vers l'IPG, des contrats supplementaires ont ete ajoutes.</li>
+    <li><strong>Deuxieme TP :</strong> au niveau du BPR (Balanced Price Range) dans la zone de discount.</li>
+    <li><strong>TP final :</strong> au niveau OB (Order Block) 11 sur les niveaux algorithmiques &mdash; passage complet de premium a discount.</li>
+  </ul>
+
+  <h3>Confirmations Supplementaires</h3>
+
+  <p>Plusieurs elements ont renforce la conviction pendant le trade :</p>
+
+  <ul>
+    <li><strong>TMSO :</strong> le prix a rejete le True Market Structure Open, confirmant le biais intra-session.</li>
+    <li><strong>True Open de New York :</strong> rejet avec meche au-dessus, puis cloture des corps en dessous &mdash; pattern classique de retournement.</li>
+    <li><strong>Corps de 3 minutes :</strong> suivi de la cloture des corps sur le graphique 3 minutes pour confirmer la pression vendeuse continue.</li>
+    <li><strong>Noeud de demarrage algorithmique :</strong> un indice supplementaire confirmant le biais baissier sur la session.</li>
+  </ul>
+
+  <div class="trade-card">
+    <div class="label">Resultat</div>
+    <div class="value">~110 handles captures sur NQ</div>
+    <div class="desc">Incluant les partiels a 50% EQ, au niveau BPR, et au niveau OB 11 des niveaux algorithmiques. Le prix a ensuite atteint le plus bas precedent comme anticipe.</div>
+  </div>
+
+  <div class="info-box">
+    <strong>Contexte post-trade :</strong> apres la cloture de la position, le prix a continue a generer de la liquidite au sud vers le plus bas precedent. L'indicateur a ensuite affiche un signal haussier, indiquant un retour potentiel dans la fourchette de fluctuation &mdash; validant le cycle complet.
+  </div>
+</section>
+
+<section class="mod" id="m8">
+  <div class="mod-tag">ETUDE DE CAS 02 &mdash; ANALYSE POST-TRADE</div>
+  <h2>Analyse Post-Trade</h2>
+
+  <h3>Ce qui a fait de ce Setup un "A+"</h3>
+
+  <p>Ce trade merite la qualification A+ pour la convergence exceptionnelle de facteurs :</p>
+
+  <ul>
+    <li><strong>Alignement multi-timeframe :</strong> SMT hebdomadaire + SMT journalier + SMT sur 90 minutes. Trois niveaux de confirmation dans la meme direction.</li>
+    <li><strong>Sequence algorithmique complete :</strong> tous les seuils de declenchement ont ete casses dans l'ordre, suivis du retest de la cellule limite, puis du signal de deploiement.</li>
+    <li><strong>Timing precis :</strong> le cycle de 90 minutes et la Quarterly Theory ont fourni le cadre temporel exact pour l'execution.</li>
+    <li><strong>Gestion de la zone de discount :</strong> les objectifs etaient definis par les niveaux algorithmiques eux-memes &mdash; pas par des projections arbitraires.</li>
+  </ul>
+
+  <h3>Deuxieme Entree Possible</h3>
+
+  <p>Une deuxieme entree etait disponible pour ceux qui n'avaient pas pris la premiere. Les conditions :</p>
+
+  <ul>
+    <li>Cloture en dessous de la fourchette de prix d'equilibre (BPR).</li>
+    <li>Cloture en dessous du niveau de rupture.</li>
+    <li>Passage du seuil de declenchement.</li>
+  </ul>
+
+  <div class="info-box amber">
+    <strong>Lecon :</strong> les pertes de la veille (dues a des entrees hasardeuses sur une journee volatile) ont ete compensees par ce seul trade. Cela illustre l'importance de la patience : attendre le setup A+ plutot que de forcer des entrees sur des conditions mediocres.
+  </div>
+</section>
+
+<!-- ── POINTS CLES ──────────────────── -->
+<section class="mod" id="m9">
+  <div class="mod-tag">SECTION 09 &mdash; SYNTHESE</div>
+  <h2>Points Cles a Retenir</h2>
+
+  <h3>Patterns Communs entre les Deux Trades</h3>
+
+  <p>Malgre des conditions de marche differentes, les deux trades partagent des elements structurels identiques :</p>
+
+  <ol>
+    <li><strong>Biais pre-marche clair :</strong> dans les deux cas, le biais baissier etait etabli AVANT l'ouverture, base sur l'analyse des niveaux algorithmiques et des conditions HTF.</li>
+    <li><strong>London Low comme ancre :</strong> le plus bas de la session de Londres a servi de reference structurelle pour definir la resistance.</li>
+    <li><strong>SMT comme validation :</strong> ni l'un ni l'autre des trades n'a ete pris sans confirmation SMT. La divergence inter-marche est le filtre final avant l'execution.</li>
+    <li><strong>Cycle 90 minutes :</strong> les deux trades s'inscrivent dans la logique des quarters &mdash; accumulation, manipulation, distribution.</li>
+    <li><strong>Niveaux algorithmiques comme objectifs :</strong> les TPs ne sont pas arbitraires. Ils sont definis par la structure mathematique des niveaux 243/729/2187.</li>
+    <li><strong>Gestion conservatrice :</strong> taille de position moderee, take profits partiels, et sortie avant le risque de retournement.</li>
+  </ol>
+
+  <h3>Ce qui Distingue un Setup A+</h3>
+
+  <div class="info-box">
+    <strong>Convergence multi-couche :</strong> un setup A+ n'est pas un setup qui "ressemble" a un bon trade. C'est un setup ou CHAQUE element de la methodologie pointe dans la meme direction &mdash; timeframe HTF, SMT, niveaux algorithmiques, structure temporelle, et conditions de liquidite.
+  </div>
+
+  <h4>Les erreurs a eviter</h4>
+
+  <ul>
+    <li><strong>Forcer un trade sans SMT :</strong> les deux analyses montrent que le SMT est non-negociable. Pas de divergence = pas de trade.</li>
+    <li><strong>Ignorer le timing :</strong> entrer trop tot dans le quarter (pendant l'accumulation au lieu d'attendre la manipulation) reduit le ratio risque/rendement.</li>
+    <li><strong>Sur-dimensionner la position :</strong> meme avec un setup A+, la taille de position doit rester conservatrice. Les marches peuvent toujours surprendre.</li>
+    <li><strong>Cloture prematuree :</strong> lorsque les confluences sont fortes, il est essentiel de laisser au moins un runner atteindre l'objectif principal.</li>
+    <li><strong>Entrees hasardeuses les jours volatils :</strong> comme illustre dans l'etude de cas 2, les pertes precedentes venaient d'entrees forcees. La patience est la premiere competence.</li>
+  </ul>
+</section>
+
+<section class="mod" id="m10">
+  <div class="mod-tag">SECTION 10 &mdash; CHECKLIST</div>
+  <h2>Checklist : Setup Haute Probabilite</h2>
+
+  <p>Avant toute execution, verifier systematiquement chaque element :</p>
+
+  <h3>Phase 1 &mdash; Analyse Pre-Marche</h3>
+  <ul class="checklist">
+    <li>Biais directionnel clair issu de l'analyse HTF (hebdomadaire / journalier)</li>
+    <li>SMT present sur au moins un timeframe superieur</li>
+    <li>Niveaux algorithmiques identifies (243 / 729 / 2187) avec objectifs traces</li>
+    <li>London session analysee : London Low / London High comme zone de reference</li>
+    <li>Plan ecrit AVANT l'ouverture de New York</li>
+  </ul>
+
+  <h3>Phase 2 &mdash; Confirmation Intra-Session</h3>
+  <ul class="checklist">
+    <li>Quarter de 90 minutes identifie (accumulation en cours ?)</li>
+    <li>SMT confirme sur le timeframe de transaction (22 min ou 90 min)</li>
+    <li>Reaction sur un niveau algorithmique cle (FVG, seuil de flux, cellule limite)</li>
+    <li>TMSO ou True Open de NY rejete dans la direction du biais</li>
+    <li>Indicateur de niveaux affiche "Pret a deployer" dans la direction du biais</li>
+  </ul>
+
+  <h3>Phase 3 &mdash; Execution</h3>
+  <ul class="checklist">
+    <li>Entree apres manipulation (pas pendant l'accumulation)</li>
+    <li>Stop loss defini par la structure (au-dessus du dernier high de manipulation)</li>
+    <li>TP1 au niveau 50% EQ ou premier niveau algorithmique</li>
+    <li>TP2 au BPR ou niveau OB</li>
+    <li>Runner maintenu vers l'objectif principal si confluences intactes</li>
+    <li>Taille de position conservatrice (max 3-5 micro selon la conviction)</li>
+  </ul>
+
+  <div class="info-box red">
+    <strong>Regle absolue :</strong> si plus de deux elements de cette checklist ne sont pas valides, le trade n'est pas pris. La discipline est le fondement de la rentabilite a long terme.
+  </div>
+</section>
+
+<!-- FOOTER QUOTE -->
+<section class="mod" id="outro">
+  <div class="quote">
+    <p>Un setup A+ ne se trouve pas &mdash; il se confirme. Chaque couche de confluence ajoute de la probabilite. La patience transforme l'analyse en profit.</p>
+    <cite>Algorithmic Academy &mdash; Etudes de Cas Pratiques</cite>
+  </div>
+</section>
+
+<footer id="footer">
+  <p>Etudes de Cas Pratiques &mdash; Cours Algorithmic Academy &mdash; Niveaux Algorithmiques &mdash; Quarterly Theory &mdash; SMT &mdash; Structure Fractale</p>
+  <p style="margin-top:8px;color:var(--border)">Le trading comporte des risques. Ce cours est educatif uniquement.</p>
+</footer>
+
+</main>
+
+<script>
+// Progress bar
+const pf = document.getElementById('pfill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  pf.style.width = (window.scrollY / h * 100) + '%';
+}, { passive: true });
+
+// Fade in modules
+const io = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.05 });
+document.querySelectorAll('.mod').forEach(m => io.observe(m));
+
+// Active nav
+const secs = [...document.querySelectorAll('[id]')];
+const links = document.querySelectorAll('.sb-link');
+function updateNav() {
+  const y = window.scrollY + 110;
+  let cur = secs[0]?.id;
+  for (const s of secs) { if (s.offsetTop <= y) cur = s.id; }
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>
