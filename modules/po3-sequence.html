@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — PO3 Sequence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080910;
+    --surface: #0e1018;
+    --card: #12141e;
+    --border: #1c1f2e;
+    --border-bright: #2a2f45;
+    --gold: #c8a96e;
+    --gold-dim: #8a7048;
+    --gold-glow: rgba(200,169,110,0.10);
+    --text: #ddd8cc;
+    --text-dim: #888278;
+    --text-muted: #4a4840;
+    --green: #4ade80;
+    --green-dim: rgba(74,222,128,0.10);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.10);
+    --blue: #60a5fa;
+    --blue-dim: rgba(96,165,250,0.10);
+    --purple: #c084fc;
+    --purple-dim: rgba(192,132,252,0.10);
+    --amber: #fbbf24;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.65;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 35% at 50% 0%, rgba(192,132,252,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 10% 60%, rgba(200,169,110,0.025) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+  /* ─── HEADER ─── */
+  header { padding: 40px 0 0; border-bottom: 1px solid var(--border); }
+
+  .header-inner {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-bottom: 28px;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .logo-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--purple);
+    opacity: .7;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .logo-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(22px, 4vw, 38px);
+    font-weight: 700;
+    color: var(--purple);
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+
+  .logo-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-style: italic;
+    margin-top: 6px;
+    letter-spacing: 0.03em;
+  }
+
+  .header-badges { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 4px 12px;
+    border: 1px solid var(--border-bright);
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .badge.active { border-color: rgba(192,132,252,0.4); color: var(--purple); }
+
+  /* ─── TABS ─── */
+  .tabs-nav {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs-nav::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 16px 28px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    position: relative;
+    top: 1px;
+  }
+
+  .tab-btn:hover { color: var(--text-dim); }
+  .tab-btn.active { color: var(--purple); border-bottom-color: var(--purple); }
+
+  /* ─── CONTENT ─── */
+  .tab-content { display: none; padding: 36px 0 60px; }
+  .tab-content.active { display: block; }
+
+  /* ─── GRID ─── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  @media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  @media (max-width: 1100px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
+
+  .section-gap { margin-bottom: 36px; }
+
+  /* ─── SECTION LABEL ─── */
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: rgba(192,132,252,0.5);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 24px;
+  }
+
+  .card-title {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--purple);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+  }
+
+  /* ─── PHILOSOPHY BOX ─── */
+  .philosophy-box {
+    border: 1px solid rgba(192,132,252,0.35);
+    background: var(--purple-dim);
+    padding: 24px 28px;
+    margin-bottom: 28px;
+    position: relative;
+  }
+
+  .philosophy-box::before {
+    content: '"';
+    position: absolute;
+    top: -14px;
+    left: 20px;
+    font-family: 'Cinzel', serif;
+    font-size: 60px;
+    color: rgba(192,132,252,0.25);
+    line-height: 1;
+  }
+
+  .philosophy-box p {
+    font-size: 17px;
+    font-style: italic;
+    color: var(--text);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  .philosophy-box .attrib {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(192,132,252,0.5);
+    letter-spacing: 0.15em;
+    margin-top: 10px;
+    text-transform: uppercase;
+  }
+
+  /* ─── DATA TABLE ─── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+
+  .data-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: rgba(192,132,252,0.6);
+    text-transform: uppercase;
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-bright);
+    background: var(--surface);
+  }
+
+  .data-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.45;
+  }
+
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(255,255,255,0.015); }
+
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    padding: 2px 7px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .tag-green  { background: var(--green-dim);  color: var(--green);  border: 1px solid rgba(74,222,128,0.2); }
+  .tag-red    { background: var(--red-dim);    color: var(--red);    border: 1px solid rgba(248,113,113,0.2); }
+  .tag-blue   { background: var(--blue-dim);   color: var(--blue);   border: 1px solid rgba(96,165,250,0.2); }
+  .tag-purple { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(192,132,252,0.25); }
+  .tag-gold   { background: var(--gold-glow);  color: var(--gold);   border: 1px solid rgba(200,169,110,0.2); }
+  .tag-muted  { background: var(--border);     color: var(--text-muted); }
+
+  /* ─── ALERT ─── */
+  .alert {
+    padding: 14px 18px;
+    border-left: 3px solid;
+    margin: 12px 0;
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+
+  .alert strong {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .alert-purple { border-color: var(--purple); background: var(--purple-dim); color: var(--text); }
+  .alert-purple strong { color: var(--purple); }
+  .alert-red { border-color: var(--red); background: var(--red-dim); color: var(--text); }
+  .alert-red strong { color: var(--red); }
+  .alert-green { border-color: var(--green); background: var(--green-dim); color: var(--text); }
+  .alert-green strong { color: var(--green); }
+  .alert-gold { border-color: var(--gold); background: var(--gold-glow); color: var(--text); }
+  .alert-gold strong { color: var(--gold); }
+
+  /* ─── FLOW ─── */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin: 12px 0;
+  }
+
+  .flow-step {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 8px 14px;
+    background: var(--border);
+    color: var(--text);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .flow-step.purple { background: var(--purple-dim); border: 1px solid rgba(192,132,252,0.3); color: var(--purple); }
+  .flow-step.danger { background: var(--red-dim); border: 1px solid rgba(248,113,113,0.25); color: var(--red); }
+  .flow-step.success { background: var(--green-dim); border: 1px solid rgba(74,222,128,0.25); color: var(--green); }
+  .flow-step.neutral { background: var(--card); border: 1px solid var(--border-bright); color: var(--text-dim); }
+
+  .flow-arrow { color: var(--text-muted); font-size: 14px; }
+
+  /* ─── DECISION TREE ─── */
+  .decision-tree {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .dt-question {
+    font-size: 11px;
+    color: var(--text);
+    padding: 6px 12px;
+    background: var(--border);
+    border-left: 2px solid rgba(192,132,252,0.5);
+    margin: 3px 0;
+    line-height: 1.4;
+  }
+
+  .dt-no { font-size: 11px; color: var(--red); padding: 4px 0; }
+  .dt-yes { font-size: 11px; color: var(--green); padding: 4px 0; }
+
+  .dt-action {
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 4px 10px;
+    background: var(--red-dim);
+    border-left: 2px solid var(--red);
+    margin: 2px 0;
+  }
+
+  .dt-execute {
+    font-size: 12px;
+    color: var(--green);
+    font-weight: 700;
+    padding: 10px 16px;
+    background: var(--green-dim);
+    border: 1px solid rgba(74,222,128,0.3);
+    margin: 4px 0;
+    letter-spacing: 0.06em;
+  }
+
+  .i1 { padding-left: 24px; }
+  .i2 { padding-left: 48px; }
+  .i3 { padding-left: 72px; }
+  .i4 { padding-left: 96px; }
+  .i5 { padding-left: 120px; }
+  .i6 { padding-left: 144px; }
+  .i7 { padding-left: 168px; }
+
+  /* ─── RANGE STACK (visual diagram) ─── */
+  .range-stack {
+    border: 1px solid var(--border);
+    overflow: hidden;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .rs-row {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .rs-row:last-child { border-bottom: none; }
+
+  .rs-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-dim);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+  }
+
+  .rs-label .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .rs-type {
+    font-size: 9px;
+    padding: 2px 6px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  .rs-desc {
+    font-size: 12.5px;
+    padding: 10px 16px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    font-family: 'Crimson Pro', serif;
+    flex: 1;
+    line-height: 1.4;
+  }
+
+  .rs-row.po3-level   .rs-label { background: var(--purple-dim); color: var(--purple); border-right-color: rgba(192,132,252,0.25); }
+  .rs-row.fuel-level  .rs-label { background: var(--gold-glow);  color: var(--gold);   border-right-color: rgba(200,169,110,0.2); }
+  .rs-row.erm-level   .rs-label { background: var(--red-dim);    color: var(--red);    border-right-color: rgba(248,113,113,0.2); }
+  .rs-row.irm-level   .rs-label { background: rgba(96,165,250,0.06); color: var(--blue); border-right-color: rgba(96,165,250,0.2); }
+  .rs-row.eq-level    .rs-label { background: var(--green-dim);  color: var(--green);  border-right-color: rgba(74,222,128,0.2); }
+
+  /* ─── POWER TABLE ─── */
+  .power-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .power-item {
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    text-align: center;
+    background: var(--surface);
+  }
+
+  .power-item.active {
+    border-color: rgba(192,132,252,0.4);
+    background: var(--purple-dim);
+  }
+
+  .power-exp {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .power-val {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    color: var(--text-dim);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .power-item.active .power-val { color: var(--purple); }
+
+  .power-rm {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-muted);
+  }
+
+  .power-item.active .power-rm { color: rgba(192,132,252,0.5); }
+
+  .power-used {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    color: var(--purple);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 5px;
+  }
+
+  /* ─── GLOSSARY ─── */
+  .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
+
+  .gloss-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    align-items: flex-start;
+  }
+
+  .gloss-term {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--purple);
+    min-width: 80px;
+    padding-top: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  .gloss-def { font-size: 12.5px; color: var(--text-dim); line-height: 1.4; }
+
+  /* ─── RULES LIST ─── */
+  .rules-list { list-style: none; }
+
+  .rules-list li {
+    display: flex;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14.5px;
+    line-height: 1.5;
+    align-items: flex-start;
+  }
+
+  .rules-list li:last-child { border-bottom: none; }
+
+  .rule-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(192,132,252,0.5);
+    min-width: 24px;
+    padding-top: 3px;
+  }
+
+  .rule-cat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    background: var(--border);
+    padding: 2px 6px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    margin-top: 3px;
+    min-width: fit-content;
+  }
+
+  /* ─── CHECKLIST ─── */
+  .cl-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--purple);
+    text-transform: uppercase;
+    padding: 10px 16px;
+    background: var(--purple-dim);
+    border: 1px solid rgba(192,132,252,0.35);
+    margin-bottom: 0;
+  }
+
+  .cl-items { border: 1px solid var(--border); border-top: none; }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+  }
+
+  .check-item:last-child { border-bottom: none; }
+  .check-item:hover { background: rgba(255,255,255,0.02); }
+  .check-item.checked { opacity: 0.45; }
+  .check-item.checked .check-label { text-decoration: line-through; color: var(--text-muted); }
+
+  .check-box {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--border-bright);
+    background: var(--surface);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .check-item.checked .check-box {
+    background: var(--green-dim);
+    border-color: var(--green);
+  }
+
+  .check-item.checked .check-box::after {
+    content: '✓';
+    font-size: 10px;
+    color: var(--green);
+  }
+
+  .check-label { font-size: 14px; color: var(--text); line-height: 1.4; flex: 1; }
+
+  .check-source {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .check-source.po3 { color: rgba(192,132,252,0.5); }
+  .check-source.warn { color: rgba(248,113,113,0.5); }
+
+  /* ─── PROGRESS ─── */
+  .progress-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(192,132,252,0.5);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    letter-spacing: 0.1em;
+  }
+
+  .progress-bar-wrap { background: var(--border); height: 3px; }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--purple);
+    transition: width 0.3s ease;
+  }
+
+  .reset-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid var(--border-bright);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 24px;
+  }
+
+  .reset-btn:hover { border-color: rgba(192,132,252,0.4); color: var(--purple); }
+
+  /* ─── TF TABLE ─── */
+  .tf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+
+  .tf-item {
+    border: 1px solid var(--border);
+    padding: 16px;
+    text-align: center;
+    background: var(--surface);
+  }
+
+  .tf-item.active { border-color: rgba(192,132,252,0.4); background: var(--purple-dim); }
+
+  .tf-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+
+  .tf-item.active .tf-name { color: var(--purple); }
+
+  .tf-range {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    color: var(--purple);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .tf-rm {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-muted);
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+  /* ─── TRADE BREAKDOWN ─── */
+  .trade-step {
+    display: flex;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+
+  .trade-step:last-child { border-bottom: none; }
+
+  .ts-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--purple);
+    min-width: 28px;
+    padding-top: 2px;
+    opacity: .7;
+  }
+
+  .ts-body { flex: 1; }
+
+  .ts-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .ts-desc { font-size: 13.5px; color: var(--text-dim); line-height: 1.5; }
+
+  .ts-result {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    flex-shrink: 0;
+  }
+
+  .ts-result.win  { background: var(--green-dim); color: var(--green); border: 1px solid rgba(74,222,128,0.3); }
+  .ts-result.loss { background: var(--red-dim);   color: var(--red);   border: 1px solid rgba(248,113,113,0.3); }
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- ─── HEADER ─── -->
+  <header>
+    <div class="header-inner">
+      <div>
+        <div class="logo-eyebrow">Mentorat · Analyse des 3 vidéos</div>
+        <div class="logo-title">PO3 SEQUENCE</div>
+        <div class="logo-sub">Algorithmic Academy — Ranges fractals · Puissance de 3 · Niveaux EQ</div>
+      </div>
+      <div class="header-badges">
+        <div class="badge active">3 Vidéos</div>
+        <div class="badge active">Ranges 3ⁿ</div>
+        <div class="badge">NQ / S&P</div>
+      </div>
+    </div>
+
+    <nav class="tabs-nav">
+      <button class="tab-btn active" onclick="switchTab('ranges')">01 · Ranges &amp; Niveaux</button>
+      <button class="tab-btn" onclick="switchTab('methode')">02 · Méthode</button>
+      <button class="tab-btn" onclick="switchTab('trade')">03 · Trade Breakdown</button>
+      <button class="tab-btn" onclick="switchTab('checklist')">04 · Checklist</button>
+      <button class="tab-btn" onclick="switchTab('eq-model')">05 · EQ Buy Model</button>
+    </nav>
+  </header>
+
+  <!-- ══════════════════════════
+       TAB 1 — RANGES & NIVEAUX
+  ══════════════════════════ -->
+  <div id="ranges" class="tab-content active">
+
+    <div class="philosophy-box">
+      <p>On trade TOUJOURS d'un Fuel Level vers le prochain PO3 Level,<br>ou d'un PO3 Level vers un Fuel Level.</p>
+      <div class="attrib">Algorithmic Academy — PO3 Sequence</div>
+    </div>
+
+    <div class="section-label">Puissance de 3 — Les ranges utilisés</div>
+    <div class="power-grid section-gap">
+      <div class="power-item">
+        <div class="power-exp">3¹</div>
+        <div class="power-val">3</div>
+        <div class="power-rm">—</div>
+      </div>
+      <div class="power-item">
+        <div class="power-exp">3²</div>
+        <div class="power-val">9</div>
+        <div class="power-rm">—</div>
+      </div>
+      <div class="power-item active">
+        <div class="power-exp">3³</div>
+        <div class="power-val">27</div>
+        <div class="power-rm">RM = 3 pts</div>
+        <div class="power-used">↑ Utilisé · 15min</div>
+      </div>
+      <div class="power-item active">
+        <div class="power-exp">3⁴</div>
+        <div class="power-val">81</div>
+        <div class="power-rm">RM = 9 pts</div>
+        <div class="power-used">↑ Utilisé · 1H</div>
+      </div>
+      <div class="power-item active">
+        <div class="power-exp">3⁵</div>
+        <div class="power-val">243</div>
+        <div class="power-rm">RM = 27 pts</div>
+        <div class="power-used">↑ Utilisé · multi-TF</div>
+      </div>
+      <div class="power-item active">
+        <div class="power-exp">3⁶</div>
+        <div class="power-val">729</div>
+        <div class="power-rm">RM = 81 pts</div>
+        <div class="power-used">↑ Utilisé · HTF</div>
+      </div>
+    </div>
+
+    <div class="section-label">Paramétrage de l'indicateur par timeframe</div>
+    <div class="tf-grid section-gap">
+      <div class="tf-item active">
+        <div class="tf-name">15 min</div>
+        <div class="tf-range">27</div>
+        <div class="tf-rm">RM = 3 pts</div>
+      </div>
+      <div class="tf-item active">
+        <div class="tf-name">1H</div>
+        <div class="tf-range">81</div>
+        <div class="tf-rm">RM = 9 pts</div>
+      </div>
+      <div class="tf-item active">
+        <div class="tf-name">4H</div>
+        <div class="tf-range">187</div>
+        <div class="tf-rm">Ajustable manuellement</div>
+      </div>
+      <div class="tf-item">
+        <div class="tf-name">HTF</div>
+        <div class="tf-range">729</div>
+        <div class="tf-rm">RM = 81 pts</div>
+      </div>
+    </div>
+
+    <div class="alert alert-gold section-gap" style="margin-top:-16px;">
+      <strong>Calcul des Racing Markers</strong>
+      Racing Marker = Range ÷ 9 &nbsp;→&nbsp; Range 27 ÷ 9 = 3 pts &nbsp;|&nbsp; Range 81 ÷ 9 = 9 pts &nbsp;|&nbsp; Range 729 ÷ 9 = 81 pts
+    </div>
+
+    <div class="section-label">Structure d'un range — Tous les niveaux</div>
+    <div class="range-stack section-gap">
+      <div class="rs-row erm-level">
+        <div class="rs-label">
+          <div class="dot" style="background:var(--red)"></div>
+          ERM Haut
+          <span class="rs-type tag tag-red">ERM</span>
+        </div>
+        <div class="rs-desc">External Racing Marker supérieur — espace <strong>au-dessus</strong> du Range High. Calculé : Range ÷ 9.</div>
+      </div>
+      <div class="rs-row po3-level">
+        <div class="rs-label">
+          <div class="dot" style="background:var(--purple)"></div>
+          Range High
+          <span class="rs-type tag tag-purple">PO3</span>
+        </div>
+        <div class="rs-desc">Limite supérieure du range. Niveau PO3 — zone de réaction clé.</div>
+      </div>
+      <div class="rs-row irm-level">
+        <div class="rs-label">
+          <div class="dot" style="background:var(--blue)"></div>
+          IRM Haut
+          <span class="rs-type tag tag-blue">IRM</span>
+        </div>
+        <div class="rs-desc">Internal Racing Marker supérieur — espace <strong>en-dessous</strong> du Range High. Zone tampon interne.</div>
+      </div>
+      <div class="rs-row po3-level">
+        <div class="rs-label">
+          <div class="dot" style="background:var(--purple)"></div>
+          Upper Fractal
+          <span class="rs-type tag tag-purple">PO3</span>
+        </div>
+        <div class="rs-desc">Fractal supérieur — niveau PO3 haut. Cible principale dans un bull program.</div>
+      </div>
+      <div class="rs-row fuel-level">
+        <div class="rs-label">
+          <div class="dot" style="background:var(--gold)"></div>
+          Fuel Level 2 Haut
+          <span class="rs-type tag tag-gold">FUEL</span>
+        </div>
+        <div class="rs-desc">Midpoint entre Range High et Upper Fractal. Engineer liquidity + Trade liquidity.</div>
+      </div>
+      <div class="rs-row eq-level">
+        <div class="rs-label">
+          <div class="dot" style="background:var(--green)"></div>
+          EQ Level
+          <span class="rs-type tag tag-green">FUEL</span>
+        </div>
+        <div class="rs-desc">Equilibrium — midpoint entre Upper Fractal et Lower Fractal. Pivot central du range. Fuel Level.</div>
+      </div>
+      <div class="rs-row fuel-level">
+        <div class="rs-label">
+          <div class="dot" style="background:var(--gold)"></div>
+          Fuel Level 2 Bas
+          <span class="rs-type tag tag-gold">FUEL</span>
+        </div>
+        <div class="rs-desc">Midpoint entre Lower Fractal et Range Low. Engineer liquidity + Trade liquidity.</div>
+      </div>
+      <div class="rs-row po3-level">
+        <div class="rs-label">
+          <div class="dot" style="background:var(--purple)"></div>
+          Lower Fractal
+          <span class="rs-type tag tag-purple">PO3</span>
+        </div>
+        <div class="rs-desc">Fractal inférieur — niveau PO3 bas. Cible principale dans un bear program.</div>
+      </div>
+      <div class="rs-row irm-level">
+        <div class="rs-label">
+          <div class="dot" style="background:var(--blue)"></div>
+          IRM Bas
+          <span class="rs-type tag tag-blue">IRM</span>
+        </div>
+        <div class="rs-desc">Internal Racing Marker inférieur — espace <strong>au-dessus</strong> du Range Low. Zone tampon interne.</div>
+      </div>
+      <div class="rs-row po3-level">
+        <div class="rs-label">
+          <div class="dot" style="background:var(--purple)"></div>
+          Range Low
+          <span class="rs-type tag tag-purple">PO3</span>
+        </div>
+        <div class="rs-desc">Limite inférieure du range. Niveau PO3 — zone de réaction clé.</div>
+      </div>
+      <div class="rs-row erm-level">
+        <div class="rs-label">
+          <div class="dot" style="background:var(--red)"></div>
+          ERM Bas
+          <span class="rs-type tag tag-red">ERM</span>
+        </div>
+        <div class="rs-desc">External Racing Marker inférieur — espace <strong>en-dessous</strong> du Range Low. Calculé : Range ÷ 9.</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="section-label">Niveaux PO3 vs Fuel Levels</div>
+        <table class="data-table">
+          <thead><tr><th>Type</th><th>Niveaux</th><th>Fonction</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="tag tag-purple">PO3</span></td>
+              <td>Range High · Upper Fractal · Lower Fractal · Range Low</td>
+              <td>Niveaux algorithmiques structuraux. Zones de réaction forte.</td>
+            </tr>
+            <tr>
+              <td><span class="tag tag-gold">FUEL</span></td>
+              <td>EQ Level · Fractal 2 haut · Fractal 2 bas</td>
+              <td><strong>Engineer liquidity</strong> (accumulation) puis <strong>Trade liquidity</strong> (consommation)</td>
+            </tr>
+            <tr>
+              <td><span class="tag tag-blue">IRM</span></td>
+              <td>Internal Racing Markers</td>
+              <td>Zones tampons internes — SL placé ici (short trade example)</td>
+            </tr>
+            <tr>
+              <td><span class="tag tag-red">ERM</span></td>
+              <td>External Racing Markers</td>
+              <td>Extensions au-delà des limites du range. Espace de manipulation.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="section-label">Overlapping — Confluence de ranges</div>
+        <div class="card">
+          <div class="card-title">Quand les ranges s'alignent</div>
+          <p style="font-size:14px;color:var(--text-dim);margin-bottom:14px;">Un <strong style="color:var(--purple)">Range High d'un petit range</strong> qui s'aligne avec le <strong style="color:var(--purple)">Range High d'un plus grand range</strong> = zone de confluence extrêmement forte.</p>
+          <div class="alert alert-purple">
+            <strong>Exemple</strong>
+            Range 709 high = Range 287 high → l'indicateur affiche automatiquement cet alignement. C'est une zone prioritaire.
+          </div>
+          <div class="alert alert-gold" style="margin-top:8px;">
+            <strong>Navigation multi-ranges</strong>
+            Ajouter des ranges au-dessus et en-dessous permet de voir les prochaines cibles algorithmiques avant que le prix n'y arrive.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       TAB 2 — MÉTHODE
+  ══════════════════════════ -->
+  <div id="methode" class="tab-content">
+
+    <div class="section-label">Comportement du prix — Mécanique fondamentale</div>
+    <div class="flow section-gap">
+      <div class="flow-step neutral">Fuel Level<br><span style="font-size:9px">Départ</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step purple">PO3 Level<br><span style="font-size:9px">Cible</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step neutral">Fuel Level<br><span style="font-size:9px">Départ</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step purple">PO3 Level<br><span style="font-size:9px">Cible</span></div>
+    </div>
+    <div class="flow" style="margin-top:0;">
+      <div class="flow-step neutral">PO3 Level<br><span style="font-size:9px">Départ</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step success">Fuel Level<br><span style="font-size:9px">Cible</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step neutral">PO3 Level<br><span style="font-size:9px">Départ</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step success">Fuel Level<br><span style="font-size:9px">Cible</span></div>
+    </div>
+
+    <div class="grid-2 section-gap" style="margin-top:20px;">
+      <div>
+        <div class="section-label">Rôle des Fuel Levels</div>
+        <div class="card">
+          <div class="card-title">Double fonction</div>
+          <div class="alert alert-purple" style="margin-bottom:8px;">
+            <strong>Fonction 1 — Engineer Liquidity</strong>
+            Accumulation autour du Fuel Level. Le prix consolide, crée de la liquidité des deux côtés. AMD cycle en cours.
+          </div>
+          <div class="alert alert-gold">
+            <strong>Fonction 2 — Trade Liquidity</strong>
+            Consommation de la liquidité accumulée. Le prix explose depuis le Fuel Level vers le prochain niveau PO3.
+          </div>
+          <div class="alert alert-green" style="margin-top:8px;">
+            <strong>Règle des imbalances</strong>
+            Chercher les imbalances À L'INTÉRIEUR des Fuel Levels. Quand un imbalance est proche d'un niveau PO3 → significatif (daily, weekly, monthly, session H/L).
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="section-label">Confirmations obligatoires</div>
+        <div class="card">
+          <div class="card-title">Les 2 éléments requis pour entrer</div>
+          <div class="alert alert-purple" style="margin-bottom:8px;">
+            <strong>❶ SMT — Smart Money Technique</strong>
+            Divergence entre NQ et S&P 500. Un actif prend un high/low que l'autre ne prend pas. Seul = insuffisant.
+          </div>
+          <div class="alert alert-purple" style="margin-bottom:8px;">
+            <strong>❷ Displacement</strong>
+            Cassure violente avec FVG / CISD après le SMT. Confirmation que le programme change de direction.
+          </div>
+          <div class="alert alert-red">
+            <strong>Règle absolue</strong>
+            "SMT en soi ne veut rien dire. Il faut SMT + displacement." — Algorithmic Academy<br>
+            Les deux sont <strong>OBLIGATOIRES</strong>. Aucune exception.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Framework complet — Les 6 étapes</div>
+    <div class="decision-tree section-gap">
+      <div style="display:flex;gap:12px;align-items:flex-start;margin:4px 0;">
+        <div class="dt-question" style="flex:1;">❶ IDENTIFIER LE RANGE — Quel range contient le prix ? Y a-t-il un overlapping avec un range plus grand ?</div>
+      </div>
+      <div style="padding-left:24px;margin:4px 0;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);">→ Ranges actifs : 27, 81, 243, 729. Vérifier l'indicateur sur la TF courante.</div>
+
+      <div style="display:flex;gap:12px;align-items:flex-start;margin:12px 0 4px;">
+        <div class="dt-question" style="flex:1;">❷ LOCALISER LE PRIX dans le range — Sur quel niveau est-il ? (Fuel, Fractal, EQ, Range H/L, Racing Marker)</div>
+      </div>
+      <div style="padding-left:24px;margin:4px 0;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);">→ Fuel Level = accumulation possible. PO3 Level = réaction ou point de départ.</div>
+
+      <div style="display:flex;gap:12px;align-items:flex-start;margin:12px 0 4px;">
+        <div class="dt-question" style="flex:1;">❸ IDENTIFIER LA DIRECTION — Bear-side ou Bull-side program ? Quelles liquidités ont été prises ? Y a-t-il des imbalances à combler dans les Fuel Levels ?</div>
+      </div>
+      <div style="padding-left:24px;margin:4px 0;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);">→ Session highs pris = signal de continuation dans la direction. Previous session H/L = cible naturelle.</div>
+
+      <div style="display:flex;gap:12px;align-items:flex-start;margin:12px 0 4px;">
+        <div class="dt-question" style="flex:1;">❹ ATTENDRE LES CONFIRMATIONS — SMT (divergence NQ/S&P) + Displacement (cassure violente + FVG/CISD)</div>
+      </div>
+      <div class="i1" style="margin:4px 0;display:flex;gap:8px;align-items:center;">
+        <div class="dt-no">SMT seul →</div><div class="dt-action">INSUFFISANT — attendre le displacement</div>
+      </div>
+      <div class="i1" style="margin:4px 0;display:flex;gap:8px;align-items:center;">
+        <div class="dt-no">News proches →</div><div class="dt-action">Le prix peut encore ouvrir higher et prendre des highs — attendre ou réduire</div>
+      </div>
+      <div class="i1" style="margin:4px 0;display:flex;gap:8px;align-items:center;">
+        <div class="dt-yes">SMT + Displacement →</div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:flex-start;margin:12px 0 4px;padding-left:48px;">
+        <div class="dt-question" style="flex:1;">❺ ENTRER — Dans la FVG de displacement · SL au Racing Marker · TP au prochain niveau PO3 ou Fuel Level</div>
+      </div>
+
+      <div style="padding-left:72px;margin:12px 0 4px;">
+        <div class="dt-execute">✅ SETUP 8.8 CONFIRMÉ — Environnement pas clean → in and out · Partial au SMT inverse ou au 19min Open ID</div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:flex-start;margin:12px 0 4px;padding-left:72px;">
+        <div class="dt-question" style="flex:1;">❻ GÉRER — Partial obligatoire si SMT apparaît en sens inverse. 19min Open ID = fenêtre de sortie. Environnement pas clean = sortir rapidement.</div>
+      </div>
+    </div>
+
+    <div class="section-label">Lectures du prix — Process hebdomadaire</div>
+    <div class="card section-gap">
+      <div class="card-title">Séquence type sur Weekly</div>
+      <div class="trade-step">
+        <div class="ts-num">01</div>
+        <div class="ts-body">
+          <div class="ts-title">Contexte dans le range</div>
+          <div class="ts-desc">Le prix trade dans un range (ex: Q1 à 729). Identifier dans quel Fuel Level ou PO3 Level il se trouve.</div>
+        </div>
+      </div>
+      <div class="trade-step">
+        <div class="ts-num">02</div>
+        <div class="ts-body">
+          <div class="ts-title">Manipulation weekly</div>
+          <div class="ts-desc">Le prix descend dans un imbalance weekly, prend un session high. Seek and Destroy typique du cycle AMD.</div>
+        </div>
+      </div>
+      <div class="trade-step">
+        <div class="ts-num">03</div>
+        <div class="ts-body">
+          <div class="ts-title">Open lundi</div>
+          <div class="ts-desc">Open lundi plus bas → confirmation que le prix est dans l'imbalance weekly. Signal de biais haussier.</div>
+        </div>
+      </div>
+      <div class="trade-step">
+        <div class="ts-num">04</div>
+        <div class="ts-body">
+          <div class="ts-title">Confirmation LTF</div>
+          <div class="ts-desc">Le prix prend le previous session low → CISD se forme (displacement). Les deux confirmations sont présentes.</div>
+        </div>
+      </div>
+      <div class="trade-step">
+        <div class="ts-num">05</div>
+        <div class="ts-body">
+          <div class="ts-title">Extension & cible</div>
+          <div class="ts-desc">Extension haussière. Le prix respecte les niveaux PO3. Target = highs alignés avec le Upper Fractal du range.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Annonces économiques — Mise en garde</div>
+    <div class="alert alert-red">
+      <strong>Leçon du premier trade perdu (vidéo 3)</strong>
+      Entrée short au 2.3 Fractal après SMT. Erreur : ne pas avoir attendu les 10 AM news. Les news ont causé un open higher → le prix a pris le swing high → stop loss touché.<br><br>
+      <strong style="color:var(--red);">→ Quand des news sont proches, le prix peut encore ouvrir higher et prendre des highs AVANT de partir dans la direction anticipée. Attendre la news ou ne pas trader.</strong>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       TAB 3 — TRADE BREAKDOWN
+  ══════════════════════════ -->
+  <div id="trade" class="tab-content">
+
+    <div class="philosophy-box">
+      <p>Sometimes something like this is all you need. It checks all the boxes.</p>
+      <div class="attrib">Algorithmic Academy — après +0.8R sur le setup confirmé</div>
+    </div>
+
+    <div class="section-label">Short NQ — Contexte 4H</div>
+    <div class="card section-gap">
+      <div class="card-title">Setup complet — Bear-side program</div>
+      <table class="data-table">
+        <thead><tr><th>Element</th><th>Observation</th><th>Statut</th></tr></thead>
+        <tbody>
+          <tr><td>Programme en cours</td><td>Bear-side program sur 4H</td><td><span class="tag tag-purple">CONTEXTE HTF</span></td></tr>
+          <tr><td>EQ Level 4H</td><td>Prix trade dans un EQ Level sur le 4H</td><td><span class="tag tag-gold">FUEL LEVEL</span></td></tr>
+          <tr><td>Weekly imbalance</td><td>Réaction depuis un weekly imbalance (gauche du chart)</td><td><span class="tag tag-green">CONFIRMÉ</span></td></tr>
+          <tr><td>2.3 Fractal</td><td>Expansion vers le Upper Fractal</td><td><span class="tag tag-purple">CIBLE PO3</span></td></tr>
+          <tr><td>Session highs</td><td>En montant, prise des previous session highs</td><td><span class="tag tag-green">PRIS ✓</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid-2 section-gap">
+      <div>
+        <div class="section-label">Trade 1 — Perdu</div>
+        <div class="card">
+          <div class="card-title" style="color:var(--red);">Setup invalide · Stop touché</div>
+          <div class="trade-step" style="padding-top:0;">
+            <div class="ts-num">01</div>
+            <div class="ts-body">
+              <div class="ts-title">Entrée prématurée</div>
+              <div class="ts-desc">Short au niveau du 2.3 Fractal après le SMT. Seule une confirmation sur 1 timeframe.</div>
+            </div>
+            <div class="ts-result loss">ERREUR</div>
+          </div>
+          <div class="trade-step">
+            <div class="ts-num">02</div>
+            <div class="ts-body">
+              <div class="ts-title">News non anticipées</div>
+              <div class="ts-desc">10 AM news non vérifiées. Open higher → le prix prend le swing high.</div>
+            </div>
+            <div class="ts-result loss">SL TOUCHÉ</div>
+          </div>
+          <div class="alert alert-red" style="margin-top:12px;">
+            <strong>Leçon</strong>
+            Vérifier les news avant chaque entrée. Le prix peut continuer dans la direction opposée avant le vrai move.
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Trade 2 — Gagnant (8.8 confirmé)</div>
+        <div class="card">
+          <div class="card-title" style="color:var(--green);">Setup validé · +0.8R final</div>
+          <div class="trade-step" style="padding-top:0;">
+            <div class="ts-num">01</div>
+            <div class="ts-body">
+              <div class="ts-title">Previous session highs pris</div>
+              <div class="ts-desc">Condition préalable validée. La liquidité externe est récupérée.</div>
+            </div>
+            <div class="ts-result win">✓</div>
+          </div>
+          <div class="trade-step">
+            <div class="ts-num">02</div>
+            <div class="ts-body">
+              <div class="ts-title">Double SMT</div>
+              <div class="ts-desc">Divergence sur 20min ET sur 10min. Lower SMT = signal très fort (swing high puissant).</div>
+            </div>
+            <div class="ts-result win">✓✓</div>
+          </div>
+          <div class="trade-step">
+            <div class="ts-num">03</div>
+            <div class="ts-body">
+              <div class="ts-title">Displacement confirmé</div>
+              <div class="ts-desc">FVG créée par le displacement. Prix revenu 1×, 2×, 3× dans la FVG → confirmation sell program.</div>
+            </div>
+            <div class="ts-result win">✓</div>
+          </div>
+          <div class="trade-step">
+            <div class="ts-num">04</div>
+            <div class="ts-body">
+              <div class="ts-title">Entrée dans la FVG · SL au IRM</div>
+              <div class="ts-desc">Entrée après CISD, dans la FVG de displacement. SL au-dessus aligné avec l'Internal Racing Marker.</div>
+            </div>
+            <div class="ts-result win">ENTRÉ</div>
+          </div>
+          <div class="trade-step">
+            <div class="ts-num">05</div>
+            <div class="ts-body">
+              <div class="ts-title">Partial au 19min Open ID</div>
+              <div class="ts-desc">SMT inverse détecté → partial obligatoire. Sorti au breakeven après partial.</div>
+            </div>
+            <div class="ts-result win">+0.8R</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Règles de gestion du trade</div>
+    <div class="card">
+      <ul class="rules-list">
+        <li><span class="rule-num">01</span><span class="rule-cat">Setup</span>Identifier le Point B (target finale) EN PREMIER — avant même de chercher l'entrée</li>
+        <li><span class="rule-num">02</span><span class="rule-cat">Setup</span>Setup "8.8" = SMT + displacement + niveaux alignés + session high/low pris</li>
+        <li><span class="rule-num">03</span><span class="rule-cat">SMT</span>Double SMT (2 timeframes) = signal très fort — priorité absolue sur un SMT simple</li>
+        <li><span class="rule-num">04</span><span class="rule-cat">FVG</span>FVG retestée 3 fois sans être invalidée = confirmation sell/buy program — le programme est actif</li>
+        <li><span class="rule-num">05</span><span class="rule-cat">SL</span>SL placé au niveau du Racing Marker (IRM/ERM) aligné avec la zone — pas au hasard</li>
+        <li><span class="rule-num">06</span><span class="rule-cat">Gestion</span>Partial OBLIGATOIRE quand SMT apparaît en sens inverse</li>
+        <li><span class="rule-num">07</span><span class="rule-cat">Gestion</span>19min Open ID = fenêtre de sortie partielle — surveiller systématiquement</li>
+        <li><span class="rule-num">08</span><span class="rule-cat">Gestion</span>Environnement pas clean → être rapide, in and out. Ne pas chercher à maximiser.</li>
+        <li><span class="rule-num">09</span><span class="rule-cat">News</span>Vérifier les news avant CHAQUE entrée — une news peut invalider le setup temporairement</li>
+        <li><span class="rule-num">10</span><span class="rule-cat">Mindset</span>+0.8R avec toutes les cases cochées = succès. Le résultat en R n'est pas le seul critère.</li>
+      </ul>
+    </div>
+
+    <div class="section-label">Glossaire Algorithmic Academy</div>
+    <div class="glossary-grid" style="margin-bottom:0;">
+      <div class="gloss-item"><div class="gloss-term">PO3 Ranges</div><div class="gloss-def">Ranges calculés puissance de 3 : 27, 81, 243, 729 points</div></div>
+      <div class="gloss-item"><div class="gloss-term">Fuel Levels</div><div class="gloss-def">Points médians entre fractals — engineer + trade liquidity</div></div>
+      <div class="gloss-item"><div class="gloss-term">ERM</div><div class="gloss-def">External Racing Marker — espace hors limite du range (÷9)</div></div>
+      <div class="gloss-item"><div class="gloss-term">IRM</div><div class="gloss-def">Internal Racing Marker — espace tampon à l'intérieur du range</div></div>
+      <div class="gloss-item"><div class="gloss-term">Overlapping</div><div class="gloss-def">Alignement d'un petit range avec un grand — confluence forte</div></div>
+      <div class="gloss-item"><div class="gloss-term">8.8</div><div class="gloss-def">Setup confirmé : SMT + displacement + niveaux alignés</div></div>
+      <div class="gloss-item"><div class="gloss-term">Bear/Bull Program</div><div class="gloss-def">Direction du programme algorithmique en cours</div></div>
+      <div class="gloss-item"><div class="gloss-term">Point B</div><div class="gloss-def">Target finale du mouvement — à identifier en premier</div></div>
+      <div class="gloss-item"><div class="gloss-term">19min Open ID</div><div class="gloss-def">Fenêtre temporelle de sortie partielle</div></div>
+      <div class="gloss-item"><div class="gloss-term">Q1, Q Levels</div><div class="gloss-def">Niveaux de l'indicateur PO3 (affichage interface)</div></div>
+      <div class="gloss-item"><div class="gloss-term">EQ Level</div><div class="gloss-def">Equilibrium — midpoint du range. Fuel Level central.</div></div>
+      <div class="gloss-item"><div class="gloss-term">Upper/Lower Fractal</div><div class="gloss-def">Niveaux PO3 haut et bas à l'intérieur du range</div></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       TAB 4 — CHECKLIST
+  ══════════════════════════ -->
+  <div id="checklist" class="tab-content">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:14px;">
+      <div>
+        <div class="progress-label">
+          <span>Progression de la session</span>
+          <span id="progress-text">0 / 0</span>
+        </div>
+        <div class="progress-bar-wrap" style="width:300px;">
+          <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <button class="reset-btn" onclick="resetChecklist()">↺ Réinitialiser</button>
+    </div>
+
+    <div class="grid-2">
+      <!-- Colonne gauche -->
+      <div>
+        <div style="margin-bottom:28px;">
+          <div class="cl-section-title">◈ Pré-session — Avant d'ouvrir les charts</div>
+          <div class="cl-items">
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Vérifier les news du jour et leurs horaires</div><div class="check-source warn">NEWS</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Identifier le range actif sur la TF courante (27 / 81 / 243 / 729)</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Localiser le prix dans le range (Fuel Level ? PO3 Level ? Racing Marker ?)</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Vérifier les overlapping entre ranges (petits / grands ranges alignés ?)</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Identifier le programme en cours : Bear-side ou Bull-side ?</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Identifier les liquidités prises (session highs/lows) et à prendre</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Identifier les imbalances dans les Fuel Levels</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Identifier le Point B — la target finale du mouvement</div><div class="check-source po3">PO3</div></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="cl-section-title" style="background:var(--red-dim);border-color:rgba(248,113,113,0.35);color:var(--red);">✕ Interdits absolus</div>
+          <div class="cl-items">
+            <div class="check-item" style="cursor:default;"><div class="check-box" style="border-color:var(--red);"></div><div class="check-label" style="color:var(--red);">NE PAS entrer sur SMT seul sans displacement</div><div class="check-source warn">RÈGLE</div></div>
+            <div class="check-item" style="cursor:default;"><div class="check-box" style="border-color:var(--red);"></div><div class="check-label" style="color:var(--red);">NE PAS trader sans vérifier les news (10 AM, etc.)</div><div class="check-source warn">RÈGLE</div></div>
+            <div class="check-item" style="cursor:default;"><div class="check-box" style="border-color:var(--red);"></div><div class="check-label" style="color:var(--red);">NE PAS entrer si l'environnement n'est pas clean — out rapide sinon</div><div class="check-source warn">RÈGLE</div></div>
+            <div class="check-item" style="cursor:default;"><div class="check-box" style="border-color:var(--red);"></div><div class="check-label" style="color:var(--red);">NE PAS ignorer le SMT inverse en cours de trade — partial obligatoire</div><div class="check-source warn">RÈGLE</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne droite -->
+      <div>
+        <div style="margin-bottom:28px;">
+          <div class="cl-section-title" style="background:rgba(96,165,250,0.08);border-color:rgba(96,165,250,0.35);color:var(--blue);">◉ Confirmation d'entrée — Setup 8.8</div>
+          <div class="cl-items">
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Previous session high/low pris (liquidité externe récupérée)</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Prix dans un Fuel Level (EQ, Fractal 2) ou niveau PO3 pertinent</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">SMT confirmé — divergence NQ vs S&P (un prend le H/L, pas l'autre)</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Double SMT (2 TF) si possible — signal beaucoup plus fort</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Displacement présent après le SMT (cassure violente + FVG / CISD)</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">FVG retestée 3 fois sans invalidation → sell/buy program confirmé</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Imbalance ou FVG dans le Fuel Level — confluence niveau PO3</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Aucune news dans les prochaines minutes (ou entrée retardée)</div><div class="check-source warn">NEWS</div></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="cl-section-title" style="background:var(--green-dim);border-color:rgba(74,222,128,0.35);color:var(--green);">✅ Exécution</div>
+          <div class="cl-items">
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Point B (target) identifié — prochain niveau PO3 ou Fuel Level</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Entrée dans la FVG de displacement (après CISD)</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">SL placé au niveau du Racing Marker (IRM aligné avec la zone)</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Surveiller le 19min Open ID pour sortie partielle</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Si SMT inverse détecté → partial immédiatement</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Environnement pas clean → in and out, ne pas chercher à optimiser</div><div class="check-source po3">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Journal de trading rempli — cases cochées = succès, peu importe le R</div><div class="check-source po3">PO3</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+  <!-- ══════════════════════════
+       TAB 5 — EQ BUY MODEL
+  ══════════════════════════ -->
+  <div id="eq-model" class="tab-content">
+
+    <div class="philosophy-box" style="border-color:rgba(96,165,250,0.4);background:rgba(96,165,250,0.06);">
+      <p>Les points médians sont très sensibles.<br>Le prix se rééquilibrera toujours autour de ces points médians.</p>
+      <div class="attrib">Algorithmic Academy — EQ Buy Model · Vidéo Analyse</div>
+    </div>
+
+    <div class="alert" style="border-color:rgba(192,132,252,0.4);background:rgba(192,132,252,0.07);border-left:3px solid rgba(192,132,252,0.6);color:var(--text);margin-bottom:28px;">
+      <strong style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;display:block;margin-bottom:4px;color:rgba(192,132,252,.8);">Source</strong>
+      Transcription de la vidéo d'analyse Algorithmic Academy — modèle d'achat sur le marché basé sur l'EQ (Équilibre), les déséquilibres intentionnels, les cours d'ouverture et la fractalité PO3.
+    </div>
+
+    <!-- FRACTALITÉ -->
+    <div class="section-label">Fractalité PO3 — Le principe fondateur</div>
+    <div class="flow section-gap" style="flex-direction:column;gap:6px;align-items:stretch;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;">La même structure se répète à chaque timeframe :</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <div class="flow-step purple" style="flex:1;min-width:100px;text-align:center;">Weekly<br><span style="font-size:9px;opacity:.7">Grand range PO3</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step purple" style="flex:1;min-width:100px;text-align:center;">Daily<br><span style="font-size:9px;opacity:.7">Répète la structure</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step purple" style="flex:1;min-width:100px;text-align:center;">Hourly<br><span style="font-size:9px;opacity:.7">Répète la structure</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step purple" style="flex:1;min-width:100px;text-align:center;">Minute<br><span style="font-size:9px;opacity:.7">Répète la structure</span></div>
+      </div>
+    </div>
+    <div class="alert" style="border-left:3px solid rgba(96,165,250,0.5);background:rgba(96,165,250,0.06);color:var(--text);margin-bottom:28px;">
+      <strong style="color:var(--blue);font-family:'JetBrains Mono',monospace;font-size:10px;display:block;margin-bottom:4px;">Application concrète</strong>
+      Ce qui se passe sur le weekly se répète sur le daily, sur le horaire, et jusqu'à la minute. Le déséquilibre au niveau 6561 sur le weekly = le même pattern en miniature sur le 15 min. Un seul système à comprendre — une seule lecture quel que soit le zoom.
+    </div>
+
+    <!-- EQ LEVEL -->
+    <div class="section-label">EQ Level — L'équilibre PO3 et son rôle</div>
+    <div class="grid-2 section-gap">
+      <div class="card">
+        <div class="card-title">Qu'est-ce que l'EQ Level ?</div>
+        <p style="font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:12px;">L'EQ (Équilibre) = le <strong style="color:var(--purple)">point médian d'un range PO3</strong>. Correspond au niveau 50% du dealing range. Dans le système de Algorithmic Academy, il est directement lié au range 6561 référencé sur le graphique weekly.</p>
+        <div class="alert" style="border-left:3px solid rgba(192,132,252,0.5);background:rgba(192,132,252,0.07);color:var(--text);">
+          <strong style="color:rgba(192,132,252,.8);font-family:'JetBrains Mono',monospace;font-size:10px;display:block;margin-bottom:4px;">Règle des midpoints</strong>
+          Le déséquilibre n'est PAS aléatoire quand il se forme autour d'un point médian. C'est <em>intentionnel</em>. Les midpoints (EQ, Fuel Level 2, 50% de range) sont les zones où l'algorithme va OBLIGATOIREMENT rééquilibrer.
+        </div>
+        <div class="alert" style="border-left:3px solid rgba(74,222,128,0.4);background:rgba(74,222,128,0.07);color:var(--text);margin-top:8px;">
+          <strong style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:10px;display:block;margin-bottom:4px;">Signal de validation</strong>
+          Déséquilibre formé juste autour du niveau EQ = haute probabilité de rééquilibrage immédiat. C'est la base du modèle d'achat.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Déséquilibre — Rééquilibrage — Extension</div>
+        <div class="flow" style="flex-direction:column;gap:6px;align-items:stretch;">
+          <div class="flow-step danger" style="text-align:center;">① DÉSÉQUILIBRE<br><span style="font-size:9px;opacity:.7;">Imbalance créée — intentionnelle si autour d'un midpoint</span></div>
+          <div class="flow-arrow" style="text-align:center;">↓</div>
+          <div class="flow-step neutral" style="text-align:center;">② RÉÉQUILIBRAGE<br><span style="font-size:9px;opacity:.7;">Prix revient combler le déséquilibre — point d'entrée</span></div>
+          <div class="flow-arrow" style="text-align:center;">↓</div>
+          <div class="flow-step success" style="text-align:center;">③ EXTENSION<br><span style="font-size:9px;opacity:.7;">Prix repart dans la vraie direction vers le target</span></div>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);margin-top:14px;line-height:1.6;">
+          "Nous avons ici relevé le plus bas avant recyclage... Nous rééquilibrons. Nous créons un déséquilibre. De là, nous avons commencé à élargir notre perspective."
+        </div>
+      </div>
+    </div>
+
+    <!-- EQ BUY MODEL STEPS -->
+    <div class="section-label">EQ Buy Model — Les 6 étapes séquentielles</div>
+    <div class="card section-gap">
+      <div class="card-title">Séquence complète du modèle haussier</div>
+      <div class="trade-step" style="padding-top:0;">
+        <div class="ts-num">01</div>
+        <div class="ts-body">
+          <div class="ts-title">Contexte HTF haussier confirmé</div>
+          <div class="ts-desc">Identifier le dealing range PO3 actif. Le prix est en discount (bas du range). Biais haussier validé sur le weekly/daily. Exemple : après le creux de la fourchette à partir d'avril 2025, hausse confirmée.</div>
+        </div>
+        <div class="ts-result win">BIAIS</div>
+      </div>
+      <div class="trade-step">
+        <div class="ts-num">02</div>
+        <div class="ts-body">
+          <div class="ts-title">Déséquilibre intentionnel créé autour d'un midpoint</div>
+          <div class="ts-desc">Le prix crée un déséquilibre <strong>autour d'un point médian PO3</strong> (EQ Level, Fuel Level 2). Ce n'est pas aléatoire — la formation autour du niveau 2 / midpoint confirme l'intentionnalité algorithmique.</div>
+        </div>
+        <div class="ts-result win">SETUP</div>
+      </div>
+      <div class="trade-step">
+        <div class="ts-num">03</div>
+        <div class="ts-body">
+          <div class="ts-title">Prise du plus bas avant recyclage (Pre-Recycling Low)</div>
+          <div class="ts-desc">Le prix atteint le <strong>pre-recycling low</strong> — le dernier point bas avant la phase de recyclage. Ce niveau est trouvé sur quelques minutes de chart. Correspond au S&T2 à 29 points référencé dans l'analyse.</div>
+        </div>
+        <div class="ts-result win">CIBLE</div>
+      </div>
+      <div class="trade-step">
+        <div class="ts-num">04</div>
+        <div class="ts-body">
+          <div class="ts-title">Confirmation du point bas — Signal d'entrée</div>
+          <div class="ts-desc">Attendre la <strong>confirmation du point bas</strong> avant d'entrer. Dans la vidéo : conversion du CB en fourchette de prix tennis = signal de confirmation. SMT + displacement sur le LTF. Ne pas entrer sans cette confirmation.</div>
+        </div>
+        <div class="ts-result win">CONF.</div>
+      </div>
+      <div class="trade-step">
+        <div class="ts-num">05</div>
+        <div class="ts-body">
+          <div class="ts-title">Entrée sur le rééquilibrage — 15 min performance hours</div>
+          <div class="ts-desc">Entrée sur le graphique 15 min pendant les <strong>heures de trading de performance</strong>. Le prix rééquilibre le déséquilibre → entrée dans la zone. SL juste en dessous du niveau, aligné avec la structure. Premier ordre possible, avec 2ème ordre de confirmation.</div>
+        </div>
+        <div class="ts-result win">ENTRÉE</div>
+      </div>
+      <div class="trade-step">
+        <div class="ts-num">06</div>
+        <div class="ts-body">
+          <div class="ts-title">Extension vers le target — Gestion courbe G/D</div>
+          <div class="ts-desc">Extension vers les <strong>plus hauts identifiés</strong> (targets long terme de la semaine). Surveiller la courbe gauche (faible résistance) vs courbe droite (résistance accrue = structure de marché plus marquée). Si courbe droite trop résistante → agir rapidement.</div>
+        </div>
+        <div class="ts-result win">TARGET</div>
+      </div>
+    </div>
+
+    <!-- OPENING PRICE MODEL -->
+    <div class="section-label">Cours d'ouverture — Le modèle complet</div>
+    <div class="grid-2 section-gap">
+      <div class="card">
+        <div class="card-title" style="color:var(--green);">Ouverture PLUS BASSE (Open Lower)</div>
+        <div style="margin-bottom:12px;">
+          <div class="flow" style="flex-direction:column;gap:4px;align-items:stretch;">
+            <div class="flow-step neutral" style="text-align:left;padding:8px 12px;font-size:10px;">LUNDI : ouverture plus basse que la clôture précédente</div>
+            <div class="flow-arrow" style="text-align:center;font-size:12px;">↓</div>
+            <div class="flow-step" style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);color:var(--red);text-align:left;padding:8px 12px;font-size:10px;">Prix continue de baisser → atteint le point bas</div>
+            <div class="flow-arrow" style="text-align:center;font-size:12px;">↓</div>
+            <div class="flow-step" style="background:rgba(74,222,128,0.09);border:1px solid rgba(74,222,128,0.2);color:var(--green);text-align:left;padding:8px 12px;font-size:10px;">Confirmation du point bas → achat près du low</div>
+            <div class="flow-arrow" style="text-align:center;font-size:12px;">↓</div>
+            <div class="flow-step success" style="text-align:left;padding:8px 12px;font-size:10px;">Extension haussière vers les targets</div>
+          </div>
+        </div>
+        <div class="alert" style="border-left:3px solid rgba(74,222,128,0.4);background:rgba(74,222,128,0.07);color:var(--text);">
+          <strong style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:10px;display:block;margin-bottom:4px;">Note critique</strong>
+          Même biais haussier = acheter PRÈS du prix d'ouverture. Si ouverture plus basse, acheter autour de ce bas. Attendre la confirmation du point bas avant d'entrer.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:rgba(192,132,252,.9);">Ouverture PLUS HAUTE (Open Higher)</div>
+        <div style="margin-bottom:12px;">
+          <div class="flow" style="flex-direction:column;gap:4px;align-items:stretch;">
+            <div class="flow-step neutral" style="text-align:left;padding:8px 12px;font-size:10px;">LUNDI : ouverture plus haute → manipulation à la baisse</div>
+            <div class="flow-arrow" style="text-align:center;font-size:12px;">↓</div>
+            <div class="flow-step" style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);color:var(--red);text-align:left;padding:8px 12px;font-size:10px;">Judas Swing : prix manipulé vers le bas pour piéger</div>
+            <div class="flow-arrow" style="text-align:center;font-size:12px;">↓</div>
+            <div class="flow-step purple" style="text-align:left;padding:8px 12px;font-size:10px;">Achat AU-DESSUS du prix d'ouverture (si biais haussier validé)</div>
+            <div class="flow-arrow" style="text-align:center;font-size:12px;">↓</div>
+            <div class="flow-step success" style="text-align:left;padding:8px 12px;font-size:10px;">Extension haussière vers les targets</div>
+          </div>
+        </div>
+        <div class="alert" style="border-left:3px solid rgba(192,132,252,0.4);background:rgba(192,132,252,0.07);color:var(--text);">
+          <strong style="color:rgba(192,132,252,.8);font-family:'JetBrains Mono',monospace;font-size:10px;display:block;margin-bottom:4px;">Règle importante</strong>
+          Il n'y a AUCUNE erreur à acheter au-dessus du prix d'ouverture si le biais est haussier et si le timing est judicieux. Ce qui compte : la confirmation, pas la position par rapport à l'open.
+        </div>
+      </div>
+    </div>
+
+    <!-- COURBE GAUCHE / DROITE -->
+    <div class="section-label">Courbe Gauche vs Courbe Droite — Résistance du mouvement</div>
+    <div class="card section-gap">
+      <div class="card-title">Lecture de la structure du mouvement</div>
+      <div class="grid-2" style="gap:16px;">
+        <div>
+          <div class="alert" style="border-left:3px solid rgba(74,222,128,0.5);background:rgba(74,222,128,0.07);color:var(--text);margin-bottom:0;">
+            <strong style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:10px;display:block;margin-bottom:6px;">Courbe Gauche — Faible Résistance</strong>
+            Zone de déséquilibre / imbalance non comblée. Le prix monte rapidement, peu de structure. Zone de <strong>faible résistance</strong> = mouvement fluide et rapide. Le prix traverse sans beaucoup de blocs.
+          </div>
+        </div>
+        <div>
+          <div class="alert" style="border-left:3px solid rgba(248,113,113,0.5);background:rgba(248,113,113,0.07);color:var(--text);margin-bottom:0;">
+            <strong style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:10px;display:block;margin-bottom:6px;">Courbe Droite — Résistance Accrue</strong>
+            Zone avec blocs passés, structure de marché marquée. Le prix aura plus de difficultés à progresser. <strong>Agir rapidement</strong> si la courbe droite résiste → prendre des profits partiels, réduire l'exposition.
+          </div>
+        </div>
+      </div>
+      <div class="alert" style="border-left:3px solid rgba(251,191,36,0.5);background:rgba(251,191,36,0.07);color:var(--text);margin-top:12px;">
+        <strong style="color:var(--amber);font-family:'JetBrains Mono',monospace;font-size:10px;display:block;margin-bottom:4px;">Application pratique</strong>
+        Idéalement : courbe gauche = pas de stops, laisser runner. Courbe droite ressemble à la gauche = situation normale, continuer. Courbe droite résiste fortement = setup contre-courant possible à ce niveau → agir rapidement sur la gestion.
+      </div>
+    </div>
+
+    <!-- PRE-RECYCLING LOW -->
+    <div class="section-label">Pre-Recycling Low — Niveau clé du setup</div>
+    <div class="grid-2 section-gap">
+      <div class="card">
+        <div class="card-title">Définition et localisation</div>
+        <p style="font-size:13.5px;color:var(--text-dim);line-height:1.6;margin-bottom:12px;">Le <strong style="color:var(--purple)">Pre-Recycling Low</strong> = le dernier point bas formé <em>avant</em> la phase de recyclage / rééquilibrage. Il se trouve sur quelques minutes de chart (1–5 min), aligné avec un niveau PO3.</p>
+        <div class="flow" style="flex-direction:column;gap:4px;align-items:stretch;">
+          <div class="flow-step neutral" style="font-size:10px;text-align:left;">Trouver le dernier low sur 1–5 min</div>
+          <div class="flow-arrow" style="text-align:center;font-size:11px;">→</div>
+          <div class="flow-step purple" style="font-size:10px;text-align:left;">Vérifier alignement avec niveau PO3 (S&T2 à 29 pts dans l'exemple)</div>
+          <div class="flow-arrow" style="text-align:center;font-size:11px;">→</div>
+          <div class="flow-step success" style="font-size:10px;text-align:left;">Ce niveau = SL ou point de confirmation bas</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">S&T — Stabilisation et Stop (Stabilization &amp; Stop)</div>
+        <p style="font-size:13.5px;color:var(--text-dim);line-height:1.6;margin-bottom:12px;">Les signaux <strong style="color:var(--purple)">S&T (S&T2 à 29 points)</strong> sont des niveaux institutionnels de stabilisation et d'arrêt — mentionnés dans la vidéo comme niveaux annuels et mensuels. Visibles sur OG on EQ.</p>
+        <div class="alert" style="border-left:3px solid rgba(192,132,252,0.4);background:rgba(192,132,252,0.07);color:var(--text);">
+          <strong style="color:rgba(192,132,252,.8);font-family:'JetBrains Mono',monospace;font-size:10px;display:block;margin-bottom:4px;">Correspondance PO3</strong>
+          S&T2 à 29 points = Fuel Level ou niveau fractal PO3 inférieur. Ce sont les niveaux où l'algo <em>s'arrête</em> avant de repartir. À surveiller systématiquement sur le HTF.
+        </div>
+      </div>
+    </div>
+
+    <!-- MAPPING SUR L'ARBRE -->
+    <div class="section-label">Mapping dans le Framework PO3 — Où placer ces concepts</div>
+    <div class="card section-gap">
+      <div class="card-title">Intégration explicite dans les 6 étapes PO3</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Concept vidéo</th><th>Équivalent PO3 officiel</th><th>Étape du framework</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="tag tag-purple">EQ Level</span></td><td>EQ Level (midpoint du range) / Fuel Level</td><td style="color:var(--blue);">❷ Localiser le prix dans le range</td></tr>
+          <tr><td><span class="tag tag-purple">Déséquilibre</span></td><td>Imbalance / FVG autour d'un Fuel Level</td><td style="color:var(--blue);">❷ + ❸ Identifier direction + inducement</td></tr>
+          <tr><td><span class="tag tag-purple">Rééquilibrage</span></td><td>Retour dans le Fuel Level / FVG</td><td style="color:var(--green);">❹ Attendre confirmations (displacement après rééquil.)</td></tr>
+          <tr><td><span class="tag tag-purple">Pre-Recycling Low</span></td><td>Fractal bas PO3 / S&T2 à 29 pts</td><td style="color:var(--blue);">❶ Identifier le range → niveau PO3 inférieur</td></tr>
+          <tr><td><span class="tag tag-purple">Cours d'ouverture</span></td><td>Midnight Open / Daily Open (Power of 3)</td><td style="color:var(--blue);">❸ Direction + manipulation (Judas Swing)</td></tr>
+          <tr><td><span class="tag tag-purple">Courbe Gauche</span></td><td>Zone IPA (Inefficient Price Action) / pas de blocs</td><td style="color:var(--green);">❻ Gérer — zone de faible résistance = laisser runner</td></tr>
+          <tr><td><span class="tag tag-purple">Courbe Droite</span><br></td><td>Zone EPA (Efficient) / blocs et imbalances passés</td><td style="color:var(--red);">❻ Gérer — résistance → partial immédiat</td></tr>
+          <tr><td><span class="tag tag-purple">S&T Niveaux</span></td><td>Racing Markers / niveaux PO3 HTF</td><td style="color:var(--blue);">❶ Range optimal → overlapping HTF</td></tr>
+          <tr><td><span class="tag tag-purple">Fractals</span></td><td>Fractalité PO3 (weekly→minute)</td><td style="color:var(--blue);">❶ Identifier le range — même lecture à chaque TF</td></tr>
+          <tr><td><span class="tag tag-purple">Extension</span></td><td>Distribution (Phase D du AMD)</td><td style="color:var(--green);">❺ Point B (target) = prochain niveau PO3 / Fuel Level</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- RÈGLES SUPPLÉMENTAIRES -->
+    <div class="section-label">Règles supplémentaires tirées de la vidéo</div>
+    <div class="card">
+      <ul class="rules-list">
+        <li><span class="rule-num">+1</span><span class="rule-cat">EQ</span>Un déséquilibre autour d'un point médian est intentionnel — le prix rééquilibrera autour de ces midpoints obligatoirement</li>
+        <li><span class="rule-num">+2</span><span class="rule-cat">Fractal</span>La même lecture s'applique du weekly au 1 min — ne pas changer de logique selon la TF</li>
+        <li><span class="rule-num">+3</span><span class="rule-cat">Open</span>Open plus bas = chercher achat autour du low. Open plus haut = manipulation d'abord, achat possible au-dessus de l'open si biais confirmé</li>
+        <li><span class="rule-num">+4</span><span class="rule-cat">Open</span>Il n'y a aucune erreur à acheter au-dessus du prix d'ouverture si le biais est haussier et le timing judicieux</li>
+        <li><span class="rule-num">+5</span><span class="rule-cat">Conf.</span>Toujours attendre la confirmation du point bas avant d'entrer — ne jamais anticiper le low sans signal</li>
+        <li><span class="rule-num">+6</span><span class="rule-cat">Gestion</span>Courbe gauche = pas de stops, laisser runner. Courbe droite résiste = agir rapidement, sortie partielle ou totale</li>
+        <li><span class="rule-num">+7</span><span class="rule-cat">Setup</span>2ème entrée possible : si le premier ordre est trop tôt (stoppé), attendre le signal sur le 2ème niveau pour re-entrer</li>
+        <li><span class="rule-num">+8</span><span class="rule-cat">S&T</span>Les niveaux S&T (annuels, mensuels) sont des zones d'arrêt institutionnel — les surveiller sur le HTF avant chaque session</li>
+      </ul>
+    </div>
+  </div>
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+function toggleCheck(item) {
+  item.classList.toggle('checked');
+  updateProgress();
+}
+
+function updateProgress() {
+  const all = document.querySelectorAll('#checklist .check-item[onclick]');
+  const done = document.querySelectorAll('#checklist .check-item[onclick].checked');
+  const pct = all.length ? Math.round((done.length / all.length) * 100) : 0;
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = done.length + ' / ' + all.length;
+}
+
+function resetChecklist() {
+  document.querySelectorAll('#checklist .check-item.checked').forEach(el => el.classList.remove('checked'));
+  updateProgress();
+}
+
+updateProgress();
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>

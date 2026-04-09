@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Goldbach Trifecta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07090a;
+    --surface: #0c0f11;
+    --card: #101418;
+    --border: #1a1f24;
+    --border-bright: #272e35;
+    --teal: #2dd4bf;
+    --teal-dim: #1a7a72;
+    --teal-glow: rgba(45,212,191,0.08);
+    --text: #d8ddd8;
+    --text-dim: #7a8278;
+    --text-muted: #3e4840;
+    --green: #4ade80;
+    --green-dim: rgba(74,222,128,0.09);
+    --green-bright: #22c55e;
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.09);
+    --blue: #60a5fa;
+    --blue-dim: rgba(96,165,250,0.09);
+    --amber: #fbbf24;
+    --amber-dim: rgba(251,191,36,0.09);
+    /* Trifecta layer colors */
+    --layer-liq: #4ade80;
+    --layer-liq-dim: rgba(74,222,128,0.08);
+    --layer-flow: #60a5fa;
+    --layer-flow-dim: rgba(96,165,250,0.08);
+    --layer-reb: #f87171;
+    --layer-reb-dim: rgba(248,113,113,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.65;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 30% at 50% 0%, rgba(45,212,191,0.04) 0%, transparent 55%),
+      radial-gradient(ellipse 35% 50% at 90% 40%, rgba(96,165,250,0.02) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+  /* ─── HEADER ─── */
+  header { padding: 40px 0 0; border-bottom: 1px solid var(--border); }
+
+  .header-inner {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-bottom: 28px;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .logo-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--teal-dim);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .logo-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(20px, 3.5vw, 36px);
+    font-weight: 700;
+    color: var(--teal);
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+
+  .logo-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-style: italic;
+    margin-top: 6px;
+    letter-spacing: 0.03em;
+  }
+
+  .header-badges { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 4px 12px;
+    border: 1px solid var(--border-bright);
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .badge.active { border-color: var(--teal-dim); color: var(--teal); }
+
+  /* ─── TABS ─── */
+  .tabs-nav {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs-nav::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 16px 26px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    position: relative;
+    top: 1px;
+  }
+
+  .tab-btn:hover { color: var(--text-dim); }
+  .tab-btn.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+  /* ─── CONTENT ─── */
+  .tab-content { display: none; padding: 36px 0 60px; }
+  .tab-content.active { display: block; }
+
+  /* ─── LAYOUT ─── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  @media (max-width: 900px)  { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  @media (max-width: 1100px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
+  .section-gap { margin-bottom: 36px; }
+
+  /* ─── SECTION LABEL ─── */
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--teal-dim);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ─── CARD ─── */
+  .card { background: var(--card); border: 1px solid var(--border); padding: 24px; }
+
+  .card-title {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--teal);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+  }
+
+  /* ─── PHILOSOPHY BOX ─── */
+  .philosophy-box {
+    border: 1px solid var(--teal-dim);
+    background: var(--teal-glow);
+    padding: 24px 28px;
+    margin-bottom: 28px;
+    position: relative;
+  }
+
+  .philosophy-box::before {
+    content: '"';
+    position: absolute;
+    top: -14px;
+    left: 20px;
+    font-family: 'Cinzel', serif;
+    font-size: 60px;
+    color: rgba(45,212,191,0.15);
+    line-height: 1;
+  }
+
+  .philosophy-box p {
+    font-size: 17px;
+    font-style: italic;
+    color: var(--text);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  .philosophy-box .attrib {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--teal-dim);
+    letter-spacing: 0.15em;
+    margin-top: 10px;
+    text-transform: uppercase;
+  }
+
+  /* ─── DATA TABLE ─── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+
+  .data-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--teal-dim);
+    text-transform: uppercase;
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-bright);
+    background: var(--surface);
+  }
+
+  .data-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.45;
+  }
+
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(255,255,255,0.012); }
+
+  /* ─── TAGS ─── */
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    padding: 2px 7px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .tag-teal   { background: var(--teal-glow);    color: var(--teal);        border: 1px solid rgba(45,212,191,0.25); }
+  .tag-green  { background: var(--layer-liq-dim); color: var(--layer-liq);   border: 1px solid rgba(74,222,128,0.25); }
+  .tag-blue   { background: var(--layer-flow-dim);color: var(--layer-flow);  border: 1px solid rgba(96,165,250,0.25); }
+  .tag-red    { background: var(--layer-reb-dim); color: var(--layer-reb);   border: 1px solid rgba(248,113,113,0.25); }
+  .tag-amber  { background: var(--amber-dim);     color: var(--amber);       border: 1px solid rgba(251,191,36,0.25); }
+  .tag-muted  { background: var(--border);        color: var(--text-muted); }
+
+  /* ─── ALERT ─── */
+  .alert {
+    padding: 14px 18px;
+    border-left: 3px solid;
+    margin: 12px 0;
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+
+  .alert strong {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .alert-teal  { border-color: var(--teal);        background: var(--teal-glow);       color: var(--text); }
+  .alert-teal strong { color: var(--teal); }
+  .alert-green { border-color: var(--layer-liq);   background: var(--layer-liq-dim);   color: var(--text); }
+  .alert-green strong { color: var(--layer-liq); }
+  .alert-blue  { border-color: var(--layer-flow);  background: var(--layer-flow-dim);  color: var(--text); }
+  .alert-blue strong { color: var(--layer-flow); }
+  .alert-red   { border-color: var(--layer-reb);   background: var(--layer-reb-dim);   color: var(--text); }
+  .alert-red strong { color: var(--layer-reb); }
+  .alert-amber { border-color: var(--amber);       background: var(--amber-dim);       color: var(--text); }
+  .alert-amber strong { color: var(--amber); }
+
+  /* ─── FLOW ─── */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin: 12px 0;
+  }
+
+  .flow-step {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 8px 14px;
+    background: var(--border);
+    color: var(--text);
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .flow-step.teal   { background: var(--teal-glow);       border: 1px solid rgba(45,212,191,0.3);  color: var(--teal); }
+  .flow-step.green  { background: var(--layer-liq-dim);   border: 1px solid rgba(74,222,128,0.3);  color: var(--layer-liq); }
+  .flow-step.blue   { background: var(--layer-flow-dim);  border: 1px solid rgba(96,165,250,0.3);  color: var(--layer-flow); }
+  .flow-step.red    { background: var(--layer-reb-dim);   border: 1px solid rgba(248,113,113,0.3); color: var(--layer-reb); }
+  .flow-step.amber  { background: var(--amber-dim);       border: 1px solid rgba(251,191,36,0.3);  color: var(--amber); }
+  .flow-step.neutral{ background: var(--card);            border: 1px solid var(--border-bright);  color: var(--text-dim); }
+
+  .flow-arrow { color: var(--text-muted); font-size: 14px; }
+
+  /* ─── DECISION TREE ─── */
+  .decision-tree {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .dt-question {
+    font-size: 11px;
+    color: var(--text);
+    padding: 6px 12px;
+    background: var(--border);
+    border-left: 2px solid var(--teal-dim);
+    margin: 3px 0;
+    line-height: 1.4;
+  }
+
+  .dt-no     { font-size: 11px; color: var(--red);   padding: 4px 0; }
+  .dt-yes    { font-size: 11px; color: var(--green);  padding: 4px 0; }
+  .dt-wait   { font-size: 11px; color: var(--amber);  padding: 4px 10px; background: var(--amber-dim); border-left: 2px solid var(--amber); margin: 2px 0; }
+  .dt-action { font-size: 11px; color: var(--text-muted); padding: 4px 10px; background: var(--red-dim); border-left: 2px solid var(--red); margin: 2px 0; }
+
+  .dt-execute {
+    font-size: 12px;
+    color: var(--green);
+    font-weight: 700;
+    padding: 10px 16px;
+    background: var(--green-dim);
+    border: 1px solid rgba(74,222,128,0.3);
+    margin: 4px 0;
+    letter-spacing: 0.06em;
+  }
+
+  .i1 { padding-left: 24px; }
+  .i2 { padding-left: 48px; }
+  .i3 { padding-left: 72px; }
+  .i4 { padding-left: 96px; }
+  .i5 { padding-left: 120px; }
+  .i6 { padding-left: 144px; }
+
+  /* ─── TRIFECTA VISUAL STACK ─── */
+  .trifecta-stack {
+    border: 1px solid var(--border);
+    overflow: hidden;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 20px;
+  }
+
+  .ts-row {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .ts-row:last-child { border-bottom: none; }
+
+  .ts-level {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 9px 14px;
+    min-width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    border-right: 1px solid var(--border);
+    color: var(--text-muted);
+    background: var(--surface);
+  }
+
+  .ts-name {
+    font-size: 10px;
+    padding: 9px 14px;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-right: 1px solid var(--border);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .ts-desc {
+    font-size: 12.5px;
+    padding: 9px 16px;
+    color: var(--text-dim);
+    font-family: 'Crimson Pro', serif;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    line-height: 1.4;
+  }
+
+  .ts-badge {
+    font-size: 9px;
+    padding: 2px 7px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+    margin-left: auto;
+    flex-shrink: 0;
+    align-self: center;
+    margin-right: 10px;
+  }
+
+  /* Layer coloring */
+  .liq-row  .ts-name { background: var(--layer-liq-dim);  color: var(--layer-liq);  border-right-color: rgba(74,222,128,0.2); }
+  .flow-row .ts-name { background: var(--layer-flow-dim); color: var(--layer-flow); border-right-color: rgba(96,165,250,0.2); }
+  .reb-row  .ts-name { background: var(--layer-reb-dim);  color: var(--layer-reb);  border-right-color: rgba(248,113,113,0.2); }
+  .mid-row  .ts-name { background: var(--teal-glow);      color: var(--teal);       border-right-color: rgba(45,212,191,0.2); }
+  .gip-row  .ts-name { background: var(--amber-dim);      color: var(--amber);      border-right-color: rgba(251,191,36,0.2); }
+  .sweet-row .ts-name { background: rgba(255,255,255,0.03); color: var(--text-dim); }
+
+  .liq-row  .ts-level { color: var(--layer-liq); }
+  .flow-row .ts-level { color: var(--layer-flow); }
+  .reb-row  .ts-level { color: var(--layer-reb); }
+  .mid-row  .ts-level { color: var(--teal); }
+  .gip-row  .ts-level { color: var(--amber); }
+
+  /* ─── PO3 GRID ─── */
+  .po3-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
+
+  .po3-item {
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    text-align: center;
+    background: var(--surface);
+  }
+
+  .po3-item.active { border-color: var(--teal-dim); background: var(--teal-glow); }
+
+  .po3-exp { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
+  .po3-val { font-family: 'Cinzel', serif; font-size: 22px; color: var(--text-dim); line-height: 1; margin-bottom: 4px; }
+  .po3-item.active .po3-val { color: var(--teal); }
+  .po3-note { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-muted); }
+  .po3-item.active .po3-note { color: var(--teal-dim); }
+
+  /* ─── GOLDBACH PARTITION TABLE ─── */
+  .gb-partition {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .gb-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    padding: 8px 12px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    min-width: 40px;
+    text-align: center;
+  }
+
+  .gb-discount {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 8px 16px;
+    background: var(--layer-liq-dim);
+    color: var(--layer-liq);
+    border-right: 1px solid var(--border);
+    min-width: 70px;
+    text-align: center;
+  }
+
+  .gb-bar {
+    flex: 1;
+    background: var(--border);
+    height: 2px;
+    position: relative;
+  }
+
+  .gb-premium {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 8px 16px;
+    background: var(--layer-reb-dim);
+    color: var(--layer-reb);
+    border-left: 1px solid var(--border);
+    min-width: 70px;
+    text-align: center;
+  }
+
+  .gb-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-muted);
+    padding: 8px 12px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    min-width: 80px;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── RULES LIST ─── */
+  .rules-list { list-style: none; }
+
+  .rules-list li {
+    display: flex;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14.5px;
+    line-height: 1.5;
+    align-items: flex-start;
+  }
+
+  .rules-list li:last-child { border-bottom: none; }
+
+  .rule-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--teal-dim);
+    min-width: 24px;
+    padding-top: 3px;
+  }
+
+  .rule-cat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    background: var(--border);
+    padding: 2px 6px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    margin-top: 3px;
+    min-width: fit-content;
+  }
+
+  /* ─── GLOSSARY ─── */
+  .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
+
+  .gloss-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    align-items: flex-start;
+  }
+
+  .gloss-term {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--teal);
+    min-width: 90px;
+    padding-top: 2px;
+    letter-spacing: 0.04em;
+  }
+
+  .gloss-def { font-size: 12.5px; color: var(--text-dim); line-height: 1.4; }
+
+  /* ─── CHECKLIST ─── */
+  .cl-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--teal);
+    text-transform: uppercase;
+    padding: 10px 16px;
+    background: var(--teal-glow);
+    border: 1px solid var(--teal-dim);
+    margin-bottom: 0;
+  }
+
+  .cl-items { border: 1px solid var(--border); border-top: none; }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+  }
+
+  .check-item:last-child { border-bottom: none; }
+  .check-item:hover { background: rgba(255,255,255,0.018); }
+  .check-item.checked { opacity: 0.45; }
+  .check-item.checked .check-label { text-decoration: line-through; color: var(--text-muted); }
+
+  .check-box {
+    width: 16px; height: 16px;
+    border: 1px solid var(--border-bright);
+    background: var(--surface);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .check-item.checked .check-box { background: var(--green-dim); border-color: var(--green); }
+  .check-item.checked .check-box::after { content: '✓'; font-size: 10px; color: var(--green); }
+
+  .check-label { font-size: 14px; color: var(--text); line-height: 1.4; flex: 1; }
+
+  .check-source {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .check-source.gb  { color: var(--teal-dim); }
+  .check-source.liq { color: rgba(74,222,128,0.45); }
+  .check-source.flo { color: rgba(96,165,250,0.45); }
+  .check-source.reb { color: rgba(248,113,113,0.45); }
+  .check-source.warn{ color: rgba(251,191,36,0.5); }
+
+  /* ─── PROGRESS ─── */
+  .progress-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--teal-dim);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    letter-spacing: 0.1em;
+  }
+
+  .progress-bar-wrap { background: var(--border); height: 3px; }
+
+  .progress-bar-fill { height: 100%; background: var(--teal); transition: width 0.3s ease; }
+
+  .reset-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid var(--border-bright);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 24px;
+  }
+
+  .reset-btn:hover { border-color: var(--teal-dim); color: var(--teal); }
+
+  /* ─── MONTH TABLE ─── */
+  .month-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+
+  .month-item {
+    border: 1px solid var(--border);
+    padding: 14px;
+    text-align: center;
+    background: var(--surface);
+  }
+
+  .month-seq {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--teal);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .month-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+
+  .month-type {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .month-item.goldbach { border-color: var(--teal-dim); background: var(--teal-glow); }
+  .month-item.goldbach .month-type { color: var(--teal-dim); }
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div>
+        <div class="logo-eyebrow">Mentorat · 19 Vidéos · Système mathématique institutionnel</div>
+        <div class="logo-title">GOLDBACH TRIFECTA</div>
+        <div class="logo-sub">Algorithmic Academy — PO3 Dealing Ranges · Niveaux Goldbach · Trifecta Layers</div>
+      </div>
+      <div class="header-badges">
+        <div class="badge active">19 Vidéos</div>
+        <div class="badge active">3ⁿ + Goldbach</div>
+        <div class="badge">ICT Institutionnel</div>
+      </div>
+    </div>
+
+    <nav class="tabs-nav">
+      <button class="tab-btn active" onclick="switchTab('fondation')">01 · PO3 &amp; Goldbach</button>
+      <button class="tab-btn" onclick="switchTab('trifecta')">02 · Trifecta Layers</button>
+      <button class="tab-btn" onclick="switchTab('protocole')">03 · Protocole</button>
+      <button class="tab-btn" onclick="switchTab('checklist')">04 · Checklist</button>
+    </nav>
+  </header>
+
+  <!-- ══════════════════════════════
+       TAB 1 — PO3 & GOLDBACH
+  ══════════════════════════════ -->
+  <div id="fondation" class="tab-content active">
+
+    <div class="philosophy-box">
+      <p>ICT enseigne 7 PD Arrays, et il existe exactement 7 partitions de Goldbach pour 100 — ce n'est pas une coïncidence.</p>
+      <div class="attrib">Algorithmic Academy — Goldbach Trifecta · Origine du système</div>
+    </div>
+
+    <div class="section-label">Les nombres PO3 — 11 niveaux couvrant tous les actifs</div>
+    <div class="po3-grid section-gap">
+      <div class="po3-item"><div class="po3-exp">3⁰</div><div class="po3-val">1</div><div class="po3-note">—</div></div>
+      <div class="po3-item"><div class="po3-exp">3¹</div><div class="po3-val">3</div><div class="po3-note">—</div></div>
+      <div class="po3-item"><div class="po3-exp">3²</div><div class="po3-val">9</div><div class="po3-note">TF : 9 min</div></div>
+      <div class="po3-item active"><div class="po3-exp">3³</div><div class="po3-val">27</div><div class="po3-note">TF : 27 min</div></div>
+      <div class="po3-item active"><div class="po3-exp">3⁴</div><div class="po3-val">81</div><div class="po3-note">TF : 81 min</div></div>
+      <div class="po3-item active"><div class="po3-exp">3⁵</div><div class="po3-val">243</div><div class="po3-note">TF : 243 min</div></div>
+      <div class="po3-item active"><div class="po3-exp">3⁶</div><div class="po3-val">729</div><div class="po3-note">Ranges HTF</div></div>
+      <div class="po3-item active"><div class="po3-exp">3⁷</div><div class="po3-val">2 187</div><div class="po3-note">NQ optimal</div></div>
+      <div class="po3-item"><div class="po3-exp">3⁸</div><div class="po3-val">6 561</div><div class="po3-note">NQ trop grand</div></div>
+      <div class="po3-item"><div class="po3-exp">3⁹</div><div class="po3-val">19 683</div><div class="po3-note">—</div></div>
+      <div class="po3-item"><div class="po3-exp">3¹¹</div><div class="po3-val">177 147</div><div class="po3-note">Bitcoin</div></div>
+    </div>
+
+    <div class="alert alert-teal section-gap" style="margin-top:-16px;">
+      <strong>Trouver le Dealing Range OPTIMAL</strong>
+      Afficher ~10 jours de trading. Chaque swing doit toucher <strong>entre 1 et 4 niveaux Goldbach</strong>. 0–1 niveau → PO3 trop grand (descendre). Plus de 4 niveaux → PO3 trop petit (monter). Valider sur TF inférieur : gaps et blocs autour des niveaux = signature de validation.
+    </div>
+
+    <div class="grid-2 section-gap">
+      <div>
+        <div class="section-label">Les 7 partitions de Goldbach = 7 PD Arrays</div>
+        <div>
+          <div class="gb-partition">
+            <div class="gb-num">Extra</div>
+            <div class="gb-discount">0</div>
+            <div style="flex:1;background:var(--border);height:1px;align-self:center;margin:0 8px;"></div>
+            <div class="gb-premium">100</div>
+            <div class="gb-label">Range H/L</div>
+          </div>
+          <div class="gb-partition">
+            <div class="gb-num">P1</div>
+            <div class="gb-discount">3</div>
+            <div style="flex:1;background:var(--border);height:1px;align-self:center;margin:0 8px;"></div>
+            <div class="gb-premium">97</div>
+            <div class="gb-label" style="color:var(--layer-liq);font-size:8px;">LIQ. LAYER</div>
+          </div>
+          <div class="gb-partition">
+            <div class="gb-num">P2</div>
+            <div class="gb-discount">11</div>
+            <div style="flex:1;background:var(--border);height:1px;align-self:center;margin:0 8px;"></div>
+            <div class="gb-premium">89</div>
+            <div class="gb-label" style="color:var(--layer-liq);font-size:8px;">LIQ. LAYER</div>
+          </div>
+          <div class="gb-partition" style="border-color:rgba(251,191,36,0.3);">
+            <div class="gb-num" style="color:var(--amber);">P3</div>
+            <div class="gb-discount" style="background:var(--amber-dim);color:var(--amber);border-right-color:rgba(251,191,36,0.3);">17</div>
+            <div style="flex:1;background:var(--border);height:1px;align-self:center;margin:0 8px;"></div>
+            <div class="gb-premium" style="background:var(--amber-dim);color:var(--amber);border-left-color:rgba(251,191,36,0.3);">83</div>
+            <div class="gb-label" style="color:var(--amber);font-size:8px;">GIP ★</div>
+          </div>
+          <div class="gb-partition">
+            <div class="gb-num">P4</div>
+            <div class="gb-discount">29</div>
+            <div style="flex:1;background:var(--border);height:1px;align-self:center;margin:0 8px;"></div>
+            <div class="gb-premium">71</div>
+            <div class="gb-label" style="color:var(--layer-flow);font-size:8px;">SWEET SPOT</div>
+          </div>
+          <div class="gb-partition">
+            <div class="gb-num">P5</div>
+            <div class="gb-discount">41</div>
+            <div style="flex:1;background:var(--border);height:1px;align-self:center;margin:0 8px;"></div>
+            <div class="gb-premium">59</div>
+            <div class="gb-label" style="color:var(--layer-reb);font-size:8px;">REBALANCE</div>
+          </div>
+          <div class="gb-partition">
+            <div class="gb-num">P6</div>
+            <div class="gb-discount">47</div>
+            <div style="flex:1;background:var(--border);height:1px;align-self:center;margin:0 8px;"></div>
+            <div class="gb-premium">53</div>
+            <div class="gb-label" style="color:var(--layer-reb);font-size:8px;">REBALANCE</div>
+          </div>
+          <div class="gb-partition" style="border-color:var(--teal-dim);">
+            <div class="gb-num" style="color:var(--teal);">MID</div>
+            <div class="gb-discount" style="background:var(--teal-glow);color:var(--teal);border-right-color:rgba(45,212,191,0.3);">50</div>
+            <div style="flex:1;background:var(--teal-dim);height:1px;align-self:center;margin:0 8px;opacity:.5;"></div>
+            <div class="gb-premium" style="background:var(--teal-glow);color:var(--teal);border-left-color:rgba(45,212,191,0.3);">50</div>
+            <div class="gb-label" style="color:var(--teal);font-size:8px;">MIDPOINT</div>
+          </div>
+          <div class="alert alert-teal" style="margin-top:10px;font-size:12.5px;">
+            <strong>Propriété clé</strong>
+            Toutes les paires sont symétriques autour du midpoint 50. Total : <strong>21 niveaux</strong> dans le système complet (Goldbach + non-Goldbach).
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Comportement du prix dans un dealing range</div>
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-title">Règles fondamentales</div>
+          <ul class="rules-list">
+            <li><span class="rule-num">→</span>Le prix est <strong>contenu</strong> dans un range pendant des périodes prolongées (mois, années sur grands ranges)</li>
+            <li><span class="rule-num">→</span>Le <strong>midpoint 50%</strong> est respecté tout comme les hauts et bas du range</li>
+            <li><span class="rule-num">→</span>Les <strong>mèches dépassent</strong> le range, mais les <strong>corps clôturent à l'intérieur</strong> = signal de maintien puissant</li>
+            <li><span class="rule-num">→</span>Les market makers génèrent de la liquidité à l'intérieur puis <strong>chassent cette liquidité</strong> hors du range</li>
+            <li><span class="rule-num">→</span>Ranges <strong>fractals</strong> : 3 blocs de 27 dans un 81, 3 blocs de 243 dans un 729</li>
+          </ul>
+        </div>
+
+        <div class="section-label">2 scénarios après dépassement du range</div>
+        <div class="alert alert-blue" style="margin-bottom:10px;">
+          <strong>Scénario 1 — Normal</strong>
+          Le mouvement hors range est bref. Le prix revient et voyage au minimum jusqu'au midpoint du range. Continuation interne.
+        </div>
+        <div class="alert alert-amber">
+          <strong>Scénario 2 — Transition</strong>
+          Le prix rejette le range actuel et passe au range supérieur/inférieur. Changement de dealing range — monter d'un niveau PO3.
+        </div>
+
+        <div class="section-label" style="margin-top:20px;">Calibration des niveaux</div>
+        <div class="card">
+          <div class="card-title">Niveaux calibrés</div>
+          <p style="font-size:13.5px;color:var(--text-dim);line-height:1.5;margin-bottom:10px;">Le prix n'atteint pas toujours exactement un niveau Goldbach. Méthode de calibration :</p>
+          <div class="flow" style="flex-direction:column;align-items:flex-start;gap:6px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);">1 → Regarder à <strong style="color:var(--teal)">gauche</strong> du graphique</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);">2 → Trouver où le niveau a été <strong style="color:var(--teal)">touché / respecté</strong> dans le passé</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);">3 → Tracer un rayon horizontal depuis <strong style="color:var(--teal)">l'extrême de la mèche</strong></div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal);">→ Ce niveau agit comme un aimant ou une barrière précise</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Le Mois Décalé — Séquence de 9</div>
+    <div class="card section-gap">
+      <div class="card-title">Shifted Month — Jours Goldbach clés</div>
+      <p style="font-size:13.5px;color:var(--text-dim);margin-bottom:16px;">Le nouveau mois de trading ne commence PAS le 1er. Séquence basée sur le nombre 9 — chaque nombre décomposé en mois + jour.</p>
+      <div class="month-grid">
+        <div class="month-item goldbach"><div class="month-seq">9</div><div class="month-date">Jan 9</div><div class="month-type">Ouverture</div></div>
+        <div class="month-item goldbach"><div class="month-seq">18</div><div class="month-date">Jan 18</div><div class="month-type">Ouverture</div></div>
+        <div class="month-item goldbach"><div class="month-seq">27</div><div class="month-date">Fév 7</div><div class="month-type">Ouverture</div></div>
+        <div class="month-item goldbach"><div class="month-seq">36</div><div class="month-date">Mars 6</div><div class="month-type">Ouverture</div></div>
+        <div class="month-item goldbach"><div class="month-seq">45</div><div class="month-date">Avr 5</div><div class="month-type">Ouverture</div></div>
+        <div class="month-item goldbach"><div class="month-seq">117</div><div class="month-date">Nov 7</div><div class="month-type">3 chiffres</div></div>
+      </div>
+      <div class="grid-3" style="margin-top:16px;gap:10px;">
+        <div class="alert alert-teal" style="margin:0;">
+          <strong>Jour 1</strong>
+          Ouverture du mois décalé — nouveau cycle
+        </div>
+        <div class="alert alert-blue" style="margin:0;">
+          <strong>Jour 3 &amp; Jour 11</strong>
+          Gaps / blocs / runs de liquidité dont la taille = nombre actif du mois
+        </div>
+        <div class="alert alert-amber" style="margin:0;">
+          <strong>Jour 11 &amp; Jour 17</strong>
+          Anticiper un run de liquidité dans la direction OPPOSÉE — retournement possible
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       TAB 2 — TRIFECTA LAYERS
+  ══════════════════════════════ -->
+  <div id="trifecta" class="tab-content">
+
+    <div class="section-label">Schéma complet — Les 3 couches Trifecta</div>
+    <div class="trifecta-stack section-gap">
+      <div class="ts-row liq-row">
+        <div class="ts-level">100</div>
+        <div class="ts-name">Range High <span class="ts-badge tag-teal">PO3</span></div>
+        <div class="ts-desc">Limite supérieure du dealing range. Corps clôturent à l'intérieur.</div>
+      </div>
+      <div class="ts-row liq-row">
+        <div class="ts-level">97</div>
+        <div class="ts-name">Goldbach P1 <span class="ts-badge tag-green">LIQUIDITY</span></div>
+        <div class="ts-desc">Zone de pièges. L'algo construit un faux retracement pour générer et prendre la liquidité.</div>
+      </div>
+      <div class="ts-row liq-row">
+        <div class="ts-level">89</div>
+        <div class="ts-name">Goldbach P2 <span class="ts-badge tag-green">LIQUIDITY</span></div>
+        <div class="ts-desc">Extrêmes du range premium. Sweep + reversal attendu.</div>
+      </div>
+      <div class="ts-row gip-row">
+        <div class="ts-level">83</div>
+        <div class="ts-name">GIP ★ Premium <span class="ts-badge tag-amber">BASCULEMENT</span></div>
+        <div class="ts-desc"><strong>Goldbach Inversion Point</strong> — portail entre Liquidity Layer et Flow Layer. Sa cassure confirme la direction.</div>
+      </div>
+      <div class="ts-row flow-row">
+        <div class="ts-level">77</div>
+        <div class="ts-name">Non-Goldbach <span class="ts-badge tag-blue">FLOW</span></div>
+        <div class="ts-desc">À l'intérieur du Flow Layer — zone directionnelle claire.</div>
+      </div>
+      <div class="ts-row flow-row" style="background:rgba(96,165,250,0.03);">
+        <div class="ts-level" style="color:var(--blue);font-size:13px;">71 ★</div>
+        <div class="ts-name" style="font-size:11px;">SWEET SPOT Premium <span class="ts-badge tag-blue">SWEET SPOT</span></div>
+        <div class="ts-desc"><strong>Cœur du Flow Layer premium</strong>. Signal hallmark : prix casse + tient au sweet spot = VENTE, target Rebalance Layer.</div>
+      </div>
+      <div class="ts-row flow-row">
+        <div class="ts-level">65</div>
+        <div class="ts-name">Non-Goldbach <span class="ts-badge tag-blue">FLOW</span></div>
+        <div class="ts-desc">Zone de flow — direction généralement confirmée.</div>
+      </div>
+      <div class="ts-row reb-row">
+        <div class="ts-level">59</div>
+        <div class="ts-name">Goldbach P5 <span class="ts-badge tag-red">REBALANCE</span></div>
+        <div class="ts-desc">Entrée dans le Rebalance Layer. Prendre des profits partiels. Zone de chop commence.</div>
+      </div>
+      <div class="ts-row reb-row">
+        <div class="ts-level">53</div>
+        <div class="ts-name">Goldbach P6 <span class="ts-badge tag-red">REBALANCE</span></div>
+        <div class="ts-desc">Cœur de la consolidation. Liquidité interne entre 41 et 59.</div>
+      </div>
+      <div class="ts-row mid-row">
+        <div class="ts-level">50</div>
+        <div class="ts-name">MIDPOINT ★ <span class="ts-badge tag-teal">PIVOT</span></div>
+        <div class="ts-desc"><strong>Pivot algorithmique central.</strong> Niveau respecté comme les hauts et bas du range. Ne pas initier de positions.</div>
+      </div>
+      <div class="ts-row reb-row">
+        <div class="ts-level">47</div>
+        <div class="ts-name">Goldbach P6 <span class="ts-badge tag-red">REBALANCE</span></div>
+        <div class="ts-desc">Cœur de la consolidation côté discount. Chop.</div>
+      </div>
+      <div class="ts-row reb-row">
+        <div class="ts-level">41</div>
+        <div class="ts-name">Goldbach P5 <span class="ts-badge tag-red">REBALANCE</span></div>
+        <div class="ts-desc">Fin du Rebalance Layer. Sortie vers le Flow Layer discount.</div>
+      </div>
+      <div class="ts-row flow-row">
+        <div class="ts-level">35</div>
+        <div class="ts-name">Non-Goldbach <span class="ts-badge tag-blue">FLOW</span></div>
+        <div class="ts-desc">Zone de flow discount — direction confirmée.</div>
+      </div>
+      <div class="ts-row flow-row" style="background:rgba(96,165,250,0.03);">
+        <div class="ts-level" style="color:var(--blue);font-size:13px;">29 ★</div>
+        <div class="ts-name" style="font-size:11px;">SWEET SPOT Discount <span class="ts-badge tag-blue">SWEET SPOT</span></div>
+        <div class="ts-desc"><strong>Cœur du Flow Layer discount</strong>. Signal hallmark : prix casse + tient au sweet spot = ACHAT, target Rebalance Layer.</div>
+      </div>
+      <div class="ts-row flow-row">
+        <div class="ts-level">23</div>
+        <div class="ts-name">Non-Goldbach <span class="ts-badge tag-blue">FLOW</span></div>
+        <div class="ts-desc">Zone de flow — direction généralement confirmée.</div>
+      </div>
+      <div class="ts-row gip-row">
+        <div class="ts-level">17</div>
+        <div class="ts-name">GIP ★ Discount <span class="ts-badge tag-amber">BASCULEMENT</span></div>
+        <div class="ts-desc"><strong>Goldbach Inversion Point</strong> — point de basculement discount. Sa cassure définit la direction baissière.</div>
+      </div>
+      <div class="ts-row liq-row">
+        <div class="ts-level">11</div>
+        <div class="ts-name">Goldbach P2 <span class="ts-badge tag-green">LIQUIDITY</span></div>
+        <div class="ts-desc">Zone de pièges discount. Sweep + reversal attendu.</div>
+      </div>
+      <div class="ts-row liq-row">
+        <div class="ts-level">3</div>
+        <div class="ts-name">Goldbach P1 <span class="ts-badge tag-green">LIQUIDITY</span></div>
+        <div class="ts-desc">Extrêmes du range discount. L'algo piège avant de repartir dans la vraie direction.</div>
+      </div>
+      <div class="ts-row liq-row">
+        <div class="ts-level">0</div>
+        <div class="ts-name">Range Low <span class="ts-badge tag-teal">PO3</span></div>
+        <div class="ts-desc">Limite inférieure du dealing range.</div>
+      </div>
+    </div>
+
+    <div class="grid-3 section-gap">
+      <div>
+        <div class="section-label">Liquidity Layer</div>
+        <div class="card">
+          <div class="card-title" style="color:var(--layer-liq);">▪ Couche Verte (0–17 / 83–100)</div>
+          <div class="alert alert-green" style="margin-bottom:8px;">
+            <strong>Comportement</strong>
+            L'algo construit un <strong>piège</strong> avec un faux retracement, puis reprice agressivement pour générer et prendre la liquidité.
+          </div>
+          <ul class="rules-list" style="font-size:13px;">
+            <li><span class="rule-num" style="color:var(--layer-liq);">→</span>ATTENDRE le sweep + reversal</li>
+            <li><span class="rule-num" style="color:var(--layer-liq);">→</span>NE PAS entrer dans le sens du piège</li>
+            <li><span class="rule-num" style="color:var(--layer-liq);">→</span>Zone des extrêmes — liquidité externe</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="section-label">Flow Layer ★</div>
+        <div class="card">
+          <div class="card-title" style="color:var(--layer-flow);">▪ Couche Bleue (17–41 / 59–83)</div>
+          <div class="alert alert-blue" style="margin-bottom:8px;">
+            <strong>Couche préférée de Algorithmic Academy</strong>
+            Direction claire, moins de consolidation. C'est LA zone de trading.
+          </div>
+          <ul class="rules-list" style="font-size:13px;">
+            <li><span class="rule-num" style="color:var(--layer-flow);">→</span>Agit comme un <strong>portail</strong> (gatekeeper)</li>
+            <li><span class="rule-num" style="color:var(--layer-flow);">→</span>Casse à la hausse + retrace = <strong>support</strong></li>
+            <li><span class="rule-num" style="color:var(--layer-flow);">→</span>Casse à la baisse + retrace = <strong>résistance</strong></li>
+            <li><span class="rule-num" style="color:var(--layer-flow);">→</span>N'acheter que quand prix casse ET tient au-dessus</li>
+            <li><span class="rule-num" style="color:var(--layer-flow);">→</span><strong>Hallmark</strong> : casse + tient sweet spot = entrée</li>
+            <li><span class="rule-num" style="color:var(--layer-flow);">→</span>Traverse sans pause → attendre retour sweet spot</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="section-label">Rebalance Layer</div>
+        <div class="card">
+          <div class="card-title" style="color:var(--layer-reb);">▪ Couche Rouge (41–59)</div>
+          <div class="alert alert-red" style="margin-bottom:8px;">
+            <strong>Zone de chop</strong>
+            Consolidation autour de l'équilibre 50. Le prix cible la liquidité interne entre 41 et 59.
+          </div>
+          <ul class="rules-list" style="font-size:13px;">
+            <li><span class="rule-num" style="color:var(--layer-reb);">→</span>PRENDRE des profits partiels ici</li>
+            <li><span class="rule-num" style="color:var(--layer-reb);">→</span>NE PAS initier de nouvelles positions</li>
+            <li><span class="rule-num" style="color:var(--layer-reb);">→</span>Zone de chop — risque élevé d'invalidation</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Blocs, Gaps et Liquidité — Règles opérationnelles</div>
+    <div class="grid-2">
+      <div>
+        <table class="data-table">
+          <thead><tr><th>Concept</th><th>Description</th><th>Analogie</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag tag-teal">Bloc</span></td><td>Zone d'accumulation/consolidation autour d'un niveau Goldbach</td><td>Un commerçant qui cherche des clients</td></tr>
+            <tr><td><span class="tag tag-blue">Gap</span></td><td>Espace vide après un sweep de liquidité / mouvement impulsif</td><td>Les poches vides après avoir payé</td></tr>
+            <tr><td><span class="tag tag-amber">Liquidité</span></td><td>Ordres en attente à consommer (acheteurs / vendeurs)</td><td>Les clients à trouver</td></tr>
+            <tr><td><span class="tag tag-green">North Side</span></td><td>Stops au-dessus du range (buy stops)</td><td>Chasse alternée avec South Side</td></tr>
+            <tr><td><span class="tag tag-red">South Side</span></td><td>Stops en-dessous du range (sell stops)</td><td>Chasse alternée avec North Side</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="alert alert-teal" style="margin-bottom:8px;">
+          <strong>Règle principale</strong>
+          TOUJOURS chercher blocs, gaps et liquidité AUTOUR des niveaux Goldbach = seules zones haute probabilité.
+        </div>
+        <div class="alert alert-blue" style="margin-bottom:8px;">
+          <strong>Milieu d'un bloc</strong>
+          Le milieu d'un bloc aligné avec un niveau Goldbach = point focal majeur de la session. Priorité absolue.
+        </div>
+        <div class="alert alert-amber" style="margin-bottom:8px;">
+          <strong>Bloc vs niveau Goldbach</strong>
+          Un bloc qui touche un niveau Goldbach est prioritaire sur un bloc qui ne le touche pas.
+        </div>
+        <div class="alert alert-green">
+          <strong>Patterns de retournement</strong>
+          Les patterns de retournement à 3 barres (Reversal 1 / Reversal 2) se forment juste avant un niveau Goldbach.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       TAB 3 — PROTOCOLE
+  ══════════════════════════════ -->
+  <div id="protocole" class="tab-content">
+
+    <div class="section-label">Arbre de décision — Protocole complet</div>
+    <div class="decision-tree section-gap">
+      <div style="display:flex;gap:12px;align-items:flex-start;margin:4px 0;">
+        <div class="dt-question" style="flex:1;">❶ Quel est le PO3 Dealing Range OPTIMAL ? (1–4 niveaux Goldbach par swing = bon range)</div>
+      </div>
+      <div class="i1" style="margin:3px 0;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);">→ Vérifier overlapping avec ranges plus grands. Utiliser TF PO3 (9, 27, 81, 243 min).</div>
+
+      <div style="display:flex;gap:12px;align-items:flex-start;margin:12px 0 4px;">
+        <div class="dt-question" style="flex:1;">❷ Où est le prix dans le range ? Identifier la couche Trifecta</div>
+      </div>
+
+      <div class="i1" style="margin:6px 0;">
+        <div style="display:flex;gap:8px;align-items:flex-start;margin:4px 0;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--layer-liq);min-width:160px;">LIQUIDITY LAYER (0–17 / 83–100) →</div>
+          <div class="dt-wait" style="flex:1;">ATTENTION — zone de piège. Attendre sweep + reversal. NE PAS entrer dans le sens du piège.</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;margin:4px 0;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--layer-flow);min-width:160px;">FLOW LAYER (17–41 / 59–83) →</div>
+          <div class="dt-execute" style="flex:1;margin:0;">C'est LA zone de trading. Direction claire après cassure du GIP (17/83). Entrer au sweet spot (29/71).</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;margin:4px 0;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--layer-reb);min-width:160px;">REBALANCE LAYER (41–59) →</div>
+          <div class="dt-action" style="flex:1;">Zone de chop. PRENDRE DES PROFITS PARTIELS. NE PAS initier de positions.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:flex-start;margin:12px 0 4px;">
+        <div class="dt-question" style="flex:1;">❸ Confirmations obligatoires — SMT + Displacement</div>
+      </div>
+      <div class="i1" style="display:flex;gap:8px;margin:4px 0;">
+        <div class="dt-no">SMT seul →</div><div class="dt-action">INSUFFISANT — attendre le displacement</div>
+      </div>
+      <div class="i1" style="display:flex;gap:8px;margin:4px 0;">
+        <div class="dt-yes">SMT + Displacement →</div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:flex-start;margin:12px 0 4px;padding-left:48px;">
+        <div class="dt-question" style="flex:1;">❹ Blocs, gaps et liquidité autour d'un niveau Goldbach ?</div>
+      </div>
+      <div class="i3" style="display:flex;gap:8px;margin:4px 0;">
+        <div class="dt-no">✕ NON →</div><div class="dt-action">Zone non validée — chercher ailleurs</div>
+      </div>
+      <div class="i3" style="display:flex;gap:8px;margin:4px 0;">
+        <div class="dt-yes">✓ OUI →</div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:flex-start;margin:12px 0 4px;padding-left:96px;">
+        <div class="dt-execute" style="flex:1;">✅ ENTRER dans le gap de displacement · SL au Racing Marker · TP au prochain niveau Goldbach ou PO3<br>
+        <span style="font-weight:400;font-size:10px;opacity:.7;letter-spacing:.04em;">Partials au Rebalance Layer · Partials au SMT inverse · Environnement pas clean → in and out</span></div>
+      </div>
+    </div>
+
+    <div class="section-label">Setup NY Open — 25 Handles</div>
+    <div class="grid-2 section-gap">
+      <div>
+        <div class="card">
+          <div class="card-title">Préparation avant 9h30 NY</div>
+          <ul class="rules-list" style="font-size:13.5px;">
+            <li><span class="rule-num">□</span>Identifier le PO3 Dealing Range optimal pour l'actif</li>
+            <li><span class="rule-num">□</span>Afficher les niveaux Goldbach sur le chart</li>
+            <li><span class="rule-num">□</span>Identifier dans quelle couche Trifecta le prix se trouve</li>
+            <li><span class="rule-num">□</span>Identifier les stop runs qui échouent à atteindre un niveau Goldbach</li>
+            <li><span class="rule-num">□</span>Mapper la liquidité Nord (buy stops) et Sud (sell stops)</li>
+            <li><span class="rule-num">□</span>Calibrer les niveaux en regardant les swings passés à gauche</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-title">Exécution 9h30 — 12h00 NY</div>
+          <ul class="rules-list" style="font-size:13.5px;">
+            <li><span class="rule-num">□</span>L'open fait un STOP RUN classique dans un niveau Goldbach</li>
+            <li><span class="rule-num">□</span>Il efface les stops puis REVERSE — attendre la confirmation</li>
+            <li><span class="rule-num">□</span>Chercher un pattern Reversal 1 ou Reversal 2</li>
+            <li><span class="rule-num">□</span>ENTRÉE sur confirmation du pattern</li>
+            <li><span class="rule-num">□</span>SL juste au-delà du swing high/low formé pendant le sweep</li>
+            <li><span class="rule-num">□</span>TARGET : 25 handles</li>
+            <li><span class="rule-num">□</span>Si contre-tendance → RÉDUIRE la taille de position</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Les 10 règles d'or — Goldbach Trifecta</div>
+    <div class="card section-gap">
+      <ul class="rules-list">
+        <li><span class="rule-num">01</span><span class="rule-cat">Layer</span>Le Flow Layer est la couche la plus fiable — direction claire, moins de chop</li>
+        <li><span class="rule-num">02</span><span class="rule-cat">Layer</span>Ne JAMAIS acheter au Flow Layer quand le prix y arrive par en-dessous — attendre la confirmation</li>
+        <li><span class="rule-num">03</span><span class="rule-cat">GIP</span>Le GIP (17/83) est le point de basculement — sa cassure définit la direction principale</li>
+        <li><span class="rule-num">04</span><span class="rule-cat">Zones</span>Blocs, gaps et liquidité AUTOUR des niveaux Goldbach = les seules zones haute probabilité</li>
+        <li><span class="rule-num">05</span><span class="rule-cat">Range</span>Les corps clôturent à l'intérieur du range, les mèches dépassent = signal de maintien dans le range</li>
+        <li><span class="rule-num">06</span><span class="rule-cat">Calibration</span>Calibrer les niveaux en regardant les swings passés à gauche du chart</li>
+        <li><span class="rule-num">07</span><span class="rule-cat">Temps</span>Le mois décalé avec les jours 3, 11, 17 anticipe les retournements mensuels</li>
+        <li><span class="rule-num">08</span><span class="rule-cat">Confirmation</span>SMT + Displacement = confirmation obligatoire — les deux, sans exception</li>
+        <li><span class="rule-num">09</span><span class="rule-cat">TF</span>Utiliser les timeframes PO3 (9, 27, 81, 243 min) — blocs et gaps plus clairement visibles</li>
+        <li><span class="rule-num">10</span><span class="rule-cat">Gestion</span>Le Rebalance Layer (41–59) = zone de profits partiels uniquement, jamais d'initiation</li>
+      </ul>
+    </div>
+
+    <div class="section-label">Glossaire Goldbach Trifecta</div>
+    <div class="glossary-grid">
+      <div class="gloss-item"><div class="gloss-term">PO3</div><div class="gloss-def">Power of Three — puissances de 3 (27, 81, 243, 729, 2187...)</div></div>
+      <div class="gloss-item"><div class="gloss-term">Dealing Range</div><div class="gloss-def">Range défini par un nombre PO3. Cadre de référence du prix.</div></div>
+      <div class="gloss-item"><div class="gloss-term">GIP</div><div class="gloss-def">Goldbach Inversion Point — niveau 17 (discount) ou 83 (premium)</div></div>
+      <div class="gloss-item"><div class="gloss-term">Sweet Spot</div><div class="gloss-def">Niveau 29 (discount) ou 71 (premium) — cœur du Flow Layer</div></div>
+      <div class="gloss-item"><div class="gloss-term">Liquidity Layer</div><div class="gloss-def">Couche verte (0–17 / 83–100) — zone de pièges institutionnels</div></div>
+      <div class="gloss-item"><div class="gloss-term">Flow Layer</div><div class="gloss-def">Couche bleue (17–41 / 59–83) — zone directionnelle, la préférée</div></div>
+      <div class="gloss-item"><div class="gloss-term">Rebalance Layer</div><div class="gloss-def">Couche rouge (41–59) — zone de chop, profits partiels uniquement</div></div>
+      <div class="gloss-item"><div class="gloss-term">Niveau calibré</div><div class="gloss-def">Niveau Goldbach ajusté selon les swings passés (extrême de mèche)</div></div>
+      <div class="gloss-item"><div class="gloss-term">Goldbach Fib</div><div class="gloss-def">Fibonacci avec termes remplacés par les nombres Goldbach</div></div>
+      <div class="gloss-item"><div class="gloss-term">Mois décalé</div><div class="gloss-def">Mois de trading commençant selon la séquence de 9</div></div>
+      <div class="gloss-item"><div class="gloss-term">Hallmark</div><div class="gloss-def">Signal de continuation : prix casse + tient au sweet spot → entrée</div></div>
+      <div class="gloss-item"><div class="gloss-term">Overlapping</div><div class="gloss-def">Alignement d'un petit range PO3 avec un plus grand — confluence forte</div></div>
+      <div class="gloss-item"><div class="gloss-term">Reversal 1</div><div class="gloss-def">Pattern de retournement classique à un niveau Goldbach</div></div>
+      <div class="gloss-item"><div class="gloss-term">Reversal 2</div><div class="gloss-def">Retournement après traversée du niveau Goldbach (stop run PO3)</div></div>
+      <div class="gloss-item"><div class="gloss-term">Racing Markers</div><div class="gloss-def">Espaces au-dessus/en-dessous des range H/L (Range ÷ 9)</div></div>
+      <div class="gloss-item"><div class="gloss-term">Fuel Levels</div><div class="gloss-def">Midpoints entre fractals — créer puis consommer la liquidité</div></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       TAB 4 — CHECKLIST
+  ══════════════════════════════ -->
+  <div id="checklist" class="tab-content">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:14px;">
+      <div>
+        <div class="progress-label">
+          <span>Progression de la session</span>
+          <span id="progress-text">0 / 0</span>
+        </div>
+        <div class="progress-bar-wrap" style="width:300px;">
+          <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <button class="reset-btn" onclick="resetChecklist()">↺ Réinitialiser</button>
+    </div>
+
+    <div class="grid-2">
+      <!-- Colonne gauche -->
+      <div>
+        <div style="margin-bottom:28px;">
+          <div class="cl-section-title">◈ Pré-session — Avant 9h30 NY</div>
+          <div class="cl-items">
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Identifier le PO3 Dealing Range optimal (1–4 niveaux Goldbach par swing)</div><div class="check-source gb">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Afficher les timeframes PO3 (9, 27, 81, 243 min)</div><div class="check-source gb">TF</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Afficher les 21 niveaux Goldbach sur le chart</div><div class="check-source gb">GB</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Vérifier les overlapping entre ranges (petit range aligné avec grand ?)</div><div class="check-source gb">PO3</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Identifier dans quelle couche Trifecta se trouve le prix (Liquidity / Flow / Rebalance)</div><div class="check-source gb">LAYER</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Calibrer les niveaux (swings passés à gauche — extrêmes des mèches)</div><div class="check-source gb">CALIB</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Mapper la liquidité Nord (buy stops) et Sud (sell stops)</div><div class="check-source gb">LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Identifier les blocs et gaps autour des niveaux Goldbach</div><div class="check-source gb">BLOCS</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Identifier le stop run qui échoue à atteindre un niveau Goldbach</div><div class="check-source gb">SETUP</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Vérifier si on est dans un jour Goldbach (3, 11 ou 17 du mois décalé)</div><div class="check-source warn">MOIS</div></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="cl-section-title" style="background:var(--red-dim);border-color:rgba(248,113,113,0.35);color:var(--red);">✕ Interdits absolus</div>
+          <div class="cl-items">
+            <div class="check-item" style="cursor:default;"><div class="check-box" style="border-color:var(--red);"></div><div class="check-label" style="color:var(--red);">NE PAS initier de position dans le Rebalance Layer (41–59)</div><div class="check-source reb">REBAL</div></div>
+            <div class="check-item" style="cursor:default;"><div class="check-box" style="border-color:var(--red);"></div><div class="check-label" style="color:var(--red);">NE PAS acheter au Flow Layer quand le prix y arrive par en-dessous</div><div class="check-source flo">FLOW</div></div>
+            <div class="check-item" style="cursor:default;"><div class="check-box" style="border-color:var(--red);"></div><div class="check-label" style="color:var(--red);">NE PAS entrer dans le sens du piège en Liquidity Layer</div><div class="check-source liq">LIQ</div></div>
+            <div class="check-item" style="cursor:default;"><div class="check-box" style="border-color:var(--red);"></div><div class="check-label" style="color:var(--red);">NE PAS entrer sur SMT seul sans displacement</div><div class="check-source warn">RÈGLE</div></div>
+            <div class="check-item" style="cursor:default;"><div class="check-box" style="border-color:var(--red);"></div><div class="check-label" style="color:var(--red);">NE PAS trader des blocs/gaps qui ne sont pas alignés avec un niveau Goldbach</div><div class="check-source gb">GB</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne droite -->
+      <div>
+        <div style="margin-bottom:28px;">
+          <div class="cl-section-title" style="background:var(--layer-flow-dim);border-color:rgba(96,165,250,0.35);color:var(--layer-flow);">◉ Flow Layer — Confirmation d'entrée</div>
+          <div class="cl-items">
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Prix dans le Flow Layer (17–41 discount ou 59–83 premium)</div><div class="check-source flo">FLOW</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">GIP (17 ou 83) cassé ET tenu — direction confirmée</div><div class="check-source warn">GIP ★</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Prix au Sweet Spot (29 ou 71) — hallmark signal</div><div class="check-source flo">SWEET ★</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Stop run vers un niveau Goldbach suivi d'un reversal</div><div class="check-source gb">SETUP</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Bloc ou gap identifié AU NIVEAU Goldbach concerné</div><div class="check-source gb">BLOCS</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Le milieu du bloc est aligné avec le niveau Goldbach</div><div class="check-source gb">FOCAL</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">SMT confirmé — divergence NQ vs S&P</div><div class="check-source warn">SMT</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Displacement présent après le SMT (cassure violente + gap)</div><div class="check-source warn">DISP</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Pattern Reversal 1 ou Reversal 2 identifié</div><div class="check-source gb">PATTERN</div></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="cl-section-title" style="background:var(--green-dim);border-color:rgba(74,222,128,0.35);color:var(--green);">✅ Exécution — NY Open Setup</div>
+          <div class="cl-items">
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Entrée dans le gap de displacement (après confirmation du pattern)</div><div class="check-source gb">ENTRÉE</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">SL placé au Racing Marker (juste au-delà du swing formé pendant le sweep)</div><div class="check-source gb">SL</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">TP au prochain niveau Goldbach ou PO3 (ou 25 handles NY setup)</div><div class="check-source gb">TP</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Si contre-tendance → réduire la taille de position</div><div class="check-source warn">RISK</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Partials pris dans le Rebalance Layer (41–59)</div><div class="check-source reb">PARTIAL</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Partials au SMT inverse si détecté en cours de trade</div><div class="check-source warn">PARTIAL</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Environnement pas clean → in and out, ne pas chercher à optimiser</div><div class="check-source warn">GESTION</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Journal rempli — cases cochées = process respecté</div><div class="check-source gb">LOG</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggleCheck(item) {
+  item.classList.toggle('checked');
+  updateProgress();
+}
+
+function updateProgress() {
+  const all  = document.querySelectorAll('#checklist .check-item[onclick]');
+  const done = document.querySelectorAll('#checklist .check-item[onclick].checked');
+  const pct  = all.length ? Math.round((done.length / all.length) * 100) : 0;
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = done.length + ' / ' + all.length;
+}
+
+function resetChecklist() {
+  document.querySelectorAll('#checklist .check-item.checked').forEach(el => el.classList.remove('checked'));
+  updateProgress();
+}
+
+updateProgress();
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>
