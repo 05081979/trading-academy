@@ -14,6 +14,7 @@
       { id: 'strategie-entree',     label: 'Strategie d Entree Algo' },
       { id: 'fondamentaux-smc',     label: 'Fondamentaux SMC' },
       { id: 'market-maker-model',   label: 'Market Maker Model' },
+      { id: 'candle-range-theory',  label: 'Candle Range Theory' },
     ]},
     { name: 'Protocole', items: [
       { id: 'hub-cours',     label: 'Bibliotheque' },

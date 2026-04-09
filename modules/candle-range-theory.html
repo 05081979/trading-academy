@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Candle Range Theory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0C0F0A;
+  --bg2:      #111510;
+  --bg3:      #181D14;
+  --border:   #1F2A1A;
+  --em:       #3D7A3A;
+  --em2:      #56A853;
+  --em-light: #A3D9A1;
+  --em-pale:  #E8F5E8;
+  --amber:    #D4882A;
+  --amber-l:  #F5C56A;
+  --red:      #C9453A;
+  --blue:     #4A90B8;
+  --muted:    #3A4535;
+  --text:     #DDE8D8;
+  --text-dim: #7D9478;
+  --serif:    'Playfair Display', serif;
+  --sans:     'Syne', sans-serif;
+  --body:     'Source Serif 4', serif;
+  --mono:     'Roboto Mono', monospace;
+  --sw: 270px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.75; display: flex; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── SIDEBAR ─────────────────────────── */
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 100;
+}
+
+.sb-logo {
+  padding: 28px 22px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sb-logo .mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--em), var(--em2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(61,122,58,.3);
+}
+
+.sb-logo h1 {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--em-light);
+  line-height: 1.25;
+}
+
+.sb-logo p {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.sb-section {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 16px 22px 5px;
+}
+
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 22px; text-decoration: none;
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 500;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.sb-link:hover { background: rgba(86,168,83,.06); color: var(--text); }
+.sb-link.active { background: rgba(86,168,83,.1); color: var(--em-light); border-left-color: var(--em2); }
+
+.sb-link .n {
+  font-family: var(--mono);
+  font-size: 0.62rem; font-weight: 500;
+  color: var(--muted); min-width: 22px;
+}
+.sb-link.active .n { color: var(--em2); }
+
+/* ── PROGRESS ────────────────────────── */
+#pbar {
+  position: fixed; top: 0; left: var(--sw); right: 0;
+  height: 2px; background: var(--border); z-index: 200;
+}
+#pfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--em), var(--em2), var(--amber));
+  width: 0%; transition: width 0.1s linear;
+}
+
+/* ── MAIN ────────────────────────────── */
+#main { margin-left: var(--sw); flex: 1; min-height: 100vh; }
+
+/* ── HERO ────────────────────────────── */
+#hero {
+  position: relative; overflow: hidden;
+  padding: 80px 64px 72px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-noise {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-lines {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 20px,
+    rgba(61,122,58,.04) 20px, rgba(61,122,58,.04) 21px
+  );
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(86,168,83,.12);
+  border: 1px solid rgba(86,168,83,.3);
+  color: var(--em-light);
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+
+#hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 5.5vw, 5rem);
+  line-height: 1.0;
+  color: #fff;
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+#hero h1 .em {
+  display: block;
+  background: linear-gradient(90deg, var(--em2), var(--em-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+#hero .sub {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 400;
+  color: var(--text-dim); max-width: 560px; margin-bottom: 44px;
+  line-height: 1.8;
+}
+
+.hero-kpis {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 14px; max-width: 660px;
+}
+
+.kpi {
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+}
+.kpi:hover { border-color: rgba(86,168,83,.35); }
+
+.kpi-v {
+  font-family: var(--mono);
+  font-size: 1.5rem; font-weight: 500;
+  color: var(--em-light); line-height: 1;
+  margin-bottom: 5px;
+}
+.kpi-l {
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── MODULE ──────────────────────────── */
+.mod {
+  padding: 64px; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.mod.vis { opacity: 1; transform: none; }
+
+.mod-head {
+  display: flex; align-items: flex-start; gap: 18px;
+  margin-bottom: 40px;
+}
+
+.mod-tag {
+  font-family: var(--mono);
+  font-size: 0.65rem; font-weight: 500;
+  color: var(--em2);
+  background: rgba(86,168,83,.1);
+  border: 1px solid rgba(86,168,83,.22);
+  padding: 5px 12px; border-radius: 6px;
+  white-space: nowrap; margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+.mod-head h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: #fff; line-height: 1.1;
+}
+
+/* ── SECTION TITLES ─────────────────── */
+.sec {
+  font-family: var(--sans);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--em-light);
+  margin: 42px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+  display: flex; align-items: center; gap: 10px;
+}
+.sec::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 18px;
+  background: linear-gradient(var(--em), var(--em2));
+  border-radius: 2px; flex-shrink: 0;
+}
+
+.subsec {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 700;
+  color: var(--text); margin: 26px 0 10px;
+}
+
+p {
+  font-size: 0.95rem; color: var(--text-dim);
+  line-height: 1.85; margin-bottom: 12px;
+}
+p strong { color: var(--text); font-weight: 600; }
+em { color: var(--em-light); font-style: italic; }
+
+/* ── CALLOUTS ────────────────────────── */
+.box {
+  border-radius: 10px; padding: 20px 24px;
+  margin: 18px 0; border-left: 3px solid;
+  background: rgba(255,255,255,.022);
+}
+.box-em  { border-color: var(--em2);  background: rgba(86,168,83,.06); }
+.box-am  { border-color: var(--amber); background: rgba(212,136,42,.06); }
+.box-re  { border-color: var(--red);   background: rgba(201,69,58,.06); }
+.box-bl  { border-color: var(--blue);  background: rgba(74,144,184,.06); }
+
+.box-title {
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 7px;
+}
+.box-em .box-title  { color: var(--em-light); }
+.box-am .box-title  { color: var(--amber-l); }
+.box-re .box-title  { color: #FCA5A5; }
+.box-bl .box-title  { color: #93C5FD; }
+.box p { margin: 0; font-size: 0.88rem; }
+
+/* ── LISTS ───────────────────────────── */
+ul.cl { list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 8px; }
+ul.cl li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ul.cl li::before {
+  content: '>'; color: var(--em2); font-size: 1rem;
+  margin-top: 1px; flex-shrink: 0;
+}
+ul.cl li strong { color: var(--text); }
+
+ol.nl { counter-reset: nl; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 9px; }
+ol.nl li {
+  counter-increment: nl;
+  display: flex; align-items: flex-start; gap: 13px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ol.nl li::before {
+  content: counter(nl);
+  background: rgba(86,168,83,.15);
+  border: 1px solid rgba(86,168,83,.28);
+  color: var(--em-light);
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+}
+
+/* ── TABLE ───────────────────────────── */
+.tbl {
+  width: 100%; border-collapse: collapse;
+  margin: 18px 0; font-size: 0.87rem;
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.tbl th {
+  background: rgba(86,168,83,.1);
+  color: var(--em-light);
+  font-family: var(--sans); font-weight: 700;
+  font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 11px 18px; text-align: left;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+}
+.tbl td {
+  padding: 10px 18px; color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top; line-height: 1.6;
+}
+.tbl td:first-child { color: var(--text); font-weight: 600; font-size: 0.83rem; white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(255,255,255,.015); }
+
+/* ── QUOTE ───────────────────────────── */
+.quote {
+  position: relative; padding: 30px 36px;
+  margin: 32px 0;
+  border-left: 3px solid var(--em);
+  background: rgba(86,168,83,.04);
+  border-radius: 0 10px 10px 0;
+}
+.quote::before {
+  content: '"'; position: absolute; top: -12px; left: 14px;
+  font-family: var(--serif); font-size: 5rem;
+  color: rgba(86,168,83,.18); line-height: 1;
+}
+.quote p {
+  font-family: var(--serif); font-size: 1.2rem; font-style: italic;
+  color: var(--text); margin: 0; line-height: 1.65;
+}
+.quote cite {
+  display: block; margin-top: 12px;
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.09em; text-transform: uppercase; color: var(--em2);
+}
+
+/* ── FOOTER ──────────────────────────── */
+#footer { padding: 48px 64px; text-align: center; border-top: 1px solid var(--border); }
+#footer p { font-family: var(--sans); color: var(--muted); font-size: 0.8rem; margin: 0; }
+
+/* ── ANIMATIONS ──────────────────────── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+.hero-tag, #hero h1, #hero .sub, .hero-kpis { animation: fadeUp 0.6s ease both; }
+.hero-tag { animation-delay: 0.1s; }
+#hero h1 { animation-delay: 0.22s; }
+#hero .sub { animation-delay: 0.34s; }
+.hero-kpis { animation-delay: 0.46s; }
+
+@media (max-width: 900px) {
+  :root { --sw: 0px; }
+  #sidebar { transform: translateX(-270px); }
+  #main { margin-left: 0; }
+  .mod, #hero { padding: 36px 22px; }
+  .hero-kpis { grid-template-columns: 1fr 1fr; }
+}
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+
+<div id="pbar"><div id="pfill"></div></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="mark">&#x1F56F;</div>
+    <h1>Candle Range Theory</h1>
+    <p>Algorithmic Academy — Formation Complete</p>
+  </div>
+
+  <div class="sb-section">Fondations</div>
+  <a class="sb-link active" href="#hero"><span class="n">00</span>Vue d'ensemble</a>
+  <a class="sb-link" href="#m1"><span class="n">01</span>Introduction & Apprentissage</a>
+  <a class="sb-link" href="#m2"><span class="n">02</span>Structure de Marche Avancee</a>
+  <a class="sb-link" href="#m3"><span class="n">03</span>Theorie OHLC / OLHC</a>
+
+  <div class="sb-section">Ranges & Niveaux</div>
+  <a class="sb-link" href="#m4"><span class="n">04</span>Ranges & Types de Range</a>
+  <a class="sb-link" href="#m5"><span class="n">05</span>Dealing Ranges & Key Levels</a>
+  <a class="sb-link" href="#m6"><span class="n">06</span>Order Blocks</a>
+  <a class="sb-link" href="#m7"><span class="n">07</span>Draw on Liquidity</a>
+  <a class="sb-link" href="#m8"><span class="n">08</span>Order Flow & DOL</a>
+
+  <div class="sb-section">Profils & Timing</div>
+  <a class="sb-link" href="#m9"><span class="n">09</span>Profils de Marche</a>
+  <a class="sb-link" href="#m10"><span class="n">10</span>Profils Weekly</a>
+  <a class="sb-link" href="#m11"><span class="n">11</span>Profils Intraday</a>
+  <a class="sb-link" href="#m12"><span class="n">12</span>Key Levels + Market Profile</a>
+
+  <div class="sb-section">Maitrise</div>
+  <a class="sb-link" href="#m13"><span class="n">13</span>Annonces Economiques</a>
+  <a class="sb-link" href="#m14"><span class="n">14</span>Double Purge</a>
+  <a class="sb-link" href="#m15"><span class="n">15</span>Construire une Narrative</a>
+  <a class="sb-link" href="#m16"><span class="n">16</span>CRT Avance — Selection & Data</a>
+  <a class="sb-link" href="#m17"><span class="n">17</span>Psychologie du Trading</a>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-tag">CRT &middot; Turtle Soup &middot; Structure Fractale &middot; Profils</div>
+  <h1>Candle Range<br><span class="em">Theory</span></h1>
+  <p class="sub">Formation complete Algorithmic Academy — la methode CRT et Turtle Soup combinee aux profils de marche, aux key levels et a une narrative structuree pour des entrees haute probabilite.</p>
+  <div class="hero-kpis">
+    <div class="kpi"><div class="kpi-v" style="color:var(--em-light)">17</div><div class="kpi-l">Sections</div></div>
+    <div class="kpi"><div class="kpi-v" style="color:var(--amber-l)">CRT</div><div class="kpi-l">Strategie Core</div></div>
+    <div class="kpi"><div class="kpi-v" style="color:#93C5FD">4H/D</div><div class="kpi-l">Timeframes</div></div>
+    <div class="kpi"><div class="kpi-v" style="color:#FCA5A5">3</div><div class="kpi-l">Objectifs</div></div>
+  </div>
+</section>
+
+<!-- ══════ M1 ══════ -->
+<section class="mod" id="m1">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 01</span>
+    <h2>Introduction & Methode d'Apprentissage</h2>
+  </div>
+
+  <div class="sec">Philosophie de la Formation</div>
+  <p>Cette formation couvre l'ensemble de la methode CRT (Candle Range Theory) et Turtle Soup, en partant des fondations jusqu'aux techniques avancees d'entree. Chaque concept est une <strong>piece d'un puzzle</strong> — aucun element ne doit etre utilise isolement pour prendre des decisions.</p>
+  <p>Tous les concepts, toutes les theories, et toute la maniere de voir le marche sont <strong>correles a la Structure Fractale</strong> (accumulation, manipulation, expansion). C'est cette coherence interne qui rend l'approche rentable sur le long terme.</p>
+
+  <div class="sec">Conseils pour un Apprentissage Efficace</div>
+  <ol class="nl">
+    <li><strong>Revisionner plusieurs fois :</strong> entre une lecture unique et une revision approfondie avec prise de notes, la retention est radicalement differente. Notez chaque concept cle sur papier.</li>
+    <li><strong>Concentration et focalisation :</strong> oubliez les anciens concepts qui ne vous ont pas rendu rentable. Gardez les bases ICT solides, mais eliminez les distractions et les influences externes contradictoires.</li>
+    <li><strong>Application pratique :</strong> appliquez chaque concept par le backtesting. Entrainez vos yeux — c'est l'une des competences les plus importantes. Au debut, reperer un FVG ou un CRT est difficile ; avec la pratique, cela devient instinctif.</li>
+    <li><strong>Patience :</strong> ne soyez pas impatients. Le trading n'est pas quotidien. L'impatience mene au revenge trading et a la destruction de comptes. Chaque concept prend du temps a maitriser.</li>
+  </ol>
+
+  <div class="box box-am">
+    <div class="box-title">Regle Fondamentale</div>
+    <p>Ne croyez pas aveuglements les concepts presentes — allez les <strong>verifier sur les graphiques</strong> par le backtesting. La conviction vient de la verification personnelle, pas de la theorie seule.</p>
+  </div>
+</section>
+
+<!-- ══════ M2 ══════ -->
+<section class="mod" id="m2">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 02</span>
+    <h2>Structure de Marche Avancee</h2>
+  </div>
+
+  <div class="sec">La Version Simple est Insuffisante</div>
+  <p>La version simplifiee de la market structure (higher highs/higher lows avec Break of Structure lineaires) ne reflete pas le fonctionnement reel du marche. Elle a ete ultra simplifiee au point de devenir trompeuse.</p>
+
+  <div class="sec">Le Vrai Fonctionnement : Range — Turtle Soup — Trend</div>
+  <p>Le marche fonctionne selon un schema repetitif en trois phases :</p>
+  <ol class="nl">
+    <li><strong>Range :</strong> accumulation d'acheteurs et de vendeurs entre un high et un low.</li>
+    <li><strong>Turtle Soup :</strong> une derniere prise de liquidite, de preference sur un key level higher timeframe, qui atteint la DOL (Draw on Liquidity).</li>
+    <li><strong>Trend :</strong> expansion dans la direction reelle du marche.</li>
+  </ol>
+  <p>Ce schema est <strong>fractal</strong> — il se reproduit sur toutes les timeframes, du monthly au 1 minute.</p>
+
+  <div class="sec">Short Term vs Intermediate Term Swings</div>
+  <ul class="cl">
+    <li><strong>Short Term Lows/Highs :</strong> les points situes a l'interieur d'un range. Ce sont les retracements mineurs.</li>
+    <li><strong>Intermediate Term Lows/Highs :</strong> les points cles de swing qui definissent la structure majeure. Ils ne sont confirmes que lorsqu'un nouveau short term swing se forme de l'autre cote.</li>
+    <li><strong>Invalidation :</strong> si un intermediate term low est casse dans une trend bullish, la structure est invalidee et un MSS (Market Structure Shift) se produit.</li>
+  </ul>
+
+  <div class="sec">Reperer un Changement de Structure (MSS)</div>
+  <p>Pour identifier un veritable MSS, il faut combiner <strong>trois elements</strong> :</p>
+  <ul class="cl">
+    <li><strong>Draw on Liquidity :</strong> un higher timeframe DOL doit etre present.</li>
+    <li><strong>Key Level higher timeframe :</strong> le MSS doit se produire depuis un key level significatif.</li>
+    <li><strong>Displacement :</strong> une acceleration du prix qui cree des FVG, avec cloture du corps de bougie au-dela du dernier swing. Pas juste une meche — une vraie continuation.</li>
+  </ul>
+
+  <div class="box box-re">
+    <div class="box-title">Attention</div>
+    <p>Ne cherchez pas des MSS partout. Sans key level higher timeframe et sans DOL, un break of structure n'a pas de signification directionnelle. C'est une <strong>piece du puzzle</strong>, pas une strategie d'entree isolee.</p>
+  </div>
+
+  <div class="sec">Timeframes Recommandees</div>
+  <table class="tbl">
+    <thead><tr><th>Style</th><th>Timeframe Structure</th></tr></thead>
+    <tbody>
+      <tr><td>Intraday</td><td>4 heures</td></tr>
+      <tr><td>Swing Trading</td><td>Daily</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Trend Bullish vs Bearish</div>
+  <ul class="cl">
+    <li><strong>Bullish :</strong> on rejette constamment les lows (turtle soup en bas) et on explose les highs (continuation au-dessus).</li>
+    <li><strong>Bearish :</strong> on rejette constamment les highs (turtle soup en haut) et on explose les lows (continuation en dessous).</li>
+  </ul>
+</section>
+
+<!-- ══════ M3 ══════ -->
+<section class="mod" id="m3">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 03</span>
+    <h2>Theorie OHLC / OLHC</h2>
+  </div>
+
+  <div class="sec">Principe Fondamental</div>
+  <p>Chaque bougie a un Open, High, Low et Close. L'ordre dans lequel ces elements se forment revele l'intention du marche :</p>
+  <ul class="cl">
+    <li><strong>Open-Low-High-Close (OLHC) :</strong> on cherche uniquement des <em>achats</em> dans ces bougies. Le prix descend d'abord (manipulation), puis monte (expansion).</li>
+    <li><strong>Open-High-Low-Close (OHLC) :</strong> on cherche uniquement des <em>ventes</em>. Le prix monte d'abord (manipulation), puis descend (expansion).</li>
+  </ul>
+
+  <div class="sec">Correlation avec la Structure Fractale</div>
+  <p>En vision lower timeframe, chaque bougie contient un cycle complet :</p>
+  <table class="tbl">
+    <thead><tr><th>Phase bougie</th><th>Structure Fractale</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td>Open</td><td>Range / Accumulation</td><td>Generation de liquidite</td></tr>
+      <tr><td>Low (OLHC) / High (OHLC)</td><td>Manipulation</td><td>Purge de liquidite</td></tr>
+      <tr><td>High (OLHC) / Low (OHLC)</td><td>Expansion</td><td>Neutralisation de liquidite</td></tr>
+      <tr><td>Close</td><td>Reinitialisation</td><td>Ouverture du prochain cycle</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Alignement Multi-Timeframe</div>
+  <table class="tbl">
+    <thead><tr><th>Higher TF (bougie)</th><th>Lower TF (analyse)</th></tr></thead>
+    <tbody>
+      <tr><td>4 heures</td><td>15 minutes</td></tr>
+      <tr><td>1 heure</td><td>5 minutes</td></tr>
+      <tr><td>30 minutes</td><td>3 minutes</td></tr>
+      <tr><td>15 minutes</td><td>1 minute</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box box-em">
+    <div class="box-title">Regle Cle</div>
+    <p>Plus la timeframe est haute, plus l'OHLC ou OLHC est fiable. Si le 15min montre un OHLC mais que le 1H et 4H montrent un OLHC, <strong>suivez les timeframes hautes</strong>. Quand les 4 timeframes (15m, 30m, 1h, 4h) s'alignent, la probabilite est maximale.</p>
+  </div>
+
+  <div class="sec">Utilisation Pratique</div>
+  <p>Deux approches de l'OHLC/OLHC :</p>
+  <ul class="cl">
+    <li><strong>Methode debutant :</strong> attendre la cloture complete de la bougie pour confirmer le type (OLHC ou OHLC), puis entrer sur la bougie suivante.</li>
+    <li><strong>Methode avancee :</strong> utiliser l'open de la bougie et le compte a rebours restant pour anticiper le type. Si a 30min de la cloture en 1H on est deja en open-low, anticiper un OLHC et preparer un achat.</li>
+  </ul>
+</section>
+
+<!-- ══════ M4 ══════ -->
+<section class="mod" id="m4">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 04</span>
+    <h2>Ranges & Types de Range</h2>
+  </div>
+
+  <div class="sec">Definition du Range</div>
+  <p>Un range est l'une des deux facons dont le marche se deplace (l'autre etant la tendance). C'est le <strong>moteur de generation de liquidite</strong> : les market makers accumulent acheteurs et vendeurs des deux cotes avant de lancer une expansion.</p>
+
+  <div class="box box-re">
+    <div class="box-title">Regle Absolue</div>
+    <p>Ne jamais trader a l'interieur d'un range. Ne jamais prendre position aux 50% du range. Le range va se faire turtle soup des deux cotes — toute position intermediaire sera piege.</p>
+  </div>
+
+  <div class="sec">Regles du Range</div>
+  <ol class="nl">
+    <li><strong>Acheter bas, vendre haut :</strong> acheter les rejets en bas du range, vendre les rejets en haut.</li>
+    <li><strong>Cible 1 (TP1) :</strong> les 50% du range — toujours prendre des partiels a ce niveau.</li>
+    <li><strong>Cible 2 (TP2) :</strong> l'extremite opposee du range.</li>
+    <li><strong>Purge au bon moment :</strong> attendre que la purge du high ou low arrive a un <em>key time</em> (horaire de purge high probability dans les kill zones).</li>
+  </ol>
+
+  <div class="sec">Types de Ranges</div>
+  <table class="tbl">
+    <thead><tr><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Range Typique</td><td>Mouvement de prix confine entre un high et un low. Accumulation classique.</td></tr>
+      <tr><td>CRT (3 Candle Model)</td><td>Bougie 1 = accumulation (range). Bougie 2 = manipulation (turtle soup, cloture corps au-dela). Bougie 3 = distribution (cote oppose).</td></tr>
+      <tr><td>Ranges Temporels</td><td>Asian Session range, Monday range, cycles. Chaque session cree son propre range quotidien.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Le CRT — 3 Candle Model</div>
+  <p>Le CRT est la strategie de base la plus puissante de cette methode. Toutes les bougies forment des ranges, et le CRT exploite ce principe :</p>
+  <ul class="cl">
+    <li><strong>Bougie 1 :</strong> cree le range (high of the range + low of the range + 50%)</li>
+    <li><strong>Bougie 2 :</strong> manipulation — turtle soup un cote, corps de bougie ferme au-dela du low ou high of the range</li>
+    <li><strong>Bougie 3 :</strong> distribution — va chercher le cote oppose du CRT</li>
+  </ul>
+</section>
+
+<!-- ══════ M5 ══════ -->
+<section class="mod" id="m5">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 05</span>
+    <h2>Dealing Ranges & Key Levels</h2>
+  </div>
+
+  <div class="sec">Definition de la Dealing Range</div>
+  <p>Une Dealing Range se forme lorsque le prix depasse a la fois un swing low et un swing high (prise de liquidite des deux cotes), suivi d'une expansion swing. Le prix revient ensuite dans cette zone pour la trader.</p>
+  <ul class="cl">
+    <li><strong>Zone Premium :</strong> au-dessus de l'equilibrium (50%). On y vend (si bearish).</li>
+    <li><strong>Zone Discount :</strong> en dessous de l'equilibrium. On y achete (si bullish).</li>
+  </ul>
+
+  <div class="sec">Alignement des Timeframes</div>
+  <p>La Dealing Range est toujours en <strong>higher timeframe</strong> et le Market Profile analyse en <strong>lower timeframe</strong>. Exemple : dealing range en daily, market profile en 1H.</p>
+
+  <div class="sec">Scenarios de Dealing Range Bullish</div>
+  <ol class="nl">
+    <li><strong>Scenario 1 :</strong> expansion LTF sur premium key level = retracement. Puis expansion LTF sur discount key level = reversal. C'est ici qu'on cherche l'achat.</li>
+    <li><strong>Scenario 2 :</strong> expansion LTF directement sur discount key level = reversal immediat.</li>
+  </ol>
+
+  <div class="box box-bl">
+    <div class="box-title">Conseil Pratique</div>
+    <p>Ne trader que les expansions et reversals. Les retracements ne sont pas des opportunites d'entree. Pour une Dealing Range bullish : acheter uniquement dans la <strong>zone discount</strong>, sur un key level higher timeframe.</p>
+  </div>
+
+  <div class="sec">Expansion Swings</div>
+  <p>Un Expansion Swing fonctionne exactement comme une Dealing Range, sauf qu'il n'a pas pris de liquidite des deux cotes. C'est simplement une expansion puissante qu'on peut mesurer et trader avec le meme cadre logique (premium/discount + key levels).</p>
+
+  <div class="sec">Avantages des Dealing Ranges</div>
+  <ul class="cl">
+    <li>Filtre puissant sur le marche</li>
+    <li>Construction de la narrative higher timeframe</li>
+    <li>Definition de targets logiques</li>
+    <li>Gestion du risque appropriee — eviter les moments low probability</li>
+  </ul>
+</section>
+
+<!-- ══════ M6 ══════ -->
+<section class="mod" id="m6">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 06</span>
+    <h2>Order Blocks</h2>
+  </div>
+
+  <div class="sec">Definition</div>
+  <p>Un order block est une bougie ou une sequence consecutive de bougies qui soit <strong>prend de la liquidite</strong> (turtle soup un swing), soit <strong>remplit de la liquidite</strong> (tape dans un FVG ou OB unfilled). L'OB est valide quand le corps d'une bougie cloture au-dela de la zone.</p>
+
+  <div class="sec">Validation d'un Order Block</div>
+  <ul class="cl">
+    <li><strong>Prise de liquidite :</strong> l'OB a turtle soup un high ou un low significatif (swing valide, CRT low/high).</li>
+    <li><strong>Remplissage de liquidite :</strong> l'OB a tape dans un FVG unfilled ou un OB existant unfilled.</li>
+    <li><strong>Double validation :</strong> quand l'OB combine les deux (take out + fill), il est ultra high probability.</li>
+  </ul>
+
+  <div class="sec">Selection du Corps ou de la Meche</div>
+  <table class="tbl">
+    <thead><tr><th>Scenario</th><th>Regle</th></tr></thead>
+    <tbody>
+      <tr><td>Corps cloture au-dessus de l'ouverture de l'OB</td><td>Selectionner le corps comme zone</td></tr>
+      <tr><td>Corps cloture au-dessus du plus haut de l'OB</td><td>Selectionner la bougie entiere (meche incluse)</td></tr>
+      <tr><td>Meche petite vs corps grand</td><td>Utiliser le corps</td></tr>
+      <tr><td>Meche grande vs corps petit</td><td>Utiliser la meche</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box box-am">
+    <div class="box-title">Rappel Important</div>
+    <p>Pour un OB bullish, la bougie doit etre <strong>bearish</strong>. Pour un OB bearish, la bougie doit etre <strong>bullish</strong>. Ne jamais selectionner une bougie de la meme couleur que la direction de l'OB.</p>
+  </div>
+</section>
+
+<!-- ══════ M7 ══════ -->
+<section class="mod" id="m7">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 07</span>
+    <h2>Draw on Liquidity (DOL)</h2>
+  </div>
+
+  <div class="sec">Deux Types de DOL</div>
+  <p>La DOL est la cible vers laquelle le prix se dirige. C'est l'element <strong>le plus complexe et le plus important</strong> de l'analyse. Il existe deux categories :</p>
+  <ul class="cl">
+    <li><strong>DOL Long Terme :</strong> pour les profils d'expansion. C'est la cible macro (ex: CRT high/low en monthly ou weekly). Elle ne change pas tant qu'elle n'est pas atteinte.</li>
+    <li><strong>DOL Court Terme :</strong> pour les profils de retracement. C'est un key level en zone discount (bullish) ou premium (bearish) vers lequel le prix retrace avant de reprendre l'expansion.</li>
+  </ul>
+
+  <div class="sec">Logique d'Utilisation</div>
+  <ol class="nl">
+    <li>Le prix atteint la DOL court terme en zone discount/premium</li>
+    <li>Il repart en expansion vers la DOL long terme</li>
+    <li>S'il retrace a nouveau, une nouvelle DOL court terme est identifiee</li>
+    <li>Le cycle continue jusqu'a atteindre la DOL long terme</li>
+  </ol>
+
+  <div class="box box-re">
+    <div class="box-title">Regle Critique</div>
+    <p>Ne jamais utiliser les DOL comme target en trade (TP). Les DOL indiquent <strong>ou le prix va se diriger</strong>, mais vos TP doivent rester bases sur les ranges CRT (50% + cote oppose). On peut trader dans les deux sens grace aux DOL court et long terme.</p>
+  </div>
+
+  <div class="sec">Identification des DOL</div>
+  <p>La meilleure methode pour observer les order flow et les DOL long terme est le <strong>CRT sur les hautes timeframes</strong>. Un CRT weekly ou monthly donne la direction et la DOL de facon claire : turtle soup un cote, cloture du corps au-dela, puis distribution vers le cote oppose.</p>
+</section>
+
+<!-- ══════ M8 ══════ -->
+<section class="mod" id="m8">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 08</span>
+    <h2>Order Flow & DOL — Application</h2>
+  </div>
+
+  <div class="sec">Determiner les Order Flow de la Semaine</div>
+  <p>L'analyse commence par le weekly pour definir la direction. La methode s'appuie sur les CRT weekly :</p>
+  <ol class="nl">
+    <li>Identifier les CRT weekly recents : a-t-on turtle soup un high ou un low ? Le corps a-t-il cloture au-dela ?</li>
+    <li>Si le corps weekly cloture sous un CRT high : order flow bearish. Si au-dessus d'un CRT low : bullish.</li>
+    <li>Definir la DOL 1 : typiquement les 50% du CRT weekly, puis le cote oppose.</li>
+    <li>Definir la DOL 2 en daily : CRT daily low/high ou key level significant.</li>
+  </ol>
+
+  <div class="sec">Construction de la Dealing Range</div>
+  <p>Une fois les order flow etablis, placer la dealing range en daily. Chercher les key levels en zone discount (si bullish) ou premium (si bearish). C'est la ou les meilleures opportunites d'entree se trouvent.</p>
+
+  <div class="box box-em">
+    <div class="box-title">Methode Recommandee</div>
+    <p>Se limiter a <strong>2 DOL maximum</strong> (3 si necessaire mais avec prudence). Une DOL 1 en weekly et une DOL 2 en daily suffisent pour cadrer la semaine. Ne pas surcharger l'analyse.</p>
+  </div>
+</section>
+
+<!-- ══════ M9 ══════ -->
+<section class="mod" id="m9">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 09</span>
+    <h2>Profils de Marche (Market Profiles)</h2>
+  </div>
+
+  <div class="sec">Les 5 Types de Market Profile</div>
+  <table class="tbl">
+    <thead><tr><th>Profil</th><th>Description</th><th>Suite possible</th></tr></thead>
+    <tbody>
+      <tr><td>Range</td><td>Accumulation laterale</td><td>Expansion uniquement</td></tr>
+      <tr><td>Expansion</td><td>Mouvement directionnel fort</td><td>Range, Retracement ou Reversal</td></tr>
+      <tr><td>Retracement</td><td>Retour temporaire contre la tendance</td><td>Range ou Expansion</td></tr>
+      <tr><td>Reversal</td><td>Changement de direction apres expansion</td><td>Range ou Retracement</td></tr>
+      <tr><td>Manipulation</td><td>Obligatoirement precede d'un Range, suivi d'une Expansion</td><td>Expansion uniquement</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box box-am">
+    <div class="box-title">Regle de Trading</div>
+    <p>On ne trade que les <strong>Expansions</strong> et les <strong>Reversals</strong>. Tous les autres profils (ranges, manipulations, retracements) ne sont pas des points d'entree valides — ce sont des phases d'attente.</p>
+  </div>
+
+  <div class="sec">Enchainement Logique</div>
+  <ul class="cl">
+    <li>Apres un Range : toujours une Expansion (ou Manipulation puis Expansion)</li>
+    <li>Apres une Expansion : jamais une autre Expansion directe</li>
+    <li>Apres un Retracement : jamais un autre Retracement ni un Reversal</li>
+    <li>Apres un Reversal : jamais un autre Reversal ni une Expansion</li>
+  </ul>
+
+  <div class="sec">Timeframes</div>
+  <ul class="cl">
+    <li><strong>Daily profile :</strong> reperer en 15 minutes, a partir du daily open (17h NY)</li>
+    <li><strong>Weekly profile :</strong> reperer en 1h ou 2h, a partir du weekly open</li>
+    <li>Le premier profil de la journee/semaine est generalement un Range</li>
+  </ul>
+</section>
+
+<!-- ══════ M10 ══════ -->
+<section class="mod" id="m10">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 10</span>
+    <h2>Profils Weekly</h2>
+  </div>
+
+  <div class="sec">Principe</div>
+  <p>Les weekly profiles decomposent la bougie hebdomadaire en segments journaliers pour anticiper les mouvements. Ils ne fonctionnent que combines avec des <strong>key levels</strong> et une <strong>dealing range</strong>. Chaque semaine comporte typiquement 2 key levels.</p>
+
+  <div class="sec">Les 4 Profils Weekly</div>
+
+  <div class="subsec">1. Classique Expansion (Semaine 1)</div>
+  <ul class="cl">
+    <li><strong>Lundi :</strong> range pres d'un key level. Ne pas trader.</li>
+    <li><strong>Mardi :</strong> manipulation — turtle soup du Monday low/high, tape sur key level 1.</li>
+    <li><strong>Mercredi/Jeudi :</strong> expansion vers le key level 2.</li>
+    <li><strong>Vendredi :</strong> retracement ou reversal.</li>
+  </ul>
+
+  <div class="subsec">2. Classique Expansion (Semaine 2)</div>
+  <ul class="cl">
+    <li><strong>Lundi :</strong> tape directement sur le key level 1 (seul profil ou lundi touche un KL).</li>
+    <li><strong>Mardi :</strong> debut d'expansion avec retracement potentiel pour entree.</li>
+    <li><strong>Mercredi/Jeudi :</strong> expansion continue vers key level 2.</li>
+    <li><strong>Vendredi :</strong> reversal frequent.</li>
+  </ul>
+
+  <div class="subsec">3. Midweek Reversal</div>
+  <ul class="cl">
+    <li><strong>Lundi/Mardi :</strong> consolidation, pas de key level touche.</li>
+    <li><strong>Mercredi :</strong> turtle soup de lundi/mardi, tape sur key level 1, demarre le reversal.</li>
+    <li><strong>Jeudi/Vendredi :</strong> expansion dans le sens du reversal jusqu'au key level 2.</li>
+  </ul>
+
+  <div class="subsec">4. Consolidation Reversal</div>
+  <ul class="cl">
+    <li><strong>Lundi/Mardi/Mercredi :</strong> consolidation — aucun key level touche.</li>
+    <li><strong>Jeudi :</strong> manipulation violente sur key level 1 + turtle soup de la consolidation.</li>
+    <li><strong>Vendredi :</strong> expansion tres puissante vers key level 2.</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Information Importante</div>
+    <p>Certaines semaines ne correspondent a aucun des 4 profils. C'est normal. Ne forcez pas un profil quand le marche n'a pas de sens. <strong>Ne pas trader lundi</strong> est fortement recommande — utilisez lundi pour determiner le weekly profile probable.</p>
+  </div>
+</section>
+
+<!-- ══════ M11 ══════ -->
+<section class="mod" id="m11">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 11</span>
+    <h2>Profils Intraday</h2>
+  </div>
+
+  <div class="sec">Les Kill Zones (heures NY)</div>
+  <table class="tbl">
+    <thead><tr><th>Session</th><th>Horaire (NY)</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td>London Open</td><td>2h - 5h</td><td>Manipulation principale, premier key level</td></tr>
+      <tr><td>London Lunch</td><td>5h - 7h</td><td>Pause — pas interessant</td></tr>
+      <tr><td>New York Open</td><td>7h - 10h</td><td>Continuation ou reversal, volumes max a 8h30</td></tr>
+      <tr><td>London Close</td><td>10h - 12h</td><td>Finalisation de la journee</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Les 5 Intraday Profiles</div>
+
+  <div class="subsec">1. Normal Protraction</div>
+  <p>Le London Open tape sur le key level 1, demarre une expansion qui continue pendant le New York. Le key level 2 est atteint au London Close.</p>
+
+  <div class="subsec">2. Delayed Protraction</div>
+  <p>Le key level 1 est touche <strong>avant</strong> le London Open (Asian session ou pre-London). Le London Open fait directement une expansion. Le key level 2 est atteint au NY Open ou London Close.</p>
+
+  <div class="subsec">3. New York Continuation</div>
+  <p>Le key level 1 est touche au London Open avec une expansion partielle. Si le key level 2 n'est pas encore atteint, le NY Open fait un turtle soup pour continuer l'expansion vers le key level 2.</p>
+
+  <div class="subsec">4. New York Reversal 1</div>
+  <p>Le London Open tape key level 1 et expande violemment jusqu'au key level 2 <strong>avant</strong> le NY Open. A partir de la, le NY Open reverse pour revenir dans l'autre direction.</p>
+
+  <div class="subsec">5. New York Reversal 2</div>
+  <p>Asian + London Open = range complet, aucun key level touche. Le NY Open arrive avec du volume (souvent des news a 8h30), turtle soup tout le range, tape le key level, et lance une expansion puissante.</p>
+
+  <div class="box box-em">
+    <div class="box-title">Vision en 4 Heures (Forex)</div>
+    <p>Les bougies 4H se decoupent ainsi : 5pm, 9pm, 1am, 5am, 9am, 1pm. Pour les indices, ajouter 1 heure. Les bougies de <strong>5pm/9pm</strong> sont generalement des ranges. La bougie de <strong>1am</strong> correspond au London Open, <strong>5am</strong> au debut NY, <strong>9am</strong> au coeur du NY Open.</p>
+  </div>
+</section>
+
+<!-- ══════ M12 ══════ -->
+<section class="mod" id="m12">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 12</span>
+    <h2>Key Levels avec Market Profile</h2>
+  </div>
+
+  <div class="sec">Les Key Levels Recommandes</div>
+  <table class="tbl">
+    <thead><tr><th>Key Level</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>FVG (BC / CB)</td><td>Fair Value Gap — gap de liquidite entre 3 bougies consecutives. BC = bullish, CB = bearish.</td></tr>
+      <tr><td>Order Block</td><td>Bougie de direction opposee ayant pris ou rempli de la liquidite, validee par cloture au-dela.</td></tr>
+      <tr><td>Swing High / Low</td><td>Points de liquidite cles — moteur du marche.</td></tr>
+      <tr><td>Breaker Block</td><td>Le dernier high/low ayant casse la structure, suivi d'un displacement et cloture au-dela.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">3 Profils Integres aux Key Levels</div>
+
+  <div class="subsec">Expansion Profile + Key Level</div>
+  <ol class="nl">
+    <li>Range > Expansion sur key level > Reversal</li>
+    <li>Range > Expansion > Range > Manipulation sur key level > Expansion</li>
+    <li>Range > Expansion > Retracement > Expansion sur key level > Reversal</li>
+  </ol>
+
+  <div class="subsec">Ranging Profile + Key Level</div>
+  <ol class="nl">
+    <li>Range > Manipulation sur key level > Expansion</li>
+    <li>Range directement sur key level > Expansion</li>
+  </ol>
+
+  <div class="subsec">Reversal Profile + Key Level</div>
+  <ol class="nl">
+    <li>Range > Expansion sur key level > Reversal > Range</li>
+    <li>Range > Expansion sur key level > Reversal > Retracement > Expansion</li>
+  </ol>
+
+  <div class="sec">Alignement des Timeframes</div>
+  <table class="tbl">
+    <thead><tr><th>Key Level TF</th><th>Market Profile TF</th></tr></thead>
+    <tbody>
+      <tr><td>Daily</td><td>1 heure</td></tr>
+      <tr><td>4 heures</td><td>15 minutes</td></tr>
+      <tr><td>1 heure</td><td>5 minutes</td></tr>
+      <tr><td>15 minutes</td><td>1 minute</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box box-em">
+    <div class="box-title">Filtre Surpuissant</div>
+    <p>Les Market Profiles integres aux Key Levels constituent un <strong>filtre determinant</strong> dans la narrative lower timeframe. C'est ce qui permet d'anticiper le prochain mouvement et d'eviter les entrees qui n'ont aucun sens structurel.</p>
+  </div>
+</section>
+
+<!-- ══════ M13 ══════ -->
+<section class="mod" id="m13">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 13</span>
+    <h2>Annonces Economiques</h2>
+  </div>
+
+  <div class="sec">News a Eviter Absolument</div>
+  <p>Avant certaines annonces majeures, <strong>aucun trade ne doit etre ouvert</strong> :</p>
+  <ul class="cl">
+    <li><strong>CPI (Consumer Price Index)</strong> — absolument interdit de trader avant</li>
+    <li><strong>FOMC (Federal Open Market Committee)</strong> — interdit</li>
+    <li><strong>NFP (Non-Farm Payrolls)</strong> — interdit</li>
+    <li><strong>PPI (Producer Price Index)</strong> — tolerance possible selon le trader, mais prudence</li>
+  </ul>
+
+  <div class="sec">Temps et Prix — La Combinaison Optimale</div>
+  <p>Le prix seul n'est pas suffisant sans le facteur temps, et inversement. La majorite des stop loss sont lies a ce defaut : <strong>ne pas combiner temps et prix</strong>. En ciblant les kill zones + les annonces economiques a fort impact (news rouges sur Forex Factory), on obtient des expansions et reversals de haute probabilite.</p>
+
+  <div class="box box-re">
+    <div class="box-title">Jours Feries</div>
+    <p>Ne jamais trader les jours feries (Bank Holidays). Le volume est insuffisant et les mouvements sont imprevisibles.</p>
+  </div>
+
+  <div class="sec">Anticiper les Weekly Profiles</div>
+  <p>En repenant la distribution des news rouges dans la semaine, on peut anticiper le weekly profile probable. Par exemple, une news NFP le vendredi suggerera un Consolidation Reversal ou un mouvement retarde en fin de semaine.</p>
+</section>
+
+<!-- ══════ M14 ══════ -->
+<section class="mod" id="m14">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 14</span>
+    <h2>Double Purge</h2>
+  </div>
+
+  <div class="sec">Principe</div>
+  <p>La double purge est un pattern ou le prix prend la liquidite des <strong>deux cotes</strong> (buy stops et sell stops) avant de lancer la vraie tendance. C'est le signal le plus puissant pour anticiper une expansion majeure.</p>
+
+  <div class="sec">Mecanisme</div>
+  <ol class="nl">
+    <li><strong>Premiere purge :</strong> fake MSS (faux break of structure) dans la direction opposee. Prend les SL d'un cote.</li>
+    <li><strong>Deuxieme purge :</strong> incite des traders a entrer dans la mauvaise direction. Prend les SL de l'autre cote.</li>
+    <li><strong>Vrai mouvement :</strong> les deux cotes ayant ete purges, le marche a la liquidite necessaire pour une expansion violente et durable.</li>
+  </ol>
+
+  <div class="sec">Types de Double Purge</div>
+  <ul class="cl">
+    <li><strong>One Candle :</strong> une seule bougie contient la double purge. Visible en descendant en timeframe inferieure (meches des deux cotes).</li>
+    <li><strong>AMD Double Purge :</strong> consolidation prolongee suivie de purges sequentielles des deux cotes avant la distribution.</li>
+    <li><strong>Multi-candle :</strong> plusieurs bougies forment le pattern, avec fake MSS visible puis retournement.</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">A Retenir</div>
+    <p>Les belles tendances arrivent <strong>toujours</strong> apres des doubles purges. Sans le temps (kill zones, horaires high probability), le concept ne fonctionne pas. Le temps est plus important que le prix.</p>
+  </div>
+</section>
+
+<!-- ══════ M15 ══════ -->
+<section class="mod" id="m15">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 15</span>
+    <h2>Construire une Narrative</h2>
+  </div>
+
+  <div class="sec">Les 3 Objectifs Avant d'Entrer</div>
+  <p>Chaque trade doit respecter ces trois objectifs <strong>obligatoires</strong>. Aucun ne peut etre ignore :</p>
+  <ol class="nl">
+    <li><strong>Higher Timeframe DOL :</strong> avoir identifie une DOL claire (weekly/daily CRT, key level significatif). Si la DOL est atteinte sans entree, changer immediatement de DOL.</li>
+    <li><strong>Narrative HTF + LTF :</strong> construire une histoire coherente — weekly profiles, dealing range, order flow, sessions. C'est le point le plus difficile mais le plus determinant.</li>
+    <li><strong>Entree dans le sens de la DOL :</strong> entrer avec une purge d'un CRT + appui sur un key level. C'est la partie la plus simple une fois la narrative etablie.</li>
+  </ol>
+
+  <div class="sec">Processus d'Analyse Complet</div>
+  <ol class="nl">
+    <li><strong>Weekly :</strong> definir les order flow (CRT weekly, DOL long terme)</li>
+    <li><strong>Daily :</strong> placer la dealing range, identifier les key levels en zone discount/premium, definir la DOL 2</li>
+    <li><strong>Attendre lundi :</strong> ne pas trader, observer pour identifier le weekly profile</li>
+    <li><strong>Mardi/Mercredi :</strong> s'adapter — le prix vient-il chercher la DOL ? Touche-t-il les key levels ?</li>
+    <li><strong>Selectionner un CRT :</strong> en daily ou en 4H, aligne avec la narrative</li>
+    <li><strong>Lower timeframe :</strong> attendre le market profile + key level + modele d'entree dans une kill zone</li>
+  </ol>
+
+  <div class="box box-em">
+    <div class="box-title">Principe Fondamental</div>
+    <p>La majeure partie du temps d'analyse se passe en <strong>weekly et daily</strong>, pas en lower timeframe. Beaucoup de traders font l'erreur de chercher des entrees en 1min sans avoir construit de narrative. La narrative <strong>precede</strong> toujours l'entree.</p>
+  </div>
+
+  <div class="sec">Adaptation en Temps Reel</div>
+  <p>Si la DOL est atteinte sans opportunite d'entree valide, changez de DOL immediatement. Si le prix n'atteint pas le key level espere, adaptez la narrative. On trade <strong>ce qu'on voit</strong>, pas ce qu'on voudrait voir.</p>
+</section>
+
+<!-- ══════ M16 ══════ -->
+<section class="mod" id="m16">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 16</span>
+    <h2>CRT Avance — Selection & Data</h2>
+  </div>
+
+  <div class="sec">Les 4 Criteres d'un CRT Correct</div>
+  <p>Un CRT ne se selectionne <strong>jamais mecaniquement</strong>. Les market makers ne laissent pas de patterns mecaniques exploitables. Chaque CRT doit respecter les 4 criteres suivants :</p>
+  <ol class="nl">
+    <li><strong>Alignement avec les order flow HTF :</strong> le CRT doit aller dans le sens des order flow higher timeframe. Sans cet alignement, la probabilite chute drastiquement.</li>
+    <li><strong>CRT high probability :</strong> la presence d'une ou plusieurs bougies de consolidation a l'interieur du CRT augmente sa validite. Le timing (horaire) compte aussi.</li>
+    <li><strong>Purge high probability :</strong> la purge du CRT doit se produire dans une kill zone (London Open, NY Open). Eviter les purges en PM ou hors session.</li>
+    <li><strong>Key Level :</strong> un key level (OB, FVG, swing, breaker) doit soutenir l'entree. Sans key level, pas de trade.</li>
+  </ol>
+
+  <div class="box box-re">
+    <div class="box-title">Regle Critique</div>
+    <p>Quand les 4 criteres sont respectes et que la 2eme bougie ferme a l'interieur du CRT, il y a de <strong>fortes chances</strong> d'aller chercher le cote oppose. Sans les 4 criteres, ne prenez pas le trade.</p>
+  </div>
+
+  <div class="sec">CRT Utilisables par Timeframe</div>
+  <ul class="cl">
+    <li><strong>CRT en 4H :</strong> le plus frequent, analyse en 15min</li>
+    <li><strong>CRT en 8H :</strong> utilise occasionnellement</li>
+    <li><strong>CRT Daily :</strong> tres puissant, analyse en 1H</li>
+    <li><strong>CRT Weekly/Monthly :</strong> pour les DOL long terme et order flow</li>
+  </ul>
+
+  <div class="sec">Methodologie de Backtest</div>
+  <ol class="nl">
+    <li>Placer les separateurs (daily open, weekly open, monthly open) sur la chart</li>
+    <li>Activer les news (uniquement rouges et grises/blanches)</li>
+    <li>Utiliser le mode <strong>bar replay aleatoire</strong> pour eliminer tout biais de connaissance</li>
+    <li>Commencer en monthly pour la DOL long terme, descendre en weekly, puis daily</li>
+    <li>Identifier les CRT potentiels en 4H et appliquer les 4 criteres de selection</li>
+    <li>Journaler chaque trade (entree, sortie, raison, resultat)</li>
+  </ol>
+
+  <div class="sec">Recolte de Data</div>
+  <p>Le backtesting n'est pas une simple verification — c'est une <strong>recolte de donnees systematique</strong>. Notez pour chaque CRT : les order flow, le type de CRT (4H/daily), le horaire de purge, le key level utilise, le resultat (TP1/TP2/SL). Au fil du temps, ces donnees revelent les configurations les plus profitables.</p>
+</section>
+
+<!-- ══════ M17 ══════ -->
+<section class="mod" id="m17">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 17</span>
+    <h2>Psychologie du Trading</h2>
+  </div>
+
+  <div class="sec">Le Cycle du Trader Perdant</div>
+  <p>La majorite des traders s'enferment dans une boucle destructrice :</p>
+  <ol class="nl">
+    <li>Decouverte d'une nouvelle strategie</li>
+    <li>Backtest avec winrate tres eleve</li>
+    <li>Essai sur les marches reels — enchainement de SL</li>
+    <li>Abandon de la strategie</li>
+    <li>Retour a l'etape 1 — cycle infini</li>
+  </ol>
+  <p>La cle est de <strong>ne jamais passer a l'etape 4</strong>. Apres les SL, journaler ses trades, comprendre ses erreurs, recommencer. La rentabilite vient de la persistance, pas du changement constant.</p>
+
+  <div class="sec">Le Syndrome de l'Objet Brillant</div>
+  <p>Se laisser distraire par de nouvelles strategies "miracle" est le piege le plus courant. Chaque nouveau systeme demande des milliers d'heures de maitrise. En changeant constamment, on ne franchit jamais le seuil d'activation d'aucune strategie.</p>
+
+  <div class="sec">7 Points de Psychologie</div>
+  <ul class="cl">
+    <li><strong>Gestion des emotions :</strong> la peur fait fermer les trades trop tot, la cupidite fait ignorer les TP. Reconnaitre ces emotions est la premiere etape.</li>
+    <li><strong>Discipline :</strong> respecter son plan de trading a chaque trade, sans exception.</li>
+    <li><strong>Patience :</strong> ne pas trader chaque jour. Attendre les setups qui remplissent les 3 objectifs.</li>
+    <li><strong>Journaling :</strong> noter chaque trade (SL et TP) pour identifier les patterns d'erreur et de reussite.</li>
+    <li><strong>Acceptation des SL :</strong> les stop loss font partie du jeu. Un SL n'est pas un echec — c'est le cout d'exercice de l'activite.</li>
+    <li><strong>Concentration :</strong> pendant l'execution, zero distraction. L'analyse et l'entree demandent une focus totale.</li>
+    <li><strong>Humilite :</strong> le marche est parfois imprevisible. Accepter qu'on ne peut pas tout predire et s'adapter en temps reel.</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Verite Fondamentale</div>
+    <p>La technique represente peut-etre 30% de la rentabilite. Les 70% restants viennent de la psychologie, de la discipline et de la gestion du risque. Un trader techniquement excellent mais emotionnellement instable perdra toujours.</p>
+  </div>
+
+  <div class="quote">
+    <p>Chaque bougie est un range. Chaque range raconte une histoire. La patience de lire cette histoire, combinee a la discipline d'attendre le bon moment, est ce qui separe les traders rentables de tous les autres.</p>
+    <cite>Algorithmic Academy — Candle Range Theory</cite>
+  </div>
+</section>
+
+<footer id="footer">
+  <p>Candle Range Theory — Formation Complete Algorithmic Academy — 17 Sections — CRT, Turtle Soup, Profils, Key Levels, Narrative</p>
+  <p style="margin-top:8px;color:var(--border)">Le trading comporte des risques. Ce cours est educatif uniquement.</p>
+</footer>
+
+</main>
+
+<script>
+// Progress bar
+const pf = document.getElementById('pfill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  pf.style.width = (window.scrollY / h * 100) + '%';
+}, { passive: true });
+
+// Fade in modules
+const io = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.05 });
+document.querySelectorAll('.mod').forEach(m => io.observe(m));
+
+// Active nav
+const secs = [...document.querySelectorAll('[id]')];
+const links = document.querySelectorAll('.sb-link');
+function updateNav() {
+  const y = window.scrollY + 110;
+  let cur = secs[0]?.id;
+  for (const s of secs) { if (s.offsetTop <= y) cur = s.id; }
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>
