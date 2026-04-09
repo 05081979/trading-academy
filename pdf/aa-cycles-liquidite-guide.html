@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide Cycles & Liquidite — Algorithmic Academy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  @page { size: A4; margin: 20mm 18mm; }
+  @media print {
+    .no-print { display: none !important; }
+    body { background: #fff !important; color: #1a1a2e !important; font-size: 11px !important; }
+    .page-break { page-break-before: always; }
+    h1, h2, h3 { color: #1a1a2e !important; }
+    .card { border: 1px solid #ddd !important; background: #f8f9fa !important; }
+    .header { background: #1a1a2e !important; }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0a0d14;
+    color: #cdd5e2;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .no-print {
+    position: fixed; top: 16px; right: 16px; z-index: 9999;
+    display: flex; gap: 8px;
+  }
+  .no-print button {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; padding: 10px 24px;
+    border-radius: 6px; border: 1px solid #c8a228;
+    background: rgba(200,162,40,0.1); color: #e5bc3c;
+    cursor: pointer; transition: 0.15s;
+  }
+  .no-print button:hover { background: rgba(200,162,40,0.2); }
+
+  .header {
+    background: linear-gradient(135deg, #0e1116 0%, #141926 100%);
+    padding: 48px 56px;
+    border-bottom: 2px solid #c8a228;
+  }
+  .header-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 3px; color: #c8a228;
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+  .header h1 {
+    font-size: 32px; font-weight: 800; color: #fff;
+    margin-bottom: 8px;
+  }
+  .header h1 span { color: #e5bc3c; }
+  .header p { color: #8594a8; font-size: 14px; max-width: 600px; }
+
+  .content { max-width: 900px; margin: 0 auto; padding: 40px; }
+
+  h2 {
+    font-size: 20px; font-weight: 700; color: #fff;
+    margin: 36px 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid #232c3a;
+  }
+  h2 .num {
+    display: inline-block; width: 28px; height: 28px;
+    background: rgba(200,162,40,0.15); color: #e5bc3c;
+    border-radius: 6px; text-align: center; line-height: 28px;
+    font-size: 13px; font-weight: 700; margin-right: 10px;
+  }
+
+  h3 {
+    font-size: 14px; font-weight: 600; color: #e5bc3c;
+    margin: 20px 0 8px;
+  }
+
+  p { margin-bottom: 12px; color: #8594a8; }
+  strong { color: #cdd5e2; }
+
+  .card {
+    background: #13171e;
+    border: 1px solid #1c2230;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width:700px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .mini-card {
+    background: #191e27;
+    border: 1px solid #232c3a;
+    border-radius: 6px;
+    padding: 14px 18px;
+  }
+  .mini-card h4 {
+    font-size: 12px; font-weight: 600; margin-bottom: 6px;
+  }
+  .mini-card p { font-size: 11px; margin-bottom: 0; }
+
+  table {
+    width: 100%; border-collapse: collapse;
+    margin: 12px 0; font-size: 12px;
+  }
+  th {
+    text-align: left; padding: 8px 12px;
+    background: #191e27; color: #c8a228;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 1px;
+    border-bottom: 1px solid #232c3a;
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #1c2230;
+    color: #8594a8;
+  }
+
+  ul { padding-left: 20px; margin: 8px 0 16px; }
+  li { margin-bottom: 6px; color: #8594a8; }
+  li strong { color: #cdd5e2; }
+
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; background: rgba(40,191,207,0.08);
+    color: #28bfcf; padding: 1px 6px; border-radius: 3px;
+  }
+
+  .example-box {
+    background: #0d1117;
+    border: 1px solid #1c2230;
+    border-left: 3px solid #c8a228;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 12px;
+  }
+  .example-box .title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; color: #c8a228;
+    letter-spacing: 2px; margin-bottom: 8px;
+  }
+
+  .footer {
+    text-align: center; padding: 32px;
+    color: #4a5668; font-size: 11px;
+    border-top: 1px solid #1c2230;
+    margin-top: 40px;
+  }
+</style>
+</head>
+<body>
+
+<div class="no-print">
+  <button onclick="window.print()">Imprimer / Sauvegarder en PDF</button>
+</div>
+
+<div class="header">
+  <div class="header-tag">Guide Complet en Francais — Algorithmic Academy</div>
+  <h1>Cycles & Liquidite — <span>Guide Complet</span></h1>
+  <p>Indicateur Pine Script v6 — QT Cycles + Liquidite + Opens + EQ + CISD + MSB OB + HIPPO</p>
+</div>
+
+<div class="content">
+
+  <!-- 1. PRESENTATION -->
+  <h2><span class="num">1</span> Presentation</h2>
+  <p>
+    <strong>AA — Cycles & Liquidite</strong> est un indicateur overlay tout-en-un developpe en Pine Script v6. Il reunit huit modules essentiels pour l'analyse institutionnelle : les cycles trimestriels (QT), la liquidite basee sur les sessions, les niveaux d'ouverture, l'equilibre, les retracements de session, la detection CISD, les probabilites MSB/OB et les blocs HIPPO.
+  </p>
+
+  <div class="card">
+    <h3>Philosophie de l'indicateur</h3>
+    <p>Plutot que de multiplier les indicateurs sur le graphique, cet outil centralise toutes les informations temporelles et structurelles en un seul overlay. Chaque module peut etre active ou desactive independamment, permettant une personnalisation totale selon votre style de trading.</p>
+  </div>
+
+  <!-- 2. FONCTIONNALITES DETAILLEES -->
+  <h2><span class="num">2</span> Fonctionnalites Detaillees</h2>
+
+  <h3>2.1 — QT Cycles (Cycles Trimestriels)</h3>
+  <div class="card">
+    <p>Les cycles trimestriels sont la colonne vertebrale du timing institutionnel. L'indicateur les affiche sur <strong>6 echelles temporelles</strong> :</p>
+    <ul>
+      <li><strong>Annuel (Yearly) :</strong> Divise l'annee en 4 trimestres. Q1 = accumulation, Q2 = expansion haussiere, Q3 = distribution, Q4 = decline ou reversion.</li>
+      <li><strong>Mensuel (Monthly) :</strong> Chaque mois est divise en phases trimestrielles internes pour identifier les periodes d'expansion et de contraction.</li>
+      <li><strong>Hebdomadaire (Weekly) :</strong> La semaine est decoupee en phases — utile pour anticiper les jours de mouvement maximal.</li>
+      <li><strong>Journalier (Daily) :</strong> Les 4 phases de la journee de trading alignees avec les sessions institutionnelles.</li>
+      <li><strong>90 minutes :</strong> Cycles de 90 minutes couvrant Asia, London (LO1-LO3), AM (AM1-AM3) et PM (PM1-PM3). Chaque bloc a sa propre couleur.</li>
+      <li><strong>Micro :</strong> Cycles tres courts pour le scalping et les entrees precises dans les fenetres macro.</li>
+    </ul>
+    <p>Chaque cycle est represente par une <strong>boite coloree</strong> avec un label identifiant la phase. Les couleurs sont entierement personnalisables.</p>
+  </div>
+
+  <h3>2.2 — Liquidite Temporelle (Time Based Liquidity)</h3>
+  <div class="card">
+    <p>La liquidite est organisee autour des <strong>4 sessions principales</strong> :</p>
+    <ul>
+      <li><strong>Asia (gris) :</strong> Les hauts et bas de la session asiatique sont les premiers niveaux de liquidite de la journee. Ils sont frequemment balayes pendant London.</li>
+      <li><strong>London (rouge) :</strong> La session londonienne cree les extremes de la journee dans environ 70% des cas. Ses niveaux de liquidite sont critiques.</li>
+      <li><strong>AM (vert) :</strong> La session AM (New York matin) offre la plus forte volatilite. Les sweeps de liquidite y sont les plus frequents.</li>
+      <li><strong>PM (bleu) :</strong> La session PM confirme ou invalide le mouvement AM. C'est la derniere opportunite de sweep de la journee.</li>
+    </ul>
+    <p>L'indicateur trace les hauts/bas de chaque session et detecte les <strong>sweeps</strong> (balayages) en temps reel. Un sweep est signale visuellement quand le prix depasse un niveau de session puis revient.</p>
+  </div>
+
+  <h3>2.3 — Opens Institutionnels</h3>
+  <div class="card">
+    <p>Les niveaux d'ouverture sont des references majeures pour le biais directionnel :</p>
+    <ul>
+      <li><strong>Yearly Open :</strong> Reference annuelle. Le prix au-dessus = biais haussier pour l'annee, en-dessous = baissier.</li>
+      <li><strong>Monthly Open :</strong> Biais mensuel. Le prix rebondit souvent sur ce niveau en milieu de mois.</li>
+      <li><strong>Weekly Open :</strong> Le niveau le plus utile pour le biais intraweek. L'Open du lundi a 00:00 UTC definit la direction de la semaine.</li>
+      <li><strong>Daily Open :</strong> Biais journalier. Le prix par rapport au Daily Open a 00:00 UTC determine le biais pour la journee.</li>
+    </ul>
+  </div>
+
+  <h3>2.4 — Equilibre (EQ)</h3>
+  <div class="card">
+    <p>Le niveau d'<strong>Equilibre</strong> (EQ) represente le point median (50%) du range detecte. C'est une zone ou le prix est naturellement attire — un target de haute probabilite depuis n'importe quel extremum. Le prix qui traverse l'EQ confirme le changement de biais dans la direction du mouvement.</p>
+  </div>
+
+  <div class="page-break"></div>
+
+  <h3>2.5 — Fibs de Session</h3>
+  <div class="card">
+    <p>Les retracements Fibonacci sont calcules sur les ranges des sessions actives. Ils fournissent des zones d'entree et de sortie alignees avec le temps institutionnel. Les niveaux classiques (0.618, 0.705, 0.79) et discount (0.21, 0.295, 0.382) sont traces automatiquement.</p>
+  </div>
+
+  <h3>2.6 — Detection CISD Multi-Timeframe</h3>
+  <div class="card">
+    <p>Le <strong>CISD</strong> (Change In State of Delivery) detecte un changement dans la livraison algorithmique du prix. C'est un signal precurseur de retournement.</p>
+    <ul>
+      <li><strong>Timeframes disponibles :</strong> 1m, 5m, 15m, 30m, 1H, 4H, Daily</li>
+      <li><strong>Signal haussier :</strong> Le prix cloture au-dessus de la bougie CISD apres une phase baissiere — l'algorithme commence a livrer du prix a la hausse.</li>
+      <li><strong>Signal baissier :</strong> Le prix cloture en-dessous de la bougie CISD apres une phase haussiere — l'algorithme livre du prix a la baisse.</li>
+      <li><strong>Confluence :</strong> Un CISD sur 4H confirme par un CISD sur 15m donne un signal de tres haute probabilite.</li>
+    </ul>
+  </div>
+
+  <h3>2.7 — MSB + OB Probability</h3>
+  <div class="card">
+    <p>Ce module combine la detection des <strong>Market Structure Breaks</strong> (MSB) et des <strong>Order Blocks</strong> (OB) avec un calcul de probabilite :</p>
+    <ul>
+      <li><strong>MSB :</strong> Un break de structure confirme le changement de tendance. L'indicateur identifie les cassures de swing high (baissier) et swing low (haussier).</li>
+      <li><strong>Order Blocks :</strong> Les OB sont les dernieres bougies avant un mouvement impulsif. Ils representent les zones d'ordres institutionnels non remplis.</li>
+      <li><strong>HPZ (High Probability Zone) :</strong> Detection des zones ou la confluence de facteurs rend un OB particulierement fiable — plus de 70% de taux de reaction historique.</li>
+      <li><strong>Probabilite :</strong> Chaque OB affiche son taux de probabilite base sur l'historique des reactions a des niveaux similaires.</li>
+    </ul>
+  </div>
+
+  <h3>2.8 — HIPPO Blocks MTF</h3>
+  <div class="card">
+    <p>Les <strong>HIPPO Blocks</strong> (High Probability Price Observation) sont des zones de prix ou l'algorithme institutionnel est susceptible de reagir fortement :</p>
+    <ul>
+      <li><strong>Timeframes :</strong> 15 minutes, 30 minutes, 1 heure, 4 heures, Daily</li>
+      <li><strong>Detection :</strong> Base sur la convergence de liquidite, de structure et de livraison algorithmique</li>
+      <li><strong>Bull HIPPO :</strong> Zone sous le prix actuel ou l'on attend une reaction haussiere (couleur configurable)</li>
+      <li><strong>Bear HIPPO :</strong> Zone au-dessus du prix actuel ou l'on attend une reaction baissiere (couleur configurable)</li>
+      <li><strong>Fiabilite :</strong> Les HIPPO 1H et 4H sont les plus fiables. Le Daily donne les zones macro les plus importantes.</li>
+    </ul>
+  </div>
+
+  <!-- 3. PARAMETRES -->
+  <div class="page-break"></div>
+  <h2><span class="num">3</span> Parametres</h2>
+
+  <table>
+    <tr><th>GROUPE</th><th>PARAMETRES</th><th>DEFAUT</th><th>DESCRIPTION</th></tr>
+    <tr><td><strong>Sessions</strong></td><td>Asia / London / AM / PM</td><td>Toutes ON</td><td>Active les sessions pour la liquidite. Couleurs et horaires configurables.</td></tr>
+    <tr><td><strong>Cycles 90mn</strong></td><td>Show Boxes / Labels / Colors</td><td>ON</td><td>Affiche les boites 90mn avec couleurs par bloc (Asia, LO1-3, AM1-3, PM1-3).</td></tr>
+    <tr><td><strong>QT Cycles</strong></td><td>Y / M / W / D / Micro</td><td>Variable</td><td>Activation individuelle de chaque echelle de cycle trimestriel.</td></tr>
+    <tr><td><strong>Opens</strong></td><td>Year / Month / Week / Day</td><td>Week + Day</td><td>Niveaux d'ouverture avec style et couleur configurables.</td></tr>
+    <tr><td><strong>Equilibre</strong></td><td>Show EQ / Style / Color</td><td>ON</td><td>Niveau d'equilibre (50%) du range avec personnalisation visuelle.</td></tr>
+    <tr><td><strong>CISD</strong></td><td>TF Selection / Colors</td><td>15m + 1H</td><td>Timeframes pour la detection CISD avec couleurs bull/bear.</td></tr>
+    <tr><td><strong>MSB + OB</strong></td><td>MSB / OB / HPZ / Prob</td><td>ON</td><td>Breaks de structure, order blocks, zones HPZ et affichage de probabilite.</td></tr>
+    <tr><td><strong>HIPPO</strong></td><td>15m / 30m / 1H / 4H / D</td><td>1H + 4H</td><td>HIPPO Blocks par TF avec couleurs bull/bear configurables.</td></tr>
+  </table>
+
+  <!-- 4. CONSEILS D'UTILISATION -->
+  <h2><span class="num">4</span> Conseils d'Utilisation</h2>
+
+  <h3>4.1 — Configuration Recommandee</h3>
+  <div class="card">
+    <p>Pour eviter la surcharge visuelle, commencez avec une configuration minimale :</p>
+    <ul>
+      <li><strong>Debutant :</strong> QT Cycles (Daily + 90mn) + Opens (Week + Day) + Liquidite (London + AM)</li>
+      <li><strong>Intermediaire :</strong> Ajoutez CISD (15m + 1H) + EQ + Session Fibs</li>
+      <li><strong>Avance :</strong> Tous les modules actifs avec MSB/OB Probability et HIPPO Blocks</li>
+    </ul>
+  </div>
+
+  <h3>4.2 — Workflow de Trading</h3>
+  <div class="card">
+    <ul>
+      <li><strong>Etape 1 — Timing :</strong> Verifiez la phase du QT Cycle (Q2 = expansion, Q3 = distribution). Tradez dans le sens de la phase.</li>
+      <li><strong>Etape 2 — Biais :</strong> Le prix par rapport aux Opens donne le biais. Au-dessus du Weekly Open = haussier.</li>
+      <li><strong>Etape 3 — Zone :</strong> Identifiez les niveaux de liquidite (session highs/lows) et l'EQ. Le prix est-il en premium ou discount ?</li>
+      <li><strong>Etape 4 — Confirmation :</strong> Attendez un CISD ou MSB sur votre timeframe d'execution.</li>
+      <li><strong>Etape 5 — Entree :</strong> Entrez sur un OB dans une zone HPZ ou un HIPPO Block aligne avec le biais.</li>
+    </ul>
+  </div>
+
+  <h3>4.3 — Erreurs a Eviter</h3>
+  <div class="card">
+    <ul>
+      <li><strong>Trop de modules actifs :</strong> Activez uniquement les modules pertinents pour votre style. Le scalping n'a pas besoin des cycles annuels.</li>
+      <li><strong>Ignorer le timing :</strong> Les meilleurs trades arrivent pendant Q2 des cycles. Evitez de forcer des trades en Q4 (contraction).</li>
+      <li><strong>Entree sans confluence :</strong> Un OB seul n'est pas suffisant. Combinez avec CISD + biais directional + timing de cycle.</li>
+      <li><strong>Contre-tendance systematique :</strong> Les Opens et les cycles donnent la direction. Ne tradez pas systematiquement contre le biais.</li>
+    </ul>
+  </div>
+
+  <div class="example-box">
+    <div class="title">EXEMPLE PRATIQUE — SETUP LONG</div>
+    <p>Contexte : QT Daily en Q2 (expansion), prix au-dessus du Weekly Open, session AM active.</p>
+    <ul>
+      <li>Le prix balaye le bas de la session London (sweep de liquidite)</li>
+      <li>CISD haussier detecte sur 15m</li>
+      <li>OB haussier identifie dans une zone HPZ sur 1H</li>
+      <li>HIPPO Block bullish present sur 1H</li>
+    </ul>
+    <p><strong>Action :</strong> Entree long sur le HIPPO Block 1H. Stop sous le bas du sweep. Target : EQ puis haut de session AM. RR minimum 1:3.</p>
+  </div>
+
+  <!-- 5. NOTES TECHNIQUES -->
+  <h2><span class="num">5</span> Notes Techniques</h2>
+  <ul>
+    <li><strong>Version :</strong> Pine Script v6</li>
+    <li><strong>Type :</strong> Overlay (s'affiche directement sur le graphique)</li>
+    <li><strong>Limites :</strong> 500 boxes, 500 lines, 500 labels maximum (optimise pour ne pas depasser)</li>
+    <li><strong>Bars max :</strong> 5000 barres en arriere (max_bars_back)</li>
+    <li><strong>Performance :</strong> Desactivez les modules non utilises pour ameliorer la vitesse de chargement</li>
+    <li><strong>Compatibilite :</strong> Fonctionne sur tous les instruments et tous les timeframes de TradingView</li>
+  </ul>
+
+  <div class="footer">
+    Algorithmic Academy — Guide Cycles & Liquidite<br>
+    Indicateur Pine Script v6 — QT Cycles + Liquidite + Opens + EQ + CISD + MSB OB + HIPPO
+  </div>
+
+</div>
+</body>
+</html>

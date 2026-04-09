@@ -37,6 +37,7 @@
       { id: 'htf-structure-org',       label: 'AA — HTF Structure & ORG' },
       { id: 'dr-ote-mtf',             label: 'AA — DR OTE MTF' },
       { id: 'qt-cycles',              label: 'AA — QT Cycles' },
+      { id: 'aa-cycles-liquidite',     label: 'AA — Cycles & Liquidite' },
     ]},
   ];
 
