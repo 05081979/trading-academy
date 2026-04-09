@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Analyse Multi-Timeframe Avancee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0C0F0A;
+  --bg2:      #111510;
+  --bg3:      #181D14;
+  --border:   #1F2A1A;
+  --em:       #3D7A3A;
+  --em2:      #56A853;
+  --em-light: #A3D9A1;
+  --em-pale:  #E8F5E8;
+  --amber:    #D4882A;
+  --amber-l:  #F5C56A;
+  --red:      #C9453A;
+  --blue:     #4A90B8;
+  --muted:    #3A4535;
+  --text:     #DDE8D8;
+  --text-dim: #7D9478;
+  --serif:    'Playfair Display', serif;
+  --sans:     'Syne', sans-serif;
+  --body:     'Source Serif 4', serif;
+  --mono:     'Roboto Mono', monospace;
+  --sw: 270px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.75; display: flex; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── SIDEBAR ─────────────────────────── */
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 100;
+}
+
+.sb-logo {
+  padding: 28px 22px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sb-logo .mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--em), var(--em2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(61,122,58,.3);
+}
+
+.sb-logo h1 {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--em-light);
+  line-height: 1.25;
+}
+
+.sb-logo p {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.sb-section {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 16px 22px 5px;
+}
+
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 22px; text-decoration: none;
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 500;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.sb-link:hover { background: rgba(86,168,83,.06); color: var(--text); }
+.sb-link.active { background: rgba(86,168,83,.1); color: var(--em-light); border-left-color: var(--em2); }
+
+.sb-link .n {
+  font-family: var(--mono);
+  font-size: 0.62rem; font-weight: 500;
+  color: var(--muted); min-width: 22px;
+}
+.sb-link.active .n { color: var(--em2); }
+
+/* ── PROGRESS ────────────────────────── */
+#pbar {
+  position: fixed; top: 0; left: var(--sw); right: 0;
+  height: 2px; background: var(--border); z-index: 200;
+}
+#pfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--em), var(--em2), var(--amber));
+  width: 0%; transition: width 0.1s linear;
+}
+
+/* ── MAIN ────────────────────────────── */
+#main { margin-left: var(--sw); flex: 1; min-height: 100vh; }
+
+/* ── HERO ────────────────────────────── */
+#hero {
+  position: relative; overflow: hidden;
+  padding: 80px 64px 72px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-noise {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-lines {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 20px,
+    rgba(61,122,58,.04) 20px, rgba(61,122,58,.04) 21px
+  );
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(86,168,83,.12);
+  border: 1px solid rgba(86,168,83,.3);
+  color: var(--em-light);
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+
+#hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 5.5vw, 5rem);
+  line-height: 1.0;
+  color: #fff;
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+#hero h1 .em {
+  display: block;
+  background: linear-gradient(90deg, var(--em2), var(--em-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+#hero .sub {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 400;
+  color: var(--text-dim); max-width: 560px; margin-bottom: 44px;
+  line-height: 1.8;
+}
+
+.hero-kpis {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 14px; max-width: 660px;
+}
+
+.kpi {
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+}
+.kpi:hover { border-color: rgba(86,168,83,.35); }
+
+.kpi-v {
+  font-family: var(--mono);
+  font-size: 1.5rem; font-weight: 500;
+  color: var(--em-light); line-height: 1;
+  margin-bottom: 5px;
+}
+.kpi-l {
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── MODULE ──────────────────────────── */
+.mod {
+  padding: 64px; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.mod.vis { opacity: 1; transform: none; }
+
+.mod-head {
+  display: flex; align-items: flex-start; gap: 18px;
+  margin-bottom: 40px;
+}
+
+.mod-tag {
+  font-family: var(--mono);
+  font-size: 0.65rem; font-weight: 500;
+  color: var(--em2);
+  background: rgba(86,168,83,.1);
+  border: 1px solid rgba(86,168,83,.22);
+  padding: 5px 12px; border-radius: 6px;
+  white-space: nowrap; margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+.mod-head h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: #fff; line-height: 1.1;
+}
+
+/* ── SECTION TITLES ─────────────────── */
+.sec {
+  font-family: var(--sans);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--em-light);
+  margin: 42px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+  display: flex; align-items: center; gap: 10px;
+}
+.sec::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 18px;
+  background: linear-gradient(var(--em), var(--em2));
+  border-radius: 2px; flex-shrink: 0;
+}
+
+.subsec {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 700;
+  color: var(--text); margin: 26px 0 10px;
+}
+
+p {
+  font-size: 0.95rem; color: var(--text-dim);
+  line-height: 1.85; margin-bottom: 12px;
+}
+p strong { color: var(--text); font-weight: 600; }
+em { color: var(--em-light); font-style: italic; }
+
+/* ── CALLOUTS ────────────────────────── */
+.box {
+  border-radius: 10px; padding: 20px 24px;
+  margin: 18px 0; border-left: 3px solid;
+  background: rgba(255,255,255,.022);
+}
+.box-em  { border-color: var(--em2);  background: rgba(86,168,83,.06); }
+.box-am  { border-color: var(--amber); background: rgba(212,136,42,.06); }
+.box-re  { border-color: var(--red);   background: rgba(201,69,58,.06); }
+.box-bl  { border-color: var(--blue);  background: rgba(74,144,184,.06); }
+
+.box-title {
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 7px;
+}
+.box-em .box-title  { color: var(--em-light); }
+.box-am .box-title  { color: var(--amber-l); }
+.box-re .box-title  { color: #FCA5A5; }
+.box-bl .box-title  { color: #93C5FD; }
+.box p { margin: 0; font-size: 0.88rem; }
+
+/* ── LISTS ───────────────────────────── */
+ul.cl { list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 8px; }
+ul.cl li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ul.cl li::before {
+  content: '>'; color: var(--em2); font-size: 1rem;
+  margin-top: 1px; flex-shrink: 0;
+}
+ul.cl li strong { color: var(--text); }
+
+ol.nl { counter-reset: nl; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 9px; }
+ol.nl li {
+  counter-increment: nl;
+  display: flex; align-items: flex-start; gap: 13px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ol.nl li::before {
+  content: counter(nl);
+  background: rgba(86,168,83,.15);
+  border: 1px solid rgba(86,168,83,.28);
+  color: var(--em-light);
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+}
+
+/* ── TABLE ───────────────────────────── */
+.tbl {
+  width: 100%; border-collapse: collapse;
+  margin: 18px 0; font-size: 0.87rem;
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.tbl th {
+  background: rgba(86,168,83,.1);
+  color: var(--em-light);
+  font-family: var(--sans); font-weight: 700;
+  font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 11px 18px; text-align: left;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+}
+.tbl td {
+  padding: 10px 18px; color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top; line-height: 1.6;
+}
+.tbl td:first-child { color: var(--text); font-weight: 600; font-size: 0.83rem; white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(255,255,255,.015); }
+
+/* ── PYRAMID ───────────────────────────── */
+.pyramid {
+  display: flex; flex-direction: column; gap: 4px;
+  align-items: center; margin: 22px 0;
+}
+.pyr-row {
+  border-radius: 8px; padding: 12px 24px;
+  text-align: center; border: 1px solid; transition: transform 0.2s;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+}
+.pyr-row:hover { transform: scale(1.01); }
+.pyr-label {
+  font-family: var(--sans); font-size: 0.8rem; font-weight: 700;
+  white-space: nowrap;
+}
+.pyr-desc { font-size: 0.8rem; opacity: 0.75; text-align: right; }
+.pyr-1 { width: 100%; background: rgba(201,69,58,.08); border-color: rgba(201,69,58,.25); color: #FCA5A5; }
+.pyr-2 { width: 90%; background: rgba(212,136,42,.08); border-color: rgba(212,136,42,.25); color: var(--amber-l); }
+.pyr-3 { width: 80%; background: rgba(74,144,184,.08); border-color: rgba(74,144,184,.25); color: #93C5FD; }
+.pyr-4 { width: 70%; background: rgba(86,168,83,.08); border-color: rgba(86,168,83,.3); color: var(--em-light); }
+.pyr-5 { width: 58%; background: rgba(147,197,253,.08); border-color: rgba(147,197,253,.25); color: #BAE6FD; }
+
+/* ── QUOTE ───────────────────────────── */
+.quote {
+  position: relative; padding: 30px 36px;
+  margin: 32px 0;
+  border-left: 3px solid var(--em);
+  background: rgba(86,168,83,.04);
+  border-radius: 0 10px 10px 0;
+}
+.quote::before {
+  content: '\201C'; position: absolute; top: -12px; left: 14px;
+  font-family: var(--serif); font-size: 5rem;
+  color: rgba(86,168,83,.18); line-height: 1;
+}
+.quote p {
+  font-family: var(--serif); font-size: 1.2rem; font-style: italic;
+  color: var(--text); margin: 0; line-height: 1.65;
+}
+.quote cite {
+  display: block; margin-top: 12px;
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.09em; text-transform: uppercase; color: var(--em2);
+}
+
+/* ── FOOTER ──────────────────────────── */
+#footer { padding: 48px 64px; text-align: center; border-top: 1px solid var(--border); }
+#footer p { font-family: var(--sans); color: var(--muted); font-size: 0.8rem; margin: 0; }
+
+/* ── ANIMATIONS ──────────────────────── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+.hero-tag, #hero h1, #hero .sub, .hero-kpis { animation: fadeUp 0.6s ease both; }
+.hero-tag { animation-delay: 0.1s; }
+#hero h1 { animation-delay: 0.22s; }
+#hero .sub { animation-delay: 0.34s; }
+.hero-kpis { animation-delay: 0.46s; }
+
+@media (max-width: 900px) {
+  :root { --sw: 0px; }
+  #sidebar { transform: translateX(-270px); }
+  #main { margin-left: 0; }
+  .mod, #hero { padding: 36px 22px; }
+  .hero-kpis { grid-template-columns: 1fr 1fr; }
+  .pyramid .pyr-row { width: 100%; }
+}
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+
+<div id="pbar"><div id="pfill"></div></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="mark">📊</div>
+    <h1>Analyse MTF Avancee</h1>
+    <p>Algorithmic Academy — Formation Complete</p>
+  </div>
+
+  <div class="sb-section">Concepts Fondamentaux</div>
+  <a class="sb-link active" href="#hero"><span class="n">00</span>Vue d'ensemble</a>
+  <a class="sb-link" href="#m1"><span class="n">01</span>Introduction</a>
+  <a class="sb-link" href="#m2"><span class="n">02</span>Structure Fractale</a>
+  <a class="sb-link" href="#m3"><span class="n">03</span>Order Pairing & Ranges</a>
+  <a class="sb-link" href="#m4"><span class="n">04</span>Liquidite IRL / ERL</a>
+  <a class="sb-link" href="#m5"><span class="n">05</span>Double Purge</a>
+  <a class="sb-link" href="#m6"><span class="n">06</span>Order Blocks HP</a>
+  <a class="sb-link" href="#m7"><span class="n">07</span>IPDA & Cycles</a>
+  <a class="sb-link" href="#m8"><span class="n">08</span>Gaps & BPR</a>
+
+  <div class="sb-section">Modeles & Timing</div>
+  <a class="sb-link" href="#m9"><span class="n">09</span>Timing & Silver Bullet</a>
+  <a class="sb-link" href="#m10"><span class="n">10</span>Alignement Timeframe</a>
+  <a class="sb-link" href="#m11"><span class="n">11</span>Blocs de Mitigation</a>
+
+  <div class="sb-section">Top-Down Analysis</div>
+  <a class="sb-link" href="#m12"><span class="n">12</span>Perspective Long Terme</a>
+  <a class="sb-link" href="#m13"><span class="n">13</span>Perspective Intermediaire</a>
+  <a class="sb-link" href="#m14"><span class="n">14</span>Court Terme & NY</a>
+  <a class="sb-link" href="#m15"><span class="n">15</span>Session Asiatique</a>
+
+  <div class="sb-section">Complements</div>
+  <a class="sb-link" href="#m16"><span class="n">16</span>Daily Swing H&L</a>
+  <a class="sb-link" href="#m17"><span class="n">17</span>Risk Management</a>
+  <a class="sb-link" href="#m18"><span class="n">18</span>Synthese</a>
+</nav>
+
+<main id="main">
+
+<!-- ══════ HERO ══════ -->
+<section id="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-tag">Formation Avancee</div>
+  <h1>Analyse<br><span class="em">Multi-Timeframe</span></h1>
+  <p class="sub">Formation complete couvrant les concepts ICT avances : structure fractale, liquidite interne/externe, order pairing, market maker models, Silver Bullet et analyse top-down sur tous les timeframes.</p>
+  <div class="hero-kpis">
+    <div class="kpi"><div class="kpi-v">18</div><div class="kpi-l">Sections</div></div>
+    <div class="kpi"><div class="kpi-v">MTF</div><div class="kpi-l">Multi-Timeframe</div></div>
+    <div class="kpi"><div class="kpi-v">3</div><div class="kpi-l">Perspectives</div></div>
+    <div class="kpi"><div class="kpi-v">ICT</div><div class="kpi-l">Methodologie</div></div>
+  </div>
+</section>
+
+<!-- ══════ M1 — Introduction ══════ -->
+<section class="mod" id="m1">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 01</span>
+    <h2>Introduction</h2>
+  </div>
+
+  <p>Cette formation est une synthese avancee des concepts ICT appliques au trading multi-timeframe. Elle s'adresse aux traders ayant deja une base solide et souhaitant approfondir leur comprehension de la structure de marche, de la liquidite et des modeles d'execution.</p>
+
+  <div class="box box-em">
+    <div class="box-title">Prerequis</div>
+    <p>La formation ICT 2022 est un prerequis indispensable. Les concepts presentes ici s'appuient sur cette base fondamentale et la developpent vers un niveau operationnel avance.</p>
+  </div>
+
+  <p>Le programme couvre quatre blocs principaux :</p>
+  <ol class="nl">
+    <li><strong>Concepts fondamentaux :</strong> structure fractale (OHLC/OLHC), order pairing, liquidite interne/externe, double purge, order blocks, IPDA et gaps.</li>
+    <li><strong>Market Maker Models :</strong> alignement des timeframes, blocs de mitigation, execution pratique des modeles MM et Silver Bullet comme modele d'entree.</li>
+    <li><strong>Top-Down Analysis :</strong> perspective long terme (Monthly/Weekly/Daily), intermediaire (4H/1H) et court terme (15m a 1m) avec le modele New York Session.</li>
+    <li><strong>Modeles complementaires :</strong> session asiatique, daily swing highs & lows, et gestion du risque pour les comptes finances.</li>
+  </ol>
+</section>
+
+<!-- ══════ M2 — OHLC / Structure Fractale ══════ -->
+<section class="mod" id="m2">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 02</span>
+    <h2>OHLC / OLHC & Structure Fractale</h2>
+  </div>
+
+  <p>Comprendre la structure fractale d'une bougie quotidienne est la base de tout, du biais journalier aux entrees. Le concept est simple mais extremement efficace : chaque bougie daily suit un schema <strong>Open-High-Low-Close</strong> (OHLC) ou <strong>Open-Low-High-Close</strong> (OLHC).</p>
+
+  <div class="sec">Le True Day Open (12h00 EST)</div>
+  <p>Bien que la bougie daily TradingView s'ouvre a 17h EST, l'algorithme utilise <strong>minuit EST</strong> (00h00) comme veritable ouverture de la journee. Ce prix de reference est essentiel : on cherche a <em>acheter en dessous</em> et <em>vendre au dessus</em> de ce New York Midnight Opening Price.</p>
+
+  <div class="sec">Les 5 types de bougies journalieres</div>
+  <table class="tbl">
+    <tr><th>Type</th><th>Schema</th><th>Caracteristique</th></tr>
+    <tr><td>Bullish</td><td>OLHC</td><td>Low forme en session Londres, expansion haussiere, cloture haute</td></tr>
+    <tr><td>Bullish Reversal</td><td>OLHC + longue meche basse</td><td>Prise de sell side puis reversal sur discount array HTF</td></tr>
+    <tr><td>Bearish</td><td>OHLC</td><td>High forme en session Londres, expansion baissiere, cloture basse</td></tr>
+    <tr><td>Bearish Reversal</td><td>OHLC + longue meche haute</td><td>Prise de buy stops puis reversal sur premium array HTF</td></tr>
+    <tr><td>Consolidation</td><td>Doji</td><td>Marche indecis, meches equivalentes haut/bas, profil seek & destroy</td></tr>
+  </table>
+
+  <div class="box box-am">
+    <div class="box-title">Principe Cle</div>
+    <p>La <strong>structure fractale</strong> (accumulation, manipulation, distribution) se retrouve a tous les niveaux temporels. Le schema d'une bougie daily se reproduit identiquement sur les bougies 4H, les bougies weekly, et meme sur les bougies 15 minutes.</p>
+  </div>
+</section>
+
+<!-- ══════ M3 — Order Pairing & Ranges ══════ -->
+<section class="mod" id="m3">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 03</span>
+    <h2>Order Pairing & Ranges</h2>
+  </div>
+
+  <p>L'<strong>order pairing</strong> est le fondement du marche : le prix ne fait que jumeler les buy stops avec les sell stops. Comprendre les besoins en liquidite du smart money pour entrer et sortir de leurs positions est crucial pour anticiper les mouvements.</p>
+
+  <div class="sec">Principe des Ranges</div>
+  <p>Un range est defini par un high et un low significatifs. Les sell stops reposent sous le low du range, les buy stops au dessus du high. Le marche accumule la liquidite d'un cote pour la jumeler avec celle de l'autre cote.</p>
+
+  <ul class="cl">
+    <li><strong>En bullish order flow :</strong> chercher le range low vers le range high. Accumuler des longs autour du niveau 50%.</li>
+    <li><strong>En bearish order flow :</strong> chercher le range high vers le range low. Accumuler des shorts autour du niveau 50%.</li>
+    <li><strong>Contre-tendance HTF :</strong> prendre profit au 50% du range et sur l'internal range liquidity (IRL).</li>
+  </ul>
+
+  <div class="sec">Comment le Smart Money opere</div>
+  <p>Le smart money accumule ses ordres <em>sous les anciens lows</em> quand il est haussier et <em>au dessus des anciens highs</em> quand il est baissier. Chaque retracement et chaque failure swing represente de la <strong>liquidite ingenieree</strong> : ce sont nos opportunites d'entree.</p>
+
+  <div class="box box-bl">
+    <div class="box-title">Alignement Temporel pour l'Order Pairing</div>
+    <p><strong>Monthly PDRA</strong> + structure Daily | <strong>Weekly PDRA</strong> + structure 4H | <strong>Daily PDRA</strong> + structure 1H | <strong>4H PDRA</strong> + structure 15m</p>
+  </div>
+</section>
+
+<!-- ══════ M4 — Liquidite Interne & Externe ══════ -->
+<section class="mod" id="m4">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 04</span>
+    <h2>Liquidite Interne & Externe</h2>
+  </div>
+
+  <p>Cette section est un <strong>point tournant</strong> dans la comprehension du marche. La relation entre liquidite interne (IRL) et externe (ERL) deverrouille votre capacite a lire le price action et anticiper les mouvements.</p>
+
+  <div class="sec">Definitions</div>
+  <table class="tbl">
+    <tr><th>Type</th><th>Definition</th><th>Exemples</th></tr>
+    <tr><td>Internal Range Liquidity (IRL)</td><td>Definie par les <strong>fair value gaps</strong> (desequilibres)</td><td>FVG, Volume Imbalance</td></tr>
+    <tr><td>External Range Liquidity (ERL)</td><td>Definie par les <strong>anciens highs et lows</strong></td><td>Swing highs, swing lows, equal H/L</td></tr>
+  </table>
+
+  <div class="sec">La Regle d'Or : Externe vers Interne et Vice-Versa</div>
+  <p>Le prix ne fait que deux choses : <strong>1)</strong> aller vers les anciens highs/lows (externe) et <strong>2)</strong> repriser les desequilibres (interne). C'est un cycle perpetuel :</p>
+
+  <ol class="nl">
+    <li>Quand l'ERL est prise (ancien high/low liquide), le prochain draw on liquidity est un FVG (IRL).</li>
+    <li>Quand l'IRL est touchee (FVG respecte), le prochain draw est un ancien high ou low (ERL).</li>
+    <li>Ce schema se repete indefiniment : <em>Externe → Interne → Externe → Interne...</em></li>
+  </ol>
+
+  <div class="box box-em">
+    <div class="box-title">Application sur les HTF</div>
+    <p>Utiliser cette relation sur les graphiques <strong>Monthly, Weekly, Daily et 4H</strong> est la cle pour determiner le biais journalier. Chaque transition ERL→IRL ou IRL→ERL offre une opportunite intraday claire.</p>
+  </div>
+</section>
+
+<!-- ══════ M5 — Double Purge ══════ -->
+<section class="mod" id="m5">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 05</span>
+    <h2>La Double Purge</h2>
+  </div>
+
+  <p>Le marche ne se deplace en Low Resistance Liquidity Run (LRLR) qu'apres avoir elimine <strong>les deux cotes</strong> du marche. La double purge est un schema de haute probabilite pour identifier les order blocks proteges et les mouvements directionnels forts.</p>
+
+  <div class="sec">Schema Bearish</div>
+  <ol class="nl">
+    <li><strong>Sell stops purges en premier</strong> — accumulation de sell stops sous un ancien low.</li>
+    <li><strong>Buy stops purges en second</strong> — order pairing avec les sell stops, dans un premium key level.</li>
+    <li><strong>SMT confirme</strong> sur le high — formation d'un <em>protected high</em>.</li>
+    <li><strong>LRLR</strong> vers le bas avec peu de resistance.</li>
+  </ol>
+
+  <div class="sec">Schema Bullish</div>
+  <ol class="nl">
+    <li><strong>Buy stops purges en premier</strong> — accumulation au dessus d'un ancien high.</li>
+    <li><strong>Sell stops purges en second</strong> — order pairing, dans un discount key level.</li>
+    <li><strong>SMT confirme</strong> sur le low — formation d'un <em>protected low</em>.</li>
+    <li><strong>LRLR</strong> vers le haut.</li>
+  </ol>
+
+  <div class="box box-re">
+    <div class="box-title">Point Critique</div>
+    <p>Le <strong>SMT</strong> (Smart Money Technique divergence) est absolument essentiel pour valider la double purge. Sans SMT, la probabilite du setup chute considerablement. C'est la ou se forment les order blocks les plus fiables.</p>
+  </div>
+
+  <p>La double purge se retrouve egalement avant les releases de nouvelles a fort impact (CPI, NFP). Avant ces evenements, le marche purge souvent les deux cotes, puis le mouvement reel se deploie avec la publication.</p>
+</section>
+
+<!-- ══════ M6 — Order Blocks Haute Probabilite ══════ -->
+<section class="mod" id="m6">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 06</span>
+    <h2>Order Blocks Haute Probabilite</h2>
+  </div>
+
+  <p>Tous les order blocks ne se valent pas. Un OB haute probabilite requiert des <strong>caracteristiques specifiques</strong> qui le distinguent d'une simple bougie de retournement.</p>
+
+  <div class="sec">Criteres d'un OB Haute Probabilite</div>
+  <ul class="cl">
+    <li><strong>Forme a un key level :</strong> l'OB doit se trouver dans une zone HTF significative (FVG, breaker, mitigation block).</li>
+    <li><strong>Purge de liquidite prealable :</strong> un bullish OB est precede d'un sell stop raid ; un bearish OB est precede d'un buy stop raid.</li>
+    <li><strong>Break of structure subsequent :</strong> apres la purge, le prix casse la structure dans la direction attendue, confirmant l'OB.</li>
+    <li><strong>Couple avec un FVG :</strong> un OB superpose a un fair value gap augmente significativement sa fiabilite.</li>
+  </ul>
+
+  <div class="sec">Inducement Order Blocks</div>
+  <p>Un inducement OB est une bougie de rejet (longue meche) qui attire les traders du mauvais cote. Les buy stops accumules au dessus de short-term highs successifs nourrissent l'inducement, puis le veritable OB haute probabilite agit comme resistance/support pour le mouvement directionnel.</p>
+
+  <div class="sec">Le Temps est plus important que le Prix</div>
+  <p>Un OB haute probabilite doit etre engage dans la bonne <strong>kill zone</strong> : London KZ (2h-5h EST), New York KZ (8h-12h EST) ou London Close KZ. Hors de ces fenetres, la probabilite baisse significativement.</p>
+
+  <div class="sec">Alignement Timeframe des Order Blocks</div>
+  <div class="pyramid">
+    <div class="pyr-row pyr-1"><span class="pyr-label">Monthly → Daily OB</span><span class="pyr-desc">Swing trading, positions longues</span></div>
+    <div class="pyr-row pyr-2"><span class="pyr-label">Weekly → 4H OB</span><span class="pyr-desc">Swing & position</span></div>
+    <div class="pyr-row pyr-3"><span class="pyr-label">Daily → 1H OB</span><span class="pyr-desc">Intraday standard</span></div>
+    <div class="pyr-row pyr-4"><span class="pyr-label">4H → 15m OB</span><span class="pyr-desc">Day trading</span></div>
+    <div class="pyr-row pyr-5"><span class="pyr-label">1H → 5m OB</span><span class="pyr-desc">Scalping</span></div>
+  </div>
+</section>
+
+<!-- ══════ M7 — IPDA & Cycles de Marche ══════ -->
+<section class="mod" id="m7">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 07</span>
+    <h2>IPDA & Cycles de Marche</h2>
+  </div>
+
+  <p>L'<strong>IPDA</strong> (Interbank Price Delivery Algorithm) est l'algorithme qui gouverne la livraison du prix. Il ne connait que <strong>4 etats</strong> : consolidation, expansion, retracement et reversal.</p>
+
+  <div class="sec">Les 4 Phases du Cycle</div>
+  <table class="tbl">
+    <tr><th>Phase</th><th>Description</th><th>Ce qui suit</th></tr>
+    <tr><td>Consolidation</td><td>Accumulation, range etroit</td><td>Expansion uniquement (jamais reversal, jamais retracement)</td></tr>
+    <tr><td>Expansion</td><td>Mouvement directionnel fort</td><td>Retracement, reversal OU consolidation</td></tr>
+    <tr><td>Retracement</td><td>Retour vers OB/FVG pour continuer</td><td>Expansion (continuation)</td></tr>
+    <tr><td>Reversal</td><td>Changement de direction (AMD)</td><td>Expansion dans la nouvelle direction</td></tr>
+  </table>
+
+  <div class="box box-re">
+    <div class="box-title">Regle Fondamentale</div>
+    <p>Le prix ne peut <strong>JAMAIS</strong> passer d'une consolidation directement a un reversal. Si vous voyez un mouvement contraire apres une consolidation, c'est une <strong>manipulation</strong> (le M dans AMD : Accumulation-Manipulation-Distribution). Le vrai mouvement suivra dans la direction opposee.</p>
+  </div>
+
+  <div class="sec">Application Pratique</div>
+  <p>Quand le prix consolide et que le draw on liquidity n'a pas encore ete atteint, tout mouvement contraire est probablement une manipulation. Utilisez les cycles IPDA en combinaison avec IRL/ERL et l'order pairing pour un avantage decisif :</p>
+  <ul class="cl">
+    <li>Consolidation apres expansion ? Le draw n'est pas atteint → continuation probable.</li>
+    <li>Mouvement contraire depuis la consolidation ? → Manipulation AMD, le vrai mouvement arrive.</li>
+    <li>Expansion apres retracement sur OB/FVG ? → Continuation confirmee vers le target.</li>
+  </ul>
+</section>
+
+<!-- ══════ M8 — Gaps & BPR ══════ -->
+<section class="mod" id="m8">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 08</span>
+    <h2>Breakaway Gaps & Balanced Price Ranges</h2>
+  </div>
+
+  <p>Tous les fair value gaps ne sont pas destines a etre combles. Comprendre les <strong>Balanced Price Ranges</strong> (BPR) et le <strong>RDRB</strong> (Redelivered Rebalanced PD Array) permet d'identifier les breakaway gaps et d'eviter les faux signaux.</p>
+
+  <div class="sec">Balanced Price Range (BPR)</div>
+  <ul class="cl">
+    <li><strong>BPR Bullish :</strong> le prix livre buy side, puis sell side, puis buy side a nouveau (haut → bas → haut). Cette zone est equilibree.</li>
+    <li><strong>BPR Bearish :</strong> le prix livre sell side, puis buy side, puis sell side (bas → haut → bas). Zone equilibree.</li>
+    <li>Quand un BPR existe au dessus ou en dessous d'un FVG, ce FVG est un <strong>breakaway gap</strong> qui ne sera probablement pas comble.</li>
+  </ul>
+
+  <div class="sec">Le RDRB (Redelivered Rebalanced PD Array)</div>
+  <p>Le RDRB est un PD Array a part entiere. Il se forme quand une bougie delivre buy side et sell side dans sa meche, puis la bougie suivante continue dans la meme direction. On trace deux lignes : le close de la premiere bougie et l'extremite de la meche de la seconde. Cette zone agit comme <strong>support/resistance puissant</strong>.</p>
+
+  <div class="box box-am">
+    <div class="box-title">Utilisation Pratique</div>
+    <p>Si aucun FVG standard n'est disponible pour une entree, cherchez un RDRB. Ce PD Array explique pourquoi certains FVG restent ouverts : un BPR les protege. Tracez les lignes du RDRB pour identifier vos niveaux d'entree avec precision.</p>
+  </div>
+</section>
+
+<!-- ══════ M9 — Timing & Silver Bullet ══════ -->
+<section class="mod" id="m9">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 09</span>
+    <h2>Timing & Silver Bullet</h2>
+  </div>
+
+  <p>En intraday, l'objectif est de capter l'expansion de la prochaine bougie 4H. Le timing est tout aussi important que le prix.</p>
+
+  <div class="sec">Fenetres Cles par Marche</div>
+  <table class="tbl">
+    <tr><th>Marche</th><th>Bougies 4H</th><th>Silver Bullet Windows</th></tr>
+    <tr><td>Indices (ES/NQ)</td><td>6h, 10h, 14h EST</td><td>10h et 14h EST</td></tr>
+    <tr><td>Forex (paires $)</td><td>1h, 5h, 9h EST</td><td>1h et 9h EST</td></tr>
+    <tr><td>Paires asiatiques</td><td>21h, 1h, 5h, 9h EST</td><td>21h et 9h EST</td></tr>
+  </table>
+
+  <div class="sec">Mecanisme du Silver Bullet</div>
+  <ol class="nl">
+    <li>La bougie 4H precedente (ex: 8h) voit son low/high pris par la bougie suivante (9h).</li>
+    <li>La bougie 9h doit <strong>cloturer a l'interieur du range</strong> de la bougie 8h (formation swing).</li>
+    <li>La bougie 10h (Silver Bullet) execute la <strong>structure fractale</strong> : manipulation puis distribution vers le target.</li>
+    <li><strong>SMT</strong> sur le point de retournement valide le setup.</li>
+  </ol>
+
+  <div class="box box-em">
+    <div class="box-title">Forex London Silver Bullet</div>
+    <p>Pour les paires Forex en session Londres : bougie 1h rate par la bougie 2h, cloture inside, puis la bougie 3h (Silver Bullet) distribue. Meme logique pour New York avec les bougies 7h/8h/9h (ou 6h/7h/8h si news a 8h30).</p>
+  </div>
+</section>
+
+<!-- ══════ M10 — Alignement Timeframe ══════ -->
+<section class="mod" id="m10">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 10</span>
+    <h2>Alignement Timeframe pour les Market Maker Models</h2>
+  </div>
+
+  <p>L'une des cles pour trouver des market maker models propres est de comprendre sur quel timeframe ils se forment <strong>en relation avec le timeframe du PD Array</strong>.</p>
+
+  <div class="sec">Correspondance PD Array → Market Maker Model</div>
+  <div class="pyramid">
+    <div class="pyr-row pyr-1"><span class="pyr-label">Monthly PDRA → Daily MMM</span><span class="pyr-desc">Trades swing sur plusieurs semaines</span></div>
+    <div class="pyr-row pyr-2"><span class="pyr-label">Weekly PDRA → 4H MMM</span><span class="pyr-desc">Trades swing intra-semaine</span></div>
+    <div class="pyr-row pyr-3"><span class="pyr-label">Daily PDRA → 1H MMM</span><span class="pyr-desc">Intraday standard</span></div>
+    <div class="pyr-row pyr-4"><span class="pyr-label">4H PDRA → 15m MMM</span><span class="pyr-desc">Day trading precis</span></div>
+    <div class="pyr-row pyr-5"><span class="pyr-label">1H PDRA → 5m MMM</span><span class="pyr-desc">Scalping / 15m PDRA → 1m MMM</span></div>
+  </div>
+
+  <div class="sec">Structure du Market Maker Model</div>
+  <p>Tout MMM commence par une <strong>consolidation originale</strong>, suivie d'au moins <strong>deux phases d'accumulation</strong> avant le smart money reversal sur un key level. Le prix est fractal : la meme structure se retrouve du monthly au 1 minute.</p>
+
+  <ul class="cl">
+    <li><strong>MMM Buy :</strong> consolidation originale → sell side of the curve (2+ accumulations) → discount array → smart money reversal → buy side of the curve → liquidation de la consolidation originale.</li>
+    <li><strong>MMM Sell :</strong> consolidation originale → buy side of the curve (2+ accumulations) → premium array → smart money reversal → sell side of the curve → liquidation de la consolidation originale.</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Execution en Pratique</div>
+    <p>Identifiez le MMM sur le timeframe correspondant au PDRA, puis descendez d'un cran pour l'entree precise. Exemple : Daily FVG → reperer le MMM sell sur 1H → entrer sur le breaker/mitigation block 5m dans la kill zone.</p>
+  </div>
+</section>
+
+<!-- ══════ M11 — Blocs de Mitigation ══════ -->
+<section class="mod" id="m11">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 11</span>
+    <h2>Blocs de Mitigation</h2>
+  </div>
+
+  <p>Les <strong>blocs de mitigation</strong> sont les order blocks du buy side of the curve dans un MMM sell (et inversement). Le smart money utilise ces anciennes zones d'achat pour liquider/mitiger leurs positions lorsque le prix y revient du cote oppose.</p>
+
+  <div class="sec">Methode d'Identification</div>
+  <ol class="nl">
+    <li>Identifier les <strong>bullish OB du buy side</strong> (dans un MMM sell) ou les <strong>bearish OB du sell side</strong> (dans un MMM buy).</li>
+    <li><strong>Etendre ces zones dans le temps</strong> vers le cote oppose de la courbe.</li>
+    <li>Attendre qu'un <strong>nouveau PD Array</strong> (FVG, OB frais, breaker) se forme a l'interieur de cette zone.</li>
+    <li>La superposition ancien OB + nouveau PD Array = <strong>zone de mitigation haute probabilite</strong>.</li>
+  </ol>
+
+  <div class="box box-am">
+    <div class="box-title">Pourquoi les Mitigation Blocks fonctionnent</div>
+    <p>Le smart money a achete dans ces bullish OB pendant le buy side of the curve. Quand le prix y revient en sell side, ils utilisent ces memes niveaux pour <strong>convertir leurs longs en shorts</strong> (et vice versa). La presence d'un PD Array frais confirme l'activite institutionnelle.</p>
+  </div>
+</section>
+
+<!-- ══════ M12 — Perspective Long Terme (LTP) ══════ -->
+<section class="mod" id="m12">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 12</span>
+    <h2>Perspective Long Terme (LTP)</h2>
+  </div>
+
+  <p>La perspective long terme repond a la question <strong>POURQUOI</strong> le prix devrait aller vers un niveau specifique. Elle s'appuie sur les graphiques Monthly, Weekly et Daily.</p>
+
+  <div class="sec">Les 3 Piliers du LTP</div>
+  <ul class="cl">
+    <li><strong>Dealing Range HTF :</strong> identifier le range (high/low) sur le Monthly ou Weekly. Premium au dessus de 50%, discount en dessous.</li>
+    <li><strong>PD Arrays HTF :</strong> FVG monthly/weekly, OB, breakers — ce sont les niveaux vers lesquels le prix se dirige.</li>
+    <li><strong>ERL/IRL HTF :</strong> le flux externe→interne→externe sur les timeframes superieurs definit la direction globale.</li>
+  </ul>
+
+  <div class="sec">Tendances Saisonnieres</div>
+  <p>Les tendances saisonnieres (seasonal tendencies) sont des cartes au tresor pour les mouvements HTF low resistance. Seules, elles ne suffisent pas. Mais quand elles s'alignent avec un PD Array HTF, le resultat est une <strong>expansion explosive et volatile</strong>.</p>
+
+  <div class="box box-em">
+    <div class="box-title">Temps Rencontre le Prix</div>
+    <p>On ne prend pas un trade simplement parce que la saisonnalite est bullish. On attend que le <strong>temps</strong> (saisonnalite) rencontre le <strong>prix</strong> (PD Array HTF). Exemple : DXY bullish en Janvier/Fevrier + monthly discount FVG touche = catalyseur d'expansion.</p>
+  </div>
+
+  <div class="sec">Confirmer le Biais HTF</div>
+  <ul class="cl">
+    <li>Le prix rejette les lows et traverse facilement les highs ? → <strong>Bullish order flow.</strong></li>
+    <li>Les down-close candles supportent le prix ? → Order blocks bullish actifs.</li>
+    <li>Les bullish PD Arrays echouent ? → Confirmation <strong>bearish.</strong></li>
+    <li><strong>SMT quotidien</strong> entre paires correlees valide le point de retournement.</li>
+  </ul>
+</section>
+
+<!-- ══════ M13 — Perspective Intermediaire (ITP) ══════ -->
+<section class="mod" id="m13">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 13</span>
+    <h2>Perspective Intermediaire (ITP)</h2>
+  </div>
+
+  <p>La perspective intermediaire (4H et 1H) repond a la question <strong>COMMENT</strong> le prix va atteindre le draw on liquidity identifie par le LTP. Les trades les plus probabilistes sont ceux ou LTP et ITP sont alignes.</p>
+
+  <div class="sec">Alignement LTP + ITP</div>
+  <ol class="nl">
+    <li>Determiner le <strong>draw on liquidity HTF</strong> (LTP) : ou va le prix sur le Monthly/Weekly/Daily ?</li>
+    <li>Attendre un <strong>break of structure sur le 4H</strong> dans la direction du LTP.</li>
+    <li>Une fois le BOS 4H confirme → les deux perspectives sont alignees → haute probabilite.</li>
+  </ol>
+
+  <div class="sec">Le Calendrier Economique</div>
+  <p>L'ITP utilise activement le calendrier economique pour cadrer les setups :</p>
+  <ul class="cl">
+    <li><strong>Jours sans news :</strong> consolidation / accumulation probable. Pas d'expansion significative attendue.</li>
+    <li><strong>Jours avec red folder :</strong> injection de volatilite. C'est la que se forment les <em>low/high of the week</em>.</li>
+    <li><strong>Weekly Opening Price :</strong> tracer le prix d'ouverture weekly. Acheter en dessous, vendre au dessus.</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Schema Type de Semaine</div>
+    <p>Lundi = accumulation (pas de news) → Mardi/Mercredi = expansion avec news (CPI, NFP) → Jeudi = indecision si pas de news → Vendredi = dernier mouvement possible avec news. Identifier quel jour a le plus de chances de creer le <strong>low ou high of the week</strong>.</p>
+  </div>
+</section>
+
+<!-- ══════ M14 — Perspective Court Terme & NY Session ══════ -->
+<section class="mod" id="m14">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 14</span>
+    <h2>Perspective Court Terme & Modele New York Session</h2>
+  </div>
+
+  <p>Le modele NY Session (8h-12h EST) est le <strong>bread and butter</strong> de l'execution. C'est le sweet spot dans la structure fractale de la bougie daily, la ou l'expansion se deploie apres l'accumulation de Londres.</p>
+
+  <div class="sec">Kill Zone : 8h - 12h EST</div>
+  <ul class="cl">
+    <li><strong>Reversal days :</strong> sweet spot a 9h-10h30 EST. Chercher la manipulation puis le retournement.</li>
+    <li><strong>Continuation days :</strong> sweet spot a 10h-11h30 EST (ou plus tot si London a deja cree low/high of day).</li>
+    <li><strong>Eviter NY session</strong> quand : London a un range extremement large, FOMC a 14h, ou la veille de NFP/CPI.</li>
+  </ul>
+
+  <div class="sec">Les 2 Options d'Entree (8h-12h)</div>
+  <ol class="nl">
+    <li><strong>Stop hunt :</strong> a 8h, tracer une ligne verticale et chercher a gauche les failure swings (LRLR). La news declenche un stop hunt 15m, puis continuation.</li>
+    <li><strong>Premium/Discount array :</strong> le prix retrace dans un PD Array (OB, FVG) pendant la kill zone, puis reprend la direction du biais.</li>
+  </ol>
+
+  <div class="sec">Silver Bullet comme Modele d'Entree MMM</div>
+  <p>Le Silver Bullet est la <strong>deuxieme phase d'accumulation</strong> dans un MMM buy (ou deuxieme phase de distribution dans un MMM sell). Pour l'identifier en temps reel :</p>
+  <ul class="cl">
+    <li>Identifier l'<strong>intermediate term high/low</strong> (ITH/ITL) : un high/low avec un short-term high/low de chaque cote.</li>
+    <li><strong>Option 1 :</strong> anticiper le short-term high/low qui se formera a cote de l'ITH/ITL.</li>
+    <li><strong>Option 2 :</strong> attendre la confirmation de l'ITH/ITL (plus conservateur).</li>
+    <li>Utiliser les <strong>mitigation blocks</strong> et <strong>breaker blocks</strong> pour localiser l'entree precise.</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Execution Optimale</div>
+    <p>Toujours executer dans la <strong>kill zone correcte</strong>. Le smart money reversal se forme souvent juste avant la kill zone ; l'entree doit etre prise <em>a l'interieur</em> de la fenetre pour une donnee exploitable et consistante.</p>
+  </div>
+</section>
+
+<!-- ══════ M15 — Modele Session Asiatique ══════ -->
+<section class="mod" id="m15">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 15</span>
+    <h2>Modele Session Asiatique</h2>
+  </div>
+
+  <p>La session asiatique est generalement consideree comme une session de faible probabilite. Ce modele est l'exception : il est <strong>consistant, simple et hautement repetitif</strong> avec tres peu de parametres.</p>
+
+  <div class="sec">Paire Privilegiee : AUD/JPY</div>
+  <p>L'Australie et le Japon ouvrent a une heure d'intervalle, creant une injection de volatilite dans la fenetre <strong>20h-22h EST</strong>. Ce modele s'applique aussi aux paires avec JPY, AUD ou NZD.</p>
+
+  <div class="sec">Execution du Modele</div>
+  <ol class="nl">
+    <li><strong>Determiner le biais HTF</strong> (IRL/ERL sur le Daily).</li>
+    <li><strong>Kill zone :</strong> 20h - 22h EST (New York time).</li>
+    <li><strong>Attendre un turtle soup 15m</strong> (stop hunt d'un swing low/high 15m) dans la kill zone.</li>
+    <li><strong>Descendre en 2-5 minutes</strong> pour l'entree (pas de 1 minute — trop inconsistant).</li>
+    <li>Tracer premium/discount apres le break of structure. Entrer sur un <strong>OB ou FVG en discount</strong> (pour un long) ou premium (pour un short).</li>
+  </ol>
+
+  <div class="box box-bl">
+    <div class="box-title">Simplicite du Modele</div>
+    <p>Bias HTF → kill zone 20h-22h → turtle soup 15m → entree 2-5m sur OB/FVG. C'est un modele avec tres peu de pieces mobiles, ce qui le rend ideal pour les traders bases en Asie ou ceux qui ne peuvent pas trader les sessions Londres/NY.</p>
+  </div>
+</section>
+
+<!-- ══════ M16 — Daily Swing Highs & Lows ══════ -->
+<section class="mod" id="m16">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 16</span>
+    <h2>Daily Swing Highs & Lows</h2>
+  </div>
+
+  <p>Les daily swing highs et lows representent le <strong>modele le plus simple</strong> que vous utiliserez. Chaque point de retournement du marche forme un swing high ou low. Sur le daily, a un key level avec un draw on liquidity intact, cela devient un signal puissant.</p>
+
+  <div class="sec">Pattern a 3 Bougies</div>
+  <ul class="cl">
+    <li><strong>Swing Low :</strong> bougie centrale plus basse que les deux bougies adjacentes (higher-lower-higher).</li>
+    <li><strong>Swing High :</strong> bougie centrale plus haute que les deux bougies adjacentes (lower-higher-lower).</li>
+    <li>Le swing doit se former a un <strong>key level</strong> (FVG, OB, discount/premium array).</li>
+  </ul>
+
+  <div class="sec">Focus sur le Jour 4</div>
+  <p>Une fois le pattern de 3 bougies forme a un key level, le <strong>4eme jour</strong> est le plus probabiliste pour runner le previous daily high/low. On utilise la structure fractale de cette bougie (OHLC/OLHC) pour trouver l'entree intraday.</p>
+
+  <div class="box box-em">
+    <div class="box-title">Un Trade par Semaine</div>
+    <p>Vous ne trouverez peut-etre pas un setup chaque semaine sur une seule paire. Mais sur un panier de quelques paires, vous trouverez <strong>un trade haute probabilite chaque semaine</strong> avec ce modele. Un seul trade par semaine suffit pour en vivre.</p>
+  </div>
+
+  <div class="sec">Previous Day Highs & Lows</div>
+  <p>Les previous daily highs/lows sont le <strong>pool de liquidite le plus facile</strong> du marche. Environ 90% des bougies daily liquident un previous daily high ou low. C'est la base du draw on liquidity quotidien.</p>
+  <ul class="cl">
+    <li>En <strong>bullish order flow :</strong> le prix cherche systematiquement les buy stops au dessus des previous daily highs.</li>
+    <li>En <strong>bearish order flow :</strong> le prix cible les sell stops sous les previous daily lows.</li>
+    <li>Toujours tracer les <strong>previous daily H/L</strong> sur votre graphique — c'est aussi essentiel que le midnight opening price.</li>
+  </ul>
+</section>
+
+<!-- ══════ M17 — Risk Management Prop Firms ══════ -->
+<section class="mod" id="m17">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 17</span>
+    <h2>Risk Management pour Comptes Finances</h2>
+  </div>
+
+  <p>L'objectif est de passer les phases d'evaluation en <strong>2 trades gagnants consecutifs</strong>. Ce plan de gestion du risque est construit autour des modeles enseignes dans cette formation.</p>
+
+  <div class="sec">Phase 1 — Objectif 8%</div>
+  <table class="tbl">
+    <tr><th>Etape</th><th>Risque</th><th>Objectif R:R</th><th>Resultat</th></tr>
+    <tr><td>Trade 1 (break even)</td><td>1%</td><td>1:2</td><td>+2% buffer</td></tr>
+    <tr><td>Trade 2 (avec buffer)</td><td>2%</td><td>1:3</td><td>+6% → Total 8%</td></tr>
+  </table>
+
+  <div class="sec">Phase 2 — Objectif 5%</div>
+  <table class="tbl">
+    <tr><th>Etape</th><th>Risque</th><th>Objectif R:R</th><th>Resultat</th></tr>
+    <tr><td>Trade 1</td><td>1%</td><td>1:2</td><td>+2% buffer</td></tr>
+    <tr><td>Trade 2</td><td>1%</td><td>1:3</td><td>+3% → Total 5%</td></tr>
+  </table>
+
+  <div class="sec">Compte Live Finance</div>
+  <ul class="cl">
+    <li><strong>A break even :</strong> risquer 0.5%, viser 1:2 pour un buffer de 1%.</li>
+    <li><strong>Avec buffer :</strong> risquer 1%, viser 1:2 ou 1:3 selon le strike rate.</li>
+    <li><strong>A 2-6% de profit :</strong> arreter. Attendre le payout, recuperer les frais, passer au prochain compte.</li>
+  </ul>
+
+  <div class="box box-re">
+    <div class="box-title">Regle Absolue</div>
+    <p>Si vous etes en drawdown ou a break even, <strong>ne risquez jamais plus de 1%</strong>. N'augmentez jamais le risque pour rattraper des pertes. La patience est votre plus grand atout.</p>
+  </div>
+</section>
+
+<!-- ══════ M18 — Synthese ══════ -->
+<section class="mod" id="m18">
+  <div class="mod-head">
+    <span class="mod-tag">SECTION 18</span>
+    <h2>Synthese : Assembler le Tout</h2>
+  </div>
+
+  <p>L'analyse multi-timeframe avancee se resume en trois perspectives qui doivent etre <strong>alignees</strong> pour un trade haute probabilite :</p>
+
+  <div class="sec">Le Framework Complet</div>
+  <ol class="nl">
+    <li><strong>LTP (Monthly/Weekly/Daily) :</strong> identifier le POURQUOI — dealing range, PD Arrays HTF, ERL/IRL, seasonal tendencies, daily SMT. Cela donne la direction et le target.</li>
+    <li><strong>ITP (4H/1H) :</strong> identifier le COMMENT — attendre un BOS 4H dans la direction du LTP. Utiliser le calendrier economique pour cibler le jour optimal (news = volatilite).</li>
+    <li><strong>STP (15m/5m/1m) :</strong> identifier le OU — dans la kill zone (8h-12h EST pour NY, 2h-5h pour London), chercher soit un stop hunt soit un retracement dans un PD Array. Entrer sur OB/FVG/breaker avec confirmation LTF.</li>
+  </ol>
+
+  <div class="sec">Checklist d'Execution</div>
+  <ul class="cl">
+    <li><strong>Draw on liquidity identifie ?</strong> (ERL ou IRL sur le HTF)</li>
+    <li><strong>LTP et ITP alignes ?</strong> (meme direction, BOS 4H confirme)</li>
+    <li><strong>Dans la kill zone ?</strong> (London 2-5h / NY 8-12h / Asia 20-22h)</li>
+    <li><strong>New York Midnight Opening Price trace ?</strong> (acheter en dessous, vendre au dessus)</li>
+    <li><strong>Stop hunt ou PD Array touche ?</strong> (un des deux doit etre present)</li>
+    <li><strong>SMT confirme ?</strong> (sur le high/low du retournement)</li>
+    <li><strong>Risk management respecte ?</strong> (1% max si break even ou drawdown)</li>
+  </ul>
+
+  <div class="quote">
+    <p>Le prix ne fait que deux choses : aller vers les anciens highs et lows, et repriser les desequilibres. Externe vers interne, interne vers externe. C'est aussi simple que cela — et ca se repete indefiniment.</p>
+    <cite>Algorithmic Academy — Analyse MTF Avancee</cite>
+  </div>
+
+  <div class="box box-em">
+    <div class="box-title">La Cle du Succes</div>
+    <p>Quand votre perspective long terme, votre perspective intermediaire et votre perspective court terme sont toutes alignees, vous obtenez les setups les plus probabilistes possibles. Combinez cela avec le bon timing (kill zone + news) et une gestion du risque disciplinee — c'est la recette complete.</p>
+  </div>
+</section>
+
+<footer id="footer">
+  <p>Analyse Multi-Timeframe Avancee · Cours base sur le contenu de Algorithmic Academy · 18 Sections · Structure Fractale · Liquidite IRL/ERL · Market Maker Models · Top-Down Analysis</p>
+  <p style="margin-top:8px;color:var(--border)">Le trading comporte des risques. Ce cours est educatif uniquement.</p>
+</footer>
+
+</main>
+
+<script>
+// Progress bar
+const pf = document.getElementById('pfill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  pf.style.width = (window.scrollY / h * 100) + '%';
+}, { passive: true });
+
+// Fade in modules
+const io = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.05 });
+document.querySelectorAll('.mod').forEach(m => io.observe(m));
+
+// Active nav
+const secs = [...document.querySelectorAll('[id]')];
+const links = document.querySelectorAll('.sb-link');
+function updateNav() {
+  const y = window.scrollY + 110;
+  let cur = secs[0]?.id;
+  for (const s of secs) { if (s.offsetTop <= y) cur = s.id; }
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>

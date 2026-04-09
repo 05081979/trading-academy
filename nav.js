@@ -15,6 +15,7 @@
       { id: 'fondamentaux-smc',     label: 'Fondamentaux SMC' },
       { id: 'market-maker-model',   label: 'Market Maker Model' },
       { id: 'candle-range-theory',  label: 'Candle Range Theory' },
+      { id: 'analyse-mtf-avancee', label: 'Analyse MTF Avancee' },
     ]},
     { name: 'Protocole', items: [
       { id: 'hub-cours',     label: 'Bibliotheque' },
