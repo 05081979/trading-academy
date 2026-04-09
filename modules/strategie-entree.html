@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Strategie d'Entree Algorithmique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../readability.css">
+<style>
+:root {
+  --bg:        #070B12;
+  --bg2:       #0D1320;
+  --bg3:       #111827;
+  --border:    #1E293B;
+  --gold:      #C9922A;
+  --gold-light:#F0C060;
+  --gold-pale: #FFF3D6;
+  --blue:      #3B82F6;
+  --blue-dim:  #1E3A5F;
+  --green:     #22C55E;
+  --red:       #EF4444;
+  --muted:     #4B5563;
+  --text:      #E2E8F0;
+  --text-dim:  #94A3B8;
+  --accent:    #F59E0B;
+  --sidebar-w: 280px;
+  --serif:     'DM Serif Display', serif;
+  --sans:      'Plus Jakarta Sans', sans-serif;
+  --mono:      'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-weight: 400;
+  line-height: 1.7;
+  display: flex;
+}
+
+/* ── SCROLLBAR ─────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* ── SIDEBAR ─────────────────────────────────────── */
+#sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-brand {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-brand .bullet-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.sidebar-brand h1 {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  color: var(--gold-light);
+  line-height: 1.2;
+}
+
+.sidebar-brand p {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-top: 3px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.sidebar-nav { padding: 12px 0; flex: 1; }
+
+.nav-section-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 14px 24px 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 24px;
+  cursor: pointer;
+  transition: all 0.18s;
+  text-decoration: none;
+  color: var(--text-dim);
+  font-size: 0.82rem;
+  font-weight: 500;
+  border-left: 2px solid transparent;
+}
+
+.nav-item:hover { background: rgba(201,146,42,0.06); color: var(--text); }
+.nav-item.active { background: rgba(201,146,42,0.1); color: var(--gold-light); border-left-color: var(--gold); }
+
+.nav-item .num {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+  min-width: 22px;
+  font-weight: 600;
+}
+
+.nav-item.active .num { color: var(--gold); }
+
+/* ── MAIN ─────────────────────────────────────── */
+#main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  min-height: 100vh;
+}
+
+/* ── HERO ─────────────────────────────────────── */
+#hero {
+  position: relative;
+  overflow: hidden;
+  padding: 80px 64px 70px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(201,146,42,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,146,42,.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+.hero-glow {
+  position: absolute;
+  top: -40%; right: -10%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(201,146,42,.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(201,146,42,.12);
+  border: 1px solid rgba(201,146,42,.3);
+  color: var(--gold-light);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 100px;
+  margin-bottom: 24px;
+}
+
+#hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(2.8rem, 5vw, 4.5rem);
+  line-height: 1.08;
+  color: #fff;
+  max-width: 700px;
+  margin-bottom: 18px;
+}
+
+#hero h1 em {
+  font-style: italic;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+#hero p.lead {
+  font-size: 1.05rem;
+  color: var(--text-dim);
+  max-width: 560px;
+  margin-bottom: 44px;
+  line-height: 1.75;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  max-width: 680px;
+}
+
+.stat-card {
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  transition: border-color 0.2s;
+}
+
+.stat-card:hover { border-color: rgba(201,146,42,.4); }
+
+.stat-value {
+  font-family: var(--mono);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--gold-light);
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── CONTENT ─────────────────────────────────── */
+#content { padding: 0; }
+
+.module {
+  padding: 64px;
+  border-bottom: 1px solid var(--border);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.module.visible { opacity: 1; transform: translateY(0); }
+
+.module-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.module-num {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--gold);
+  background: rgba(201,146,42,.1);
+  border: 1px solid rgba(201,146,42,.25);
+  padding: 5px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+  margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+.module-header h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  color: #fff;
+  line-height: 1.1;
+}
+
+/* ── SECTION HEADERS ─────────────────────────── */
+.section-title {
+  font-family: var(--serif);
+  font-size: 1.45rem;
+  color: var(--gold-light);
+  margin: 44px 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(201,146,42,.2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px; height: 22px;
+  background: linear-gradient(var(--gold), var(--gold-light));
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.sub-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 28px 0 10px;
+}
+
+/* ── TYPOGRAPHY ─────────────────────────────── */
+p {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  line-height: 1.8;
+  margin-bottom: 14px;
+}
+
+p strong, b { color: var(--text); font-weight: 600; }
+
+/* ── CALLOUTS ─────────────────────────────── */
+.callout {
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin: 20px 0;
+  border-left: 3px solid;
+  background: rgba(255,255,255,.025);
+}
+
+.callout-gold {
+  border-color: var(--gold);
+  background: rgba(201,146,42,.06);
+}
+
+.callout-blue {
+  border-color: var(--blue);
+  background: rgba(59,130,246,.06);
+}
+
+.callout-red {
+  border-color: var(--red);
+  background: rgba(239,68,68,.06);
+}
+
+.callout-green {
+  border-color: var(--green);
+  background: rgba(34,197,94,.06);
+}
+
+.callout-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.callout-gold .callout-title { color: var(--gold-light); }
+.callout-blue .callout-title { color: #93C5FD; }
+.callout-red .callout-title { color: #FCA5A5; }
+.callout-green .callout-title { color: #86EFAC; }
+
+.callout p { margin-bottom: 0; font-size: 0.9rem; }
+
+/* ── LISTS ─────────────────────────────────── */
+ul.custom, ol.custom {
+  list-style: none;
+  margin: 12px 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+ul.custom li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+ul.custom li::before {
+  content: '▸';
+  color: var(--gold);
+  font-size: 0.8rem;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+ol.custom { counter-reset: step; }
+
+ol.custom li {
+  counter-increment: step;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  line-height: 1.65;
+}
+
+ol.custom li::before {
+  content: counter(step);
+  background: rgba(201,146,42,.15);
+  border: 1px solid rgba(201,146,42,.3);
+  color: var(--gold-light);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  width: 26px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── TABLES ─────────────────────────────────── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 0.875rem;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.data-table th {
+  background: rgba(201,146,42,.1);
+  color: var(--gold-light);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 12px 18px;
+  text-align: left;
+  border-bottom: 1px solid rgba(201,146,42,.2);
+}
+
+.data-table td {
+  padding: 11px 18px;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.6;
+}
+
+.data-table td:first-child {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: rgba(255,255,255,.02); }
+
+/* ── GRADE TABLE ─────────────────────────── */
+.grade-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.875rem; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+.grade-table th { background: rgba(201,146,42,.1); color: var(--gold-light); font-weight: 700; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 12px 18px; text-align: left; border-bottom: 1px solid rgba(201,146,42,.2); }
+.grade-table td { padding: 12px 18px; border-bottom: 1px solid var(--border); color: var(--text-dim); line-height: 1.55; vertical-align: top; }
+.grade-table tr:last-child td { border-bottom: none; }
+.grade-table tr:hover td { background: rgba(255,255,255,.02); }
+.badge { display: inline-block; padding: 3px 10px; border-radius: 100px; font-family: var(--mono); font-size: 0.72rem; font-weight: 700; }
+.badge-aplus { background: rgba(34,197,94,.15); color: #86EFAC; border: 1px solid rgba(34,197,94,.3); }
+.badge-a { background: rgba(59,130,246,.15); color: #93C5FD; border: 1px solid rgba(59,130,246,.3); }
+.badge-b { background: rgba(245,158,11,.15); color: #FCD34D; border: 1px solid rgba(245,158,11,.3); }
+.badge-c { background: rgba(239,68,68,.12); color: #FCA5A5; border: 1px solid rgba(239,68,68,.25); }
+
+/* ── COMMANDEMENTS ─────────────────────── */
+.commandement {
+  display: flex;
+  gap: 18px;
+  padding: 16px 20px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  background: rgba(255,255,255,.02);
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.commandement:hover {
+  border-color: rgba(201,146,42,.3);
+  background: rgba(201,146,42,.04);
+}
+
+.cmd-num {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-style: italic;
+  color: rgba(201,146,42,.4);
+  min-width: 32px;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.commandement:hover .cmd-num { color: var(--gold); }
+
+.commandement p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+/* ── CHECKLIST ─────────────────────────── */
+.checklist { display: flex; flex-direction: column; gap: 6px; margin: 16px 0; }
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 16px;
+  background: rgba(255,255,255,.02);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+.check-item:hover { border-color: rgba(34,197,94,.3); background: rgba(34,197,94,.03); }
+.check-item.checked { border-color: rgba(34,197,94,.25); background: rgba(34,197,94,.05); }
+.check-box {
+  width: 18px; height: 18px;
+  border: 2px solid var(--muted);
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.check-item.checked .check-box {
+  background: var(--green);
+  border-color: var(--green);
+}
+.check-item.checked .check-box::after {
+  content: '✓';
+  color: #000;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.check-item span {
+  font-size: 0.875rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+.check-item.checked span { color: var(--text); }
+
+/* ── ENTRY VISUAL ──────────────────────── */
+.entry-visual {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 32px;
+  margin: 24px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.entry-visual::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+}
+
+.ev-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+
+.ev-row:last-child { border-bottom: none; }
+
+.ev-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.ev-value {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.ev-value.gold { color: var(--gold-light); }
+.ev-value.green { color: var(--green); }
+.ev-value.red { color: var(--red); }
+.ev-value.blue { color: #93C5FD; }
+
+/* ── STAT STRIP ─────────────────────────── */
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 24px 0;
+}
+
+.stat-mini {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  text-align: center;
+}
+
+.stat-mini .val {
+  font-family: var(--mono);
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.stat-mini .lbl {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── CYCLE DIAGRAM ──────────────────────── */
+.cycle-diagram {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  margin: 24px 0;
+}
+
+.cycle-box {
+  padding: 16px 12px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid;
+  transition: transform 0.2s;
+}
+
+.cycle-box:hover { transform: translateY(-2px); }
+
+.cycle-box .phase {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.cycle-box .name {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+
+.cycle-box .desc {
+  font-size: 0.72rem;
+  opacity: 0.75;
+  line-height: 1.4;
+}
+
+.c-acc { background: rgba(201,146,42,.07); border-color: rgba(201,146,42,.25); color: var(--gold-light); }
+.c-man { background: rgba(239,68,68,.07); border-color: rgba(239,68,68,.25); color: #FCA5A5; }
+.c-dis { background: rgba(34,197,94,.07); border-color: rgba(34,197,94,.25); color: #86EFAC; }
+.c-x   { background: rgba(147,197,253,.07); border-color: rgba(147,197,253,.25); color: #93C5FD; }
+
+/* ── TIMING TABLE ───────────────────────── */
+.timing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.timing-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 18px;
+  transition: border-color 0.2s;
+}
+
+.timing-card:hover { border-color: rgba(201,146,42,.3); }
+.timing-card h4 { font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.timing-card h4 span { background: rgba(201,146,42,.15); color: var(--gold); font-family: var(--mono); font-size: 0.68rem; padding: 2px 8px; border-radius: 4px; }
+
+.timing-bar {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 8px 0 4px;
+}
+
+.timing-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1s ease;
+}
+
+.timing-pct { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); }
+
+/* ── RULE CARD ─────────────────────────── */
+.rule-card {
+  display: flex;
+  gap: 16px;
+  padding: 18px 20px;
+  background: rgba(239,68,68,.04);
+  border: 1px solid rgba(239,68,68,.15);
+  border-radius: 10px;
+  margin: 8px 0;
+  align-items: flex-start;
+}
+
+.rule-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.rule-card p { margin: 0; font-size: 0.88rem; }
+.rule-card strong { color: var(--text); }
+
+/* ── QUOTE ─────────────────────────────── */
+.big-quote {
+  position: relative;
+  padding: 32px 40px;
+  margin: 32px 0;
+  border-left: 3px solid var(--gold);
+  background: rgba(201,146,42,.04);
+  border-radius: 0 10px 10px 0;
+}
+
+.big-quote::before {
+  content: '"';
+  position: absolute;
+  top: -10px; left: 18px;
+  font-family: var(--serif);
+  font-size: 5rem;
+  color: rgba(201,146,42,.2);
+  line-height: 1;
+}
+
+.big-quote p {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-style: italic;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.big-quote cite {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ── PROGRESS BAR (top) ─────────────────── */
+#progress-bar {
+  position: fixed;
+  top: 0; left: var(--sidebar-w); right: 0;
+  height: 2px;
+  background: var(--border);
+  z-index: 200;
+}
+
+#progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+/* ── FOOTER ─────────────────────────────── */
+#footer {
+  padding: 48px 64px;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+
+#footer p { color: var(--muted); font-size: 0.82rem; margin: 0; }
+
+/* ── ANIMATIONS ─────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-badge, #hero h1, #hero p.lead, .hero-stats {
+  animation: fadeIn 0.6s ease both;
+}
+.hero-badge   { animation-delay: 0.1s; }
+#hero h1      { animation-delay: 0.2s; }
+#hero p.lead  { animation-delay: 0.3s; }
+.hero-stats   { animation-delay: 0.45s; }
+
+/* ── RESPONSIVE ─────────────────────────── */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 0px; }
+  #sidebar { transform: translateX(-280px); }
+  #main { margin-left: 0; }
+  .module, #hero { padding: 40px 24px; }
+  .hero-stats { grid-template-columns: repeat(2,1fr); }
+  .stat-strip, .timing-grid { grid-template-columns: 1fr; }
+  .cycle-diagram { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-brand">
+    <div class="bullet-icon">🎯</div>
+    <h1>Entree Algorithmique</h1>
+    <p>Cours Complet</p>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section-label">Introduction</div>
+    <a class="nav-item active" href="#hero"><span class="num">00</span>Vue d'ensemble</a>
+
+    <div class="nav-section-label">Fondations</div>
+    <a class="nav-item" href="#m1"><span class="num">01</span>Psychologie du Trader</a>
+    <a class="nav-item" href="#m2"><span class="num">02</span>Theorie des Niveaux</a>
+    <a class="nav-item" href="#m3"><span class="num">03</span>Quarterly Theory</a>
+
+    <div class="nav-section-label">Stratégie Core</div>
+    <a class="nav-item" href="#m4"><span class="num">04</span>Critères d'Entrée</a>
+    <a class="nav-item" href="#m5"><span class="num">05</span>Confluences ICT</a>
+    <a class="nav-item" href="#m6"><span class="num">06</span>Confluences Avancées</a>
+
+    <div class="nav-section-label">Modèles de Trading</div>
+    <a class="nav-item" href="#m7"><span class="num">07</span>Modèles London & NY</a>
+    <a class="nav-item" href="#m8"><span class="num">08</span>Time-Based PD Arrays</a>
+
+    <div class="nav-section-label">Professionnalisme</div>
+    <a class="nav-item" href="#m9"><span class="num">09</span>Gestion du Risque</a>
+    <a class="nav-item" href="#m10"><span class="num">10</span>Le Trader Pro</a>
+    <a class="nav-item" href="#m11"><span class="num">11</span>Indicateur Algorithmic Academy</a>
+
+    <div class="nav-section-label">Avancé</div>
+    <a class="nav-item" href="#m12"><span class="num">12</span>Multi-Assets & Stats</a>
+    <a class="nav-item" href="#m13"><span class="num">13</span>Checklist & Commandements</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-badge">🎯 Strategie Algorithmique · Niveaux · ICT</div>
+    <h1>La Stratégie<br><em>Signal d'Entree</em></h1>
+    <p class="lead">Cours complet base sur la theorie des niveaux algorithmiques (structure fractale), la Quarterly Theory et les confluences ICT — pour un trading algorithmique constamment profitable.</p>
+    <div class="hero-stats">
+      <div class="stat-card">
+        <div class="stat-value">1.93</div>
+        <div class="stat-label">RR Standard</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">2.34</div>
+        <div class="stat-label">RR Avancé</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">~66%</div>
+        <div class="stat-label">Win Rate Cible</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">M5</div>
+        <div class="stat-label">Timeframe Exec.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ MODULE 1 ══════ -->
+  <section class="module" id="m1">
+    <div class="module-header">
+      <span class="module-num">MODULE 01</span>
+      <h2>Psychologie du Trader & Pensée Probabiliste</h2>
+    </div>
+
+    <div class="section-title">Penser en Séries de Trades</div>
+    <p>Le plus grand obstacle au succès en trading est mental, pas technique. La majorité des traders évaluent leur stratégie sur 1 à 3 trades — c'est une erreur fondamentale. Les traders professionnels pensent en séries de <strong>10, 20 ou 30 trades</strong>.</p>
+
+    <div class="callout callout-gold">
+      <div class="callout-title">⚡ Principe Clé</div>
+      <p>Une pièce équilibrée peut tomber sur pile 4 fois de suite. Ce n'est pas un biais — c'est de la variance. Sur 1 000 lancers, le résultat sera proche de 50/50. C'est exactement ainsi que vous devez penser votre trading.</p>
+    </div>
+
+    <div class="section-title">Les Retours Asynchrones</div>
+    <p>Les réseaux sociaux valorisent les trades à 40RR. La réalité des meilleurs traders est très différente. L'analyse de <strong>JadeCap</strong> sur 99 trades publics (plus d'1 million de dollars en payouts) :</p>
+
+    <div class="stat-strip">
+      <div class="stat-mini"><div class="val" style="color:var(--gold-light)">63.6%</div><div class="lbl">Win Rate Réel</div></div>
+      <div class="stat-mini"><div class="val" style="color:var(--green)">1.95</div><div class="lbl">RR Moyen</div></div>
+      <div class="stat-mini"><div class="val" style="color:var(--blue)">~5M$</div><div class="lbl">Capital Géré</div></div>
+    </div>
+
+    <p>Paladin : RR moyen de <strong>2.0</strong>, win rate de <strong>50%</strong>. Un simple 50/50 avec un RR de 2 est <em>wildly profitable</em> sur le long terme.</p>
+
+    <div class="callout callout-green">
+      <div class="callout-title">✅ Règle d'Or</div>
+      <p>Ce n'est pas la taille des gains individuels qui compte. C'est la danse délicate entre win rate et RR, appliquée disciplinement sur des centaines de trades. Un edge léger, bien exécuté, crée une croissance constante et prévisible.</p>
+    </div>
+
+    <div class="section-title">Les Deux Erreurs Fatales</div>
+    <ul class="custom">
+      <li><strong>Après 3 gains :</strong> augmenter le risque en pensant être "en feu" — vous exposez les gains à une perte amplifiée.</li>
+      <li><strong>Après 1 perte :</strong> conclure que la stratégie est cassée ou la changer — vous cassez la logique probabiliste.</li>
+      <li><strong>Stratégie sautillante :</strong> passer d'une méthode à l'autre sans jamais avoir assez de données — vous ne construisez jamais d'edge réel.</li>
+    </ul>
+
+    <div class="big-quote">
+      <p>Trading in the Zone de Mark Douglas : atteignez un niveau où vous ignorez totalement l'outcome d'un trade individuel, car il ne représente pas l'efficacité de votre stratégie.</p>
+      <cite>Mark Douglas — Trading in the Zone</cite>
+    </div>
+  </section>
+
+  <!-- ══════ MODULE 2 ══════ -->
+  <section class="module" id="m2">
+    <div class="module-header">
+      <span class="module-num">MODULE 02</span>
+      <h2>Introduction à la Theorie des Niveaux</h2>
+    </div>
+
+    <div class="section-title">Qu'est-ce que les Niveaux Algorithmiques ?</div>
+    <p>Les Niveaux Algorithmiques forment un systeme de <strong>niveaux de prix algorithmiques</strong> base sur les structures fractales (3, 9, 27, 81, 243...). Chaque niveau represente une fraction mathematiquement precise d'un range de prix. Dans cette strategie, les Niveaux Algorithmiques sont la composante <strong>PRIX</strong> du Systeme — la composante TEMPS etant la Quarterly Theory.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Élément</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>Composante Prix</td><td>Niveaux Algorithmiques — Structure Fractale (3, 9, 27, 81, 243...)</td></tr>
+        <tr><td>Composante Temps</td><td>Quarterly Theory — Cycles Q1/Q2/Q3/Q4</td></tr>
+        <tr><td>Combinaison</td><td>Systeme = Prix + Temps en alignement parfait</td></tr>
+        <tr><td>Structure Fractale utilisé</td><td>27 (le plus utilise pour le Signal d'Entree)</td></tr>
+        <tr><td>Broker recommandé</td><td>Forex.com</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Les Niveaux Cles du 27 Structure Fractale</div>
+
+    <div class="entry-visual">
+      <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px;">STRUCTURE D'UN RANGE ALGORITHMIQUE 27</div>
+      <div class="ev-row"><span class="ev-label">0% (Niveau 0)</span><span class="ev-value red">Stop Loss (Long) — Bas absolu</span></div>
+      <div class="ev-row"><span class="ev-label">~17% — FVG Level</span><span class="ev-value gold">Zone d'Entrée Limite ← ENTRÉE ICI</span></div>
+      <div class="ev-row"><span class="ev-label">~27% — OB Level</span><span class="ev-value blue">Zone de l'Order Block</span></div>
+      <div class="ev-row"><span class="ev-label">50% — EQ</span><span class="ev-value green">Take Profit — TOUJOURS ICI</span></div>
+      <div class="ev-row"><span class="ev-label">~73% — Rejection Block</span><span class="ev-value blue">Zone Rejection Block (haut)</span></div>
+      <div class="ev-row"><span class="ev-label">~83% — Breaker</span><span class="ev-value blue">Zone Breaker Block (haut)</span></div>
+      <div class="ev-row"><span class="ev-label">100% (Niveau 1)</span><span class="ev-value red">Stop Loss (Short) — Haut absolu</span></div>
+    </div>
+
+    <div class="callout callout-gold">
+      <div class="callout-title">⚠️ Règle des Niveaux</div>
+      <p>Ne jamais chercher de sensibilité sur les niveaux 0% ou 100% — ils sont partagés avec d'autres structure fractale. Chercher la sensibilité uniquement sur les niveaux intermédiaires (FVG Level, OB Level, etc.) pour confirmer quelle structure fractale est active.</p>
+    </div>
+
+    <div class="section-title">Les Algorithmes 1 & 2</div>
+    <p>Niveaux Algorithmiques décrit deux algorithmes de mouvement de prix :</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;">
+      <div class="entry-visual">
+        <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">Algorithme 1</div>
+        <p style="font-size:0.87rem;">Prix part du OB → crée un FVG → retrace dans le FVG → continue vers le terminus (Rejection Block opposé).</p>
+      </div>
+      <div class="entry-visual">
+        <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">Algorithme 2</div>
+        <p style="font-size:0.87rem;">Prix part du Rejection Block → FVG → reverse depuis le Breaker → retrace dans le FVG → continue vers le terminus opposé.</p>
+      </div>
+    </div>
+
+    <div class="callout callout-red">
+      <div class="callout-title">🔴 Problèmes des Algos Purs</div>
+      <p>1. Difficile de distinguer Algo 1 vs Algo 2 en temps réel. 2. Le prix peut manquer votre entrée et aller à l'OB opposé. 3. Même avec bonne entrée, le prix peut reverse avant le terminus. → C'est pourquoi le <strong>Signal d'Entree</strong> a été créé : une version pratique et fiable.</p>
+    </div>
+
+    <div class="section-title">La Sensibilité aux Niveaux</div>
+    <p>La sensibilité confirme que le marché "tourne" sur un niveau algorithmique précis. On la valide quand les wicks ou les bodies des bougies M5 touchent <em>exactement</em> un niveau intermédiaire du 27 Structure Fractale.</p>
+    <ul class="custom">
+      <li>Utiliser le Price Tool sur TradingView pour vérifier que le prix affiché = prix exact du niveau Algo</li>
+      <li>Minimum <strong>2 instances</strong> de sensibilité pour valider le Structure Fractale actif</li>
+      <li>Ne jamais compter les touches du haut (0%) ou du bas (100%) comme sensibilité</li>
+    </ul>
+  </section>
+
+  <!-- ══════ MODULE 3 ══════ -->
+  <section class="module" id="m3">
+    <div class="module-header">
+      <span class="module-num">MODULE 03</span>
+      <h2>La Quarterly Theory — Composante Temps</h2>
+    </div>
+
+    <div class="section-title">Le Concept Fondamental</div>
+    <p>La Quarterly Theory divise <strong>n'importe quel timeframe</strong> en 4 quartiles temporels, chacun correspondant à une phase de marché. C'est le <strong>temps</strong> du Systeme — à combiner avec le prix (Niveaux Algorithmiques).</p>
+
+    <div class="cycle-diagram">
+      <div class="cycle-box c-acc"><div class="phase">Q1</div><div class="name">Accumulation</div><div class="desc">Consolidation. Observer, ne pas trader.</div></div>
+      <div class="cycle-box c-man"><div class="phase">Q2</div><div class="name">Manipulation</div><div class="desc">Chasse la liquidité de Q1. Zone d'entrée.</div></div>
+      <div class="cycle-box c-dis"><div class="phase">Q3</div><div class="name">Distribution</div><div class="desc">Expansion dans la direction. Gérer le trade.</div></div>
+      <div class="cycle-box c-x"><div class="phase">Q4</div><div class="name">X</div><div class="desc">Continuation OU reversal. Rester vigilant.</div></div>
+    </div>
+
+    <div class="callout callout-blue">
+      <div class="callout-title">🔵 Deux Variantes</div>
+      <p><strong>AMDX</strong> : Q1=Accumulation, Q2=Manipulation, Q3=Distribution, Q4=X (continuation ou retournement)<br><strong>XAMD</strong> : Q1=Distribution/X, Q2=Accumulation, Q3=Manipulation, Q4=Distribution — se produit quand Q1 distribue au lieu d'accumuler.</p>
+    </div>
+
+    <div class="section-title">Les Cycles Temporels</div>
+
+    <table class="data-table">
+      <thead><tr><th>Cycle</th><th>Durée d'un Quartile</th><th>Correspondance Pratique</th></tr></thead>
+      <tbody>
+        <tr><td>Daily H6</td><td>6 heures</td><td>Asie / London / New York</td></tr>
+        <tr><td>M90 (90 min)</td><td>90 minutes</td><td>4 blocs dans chaque session H6</td></tr>
+        <tr><td>Micro</td><td>~22,5 minutes</td><td>4 blocs dans chaque M90</td></tr>
+        <tr><td>Hebdomadaire</td><td>~1,25 jours</td><td>Lun → Mar → Mer-Jeu → Ven</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Règle Fondamentale : Ne pas Trader Q1</div>
+    <ul class="custom">
+      <li><strong>Si Q1 consolide (range bound) →</strong> Q2 sera la Manipulation → chercher les Signaux d'Entree en Q2</li>
+      <li><strong>Si Q1 distribue (forte expansion) →</strong> Q2 sera l'Accumulation → ne pas trader, attendre Q3</li>
+    </ul>
+
+    <div class="section-title">Application sur les Sessions</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;">
+      <div class="callout callout-green" style="margin:0">
+        <div class="callout-title">✅ Pattern Idéal</div>
+        <p>Asie consolide → <strong>Londres manipule</strong> → trader les Signaux d'Entree dans Q2 London (3h30 AM NY time)</p>
+      </div>
+      <div class="callout callout-red" style="margin:0">
+        <div class="callout-title">🚫 Éviter</div>
+        <p>Asie distribue (grande expansion) → <strong>Londres accumule</strong> → ne pas trader London, attendre New York</p>
+      </div>
+    </div>
+
+    <div class="section-title">Les Déviations Standard</div>
+    <p>Chaque Q1 (Accumulation) crée un range dont on peut projeter des déviations standard pour anticiper les cibles :</p>
+    <ul class="custom">
+      <li>Mesurer les <strong>2/3 finaux</strong> du Q1 (ignorer le premier tiers)</li>
+      <li>1ère SD : premières résistances/supports — souvent le niveau de manipulation</li>
+      <li>2ème SD : cible fréquente de la manipulation</li>
+      <li>3ème SD : souvent le haut ou bas du jour</li>
+    </ul>
+
+    <div class="section-title">Cycles Journaliers de la Semaine</div>
+
+    <table class="data-table">
+      <thead><tr><th>Jour</th><th>Rôle Typique</th><th>Trading ?</th></tr></thead>
+      <tbody>
+        <tr><td>Lundi</td><td>Accumulation (Q1 hebdomadaire)</td><td>Éviter sauf semaine NFP</td></tr>
+        <tr><td>Mardi</td><td>Manipulation du Lundi → Setup A+</td><td>✅ Priorité</td></tr>
+        <tr><td>Mercredi–Jeudi</td><td>Distribution</td><td>✅ Haute probabilité</td></tr>
+        <tr><td>Vendredi</td><td>Consolidation / X (retournement)</td><td>Éviter</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-gold">
+      <div class="callout-title">💡 Exception</div>
+      <p>Semaine avec NFP le vendredi → Lundi bouge souvent (pre-NFP volatility) → Mardi accumule → adapter l'analyse.</p>
+    </div>
+  </section>
+
+  <!-- ══════ MODULE 4 ══════ -->
+  <section class="module" id="m4">
+    <div class="module-header">
+      <span class="module-num">MODULE 04</span>
+      <h2>La Strategie Signal d'Entree — Criteres d'Entree</h2>
+    </div>
+
+    <div class="section-title">Vue d'Ensemble</div>
+    <p>Le Signal d'Entree est une strategie d'entree algorithmique qui identifie le <strong>point d'entrée optimal</strong> à l'intérieur des algorithmes de niveaux. Elle produit un <strong>RR fixe de 1.93</strong> à chaque trade correctement exécuté — sans ambiguïté, sans subjectivité.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Paramètre</th><th>Valeur</th></tr></thead>
+      <tbody>
+        <tr><td>Assets de base</td><td>EURUSD et GBPUSD</td></tr>
+        <tr><td>Assets avancés</td><td>NASDAQ, S&P500, Dow, Gold, Silver, Oil</td></tr>
+        <tr><td>Timeframe d'exécution</td><td><strong>M5 UNIQUEMENT</strong> (pas M3, M2, M9)</td></tr>
+        <tr><td>Structure Fractale</td><td>27 (ou half shift du 27)</td></tr>
+        <tr><td>RR Standard</td><td>1.93 (fixe)</td></tr>
+        <tr><td>RR Avancé</td><td>2.34 (SL au bas de l'OB Algo Level)</td></tr>
+        <tr><td>Sessions préférées</td><td>London Open Kill Zone / New York Open</td></tr>
+        <tr><td>Heure optimale</td><td>3h30 AM NY time (London) · 7h30 AM (NY)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Les 7 Critères d'Entrée — Tous Obligatoires</div>
+
+    <ol class="custom">
+      <li><strong>Règle des 2 pertes :</strong> Si 2 pertes ont déjà été subies aujourd'hui → ne pas trader, fermer les charts.</li>
+      <li><strong>Biais journalier aligné :</strong> Le setup doit être dans la direction de votre biais du jour (bullish ou bearish). Aucun trade contre-tendance.</li>
+      <li><strong>Liquidité dessinée claire :</strong> Une liquidité logique doit exister dans la direction du trade (equal highs/lows, prior day high/low, session liquidity...).</li>
+      <li><strong>Sensibilité aux niveaux Algo 27 :</strong> Minimum 2 instances de sensibilité sur des niveaux intermédiaires du 27 Structure Fractale (M5).</li>
+      <li><strong>Sweep de liquidité ≥ M5 :</strong> Un sweep de liquidité doit avoir eu lieu avant l'entrée. Les algorithmes HFT réels n'exécutent qu'après un sweep.</li>
+      <li><strong>Order Block dans l'OB Algo Level (M5) :</strong> Un OB classique dont le corps couvre significativement le niveau OB Niveaux Algorithmiques.</li>
+      <li><strong>Fair Value Gap dans le FVG Algo Level (M5) :</strong> Un FVG classique ICT dans le niveau FVG Niveaux Algorithmiques. La <strong>3ème bougie doit être fermée</strong> avant d'entrer.</li>
+    </ol>
+
+    <div class="callout callout-red">
+      <div class="callout-title">🚫 Rappel Absolu</div>
+      <p>Ces critères sont valides <strong>UNIQUEMENT sur le M5</strong>. Les FVG sur M3, M2 ou M1 sont de qualité inférieure. Débutant ? Commencez exclusivement par le M5, sans exception.</p>
+    </div>
+
+    <div class="section-title">Placement des Ordres</div>
+
+    <div class="entry-visual">
+      <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px;">STRUCTURE D'UN TRADE GOLDEN BULLET</div>
+      <div class="ev-row">
+        <span class="ev-label">Entrée (Buy/Sell Limit)</span>
+        <span class="ev-value gold">Au prix exact du FVG Algo Level du 27 — PAS dans le FVG visible</span>
+      </div>
+      <div class="ev-row">
+        <span class="ev-label">Stop Loss</span>
+        <span class="ev-value red">Au Bas (long) ou au Haut (short) → niveau 0% ou 100% du range Algo</span>
+      </div>
+      <div class="ev-row">
+        <span class="ev-label">Take Profit</span>
+        <span class="ev-value green">À l'Équilibre (EQ) → niveau 50% du range — TOUJOURS</span>
+      </div>
+      <div class="ev-row">
+        <span class="ev-label">Risk/Reward résultant</span>
+        <span class="ev-value blue">1.93 fixe (non négociable)</span>
+      </div>
+    </div>
+
+    <div class="callout callout-red">
+      <div class="callout-title">🔴 Règle Absolue du Take Profit</div>
+      <p>Toujours TP à l'EQ. <strong>Jamais de runners. Jamais de partials. Jamais d'extension.</strong> Raisons : (1) L'EQ est la cible haute probabilité de l'algorithme, (2) Des reversals se créent systématiquement à l'EQ pour stopper ceux qui visent plus loin, (3) Cela garantit le 1.93RR reproductible sur chaque trade.</p>
+    </div>
+
+    <div class="section-title">Gestion Émotionnelle du Trade</div>
+
+    <div class="sub-title">Situation 1 — Le prix s'éloigne sans vous tapper</div>
+    <div class="rule-card">
+      <div class="rule-icon">⚠️</div>
+      <p><strong>Ne FOMO pas. Ne prenez pas de market order.</strong> Si c'est un vrai Signal d'Entree, le prix reviendra vers le FVG Algo Level. Annulez le trade UNIQUEMENT si le prix dépasse l'EQ sans vous avoir tappé — l'algorithme est terminé.</p>
+    </div>
+
+    <div class="sub-title">Situation 2 — Vous êtes dans le trade, le prix menace le SL</div>
+    <div class="rule-card">
+      <div class="rule-icon">🛑</div>
+      <p><strong>Ne bougez pas votre Stop Loss. Ne fermez pas prématurément.</strong> Le marché fait tout ce qu'il peut pour vous faire sortir. Une fois dans un vrai Signal d'Entree, le trade va en TP très rapidement — souvent en 1 à 2 bougies M5.</p>
+    </div>
+
+    <div class="callout callout-green">
+      <div class="callout-title">✅ Signe d'un Bon Trade</div>
+      <p>ICT lui-même l'a confirmé : quand vous êtes dans un bon trade, le prix <em>ne traîne pas</em>. Il va directement de l'entrée au TP aussi vite que possible — l'algorithme ne veut pas que d'autres traders puissent se positionner.</p>
+    </div>
+  </section>
+
+  <!-- ══════ MODULE 5 ══════ -->
+  <section class="module" id="m5">
+    <div class="module-header">
+      <span class="module-num">MODULE 05</span>
+      <h2>Confluences ICT — Améliorer le Win Rate</h2>
+    </div>
+
+    <div class="section-title">Les 3 Confluences ICT Obligatoires</div>
+
+    <div class="sub-title">1. Biais Journalier</div>
+    <p>Analyser le DXY sur des timeframes supérieurs pour estimer si la prochaine bougie hebdomadaire sera bullish ou bearish. Puis identifier les jours haute probabilité pour trader dans cette direction.</p>
+    <p><strong>Concept du Judas Swing :</strong> chaque bougie hebdomadaire a un wick contre la direction principale. Ne pas trader dans la direction du Judas Swing. Attendre que le bas (si bullish) ou le haut (si bearish) de la semaine soit établi.</p>
+
+    <div class="sub-title">2. Sweep de Liquidité</div>
+    <p>Un sweep de liquidité DOIT avoir eu lieu avant l'entrée. Minimum M5 — idéalement M15, H1, H4. Plus le timeframe du sweep est élevé, plus la qualité du setup est haute.</p>
+
+    <div class="sub-title">3. Liquidité Dessinée (Draw on Liquidity)</div>
+    <p>Le trade doit avoir une raison logique de se déplacer dans la direction souhaitée. Exemples valides : equal highs/lows, prior day high/low, prior week high/low, session high/low, fair value gap supérieur.</p>
+
+    <div class="section-title">Confluences ICT Optionnelles</div>
+
+    <table class="data-table">
+      <thead><tr><th>Confluence</th><th>Description & Utilisation</th></tr></thead>
+      <tbody>
+        <tr><td>ICT Time Macros</td><td>Fenêtres de 20 min où des algos se déclenchent. Ex: 10h50–11h10, 11h50–12h10 (NY time). Un GB aligné avec une macro = confluence forte.</td></tr>
+        <tr><td>ADR (Average Daily Range)</td><td>Si le prix a déjà parcouru 85 pips et l'ADR est de 80 pips → ne pas prendre un trade qui nécessite encore 10 pips pour TP.</td></tr>
+        <tr><td>ICT Everything Indicator</td><td>Projette le haut ou bas potentiel du jour via CBDR, Asia Range et Flout. Si votre entry est au bas projeté → forte confluence.</td></tr>
+        <tr><td>Timing 3h30 AM NY</td><td>Le haut ou bas du jour se forme très fréquemment à cette heure. Un GB à 3h30 NY a une forte confluence temporelle.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Jours & Conditions à Éviter</div>
+
+    <table class="data-table">
+      <thead><tr><th>Condition</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>NFP (Non-Farm Payrolls)</td><td>🚫 Ne pas trader ce jour</td></tr>
+        <tr><td>FOMC / Fed Funds Rate</td><td>🚫 Ne pas trader ce jour</td></tr>
+        <tr><td>CPI</td><td>🚫 Ne pas trader ce jour</td></tr>
+        <tr><td>Bank Rate (BOE, BCE...)</td><td>⚠️ Attendre la publication avant de trader</td></tr>
+        <tr><td>Earnings Mega-Cap (NASDAQ)</td><td>⚠️ Attendre si before-market; éviter si pendant session</td></tr>
+        <tr><td>Lundi sans news</td><td>⚠️ Souvent Accumulation — probabilité faible</td></tr>
+        <tr><td>Vendredi</td><td>⚠️ Consolidation/reversal — éviter sauf setup exceptionnel</td></tr>
+        <tr><td>Seek & Destroy Day</td><td>🚫 Fermer les charts après 2 pertes</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Le Quarterly SMT</div>
+    <p>Technique avancée comparant deux actifs corrélés pour identifier la manipulation et définir le biais :</p>
+    <ul class="custom">
+      <li><strong>SMT entre Jours :</strong> comparer EU et GU sur H1 — identifier lequel fait un Turtle Soup (False Break) pour le biais journalier</li>
+      <li><strong>SMT entre Sessions :</strong> comparer EU et GU sur M15 — affiner l'entrée</li>
+    </ul>
+    <p><strong>Hiérarchie du QSMT (du plus fort au plus faible) :</strong></p>
+    <ol class="custom">
+      <li><strong>Total Soup Close</strong> : fermeture au-delà du précédent bas/haut (plus courant, ~50–65%)</li>
+      <li><strong>Total Soup Wick</strong> : wick dépasse avec fermeture à l'intérieur</li>
+      <li><strong>Rejection Block Close</strong> : fermeture dans le Rejection Block</li>
+      <li><strong>Rejection Block Wick</strong> : wick dans le Rejection Block (le plus faible)</li>
+    </ol>
+  </section>
+
+  <!-- ══════ MODULE 6 ══════ -->
+  <section class="module" id="m6">
+    <div class="module-header">
+      <span class="module-num">MODULE 06</span>
+      <h2>Confluences Avancées du Playbook</h2>
+    </div>
+
+    <div class="section-title">Raid vs Sweep</div>
+    <p>Toutes les prises de liquidité ne sont pas égales. La distinction est fondamentale pour grader la qualité de votre setup :</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0;">
+      <div class="entry-visual">
+        <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;">SWEEP — Grade B</div>
+        <p style="font-size:0.87rem;margin:0;">La bougie prend la liquidité, mais sa <strong>fermeture est à l'intérieur</strong> du range précédent. Signal moins fort, setup de qualité B.</p>
+      </div>
+      <div class="entry-visual">
+        <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;">RAID (True Raid) — Grade A / A+</div>
+        <p style="font-size:0.87rem;margin:0;">La bougie prend la liquidité ET sa <strong>fermeture est en dehors</strong> du range. Signal fort de continuation — setup A ou A+.</p>
+      </div>
+    </div>
+
+    <div class="section-title">Market Structure Break (MSB) M5</div>
+    <ol class="custom">
+      <li>Identifier le fractale bas (bullish MSB) ou haut (bearish MSB) de la bougie qui a sweepé la liquidité</li>
+      <li>Un MSB se confirme quand une bougie M5 <strong>ferme</strong> au-delà de ce fractale</li>
+      <li>Après un MSB, chercher une retrace dans un FVG ou OB pour l'entrée Signal d'Entree</li>
+    </ol>
+    <p>Un MSB signale un <strong>Change in State of Delivery</strong> — le marché a officiellement changé de direction à court terme.</p>
+
+    <div class="section-title">Grille de Classification des Setups</div>
+
+    <table class="grade-table">
+      <thead><tr><th>Grade</th><th>Critères</th><th>Risque Max</th><th>Exemple (max = 1%)</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-aplus">A+</span></td>
+          <td>M5 Raid + M5 Market Structure Break</td>
+          <td>1.0%</td>
+          <td>Prendre le risque maximal</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-a">A</span></td>
+          <td>M5 Raid OU M5 MSB (un des deux)</td>
+          <td>0.75%</td>
+          <td>3/4 du risque maximum</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-b">B</span></td>
+          <td>Signal d'Entree standard (M5 Sweep, sans Raid ni MSB)</td>
+          <td>0.5%</td>
+          <td>1/2 du risque maximum</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-c">C</span></td>
+          <td>Half Shift, FVG M3/M2, ou confluences faibles</td>
+          <td>0.25%</td>
+          <td>À éviter progressivement</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-gold">
+      <div class="callout-title">💡 Principe</div>
+      <p>Les setups haute probabilité reçoivent plus de risque pour maximiser le retour. Les setups faibles reçoivent moins de risque. Cette approche optimise le profit factor global sur une série de trades.</p>
+    </div>
+
+    <div class="section-title">Confluences PDA Avancées (Order Flow)</div>
+    <p>Si le sweep de liquidité respecte un <strong>Order Block ou un Fair Value Gap supérieur</strong> (M15, M30, H1), c'est une confirmation forte que l'order flow est dans votre direction. Un buy program est actif si des PDAs bullish sont respectées lors du sweep.</p>
+
+    <div class="section-title">Le Half Shift</div>
+    <p>Parfois le Algorithmique 27 standard ne correspond pas — le marché tourne sur une version décalée (shifted) du range. Comment détecter :</p>
+    <ul class="custom">
+      <li>Les sensibilités sur le range normal pointent vers le haut ou le bas (niveaux partagés)</li>
+      <li>Aucune sensibilité sur les niveaux intermédiaires du range standard</li>
+      <li>Vérifier si un range décalé vers le haut ou le bas produit des sensibilités sur ses niveaux intermédiaires</li>
+    </ul>
+  </section>
+
+  <!-- ══════ MODULE 7 ══════ -->
+  <section class="module" id="m7">
+    <div class="module-header">
+      <span class="module-num">MODULE 07</span>
+      <h2>Les Modèles London & New York Open</h2>
+    </div>
+
+    <div class="section-title">Modèle London Open Signal d'Entree (AMDX)</div>
+    <p>Le setup le plus fréquent et le plus profitable de la stratégie :</p>
+
+    <ol class="custom">
+      <li>Marquer l'ouverture de minuit NY time et identifier le prix d'ouverture.</li>
+      <li>Observer le Q1 H6 (session Asie, minuit–6h AM) → consolide-t-il ou distribue-t-il ?</li>
+      <li>Marquer le M90 Q1 (premier bloc 90 min) → confirmer l'accumulation.</li>
+      <li>Dans le M90 Q2 (manipulation) : chercher le sweep du M90 Q1 ET idéalement du H6 Q1.</li>
+      <li>Identifier le Judas Swing (premier mouvement après l'ouverture) → ne pas trader dans ce sens.</li>
+      <li>Attendre le retour → si biais bearish + Q2 manipule vers le haut → chercher un Signal d'Entree SHORT.</li>
+      <li>Setup : OB dans OB Level + Sweep + FVG dans FVG Level → Sell Limit au FVG Algo Level. TP à EQ.</li>
+    </ol>
+
+    <div class="callout callout-gold">
+      <div class="callout-title">⏰ Heure Optimale London</div>
+      <p>3h30 AM New York time (après l'ouverture de la Bourse de Londres à 3h AM). Les bougies se stabilisent après la volatilité initiale. C'est l'heure où le haut ou bas du jour se forme le plus fréquemment. C'est aussi votre ICT macro window principale.</p>
+    </div>
+
+    <div class="section-title">Modèle London Open X (XAMD)</div>
+    <p>Dans cette variante, Q1 <strong>distribue</strong> (expansion). On ne trade pas contre Q1. Options :</p>
+    <ul class="custom">
+      <li>Attendre Q3 (Manipulation de Q2) → chercher le Signal d'Entree dans Q3</li>
+      <li>Ou surveiller Q4 (X) qui peut être continuation de Q3 OU retournement</li>
+      <li>Si Q4 est un retournement → Signal d'Entree dans la direction opposée à Q3</li>
+    </ul>
+
+    <div class="section-title">Modèle New York Open Signal d'Entree</div>
+
+    <table class="data-table">
+      <thead><tr><th>Étape</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>7h30 AM NY time</td><td>Ouverture NY — votre "midnight open" pour la session NY</td></tr>
+        <tr><td>Avant 7h30</td><td>Accumulation → ne pas trader</td></tr>
+        <tr><td>7h30 – 9h00 AM NY</td><td>M90 Q1 → Observer uniquement</td></tr>
+        <tr><td>9h00 – 10h30 AM NY</td><td>M90 Q2 → Chercher la manipulation du Q1</td></tr>
+        <tr><td>Si Q2 sweep Q1</td><td>Setup Signal d'Entree dans la direction du biais</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-blue">
+      <div class="callout-title">📊 Statistiques Index Futures</div>
+      <p>71% des Quarterly SMT entre jours sur les index futures (NASDAQ, SP500, Dow) se produisent entre 6h AM et 12h AM NY time (New York AM session). Commencer à 6h AM NY — arrêter après 12h si pas de QSMT.</p>
+    </div>
+  </section>
+
+  <!-- ══════ MODULE 8 ══════ -->
+  <section class="module" id="m8">
+    <div class="module-header">
+      <span class="module-num">MODULE 08</span>
+      <h2>Time-Based PD Arrays</h2>
+    </div>
+
+    <div class="section-title">Concept</div>
+    <p>Une <strong>Time-Based PD Array (PDA Temporelle)</strong> est un Order Block, Fair Value Gap ou Balanced Price Range qui devient actif comme support/résistance uniquement pendant le quartile temporel correspondant à celui où il a été créé.</p>
+
+    <div class="callout callout-gold">
+      <div class="callout-title">💡 Règle des 60 Bougies</div>
+      <p>Une PDA temporelle reste active environ <strong>60 bougies maximum</strong> sur le timeframe où elle a été créée. Au-delà, elle perd son influence. Également : les PDAs retiennent les <em>corps</em> de bougies, pas les wicks — les wicks peuvent pénétrer dans la PDA.</p>
+    </div>
+
+    <div class="section-title">Hiérarchie des PDAs Temporelles</div>
+
+    <table class="data-table">
+      <thead><tr><th>Type de PDA</th><th>Durée Active</th><th>Qualité</th></tr></thead>
+      <tbody>
+        <tr><td>H6 Time-Based PDAs</td><td>6 heures</td><td>⭐⭐⭐ Meilleures — idéales pour supporter les GB</td></tr>
+        <tr><td>M90 Time-Based PDAs</td><td>90 minutes</td><td>⭐⭐ Suffisantes pour TP en temps normal</td></tr>
+        <tr><td>M15 Time-Based PDAs</td><td>~90 min (matching M90)</td><td>⭐⭐ Fiables pour frames 1–5 min</td></tr>
+        <tr><td>Micro PDAs (M90/4)</td><td>~22,5 minutes</td><td>⭐ Seulement 4 bougies M5 de protection</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Utilisation Pratique</div>
+    <p>Particulièrement utiles quand la price action est sloppy (volatile, sans direction claire) :</p>
+    <ul class="custom">
+      <li>Identifier un OB, FVG ou Balanced Price Range dans le bon quartile</li>
+      <li>Une fois dans ce quartile → la PDA agit comme support/résistance pour votre Signal d'Entree</li>
+      <li>Si aucune PDA ne soutient votre trade → réduire le sizing ou éviter le trade</li>
+      <li>Toujours vérifier qu'aucune PDA ne bloque votre chemin vers l'EQ (TP)</li>
+    </ul>
+
+    <div class="section-title">Application sur le Timeframe Journalier</div>
+    <ol class="custom">
+      <li>Identifier les grands swings sur Daily ou H4</li>
+      <li>Déterminer dans quel quartile temporel (hebdomadaire, mensuel...) ce swing s'est produit</li>
+      <li>Chercher dans le MÊME quartile du cycle précédent les PDAs correspondantes</li>
+      <li>Ces PDAs (FVG, BPR, OB) serviront de cible ou support pour les prochains swings</li>
+    </ol>
+
+    <div class="callout callout-blue">
+      <div class="callout-title">🔵 Usage Avancé</div>
+      <p>Les PDAs temporelles permettent de prendre des Signaux d'Entree sur des FVG M2 ou M3 (normalement évités) si et seulement si une PDA solide de timeframe supérieur soutient le trade. La PDA compense la qualité inférieure du FVG.</p>
+    </div>
+  </section>
+
+  <!-- ══════ MODULE 9 ══════ -->
+  <section class="module" id="m9">
+    <div class="module-header">
+      <span class="module-num">MODULE 09</span>
+      <h2>Gestion du Risque</h2>
+    </div>
+
+    <div class="section-title">La Stratégie Vegas</div>
+    <p>Après votre <strong>premier gain de la journée</strong> : fermez les charts et ne tradez plus. Vous garantissez une journée gagnante, vous prévenez la sur-trade, vous gardez votre liberté.</p>
+    <ul class="custom">
+      <li>Chaque heure supplémentaire sur les charts augmente la fatigue décisionnelle</li>
+      <li>Plus vous gagnez dans la journée, plus vous devenez laxiste dans les critères</li>
+      <li>Le marché présente un nombre limité de setups haute probabilité par jour</li>
+      <li>Le trading est censé vous donner de la liberté — utilisez-la</li>
+    </ul>
+
+    <div class="section-title">La Règle des 2 Pertes Maximales</div>
+    <p>Après 2 pertes dans une journée : fermez les charts et revenez demain.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0;">
+      <div class="callout callout-red" style="margin:0">
+        <div class="callout-title">🔴 Raison 1</div>
+        <p>Le marché tourne peut-être un algorithme Seek & Destroy incompatible avec votre stratégie.</p>
+      </div>
+      <div class="callout callout-gold" style="margin:0">
+        <div class="callout-title">🟡 Raison 2</div>
+        <p>Vous n'êtes peut-être pas mentalement "avec it" aujourd'hui (fatigue, stress, émotions).</p>
+      </div>
+      <div class="callout callout-blue" style="margin:0">
+        <div class="callout-title">🔵 Raison 3</div>
+        <p>2 pertes + 1 gain demain = breakeven. 3 pertes = trou difficile à combler sous pression.</p>
+      </div>
+    </div>
+
+    <div class="section-title">Risque Constant par Trade</div>
+    <div class="rule-card">
+      <div class="rule-icon">📏</div>
+      <p><strong>Ne jamais augmenter ou réduire le risque selon les streaks.</strong> Augmenter après des gains → la prochaine perte efface 2 gains. Réduire après des pertes → vos gains ne paieront pas vos pertes. Solution : risque fixe pour chaque trade, sans exception.</p>
+    </div>
+
+    <div class="section-title">Résultats Réels — Apex 100k Static Challenge</div>
+
+    <div class="stat-strip">
+      <div class="stat-mini"><div class="val" style="color:var(--green)">69.2%</div><div class="lbl">Win Rate</div></div>
+      <div class="stat-mini"><div class="val" style="color:var(--gold-light)">~6.0</div><div class="lbl">Profit Factor</div></div>
+      <div class="stat-mini"><div class="val" style="color:var(--blue)">81%</div><div class="lbl">Jours Gagnants</div></div>
+    </div>
+
+    <table class="data-table">
+      <thead><tr><th>Paramètre</th><th>Valeur</th></tr></thead>
+      <tbody>
+        <tr><td>Composition des trades</td><td>9 gains · 4 breakevens · 4 pertes (dont 3 erreurs d'exécution évitables)</td></tr>
+        <tr><td>Meilleure série</td><td>7 jours gagnants consécutifs</td></tr>
+        <tr><td>Win Rate long terme Signal d'Entree</td><td>~68% (avec erreurs incluses)</td></tr>
+        <tr><td>RR long terme</td><td>~2.0</td></tr>
+        <tr><td>Interpretation Profit Factor 6</td><td>Pour chaque dollar perdu, 6 dollars gagnés</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Sizing pour les Prop Firm Challenges</div>
+    <ol class="custom">
+      <li>Identifier votre drawdown maximum autorisé (ex: 625$ sur Apex 100k Static)</li>
+      <li>Décider combien de "vies" vous voulez (recommandé : 6 pertes minimum)</li>
+      <li>Calculer le risque par trade : 625$ / 6 ≈ 100$ par trade</li>
+      <li>Maintenir ce risque CONSTANT — ne jamais l'augmenter même après 3 gains</li>
+      <li>Ignorer les délais de challenge — le renouvellement mensuel est un piège psychologique</li>
+      <li>Préférer les drawdowns statiques (pas les trailing drawdowns, difficiles à tracker)</li>
+    </ol>
+
+    <div class="callout callout-green">
+      <div class="callout-title">📈 Simulation Monte Carlo — Win Rate 50%</div>
+      <p>25 trades · 1% de risque · Win Rate 50% · RR 1.93 → gain moyen de <strong>13%</strong> sur un compte de 100k. Cela passe facilement une challenge à objectif 10%. <strong>Breakeven minimum</strong> : ~36% de win rate avec ce RR.</p>
+    </div>
+  </section>
+
+  <!-- ══════ MODULE 10 ══════ -->
+  <section class="module" id="m10">
+    <div class="module-header">
+      <span class="module-num">MODULE 10</span>
+      <h2>Le Trader Professionnel</h2>
+    </div>
+
+    <div class="big-quote">
+      <p>The magic that you are trying to find lies in the work that you are trying to avoid.</p>
+      <cite>Principe Fondamental — Algorithmic Academy</cite>
+    </div>
+
+    <div class="section-title">Le Plan de Trading</div>
+    <p>La majorité des traders n'ont pas de plan de trading. Écrire un plan hors session permet de réfléchir sans pression émotionnelle et de s'y référer objectivement pendant le trading.</p>
+    <p>Votre plan doit inclure : critères d'entrée exacts, stop loss, take profit, règles de risque, jours et heures à trader, actifs, conditions à éviter, règles Vegas + 2 pertes.</p>
+
+    <div class="section-title">Le Journal de Trading</div>
+    <p>Ce qui est mesuré est géré. Logger chaque trade avec :</p>
+    <ul class="custom">
+      <li>Screenshot exécution M5 (zoomé) + screenshot contexte HTF (H1/H4 avec liquidité et biais)</li>
+      <li>Grade du setup (A+, A, B, C) et confluences présentes</li>
+      <li>Type de sweep (external/internal, M5/H1/Daily...)</li>
+      <li>Résultat (Win/Loss/Breakeven) + erreurs d'exécution identifiées</li>
+    </ul>
+
+    <div class="callout callout-red">
+      <div class="callout-title">🔴 Règle d'Or du Journal</div>
+      <p>Ne jamais logger un trade FOMO ou un market order comme un "Signal d'Entree". Les différencier clairement — sinon votre win rate sera faussé et vous ne pourrez pas améliorer votre edge.</p>
+    </div>
+
+    <div class="section-title">Le Playbook</div>
+    <p>Votre cheat sheet — la réponse à l'examen "trouver un Signal d'Entree". Avant chaque session, le réviser pour conditionner votre cerveau à reconnaître exactement ce que vous cherchez. Contenu :</p>
+    <ul class="custom">
+      <li>Chaque Signal d'Entree clean pris et TPé — classé par grade (A+, A, B)</li>
+      <li>Variations et edge conditions positives du Signal d'Entree</li>
+      <li>Cas limites que vous êtes prêt à prendre (avec raisonnement documenté)</li>
+    </ul>
+
+    <div class="section-title">Le Book of Truths</div>
+    <p>L'opposé du playbook : tous les trades que vous ne voulez plus jamais prendre.</p>
+    <ul class="custom">
+      <li>Signaux d'Entree pris avec critères manquants → stop-lossés</li>
+      <li>FOMO trades, market orders, edge conditions négatives</li>
+      <li>Lire avant chaque session pour éviter de répéter les mêmes erreurs</li>
+    </ul>
+
+    <div class="section-title">Daily & Weekly Reviews</div>
+    <p>Ce processus vous fait passer de "comprendre le Signal d'Entree" à "n'exécuter que de vrais Signaux d'Entree" :</p>
+    <ol class="custom">
+      <li>Après une perte : analyser le trade avec un esprit frais, identifier le critère manquant</li>
+      <li>Passer en revue la price action du reste de la journée : un GB clean s'est-il formé après votre perte ?</li>
+      <li>Avec le temps : vous conditionnez votre esprit à faire confiance que des setups propres se présentent → vous arrêtez de prendre des setups imparfaits</li>
+    </ol>
+  </section>
+
+  <!-- ══════ MODULE 11 ══════ -->
+  <section class="module" id="m11">
+    <div class="module-header">
+      <span class="module-num">MODULE 11</span>
+      <h2>L'Indicateur Algorithmique</h2>
+    </div>
+
+    <div class="section-title">Version 1 — Algorithmic Academy v1</div>
+    <p>Indicateur sur TradingView qui dessine automatiquement les cycles algorithmiques et leurs niveaux cles.</p>
+    <ul class="custom">
+      <li>Dessine les cycles hebdomadaires ou journaliers automatiquement</li>
+      <li>Montre haut et bas de chaque cycle + corps des bougies</li>
+      <li>Facilite l'identification du SMT entre jours ou sessions</li>
+      <li>Contours explicites entre les quartiles pour éviter les erreurs</li>
+    </ul>
+    <div class="callout callout-gold">
+      <div class="callout-title">⚙️ Configuration</div>
+      <p>Régler "Start of Day" à <strong>18h00</strong> NY time pour synchroniser avec les cycles journaliers. Si décalé, ajuster l'offset fuseau horaire. Vérifier avec l'indicateur "Day Quarterly Theory by Two Degrees" comme référence.</p>
+    </div>
+
+    <div class="section-title">Version 2 — Reloaded (Quarterly SMT Helper)</div>
+    <p>Ajout majeur : le <strong>Quarterly SMT Helper</strong>.</p>
+    <ul class="custom">
+      <li>Dessine en temps réel les Rejection Blocks dès qu'une bougie viole le haut/bas du corps précédent</li>
+      <li>Alerte visuelle pop-up quand un potential SMT se forme</li>
+      <li>Mise à jour automatique des labels de cycles selon le timeframe</li>
+    </ul>
+
+    <table class="data-table">
+      <thead><tr><th>Cycle</th><th>Timeframe Requis pour voir le SMT Helper</th></tr></thead>
+      <tbody>
+        <tr><td>Daily (H6)</td><td>H1</td></tr>
+        <tr><td>Sessions (M360)</td><td>M15</td></tr>
+        <tr><td>M90</td><td>M5</td></tr>
+        <tr><td>Micro</td><td>M1</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Version 3 — Signal d'Entree Finder</div>
+    <p>Trouve automatiquement le meilleur FVG et dessine le range algorithmique dynamique pour vous :</p>
+    <ul class="custom">
+      <li>Si au-dessus de l'EQ du dernier quartile (premium) → cherche le FVG le plus élevé depuis la première bougie du cycle actuel</li>
+      <li>Dessine : le FVG identifié, votre Stop Loss, les niveaux FVG/Breaker/Mitigation, votre TP (EQ)</li>
+    </ul>
+    <div class="callout callout-gold">
+      <div class="callout-title">⚠️ Limite</div>
+      <p>C'est une <strong>suggestion</strong>, pas un signal automatique. Ne trouvera pas tous les gaps. Parfois montre un Volume Imbalance au lieu d'un FVG. Si le gap suggéré ne convient pas, utiliser le Fib manuellement.</p>
+    </div>
+
+    <div class="section-title">Système d'Alertes</div>
+    <ol class="custom">
+      <li>Charger l'indicateur sur chaque chart d'actif (EU, GU, Gold, Indices...)</li>
+      <li>Aller dans "Alerts" → sélectionner le script "Algorithmic Academy Signal"</li>
+      <li>Activer "Any alert function call" en "Open-Ended" (alertes permanentes)</li>
+      <li>Choisir uniquement les pop-ups TradingView (email/son trop distrayant)</li>
+      <li>S'assurer d'être sur le BON timeframe pour le cycle concerné</li>
+    </ol>
+    <p>Les alertes tournent sur les serveurs TradingView, même si votre navigateur est fermé. Pour désactiver : aller dans l'onglet Alerts → Pause ou Delete.</p>
+  </section>
+
+  <!-- ══════ MODULE 12 ══════ -->
+  <section class="module" id="m12">
+    <div class="module-header">
+      <span class="module-num">MODULE 12</span>
+      <h2>Multi-Assets & Statistiques</h2>
+    </div>
+
+    <div class="section-title">Timing du QSMT par Asset</div>
+    <p>Statistiques collectées sur Juillet–Août 2024. Ces données changent — faire l'exercice vous-même régulièrement :</p>
+
+    <div class="timing-grid">
+      <div class="timing-card">
+        <h4>Index Futures <span>NASDAQ · SP500 · Dow</span></h4>
+        <p style="font-size:0.8rem;margin-bottom:10px;">QSMT entre jours : 14 occurrences en 2 mois</p>
+        <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:4px;">New York AM (6h–12h NY)</div>
+        <div class="timing-bar"><div class="timing-fill" style="width:71%;background:linear-gradient(90deg,var(--gold),var(--gold-light));"></div></div>
+        <div class="timing-pct">71% des QSMT ici</div>
+        <p style="font-size:0.78rem;margin-top:10px;margin-bottom:0;"><strong>Type dominant :</strong> Turtle Soup Close<br><strong>Recommandation :</strong> Commencer à 6h AM NY</p>
+      </div>
+      <div class="timing-card">
+        <h4>Métaux <span>Gold · Silver</span></h4>
+        <p style="font-size:0.8rem;margin-bottom:10px;">QSMT entre jours : 14 occurrences en 2 mois</p>
+        <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:4px;">Session Asie</div>
+        <div class="timing-bar"><div class="timing-fill" style="width:57%;background:linear-gradient(90deg,#C084FC,#818CF8);"></div></div>
+        <div class="timing-pct">57% des QSMT ici</div>
+        <p style="font-size:0.78rem;margin-top:10px;margin-bottom:0;"><strong>Type dominant :</strong> Turtle Soup Close<br><strong>Recommandation :</strong> Surveiller l'Asie</p>
+      </div>
+      <div class="timing-card">
+        <h4>Pétrole <span>Oil (WTI)</span></h4>
+        <p style="font-size:0.8rem;margin-bottom:10px;">QSMT entre jours : 15 occurrences en 2 mois</p>
+        <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:4px;">Session Londres (2h–6h AM NY)</div>
+        <div class="timing-bar"><div class="timing-fill" style="width:65%;background:linear-gradient(90deg,#34D399,#6EE7B7);"></div></div>
+        <div class="timing-pct">Majorité ici</div>
+        <p style="font-size:0.78rem;margin-top:10px;margin-bottom:0;"><strong>Dominant :</strong> 53% Close + 40% Wick<br><strong>Recommandation :</strong> 2h–6h AM NY</p>
+      </div>
+    </div>
+
+    <div class="callout callout-gold">
+      <div class="callout-title">📚 Homework Essentiel</div>
+      <p>Faire cette analyse vous-même sur les 2–3 derniers mois pour chaque asset que vous tradez. <strong>L'insight que vous gagnez en faisant le travail est plus valuable que le résultat lui-même.</strong> Comprendre QUAND chaque asset préfère bouger améliore drastiquement votre hit rate.</p>
+    </div>
+
+    <div class="section-title">Choisir le Bon Contrat Futures</div>
+    <p>Pour les index futures et les métaux/pétrole, trader le contrat avec le <strong>plus de volume</strong> pour obtenir la price action la plus propre (moins de gaps, niveaux algorithmiques plus précis).</p>
+    <ul class="custom">
+      <li>Aller sur <strong>Barchart.com</strong> → sélectionner l'asset → identifier le contrat au volume le plus élevé</li>
+      <li>Vérifier <strong>chaque semaine</strong> pour les index futures, métaux et pétrole</li>
+      <li>Un contrat à faible volume = price action gappy = niveaux Algo moins fiables</li>
+    </ul>
+
+    <div class="section-title">Calendrier Économique — Utilisation Avancée</div>
+    <table class="data-table">
+      <thead><tr><th>Outil</th><th>Utilisation</th></tr></thead>
+      <tbody>
+        <tr><td>Forex Factory</td><td>Filtrer les jours haute impact. Ne pas trader NFP, FOMC, CPI, Bank Rates. Vérifier chaque matin.</td></tr>
+        <tr><td>Yahoo Finance Earnings</td><td>Pour les index futures : filtrer par "Mega Cap". Ne pas trader avant un earnings report d'une mega-cap si before-market.</td></tr>
+        <tr><td>Barchart.com</td><td>Volume des contrats futures par mois. Identifier le contrat le plus liquide à trader. Vérifier hebdomadairement.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ══════ MODULE 13 ══════ -->
+  <section class="module" id="m13">
+    <div class="module-header">
+      <span class="module-num">MODULE 13</span>
+      <h2>Checklist d'Exécution & Les 10 Commandements</h2>
+    </div>
+
+    <div class="section-title">Checklist Pré-Session</div>
+    <div class="checklist" id="checklist-pre">
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Calendrier économique</strong> — Y a-t-il des annonces haute impact aujourd'hui ? (Forex Factory)</span></div>
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Earnings Mega-Cap</strong> — Yahoo Finance, filtrer par Mega Cap (si trading index futures)</span></div>
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Bon contrat futures</strong> — Barchart.com, vérifier le volume (hebdomadairement)</span></div>
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Biais DXY</strong> — Analyser H4/W1 : bullish ou bearish cette semaine ?</span></div>
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Quartile hebdomadaire</strong> — Sommes-nous en Q1 (accum.) ou Q2 (manipulation) de la semaine ?</span></div>
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Liquidité dessinée</strong> — Identifier la liquidité logique de la session</span></div>
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Playbook</strong> — Revoir 3–5 exemples pour conditionner le cerveau</span></div>
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Book of Truths</strong> — Rappeler les trades à ne plus jamais prendre</span></div>
+    </div>
+
+    <div class="section-title">Checklist Pendant la Session</div>
+    <div class="checklist" id="checklist-session">
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Q1 M90/H6</strong> — Asie a-t-elle consolidé ? Si oui, chercher GB en Q2</span></div>
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Sensibilité GB 27</strong> — Au moins 2 instances sur niveaux intermédiaires M5</span></div>
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Sweep de liquidité</strong> — M5 ou supérieur, avant l'entrée</span></div>
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Order Block</strong> — Dans l'OB Algo Level M5, corps couvrant significativement le niveau</span></div>
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Fair Value Gap</strong> — Dans le FVG Algo Level M5, <strong>3ème bougie fermée</strong></span></div>
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Biais aligné</strong> — Setup dans la direction du biais journalier</span></div>
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Liquidité dessinée</strong> — Il y a une raison logique que le prix aille dans cette direction</span></div>
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Grader le setup</strong> — Raid ou Sweep ? MSB ? → A+, A, B ou C</span></div>
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Placer l'ordre</strong> — Limit au FVG Algo Level · SL au High/Low du range · TP à EQ</span></div>
+      <div class="check-item" onclick="this.classList.toggle('checked')"><div class="check-box"></div><span><strong>Attendre</strong> — Ne pas modifier SL. Annuler si EQ dépassé sans tap.</span></div>
+    </div>
+
+    <div class="section-title">Les 10 Commandements du Signal d'Entree</div>
+
+    <div class="commandement"><div class="cmd-num">I</div><p>Je ne prends <strong>jamais de Market Order</strong> — seulement des Limit Orders au FVG Algo Level précis.</p></div>
+    <div class="commandement"><div class="cmd-num">II</div><p>Je TP <strong>toujours à EQ</strong> (50% du range) — jamais de runners, jamais de partials, jamais d'extension.</p></div>
+    <div class="commandement"><div class="cmd-num">III</div><p>Je ne déplace <strong>jamais mon Stop Loss</strong> — pas même à break even. Il reste là où je l'ai placé.</p></div>
+    <div class="commandement"><div class="cmd-num">IV</div><p>Je ferme mes charts après mon <strong>premier gain</strong> de la journée — Vegas Strategy, sans exception.</p></div>
+    <div class="commandement"><div class="cmd-num">V</div><p>Je ferme mes charts après <strong>2 pertes</strong> dans la journée et je reviens demain.</p></div>
+    <div class="commandement"><div class="cmd-num">VI</div><p>Je ne trade <strong>jamais</strong> les jours NFP, FOMC, CPI ou Bank Rate — ce sont des événements manuels.</p></div>
+    <div class="commandement"><div class="cmd-num">VII</div><p>Je garde mon risque <strong>constant</strong> pour chaque trade — ni plus après un gain, ni moins après une perte.</p></div>
+    <div class="commandement"><div class="cmd-num">VIII</div><p>Je dois avoir <strong>tous les critères</strong> validés — un seul manquant = ce n'est PAS un Signal d'Entree.</p></div>
+    <div class="commandement"><div class="cmd-num">IX</div><p>Je fais confiance que de vrais Signaux d'Entree se présenteront — la <strong>patience</strong> est ma stratégie principale.</p></div>
+    <div class="commandement"><div class="cmd-num">X</div><p>Ce qui compte, c'est ma performance sur <strong>10–30 trades</strong>, jamais sur 1 trade individuel.</p></div>
+
+    <div class="big-quote" style="margin-top:48px;">
+      <p>The magic you are trying to find lies in the work you are trying to avoid.</p>
+      <cite>Algorithmic Academy — Principe Fondamental</cite>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="footer">
+    <p>Cours Strategie d'Entree Algorithmique · Algorithmic Academy · 13 Modules · Toutes confluences ICT incluses</p>
+    <p style="margin-top:8px;color:var(--border)">Trading comporte des risques. Ce cours est éducatif. Pas de conseil financier.</p>
+  </footer>
+
+</main>
+
+<script>
+// ── Progress Bar ───────────────────────────────
+const fill = document.getElementById('progress-fill');
+window.addEventListener('scroll', () => {
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+  fill.style.width = (window.scrollY / docH * 100) + '%';
+}, { passive: true });
+
+// ── Intersection Observer → fade in ───────────
+const modules = document.querySelectorAll('.module');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.06 });
+modules.forEach(m => io.observe(m));
+
+// ── Active nav item ────────────────────────────
+const sections = [...document.querySelectorAll('[id]')];
+const navItems = document.querySelectorAll('.nav-item');
+
+function getActive() {
+  const scrollY = window.scrollY + 100;
+  for (let i = sections.length - 1; i >= 0; i--) {
+    if (sections[i].offsetTop <= scrollY) return sections[i].id;
+  }
+  return sections[0]?.id;
+}
+
+function updateNav() {
+  const id = getActive();
+  navItems.forEach(a => {
+    const href = a.getAttribute('href');
+    a.classList.toggle('active', href === '#' + id || (id === null && href === '#hero'));
+  });
+}
+
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+
+// ── Timing bar animation ───────────────────────
+const barIO = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.timing-fill').forEach(b => {
+        const w = b.style.width;
+        b.style.width = '0%';
+        setTimeout(() => { b.style.width = w; }, 100);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.timing-grid').forEach(g => barIO.observe(g));
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>

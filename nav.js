@@ -11,6 +11,7 @@
       { id: 'digital-time-theory',  label: 'Digital Time Theory' },
       { id: 'niveaux-algorithmiques', label: 'Niveaux Algorithmiques' },
       { id: 'ranges-fractals',      label: 'Ranges Fractals' },
+      { id: 'strategie-entree',     label: 'Strategie d Entree Algo' },
     ]},
     { name: 'Protocole', items: [
       { id: 'hub-cours',     label: 'Bibliotheque' },
