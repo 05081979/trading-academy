@@ -112,6 +112,14 @@ td.pos{color:var(--green);font-weight:600}td.neg{color:var(--red);font-weight:60
 .toast.success{border-color:rgba(34,197,94,.4);color:var(--green)}
 .toast.error{border-color:rgba(239,68,68,.4);color:var(--red)}
 
+/* ── Analyses Graphiques ── */
+.ag-section-title{font-size:18px;font-weight:700;color:var(--text);margin:28px 0 16px}
+.ag-section-title span{color:var(--blue)}
+.ag-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:900px){.ag-grid{grid-template-columns:1fr}}
+.ag-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.ag-card h3{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:12px}
+
 @media(max-width:640px){.stats-grid{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr}.j-header{flex-direction:column;align-items:flex-start}.filters-bar{flex-direction:column}}
 </style>
 </head>
@@ -147,6 +155,17 @@ td.pos{color:var(--green);font-weight:600}td.neg{color:var(--red);font-weight:60
       </div>
       <div class="cal-grid" id="calGrid"></div>
     </div>
+  </div>
+
+  <!-- Analyses Graphiques -->
+  <h2 class="ag-section-title"><span>Analyses</span> Graphiques</h2>
+  <div class="ag-grid">
+    <div class="ag-card"><h3>P&L par Session</h3><canvas id="chartPnlSession" height="260"></canvas></div>
+    <div class="ag-card"><h3>P&L par Setup</h3><canvas id="chartPnlSetup" height="260"></canvas></div>
+    <div class="ag-card"><h3>P&L par Jour</h3><canvas id="chartPnlDay" height="260"></canvas></div>
+    <div class="ag-card"><h3>Taux de Reussite</h3><canvas id="chartWinRate" height="260"></canvas></div>
+    <div class="ag-card"><h3>Repartition par Session</h3><canvas id="chartDistSession" height="260"></canvas></div>
+    <div class="ag-card"><h3>Repartition par Setup</h3><canvas id="chartDistSetup" height="260"></canvas></div>
   </div>
 
   <!-- Category Stats -->
@@ -253,6 +272,7 @@ function refresh() {
   renderStats(filtered);
   renderEquity(filtered);
   renderCalendar();
+  renderCharts(filtered);
   renderCatStats(filtered);
   renderTable(filtered);
 }
@@ -748,8 +768,246 @@ function toast(msg, type) {
   setTimeout(() => el.classList.remove('show'), 3000);
 }
 
+/* ── Chart Drawing Utilities ── */
+function prepCanvas(canvasId, heightPx) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const W = rect.width - 32; // account for card padding
+  const H = heightPx || 260;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+  return { canvas, ctx, W, H };
+}
+
+function drawBarChart(canvasId, labels, values, barColors) {
+  const { ctx, W, H } = prepCanvas(canvasId, 260);
+  const padT = 24, padB = 40, padL = 54, padR = 16;
+  const cW = W - padL - padR, cH = H - padT - padB;
+
+  if (!values.length || values.every(v => v === 0)) {
+    ctx.fillStyle = '#4a5568'; ctx.font = '13px Inter,sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('Aucune donnee', W / 2, H / 2);
+    return;
+  }
+
+  const maxAbs = Math.max(...values.map(Math.abs), 1);
+  const hasNeg = values.some(v => v < 0);
+  const hasPos = values.some(v => v > 0);
+  let yMin, yMax;
+  if (hasNeg && hasPos) { yMax = maxAbs; yMin = -maxAbs; }
+  else if (hasNeg) { yMax = 0; yMin = -maxAbs; }
+  else { yMax = maxAbs; yMin = 0; }
+  const rangeY = yMax - yMin || 1;
+
+  const y = v => padT + (1 - (v - yMin) / rangeY) * cH;
+
+  // grid lines
+  ctx.strokeStyle = '#1c1f2e'; ctx.lineWidth = 1;
+  const gridSteps = 5;
+  for (let i = 0; i <= gridSteps; i++) {
+    const yy = padT + (i / gridSteps) * cH;
+    ctx.beginPath(); ctx.moveTo(padL, yy); ctx.lineTo(W - padR, yy); ctx.stroke();
+    const val = yMax - (i / gridSteps) * rangeY;
+    ctx.fillStyle = '#4a5568'; ctx.font = '10px Inter,sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText('$' + val.toFixed(0), padL - 6, yy + 3);
+  }
+
+  // zero line
+  if (hasNeg && hasPos) {
+    const y0 = y(0);
+    ctx.strokeStyle = 'rgba(255,255,255,.15)'; ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(padL, y0); ctx.lineTo(W - padR, y0); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // bars
+  const n = labels.length;
+  const gap = Math.max(8, cW * 0.1 / n);
+  const barW = Math.min(60, (cW - gap * (n + 1)) / n);
+  const totalBarSpace = n * barW + (n + 1) * gap;
+  const offsetX = padL + (cW - totalBarSpace) / 2 + gap;
+
+  const radius = Math.min(4, barW / 4);
+
+  for (let i = 0; i < n; i++) {
+    const v = values[i];
+    const bx = offsetX + i * (barW + gap);
+    const baseY = (hasNeg && hasPos) ? y(0) : (hasNeg ? padT : padT + cH);
+    const topY = y(v);
+    const barH = Math.abs(topY - baseY);
+
+    if (barH < 1) continue;
+
+    ctx.fillStyle = barColors[i];
+    // draw rounded rect bar
+    const barTop = Math.min(topY, baseY);
+    ctx.beginPath();
+    ctx.moveTo(bx + radius, barTop);
+    ctx.lineTo(bx + barW - radius, barTop);
+    ctx.quadraticCurveTo(bx + barW, barTop, bx + barW, barTop + radius);
+    ctx.lineTo(bx + barW, barTop + barH - radius);
+    ctx.quadraticCurveTo(bx + barW, barTop + barH, bx + barW - radius, barTop + barH);
+    ctx.lineTo(bx + radius, barTop + barH);
+    ctx.quadraticCurveTo(bx, barTop + barH, bx, barTop + barH - radius);
+    ctx.lineTo(bx, barTop + radius);
+    ctx.quadraticCurveTo(bx, barTop, bx + radius, barTop);
+    ctx.closePath();
+    ctx.fill();
+
+    // value label on top
+    ctx.fillStyle = '#d0d8e8'; ctx.font = 'bold 10px Inter,sans-serif'; ctx.textAlign = 'center';
+    const labelY = v >= 0 ? topY - 6 : topY + barH + 14;
+    ctx.fillText('$' + v.toFixed(0), bx + barW / 2, labelY);
+  }
+
+  // x-axis labels
+  ctx.fillStyle = '#d0d8e8'; ctx.font = '11px Inter,sans-serif'; ctx.textAlign = 'center';
+  for (let i = 0; i < n; i++) {
+    const bx = offsetX + i * (barW + gap);
+    ctx.fillText(labels[i], bx + barW / 2, H - 8);
+  }
+}
+
+function drawPieChart(canvasId, dataValues, colors, labels) {
+  const { ctx, W, H } = prepCanvas(canvasId, 260);
+  const total = dataValues.reduce((s, v) => s + v, 0);
+
+  if (!total) {
+    ctx.fillStyle = '#4a5568'; ctx.font = '13px Inter,sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('Aucune donnee', W / 2, H / 2);
+    return;
+  }
+
+  const legendH = Math.min(labels.length * 18 + 10, 80);
+  const chartH = H - legendH;
+  const cx = W / 2;
+  const cy = chartH / 2;
+  const outerR = Math.min(cx, cy) - 16;
+  const innerR = outerR * 0.55; // donut hole
+  const sliceGap = 0.02; // radians gap between slices
+
+  let startAngle = -Math.PI / 2;
+
+  for (let i = 0; i < dataValues.length; i++) {
+    if (dataValues[i] === 0) continue;
+    const sliceAngle = (dataValues[i] / total) * Math.PI * 2;
+    const midAngle = startAngle + sliceAngle / 2;
+
+    // small offset for gap effect
+    const gapX = Math.cos(midAngle) * 2;
+    const gapY = Math.sin(midAngle) * 2;
+
+    ctx.beginPath();
+    ctx.arc(cx + gapX, cy + gapY, outerR, startAngle + sliceGap / 2, startAngle + sliceAngle - sliceGap / 2);
+    ctx.arc(cx + gapX, cy + gapY, innerR, startAngle + sliceAngle - sliceGap / 2, startAngle + sliceGap / 2, true);
+    ctx.closePath();
+    ctx.fillStyle = colors[i];
+    ctx.fill();
+
+    startAngle += sliceAngle;
+  }
+
+  // center label (for win rate: show percentage; for distribution: show total)
+  ctx.fillStyle = '#d0d8e8'; ctx.textAlign = 'center';
+  if (canvasId === 'chartWinRate') {
+    const pct = total > 0 && dataValues[0] !== undefined ? (dataValues[0] / total * 100).toFixed(1) + '%' : '--';
+    ctx.font = 'bold 22px Inter,sans-serif';
+    ctx.fillText(pct, cx, cy + 2);
+    ctx.font = '10px Inter,sans-serif'; ctx.fillStyle = '#8892ab';
+    ctx.fillText('Win Rate', cx, cy + 18);
+  } else {
+    ctx.font = 'bold 18px Inter,sans-serif';
+    ctx.fillText(total, cx, cy + 2);
+    ctx.font = '10px Inter,sans-serif'; ctx.fillStyle = '#8892ab';
+    ctx.fillText('trades', cx, cy + 18);
+  }
+
+  // legend below
+  const legendY = chartH + 6;
+  const perRow = Math.min(labels.length, Math.floor(W / 110) || 1);
+  const rowH = 18;
+  ctx.font = '11px Inter,sans-serif';
+
+  for (let i = 0; i < labels.length; i++) {
+    if (dataValues[i] === 0 && canvasId !== 'chartWinRate') continue;
+    const row = Math.floor(i / perRow);
+    const col = i % perRow;
+    const colW = W / perRow;
+    const lx = col * colW + 12;
+    const ly = legendY + row * rowH;
+
+    ctx.fillStyle = colors[i];
+    ctx.beginPath();
+    ctx.arc(lx + 5, ly + 6, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#d0d8e8'; ctx.textAlign = 'left';
+    const pctStr = (dataValues[i] / total * 100).toFixed(0) + '%';
+    ctx.fillText(labels[i] + ' (' + dataValues[i] + ' - ' + pctStr + ')', lx + 14, ly + 10);
+  }
+}
+
+/* ── Render All Charts ── */
+function renderCharts(list) {
+  // --- 1. P&L par Session ---
+  const sessionLabels = ['Asia', 'London', 'NY AM', 'NY PM'];
+  const sessionPnl = sessionLabels.map(s => list.filter(t => t.session === s).reduce((sum, t) => sum + t.pnl, 0));
+  const sessionColors = sessionPnl.map(v => v >= 0 ? '#22c55e' : '#ef4444');
+  drawBarChart('chartPnlSession', sessionLabels, sessionPnl, sessionColors);
+
+  // --- 2. P&L par Setup (only setups with trades) ---
+  const setupAll = ['BOS', 'ChoCh', 'CISD', 'IDM', 'FVG', 'OB', 'Sweep', 'HIPPO', 'Other'];
+  const setupPnlAll = setupAll.map(s => list.filter(t => t.setup === s).reduce((sum, t) => sum + t.pnl, 0));
+  const setupCountAll = setupAll.map(s => list.filter(t => t.setup === s).length);
+  const setupLabels = [], setupPnl = [], setupColors = [];
+  for (let i = 0; i < setupAll.length; i++) {
+    if (setupCountAll[i] > 0) {
+      setupLabels.push(setupAll[i]);
+      setupPnl.push(setupPnlAll[i]);
+      setupColors.push(setupPnlAll[i] >= 0 ? '#22c55e' : '#ef4444');
+    }
+  }
+  drawBarChart('chartPnlSetup', setupLabels, setupPnl, setupColors);
+
+  // --- 3. P&L par Jour ---
+  const dayNames = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'];
+  const dayIdx = [1, 2, 3, 4, 5]; // JS getDay: Mon=1...Fri=5
+  const dayPnl = dayIdx.map(di => list.filter(t => new Date(t.date).getDay() === di).reduce((sum, t) => sum + t.pnl, 0));
+  const dayColors = dayPnl.map(v => v >= 0 ? '#22c55e' : '#ef4444');
+  drawBarChart('chartPnlDay', dayNames, dayPnl, dayColors);
+
+  // --- 4. Pie: Win Rate ---
+  const wins = list.filter(t => t.pnl > 0).length;
+  const losses = list.filter(t => t.pnl <= 0).length;
+  drawPieChart('chartWinRate', [wins, losses], ['#22c55e', '#ef4444'], ['Gagnants', 'Perdants']);
+
+  // --- 5. Pie: Repartition par Session ---
+  const sessDistVals = sessionLabels.map(s => list.filter(t => t.session === s).length);
+  const sessDistColors = ['#FF9800', '#2196F3', '#4CAF50', '#F44336'];
+  drawPieChart('chartDistSession', sessDistVals, sessDistColors, sessionLabels);
+
+  // --- 6. Pie: Repartition par Setup ---
+  const setupDistColors = ['#4a7cff', '#22c55e', '#FF9800', '#ef4444', '#9C27B0', '#00BCD4', '#FFEB3B', '#E91E63', '#607D8B'];
+  const sLabels = [], sVals = [], sColors = [];
+  for (let i = 0; i < setupAll.length; i++) {
+    if (setupCountAll[i] > 0) {
+      sLabels.push(setupAll[i]);
+      sVals.push(setupCountAll[i]);
+      sColors.push(setupDistColors[i % setupDistColors.length]);
+    }
+  }
+  drawPieChart('chartDistSetup', sVals, sColors, sLabels);
+}
+
 /* ── Resize ── */
-window.addEventListener('resize', () => { renderEquity(getFiltered()); });
+window.addEventListener('resize', () => { const f = getFiltered(); renderEquity(f); renderCharts(f); });
 </script>
 
 <script src="../nav.js"></script>
