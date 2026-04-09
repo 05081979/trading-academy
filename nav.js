@@ -20,6 +20,9 @@
     { id: 'fiches-catalogue',      label: '17. Catalogue PDFs' },
     { id: 'fiches-avancees',       label: '18. Fiches Avancees' },
     { id: 'fiches-visuelles',      label: '19. Fiches Visuelles' },
+    { id: 'htf-structure-org',     label: '20. HTF Structure' },
+    { id: 'dr-ote-mtf',            label: '21. DR OTE MTF' },
+    { id: 'qt-cycles',             label: '22. QT Cycles' },
   ];
 
   const filename = window.location.pathname.split('/').pop().replace('.html', '');

@@ -1,0 +1,289 @@
+//@version=6
+indicator("Dealing Range with Last Swings MTF", shorttitle="DR Sw MTF", overlay=true,
+         max_lines_count=500, max_labels_count=500, max_boxes_count=500)
+
+// === INPUTS ===
+grp_dr = "Dealing Range"
+length = input.int(20, "Range Lookback Bars", group=grp_dr)
+
+grp_tf = "Timeframes"
+show_cur = input.bool(false, "Current TF", group=grp_tf, tooltip="Active le DR du TF actuel. Desactive si deja coche ci-dessous.")
+show_5m  = input.bool(false, "5m",  inline="t1", group=grp_tf)
+show_15m = input.bool(false, "15m", inline="t1", group=grp_tf)
+show_30m = input.bool(false, "30m", inline="t1", group=grp_tf)
+show_1h  = input.bool(true,  "1H",  inline="t2", group=grp_tf)
+show_4h  = input.bool(true,  "4H",  inline="t2", group=grp_tf)
+show_D   = input.bool(false, "D",   inline="t2", group=grp_tf)
+show_W   = input.bool(false, "W",   inline="t3", group=grp_tf)
+show_M   = input.bool(false, "M",   inline="t3", group=grp_tf)
+
+grp_levels = "Levels"
+showHigh   = input.bool(true, "High",    inline="lv1", group=grp_levels)
+showLow    = input.bool(true, "Low",     inline="lv1", group=grp_levels)
+show75     = input.bool(true, "75%",     inline="lv2", group=grp_levels)
+show50     = input.bool(true, "50% EQ",  inline="lv2", group=grp_levels)
+show25     = input.bool(true, "25%",     inline="lv2", group=grp_levels)
+
+grp_ote = "OTE Levels"
+showOTE    = input.bool(true, "Show OTE Levels", group=grp_ote)
+show79     = input.bool(true, "0.79",    inline="ot1", group=grp_ote)
+show705    = input.bool(true, "0.705",   inline="ot1", group=grp_ote)
+show618    = input.bool(true, "0.618",   inline="ot1", group=grp_ote)
+show382    = input.bool(true, "0.382",   inline="ot2", group=grp_ote)
+show295    = input.bool(true, "0.295",   inline="ot2", group=grp_ote)
+show21     = input.bool(true, "0.21",    inline="ot2", group=grp_ote)
+
+grp_style = "Lines"
+lineW         = input.int(1, "Line Width", minval=1, maxval=4, group=grp_style)
+colLine       = input.string("TF Color", "Line Color", options=["TF Color","White","Gray","Custom"], group=grp_style)
+colLineCustom = input.color(color.new(#FFFFFF, 0), "Custom Line Color", group=grp_style)
+rightBuf      = input.int(8, "Extend Right", minval=1, maxval=50, group=grp_style)
+
+grp_lbl = "Labels"
+showLabels = input.bool(true, "Show Labels", group=grp_lbl)
+colLabel   = input.color(color.white, "Label Text Color", group=grp_lbl)
+labelSzIn  = input.string("Tiny", "Label Size", options=["Tiny","Small","Normal","Large","Huge"], group=grp_lbl)
+lblShowH   = input.bool(true, "Label High", inline="lb1", group=grp_lbl)
+lblShowL   = input.bool(true, "Label Low",  inline="lb1", group=grp_lbl)
+lblShow75  = input.bool(true, "Label 75%",  inline="lb2", group=grp_lbl)
+lblShow50  = input.bool(true, "Label EQ",   inline="lb2", group=grp_lbl)
+lblShow25  = input.bool(true, "Label 25%",  inline="lb2", group=grp_lbl)
+lblShowOTE = input.bool(true, "Label OTE",  inline="lb3", group=grp_lbl)
+
+grp_zone = "Zones"
+showZones   = input.bool(true, "Zone Shading", group=grp_zone)
+premiumCol  = input.color(color.new(color.red, 80),  "Premium",  inline="zc", group=grp_zone)
+discountCol = input.color(color.new(color.teal, 80), "Discount", inline="zc", group=grp_zone)
+showTable   = input.bool(true, "Table", group=grp_zone)
+
+grp_col = "TF Colors"
+col_cur = input.color(color.new(#FFFFFF, 0), "Current", group=grp_col)
+col_5m  = input.color(color.new(#26A69A, 0), "5m",  inline="cc1", group=grp_col)
+col_15m = input.color(color.new(#42A5F5, 0), "15m", inline="cc1", group=grp_col)
+col_30m = input.color(color.new(#5C6BC0, 0), "30m", inline="cc1", group=grp_col)
+col_1h  = input.color(color.new(#FFA726, 0), "1H",  inline="cc2", group=grp_col)
+col_4h  = input.color(color.new(#EF5350, 0), "4H",  inline="cc2", group=grp_col)
+col_D   = input.color(color.new(#AB47BC, 0), "D",   inline="cc2", group=grp_col)
+col_W   = input.color(color.new(#EC407A, 0), "W",   inline="cc3", group=grp_col)
+col_M   = input.color(color.new(#8D6E63, 0), "M",   inline="cc3", group=grp_col)
+
+// === HELPERS ===
+f_lsz(string sz) =>
+    switch sz
+        "Tiny"   => size.tiny
+        "Small"  => size.small
+        "Normal" => size.normal
+        "Large"  => size.large
+        "Huge"   => size.huge
+        => size.tiny
+
+labelSz = f_lsz(labelSzIn)
+
+f_lineCol(color tfCol) =>
+    switch colLine
+        "TF Color" => tfCol
+        "White"    => color.white
+        "Gray"     => color.gray
+        "Custom"   => colLineCustom
+        => tfCol
+
+// === DETECT SWINGS (exact same method as original) ===
+// ta.highest/ta.lowest = detection tool
+// ta.valuewhen = the REAL swing high/low = the Dealing Range
+f_dr(int len) =>
+    float rangeHigh = ta.highest(high, len)
+    float rangeLow  = ta.lowest(low, len)
+    float swH = ta.valuewhen(high == rangeHigh, high, 0)
+    float swL = ta.valuewhen(low  == rangeLow,  low,  0)
+    [swH, swL]
+
+// === CURRENT TF ===
+[swH_cur, swL_cur] = f_dr(length)
+
+// === MTF ===
+[swH_5m,  swL_5m]  = request.security(syminfo.tickerid, "5",   f_dr(length), lookahead=barmerge.lookahead_off)
+[swH_15m, swL_15m] = request.security(syminfo.tickerid, "15",  f_dr(length), lookahead=barmerge.lookahead_off)
+[swH_30m, swL_30m] = request.security(syminfo.tickerid, "30",  f_dr(length), lookahead=barmerge.lookahead_off)
+[swH_1h,  swL_1h]  = request.security(syminfo.tickerid, "60",  f_dr(length), lookahead=barmerge.lookahead_off)
+[swH_4h,  swL_4h]  = request.security(syminfo.tickerid, "240", f_dr(length), lookahead=barmerge.lookahead_off)
+[swH_D,   swL_D]   = request.security(syminfo.tickerid, "D",   f_dr(length), lookahead=barmerge.lookahead_off)
+[swH_W,   swL_W]   = request.security(syminfo.tickerid, "W",   f_dr(length), lookahead=barmerge.lookahead_off)
+[swH_M,   swL_M]   = request.security(syminfo.tickerid, "M",   f_dr(length), lookahead=barmerge.lookahead_off)
+
+// === DRAW DR between SwH and SwL ===
+f_drawDR(bool show, string tfStr, float drH, float drL,
+         color col, int rEdge,
+         array<line> aL, array<label> aLb, array<box> aB) =>
+    if show and not na(drH) and not na(drL) and drH != drL
+        int   lft  = bar_index
+        color lCol = f_lineCol(col)
+        int   eqW  = lineW + 1 > 4 ? 4 : lineW + 1
+        float rng  = drH - drL
+        float lv75 = drL + rng * 0.75
+        float lv50 = drL + rng * 0.50
+        float lv25 = drL + rng * 0.25
+
+        // High / Low (= Swing High / Swing Low)
+        if showHigh
+            aL.push(line.new(lft, drH, rEdge, drH, color=lCol, width=lineW, style=line.style_solid))
+        if showLow
+            aL.push(line.new(lft, drL, rEdge, drL, color=lCol, width=lineW, style=line.style_solid))
+
+        // 75% / 50% EQ / 25%
+        if show75
+            aL.push(line.new(lft, lv75, rEdge, lv75, color=lCol, width=lineW, style=line.style_dotted))
+        if show50
+            aL.push(line.new(lft, lv50, rEdge, lv50, color=lCol, width=eqW, style=line.style_dashed))
+        if show25
+            aL.push(line.new(lft, lv25, rEdge, lv25, color=lCol, width=lineW, style=line.style_dotted))
+
+        // OTE Levels
+        if showOTE
+            float lv79  = drL + rng * 0.79
+            float lv705 = drL + rng * 0.705
+            float lv618 = drL + rng * 0.618
+            float lv382 = drL + rng * 0.382
+            float lv295 = drL + rng * 0.295
+            float lv21  = drL + rng * 0.21
+            color oteP = color.new(color.red, 40)
+            color oteD = color.new(color.teal, 40)
+            if show79
+                aL.push(line.new(lft, lv79,  rEdge, lv79,  color=oteP, width=lineW, style=line.style_dotted))
+            if show705
+                aL.push(line.new(lft, lv705, rEdge, lv705, color=oteP, width=lineW, style=line.style_dotted))
+            if show618
+                aL.push(line.new(lft, lv618, rEdge, lv618, color=oteP, width=lineW, style=line.style_solid))
+            if show382
+                aL.push(line.new(lft, lv382, rEdge, lv382, color=oteD, width=lineW, style=line.style_solid))
+            if show295
+                aL.push(line.new(lft, lv295, rEdge, lv295, color=oteD, width=lineW, style=line.style_dotted))
+            if show21
+                aL.push(line.new(lft, lv21,  rEdge, lv21,  color=oteD, width=lineW, style=line.style_dotted))
+
+        // Zones premium / discount
+        if showZones
+            aB.push(box.new(lft, drH,  rEdge, lv50, bgcolor=premiumCol,  border_color=color.new(color.white, 100)))
+            aB.push(box.new(lft, lv50, rEdge, drL,  bgcolor=discountCol, border_color=color.new(color.white, 100)))
+
+        // Labels
+        if showLabels
+            if lblShowH and showHigh
+                aLb.push(label.new(rEdge + 1, drH, tfStr + " High",
+                         style=label.style_none, textcolor=colLabel, size=labelSz))
+            if lblShowL and showLow
+                aLb.push(label.new(rEdge + 1, drL, tfStr + " Low",
+                         style=label.style_none, textcolor=colLabel, size=labelSz))
+            if lblShow75 and show75
+                aLb.push(label.new(rEdge + 1, lv75, "0.75",
+                         style=label.style_none, textcolor=colLabel, size=labelSz))
+            if lblShow50 and show50
+                aLb.push(label.new(rEdge + 1, lv50, tfStr + " EQ",
+                         style=label.style_none, textcolor=colLabel, size=labelSz))
+            if lblShow25 and show25
+                aLb.push(label.new(rEdge + 1, lv25, "0.25",
+                         style=label.style_none, textcolor=colLabel, size=labelSz))
+            if showOTE and lblShowOTE
+                color otePLbl = color.new(color.red, 40)
+                color oteDLbl = color.new(color.teal, 40)
+                float _lv79  = drL + rng * 0.79
+                float _lv705 = drL + rng * 0.705
+                float _lv618 = drL + rng * 0.618
+                float _lv382 = drL + rng * 0.382
+                float _lv295 = drL + rng * 0.295
+                float _lv21  = drL + rng * 0.21
+                if show79
+                    aLb.push(label.new(rEdge + 1, _lv79,  "0.79",  style=label.style_none, textcolor=otePLbl, size=labelSz))
+                if show705
+                    aLb.push(label.new(rEdge + 1, _lv705, "0.705", style=label.style_none, textcolor=otePLbl, size=labelSz))
+                if show618
+                    aLb.push(label.new(rEdge + 1, _lv618, "0.618", style=label.style_none, textcolor=otePLbl, size=labelSz))
+                if show382
+                    aLb.push(label.new(rEdge + 1, _lv382, "0.382", style=label.style_none, textcolor=oteDLbl, size=labelSz))
+                if show295
+                    aLb.push(label.new(rEdge + 1, _lv295, "0.295", style=label.style_none, textcolor=oteDLbl, size=labelSz))
+                if show21
+                    aLb.push(label.new(rEdge + 1, _lv21,  "0.21",  style=label.style_none, textcolor=oteDLbl, size=labelSz))
+
+// === TABLE ===
+zoneText(float drH, float drL, float c) =>
+    if na(drH) or na(drL) or drH == drL
+        "—"
+    else
+        float lv50 = drL + (drH - drL) * 0.50
+        c >= drH ? "Above" : c >= lv50 ? "Premium" : c >= drL ? "Discount" : "Below"
+
+zoneColor(float drH, float drL, float c) =>
+    if na(drH) or na(drL) or drH == drL
+        color.gray
+    else
+        float lv50 = drL + (drH - drL) * 0.50
+        c >= lv50 ? #EF5350 : #26A69A
+
+var table tbl = table.new(position.top_right, 3, 10,
+                          bgcolor=color.new(#131722, 0),
+                          border_width=1,
+                          border_color=color.new(#363A45, 0),
+                          frame_width=1,
+                          frame_color=color.new(#363A45, 0))
+
+fillRow(table t, int row, bool show, string tfStr, float drH, float drL, color col) =>
+    if show and not na(drH) and not na(drL) and drH != drL
+        string zt = zoneText(drH, drL, close)
+        color  zc = zoneColor(drH, drL, close)
+        float  eq = drL + (drH - drL) * 0.50
+        table.cell(t, 0, row, tfStr, text_color=col, text_size=size.small, bgcolor=color.new(#131722, 0))
+        table.cell(t, 1, row, zt, text_color=color.white, text_size=size.small, bgcolor=color.new(zc, 60))
+        table.cell(t, 2, row, str.tostring(eq, format.mintick), text_color=color.new(color.white, 20), text_size=size.small, bgcolor=color.new(#131722, 0))
+
+// === CLEANUP + DRAW ===
+var array<line>  _lines  = array.new<line>()
+var array<label> _labels = array.new<label>()
+var array<box>   _boxes  = array.new<box>()
+
+if barstate.islast
+    for ln in _lines
+        line.delete(ln)
+    _lines.clear()
+    for lb in _labels
+        label.delete(lb)
+    _labels.clear()
+    for bx in _boxes
+        box.delete(bx)
+    _boxes.clear()
+
+    int rEdge = bar_index + rightBuf
+
+    f_drawDR(show_cur, "CUR", swH_cur, swL_cur, col_cur, rEdge, _lines, _labels, _boxes)
+    f_drawDR(show_5m,  "5m",  swH_5m,  swL_5m,  col_5m,  rEdge, _lines, _labels, _boxes)
+    f_drawDR(show_15m, "15m", swH_15m, swL_15m, col_15m, rEdge, _lines, _labels, _boxes)
+    f_drawDR(show_30m, "30m", swH_30m, swL_30m, col_30m, rEdge, _lines, _labels, _boxes)
+    f_drawDR(show_1h,  "1H",  swH_1h,  swL_1h,  col_1h,  rEdge, _lines, _labels, _boxes)
+    f_drawDR(show_4h,  "4H",  swH_4h,  swL_4h,  col_4h,  rEdge, _lines, _labels, _boxes)
+    f_drawDR(show_D,   "D",   swH_D,   swL_D,   col_D,   rEdge, _lines, _labels, _boxes)
+    f_drawDR(show_W,   "W",   swH_W,   swL_W,   col_W,   rEdge, _lines, _labels, _boxes)
+    f_drawDR(show_M,   "M",   swH_M,   swL_M,   col_M,   rEdge, _lines, _labels, _boxes)
+
+    if showTable
+        table.cell(tbl, 0, 0, "TF",   text_color=color.new(color.white, 40), text_size=size.small, bgcolor=color.new(#1E222D, 0))
+        table.cell(tbl, 1, 0, "Zone", text_color=color.new(color.white, 40), text_size=size.small, bgcolor=color.new(#1E222D, 0))
+        table.cell(tbl, 2, 0, "EQ",   text_color=color.new(color.white, 40), text_size=size.small, bgcolor=color.new(#1E222D, 0))
+
+        fillRow(tbl, 1, show_cur, "CUR", swH_cur, swL_cur, col_cur)
+        fillRow(tbl, 2, show_5m,  "5m",  swH_5m,  swL_5m,  col_5m)
+        fillRow(tbl, 3, show_15m, "15m", swH_15m, swL_15m, col_15m)
+        fillRow(tbl, 4, show_30m, "30m", swH_30m, swL_30m, col_30m)
+        fillRow(tbl, 5, show_1h,  "1H",  swH_1h,  swL_1h,  col_1h)
+        fillRow(tbl, 6, show_4h,  "4H",  swH_4h,  swL_4h,  col_4h)
+        fillRow(tbl, 7, show_D,   "D",   swH_D,   swL_D,   col_D)
+        fillRow(tbl, 8, show_W,   "W",   swH_W,   swL_W,   col_W)
+        fillRow(tbl, 9, show_M,   "M",   swH_M,   swL_M,   col_M)
+
+// === DATA WINDOW ===
+plot(swH_cur, "CUR High", display=display.data_window, color=col_cur)
+plot(swL_cur, "CUR Low",  display=display.data_window, color=col_cur)
+plot(swH_1h,  "1H High",  display=display.data_window, color=col_1h)
+plot(swL_1h,  "1H Low",   display=display.data_window, color=col_1h)
+plot(swH_4h,  "4H High",  display=display.data_window, color=col_4h)
+plot(swL_4h,  "4H Low",   display=display.data_window, color=col_4h)
+plot(swH_D,   "D High",   display=display.data_window, color=col_D)
+plot(swL_D,   "D Low",    display=display.data_window, color=col_D)

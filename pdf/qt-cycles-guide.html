@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide Quarterly Theory Cycles — Sessions + Cycles + True Opens</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  @page { size: A4; margin: 20mm 18mm; }
+  @media print {
+    .no-print { display: none !important; }
+    body { background: #fff !important; color: #1a1a2e !important; font-size: 11px !important; }
+    .page-break { page-break-before: always; }
+    h1, h2, h3 { color: #1a1a2e !important; }
+    .card { border: 1px solid #ddd !important; background: #f8f9fa !important; }
+    .header { background: #1a1a2e !important; }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0a0d14;
+    color: #cdd5e2;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .no-print {
+    position: fixed; top: 16px; right: 16px; z-index: 9999;
+    display: flex; gap: 8px;
+  }
+  .no-print button {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; padding: 10px 24px;
+    border-radius: 6px; border: 1px solid #c8a228;
+    background: rgba(200,162,40,0.1); color: #e5bc3c;
+    cursor: pointer; transition: 0.15s;
+  }
+  .no-print button:hover { background: rgba(200,162,40,0.2); }
+
+  .header {
+    background: linear-gradient(135deg, #0e1116 0%, #141926 100%);
+    padding: 48px 56px;
+    border-bottom: 2px solid #c8a228;
+  }
+  .header-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 3px; color: #c8a228;
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+  .header h1 {
+    font-size: 32px; font-weight: 800; color: #fff;
+    margin-bottom: 8px;
+  }
+  .header h1 span { color: #e5bc3c; }
+  .header p { color: #8594a8; font-size: 14px; max-width: 600px; }
+
+  .content { max-width: 900px; margin: 0 auto; padding: 40px; }
+
+  h2 {
+    font-size: 20px; font-weight: 700; color: #fff;
+    margin: 36px 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid #232c3a;
+  }
+  h2 .num {
+    display: inline-block; width: 28px; height: 28px;
+    background: rgba(200,162,40,0.15); color: #e5bc3c;
+    border-radius: 6px; text-align: center; line-height: 28px;
+    font-size: 13px; font-weight: 700; margin-right: 10px;
+  }
+
+  h3 {
+    font-size: 14px; font-weight: 600; color: #e5bc3c;
+    margin: 20px 0 8px;
+  }
+
+  p { margin-bottom: 12px; color: #8594a8; }
+  strong { color: #cdd5e2; }
+
+  .card {
+    background: #13171e;
+    border: 1px solid #1c2230;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width:700px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .mini-card {
+    background: #191e27;
+    border: 1px solid #232c3a;
+    border-radius: 6px;
+    padding: 14px 18px;
+  }
+  .mini-card h4 {
+    font-size: 12px; font-weight: 600; margin-bottom: 6px;
+  }
+  .mini-card p { font-size: 11px; margin-bottom: 0; }
+
+  table {
+    width: 100%; border-collapse: collapse;
+    margin: 12px 0; font-size: 12px;
+  }
+  th {
+    text-align: left; padding: 8px 12px;
+    background: #191e27; color: #c8a228;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 1px;
+    border-bottom: 1px solid #232c3a;
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #1c2230;
+    color: #8594a8;
+  }
+
+  ul { padding-left: 20px; margin: 8px 0 16px; }
+  li { margin-bottom: 6px; color: #8594a8; }
+  li strong { color: #cdd5e2; }
+
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; background: rgba(40,191,207,0.08);
+    color: #28bfcf; padding: 1px 6px; border-radius: 3px;
+  }
+
+  .above { color: #2196F3; font-weight: 600; }
+  .below { color: #F44336; font-weight: 600; }
+
+  .example-box {
+    background: #0d1117;
+    border: 1px solid #1c2230;
+    border-left: 3px solid #c8a228;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 12px;
+  }
+  .example-box .title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; color: #c8a228;
+    letter-spacing: 2px; margin-bottom: 8px;
+  }
+
+  .footer {
+    text-align: center; padding: 32px;
+    color: #4a5668; font-size: 11px;
+    border-top: 1px solid #1c2230;
+    margin-top: 40px;
+  }
+</style>
+</head>
+<body>
+
+<div class="no-print">
+  <button onclick="window.print()">Imprimer / Sauvegarder en PDF</button>
+</div>
+
+<div class="header">
+  <div class="header-tag">Guide Complet en Francais</div>
+  <h1>Quarterly Theory Cycles — <span>Sessions + Cycles + True Opens</span></h1>
+  <p>Indicateur Pine Script v6 — Pane + Overlay — Base sur Rich Bvwy + QT Clone v5</p>
+</div>
+
+<div class="content">
+
+  <!-- 1. INTRODUCTION -->
+  <h2><span class="num">1</span> Introduction</h2>
+  <p>
+    Le <strong>Quarterly Theory Cycles</strong> est un indicateur Pine Script v6 qui implemente la <strong>Quarterly Theory</strong> complete : chaque cycle de temps est divise en 4 quartiers (Q1-Q4), de l'annuel au micro (22 minutes). Il combine un <strong>pane visuel</strong> des sessions (Rich Bvwy) avec des <strong>cycles overlay</strong> sur le chart et une <strong>table Above/Below</strong> pour le biais.
+  </p>
+
+  <div class="card">
+    <h3>Pourquoi c'est important ?</h3>
+    <p>La Quarterly Theory est le modele de timing ICT le plus puissant. Savoir dans quel <strong>quartier</strong> vous etes (accumulation, expansion, re-accumulation, distribution) a chaque echelle de temps permet de timer les entrees et d'eviter les faux signaux. Les <strong>True Opens</strong> donnent la direction.</p>
+  </div>
+
+  <!-- 2. THEORIE -->
+  <h2><span class="num">2</span> La Quarterly Theory</h2>
+
+  <h3>2.1 — Le Principe Fractal</h3>
+  <p>Chaque cycle de temps se divise en <strong>4 quartiers</strong> avec un comportement previsible. Ce pattern est <strong>fractal</strong> — il se repete identiquement du niveau annuel au niveau micro :</p>
+
+  <div class="grid-2">
+    <div class="mini-card">
+      <h4 style="color:#9E9E9E">Q1 — Accumulation</h4>
+      <p>Le marche construit un range. Les institutions accumulent des positions. Pas de direction claire. Phase de "preparation".</p>
+    </div>
+    <div class="mini-card">
+      <h4 style="color:#F44336">Q2 — Expansion</h4>
+      <p>Le mouvement directionnel principal. Sortie du range Q1. Phase la plus volatile et profitable. C'est ici qu'il faut trader.</p>
+    </div>
+    <div class="mini-card">
+      <h4 style="color:#4CAF50">Q3 — Re-accumulation</h4>
+      <p>Consolidation apres Q2. Le prix retrace ou consolide. Opportunite de re-entree dans la tendance etablie en Q2.</p>
+    </div>
+    <div class="mini-card">
+      <h4 style="color:#2196F3">Q4 — Distribution</h4>
+      <p>Phase finale. Le prix atteint son objectif ou reverse. Moment de prendre les profits, pas d'initier de nouvelles positions.</p>
+    </div>
+  </div>
+
+  <h3>2.2 — Les 6 Niveaux de Cycles</h3>
+  <table>
+    <tr><th>CYCLE</th><th>DUREE</th><th>DIVISION</th><th>TRUE OPEN</th></tr>
+    <tr><td>Yearly</td><td>12 mois</td><td>Q1=Jan-Mar, Q2=Avr-Jun, Q3=Jul-Sep, Q4=Oct-Dec</td><td>TMO (Monthly)</td></tr>
+    <tr><td>Monthly</td><td>4 semaines</td><td>Semaines 1 a 4 du mois</td><td>TMO</td></tr>
+    <tr><td>Weekly</td><td>4 jours</td><td>Lundi-Jeudi (aligne 18:00 ET)</td><td>TWO</td></tr>
+    <tr><td>Daily</td><td>24 heures</td><td>Asia(18-00)/LDN(00-06)/NYAM(06-12)/NYPM(12-18)</td><td>TDO + 09:30</td></tr>
+    <tr><td>90 Minutes</td><td>6 heures / 4</td><td>4 blocs de 90 min par session</td><td>T90</td></tr>
+    <tr><td>Micro</td><td>90 min / 4</td><td>4 blocs de ~22 min par 90M</td><td>TMSO</td></tr>
+  </table>
+
+  <!-- 3. SESSIONS -->
+  <div class="page-break"></div>
+  <h2><span class="num">3</span> Le Pane Sessions</h2>
+
+  <h3>3.1 — Affichage</h3>
+  <p>L'indicateur s'affiche comme un <strong>pane separateur</strong> (overlay=false) sous le chart. Chaque session est representee par un bloc colore avec son nom (ASIA, LDN, NYAM, NYPM). A l'interieur, les quartiers 90M et micro sont visibles.</p>
+
+  <h3>3.2 — Les 4 Sessions Journalieres</h3>
+  <div class="grid-2">
+    <div class="mini-card">
+      <h4 style="color:#9E9E9E">ASIA (18:00 - 00:00 ET)</h4>
+      <p>Q1 du jour. Session d'accumulation. Le range forme ici definit souvent la liquidite qui sera prise plus tard.</p>
+    </div>
+    <div class="mini-card">
+      <h4 style="color:#F44336">LDN (00:00 - 06:00 ET)</h4>
+      <p>Q2 du jour. Premiere expansion. London prend souvent la liquidite d'un cote du range asiatique.</p>
+    </div>
+    <div class="mini-card">
+      <h4 style="color:#4CAF50">NYAM (06:00 - 12:00 ET)</h4>
+      <p>Q3 du jour. New York AM peut continuer le move de London ou creer un retracement. Fenetres macro 09:45-10:15.</p>
+    </div>
+    <div class="mini-card">
+      <h4 style="color:#2196F3">NYPM (12:00 - 18:00 ET)</h4>
+      <p>Q4 du jour. Distribution finale. Le prix atteint ses objectifs journaliers ou reverse pour le lendemain.</p>
+    </div>
+  </div>
+
+  <h3>3.3 — Alignement 18:00 ET</h3>
+  <div class="card">
+    <p>La journee de trading ICT commence a <strong>18:00 ET</strong> (debut de la session Asia), pas a minuit. L'indicateur affiche une ligne verticale a 18:00 pour marquer le debut de chaque nouvelle journee de trading. Tous les cycles sont alignes sur cette reference.</p>
+  </div>
+
+  <!-- 4. TRUE OPENS -->
+  <h2><span class="num">4</span> True Opens</h2>
+
+  <h3>4.1 — Principe</h3>
+  <p>Le <strong>True Open</strong> est le prix d'ouverture de chaque cycle. C'est le niveau de reference pour determiner le biais : si le prix est au-dessus, le biais est haussier pour ce cycle. En-dessous, baissier.</p>
+
+  <h3>4.2 — Les 6 True Opens</h3>
+  <table>
+    <tr><th>TRUE OPEN</th><th>SIGNIFICATION</th><th>QUAND</th></tr>
+    <tr><td>TMO (True Monthly Open)</td><td>Open du 1er jour du mois a 18:00 ET</td><td>Biais mensuel</td></tr>
+    <tr><td>TWO (True Weekly Open)</td><td>Open du dimanche 18:00 ET</td><td>Biais hebdomadaire</td></tr>
+    <tr><td>TDO (True Daily Open)</td><td>Open du jour a 18:00 ET</td><td>Biais journalier</td></tr>
+    <tr><td>09:30 (NY Open)</td><td>Open de la session NYSE</td><td>Biais intraday NY</td></tr>
+    <tr><td>T90 (90M True Open)</td><td>Open du quartier 90 minutes courant</td><td>Biais du quartier</td></tr>
+    <tr><td>TMSO (Micro True Open)</td><td>Open du micro-quartier courant</td><td>Biais micro (scalping)</td></tr>
+  </table>
+
+  <div class="example-box">
+    <div class="title">EXEMPLE PRATIQUE</div>
+    <p>La table affiche :</p>
+    <ul>
+      <li>TMO = <span class="above">Above</span>, TWO = <span class="above">Above</span>, TDO = <span class="above">Above</span></li>
+      <li>09:30 = <span class="above">Above</span>, T90 = <span class="below">Below</span></li>
+    </ul>
+    <p><strong>Interpretation :</strong> Tous les niveaux HTF sont Above = fort biais haussier. Le T90 Below indique un retracement temporaire dans le quartier 90M courant. Attendez que le prix repasse Above le T90 pour entrer long, ou cherchez un setup OTE dans la zone discount du quartier.</p>
+  </div>
+
+  <!-- 5. TABLE -->
+  <div class="page-break"></div>
+  <h2><span class="num">5</span> Table Above/Below</h2>
+
+  <h3>5.1 — Fonctionnement</h3>
+  <p>La table affiche pour chaque cycle si le prix actuel est <span class="above">Above</span> (au-dessus) ou <span class="below">Below</span> (en-dessous) de son True Open. La position est configurable (defaut: Middle Right).</p>
+
+  <h3>5.2 — Lecture du Biais</h3>
+  <div class="card">
+    <p>La regle est simple :</p>
+    <ul>
+      <li><strong>Tous Above :</strong> Confluence haussiere maximale. Cherchez uniquement des longs.</li>
+      <li><strong>Tous Below :</strong> Confluence baissiere maximale. Cherchez uniquement des shorts.</li>
+      <li><strong>HTF Above + LTF Below :</strong> Retracement temporaire dans une tendance haussiere. Opportunite d'achat.</li>
+      <li><strong>HTF Below + LTF Above :</strong> Retracement temporaire dans une tendance baissiere. Opportunite de vente.</li>
+      <li><strong>Mixte :</strong> Pas de confluence claire. Attendez un alignement ou tradez le range.</li>
+    </ul>
+  </div>
+
+  <!-- 6. PARAMETRES -->
+  <h2><span class="num">6</span> Configuration des Parametres</h2>
+  <table>
+    <tr><th>GROUPE</th><th>PARAMETRE</th><th>DEFAUT</th><th>DESCRIPTION</th></tr>
+    <tr><td>Overlay Cycles</td><td>Yearly / Monthly / Weekly / Daily / 90M / Micro</td><td>Micro ON</td><td>Activer/desactiver chaque niveau de cycle (boxes sur le chart).</td></tr>
+    <tr><td>Micro Cycle</td><td>Show Micro + TMSO</td><td>ON</td><td>Cycles micro et True Open micro.</td></tr>
+    <tr><td>Table Setting</td><td>Show / Position / Size</td><td>Middle Right / Small</td><td>Affichage, position et taille du tableau.</td></tr>
+    <tr><td>Table Colors</td><td>Above / Below / Background / Border / Header</td><td>Bleu/Rouge/Gris</td><td>Couleurs du tableau Above/Below.</td></tr>
+    <tr><td>Appearance</td><td>Box Transparency / Border Style / Label Size</td><td>90 / Dotted / Small</td><td>Transparence des boxes, style des bordures.</td></tr>
+    <tr><td>Appearance</td><td>18:00 Daily Divider</td><td>ON</td><td>Ligne verticale a 18:00 ET marquant le debut du jour.</td></tr>
+    <tr><td>HTF Cycle Colors</td><td>Q1 / Q2 / Q3 / Q4</td><td>Gris/Rouge/Vert/Bleu</td><td>Couleurs des quartiers pour Yearly/Monthly/Weekly.</td></tr>
+    <tr><td>Daily Cycle Colors</td><td>Q1 / Q2 / Q3 / Q4</td><td>Gris/Rouge/Vert/Bleu</td><td>Couleurs des sessions Asia/LDN/NYAM/NYPM.</td></tr>
+    <tr><td>90M Cycle Colors</td><td>Q1 / Q2 / Q3 / Q4</td><td>Gris/Rouge/Vert/Bleu</td><td>Couleurs des quartiers 90 minutes.</td></tr>
+    <tr><td>Micro Cycle Colors</td><td>Q1 / Q2 / Q3 / Q4</td><td>Gris/Rouge/Vert/Bleu</td><td>Couleurs des micro-quartiers.</td></tr>
+    <tr><td>True Open Colors</td><td>09:30 / TMO / TWO / TDO / 90M / TMSO</td><td>#383838</td><td>Couleur de chaque ligne True Open.</td></tr>
+  </table>
+
+  <!-- 7. STRATEGIES -->
+  <div class="page-break"></div>
+  <h2><span class="num">7</span> Strategies d'Utilisation</h2>
+
+  <h3>7.1 — Trader le Q2</h3>
+  <div class="card">
+    <p>Le Q2 est la phase d'<strong>expansion</strong> — c'est la ou le mouvement directionnel se produit. A chaque echelle, attendez la fin du Q1 (accumulation) et entrez au debut du Q2 dans la direction du biais (Above/Below True Open). Le Q2 offre le meilleur rapport risque/rendement.</p>
+  </div>
+
+  <h3>7.2 — True Open comme Reference</h3>
+  <div class="card">
+    <p>Le True Open est votre <strong>boussole directionnelle</strong>. Si le prix est Above le TDO et le TWO, le biais est clairement haussier. Cherchez des longs pendant les Q2 et Q3 des sessions. Si Below, cherchez des shorts.</p>
+  </div>
+
+  <h3>7.3 — Confluence des Cycles</h3>
+  <div class="card">
+    <p>Le setup optimal est quand <strong>plusieurs niveaux de cycles</strong> sont en Q2 simultanement. Par exemple : Weekly Q2 (mardi) + Daily Q2 (London) + 90M Q2 = triple confluence d'expansion. C'est le moment de prendre les trades les plus agressifs.</p>
+  </div>
+
+  <h3>7.4 — Combinaison avec OTE / DRT</h3>
+  <div class="card">
+    <p>Utilisez la Quarterly Theory pour le <strong>timing</strong> ("quand") et les indicateurs de niveaux (DRT, DR OTE) pour le <strong>prix</strong> ("ou"). Le setup ideal : prix dans la zone OTE + debut de Q2 + Above True Open.</p>
+  </div>
+
+  <h3>7.5 — Eviter les Pieges</h3>
+  <div class="card">
+    <ul>
+      <li><strong>Ne tradez pas en Q1 :</strong> C'est la phase d'accumulation, le prix va dans les deux directions. Attendez Q2.</li>
+      <li><strong>Mefiance en Q4 :</strong> Le mouvement est souvent termine. Prenez vos profits, ne rentrez pas.</li>
+      <li><strong>Vendredi (Weekly Q4) :</strong> Journee de distribution. Les moves sont souvent des faux signaux pour le lundi.</li>
+    </ul>
+  </div>
+
+  <!-- 8. NOTES TECHNIQUES -->
+  <h2><span class="num">8</span> Notes Techniques</h2>
+  <ul>
+    <li><strong>Version :</strong> Pine Script v6</li>
+    <li><strong>Overlay :</strong> Non (pane separateur) — les boxes cycles utilisent <code>force_overlay=true</code></li>
+    <li><strong>Limites :</strong> 500 lines, 500 labels, 500 boxes maximum</li>
+    <li><strong>max_bars_back :</strong> 5000 (requis pour les calculs de cycles)</li>
+    <li><strong>Timezone :</strong> America/New_York (tous les calculs sont en ET)</li>
+    <li><strong>Credits :</strong> Rich Bvwy (logique pane sessions), QT Clone v5 (logique overlay cycles)</li>
+  </ul>
+
+  <div class="footer">
+    Algorithmic Academy — Guide Quarterly Theory Cycles<br>
+    Indicateur Pine Script v6 — Sessions + Cycles + True Opens
+  </div>
+
+</div>
+</body>
+</html>

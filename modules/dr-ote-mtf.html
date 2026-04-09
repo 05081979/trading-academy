@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="../auth.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Dealing Range OTE MTF</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #07080b;
+    --s1: #0e1116;
+    --s2: #13171e;
+    --s3: #191e27;
+    --bd: #1c2230;
+    --bd2: #232c3a;
+    --gold: #c8a228;
+    --gold2: #e5bc3c;
+    --blue: #3d82e0;
+    --green: #2ec974;
+    --red: #e05050;
+    --orange: #e08830;
+    --purple: #9b72e0;
+    --cyan: #28bfcf;
+    --text: #cdd5e2;
+    --t2: #8594a8;
+    --t3: #4a5668;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; }
+
+  .banner { background: var(--s1); border-bottom: 1px solid var(--bd2); padding: 36px 56px 32px; position: relative; }
+  .banner::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg, transparent 0%, var(--gold) 30%, var(--gold2) 50%, var(--gold) 70%, transparent 100%); }
+  .banner-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+  .banner h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: #fff; line-height: 1.1; }
+  .banner h1 em { color: var(--gold2); font-style: normal; }
+  .banner-sub { margin-top: 10px; color: var(--t2); font-size: 13px; max-width: 700px; line-height: 1.6; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 40px; }
+
+  .section { background: var(--s1); border: 1px solid var(--bd); border-radius: 10px; padding: 28px 32px; margin-bottom: 24px; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section-title .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  @media(max-width:800px) { .concept-grid { grid-template-columns: 1fr; } .container { padding: 16px; } .banner { padding: 24px; } }
+
+  .concept-card { background: var(--s2); border: 1px solid var(--bd); border-radius: 8px; padding: 18px 20px; }
+  .concept-card h3 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--gold2); margin-bottom: 8px; }
+  .concept-card p { color: var(--t2); line-height: 1.7; font-size: 12px; }
+  .concept-card.full { grid-column: 1 / -1; }
+
+  .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 9px; padding: 2px 8px; border-radius: 4px; margin-right: 4px; margin-bottom: 4px; }
+  .tag-blue { background: rgba(61,130,224,0.12); color: var(--blue); }
+  .tag-green { background: rgba(46,201,116,0.10); color: var(--green); }
+  .tag-orange { background: rgba(224,136,48,0.10); color: var(--orange); }
+  .tag-red { background: rgba(224,80,80,0.10); color: var(--red); }
+  .tag-purple { background: rgba(155,114,224,0.10); color: var(--purple); }
+  .tag-cyan { background: rgba(40,191,207,0.10); color: var(--cyan); }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 12px; }
+  th { text-align: left; padding: 8px 12px; background: var(--s2); color: var(--gold); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1px; border-bottom: 1px solid var(--bd); }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--bd); color: var(--t2); }
+  tr:hover td { color: var(--text); background: rgba(255,255,255,0.02); }
+
+  .btn-row { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+  .btn { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 10px 22px; border-radius: 6px; border: 1px solid var(--bd); background: var(--s2); color: var(--text); cursor: pointer; transition: all 0.15s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+  .btn:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-gold { border-color: var(--gold); color: var(--gold); }
+  .btn-gold:hover { background: rgba(200,162,40,0.1); }
+
+  .list-styled { padding-left: 20px; margin-top: 8px; }
+  .list-styled li { color: var(--t2); line-height: 1.8; font-size: 12px; }
+  .list-styled li strong { color: var(--text); }
+
+  .highlight { color: var(--gold2); font-weight: 500; }
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+<link rel="stylesheet" href="../readability.css">
+
+<div class="banner">
+  <div class="banner-eyebrow">Module 21 &mdash; Indicateur Pine Script</div>
+  <h1>AA &mdash; <em>Dealing Range OTE MTF</em></h1>
+  <p class="banner-sub">
+    Detecte le Dealing Range actuel via les derniers swings (ta.valuewhen), affiche les niveaux OTE (0.79, 0.705, 0.618, 0.382, 0.295, 0.21) et les zones Premium/Discount sur tous les timeframes de 5m a Monthly.
+  </p>
+  <div class="btn-row">
+    <a class="btn btn-gold" href="../pdf/dr-ote-mtf-guide.html" target="_blank">Telecharger le Guide PDF</a>
+    <a class="btn btn-gold" href="../pine/dr-ote-mtf.pine" download>Telecharger le .pine</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- CONCEPT -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--gold)"></span> Qu'est-ce que le Dealing Range OTE ?</div>
+    <p style="color:var(--t2);line-height:1.7;">
+      Le <span class="highlight">Dealing Range OTE MTF</span> identifie le range de prix actuel en detectant les derniers <strong>Swing High</strong> et <strong>Swing Low</strong> via <code style="color:var(--cyan)">ta.valuewhen</code>. Il trace ensuite les niveaux <strong>OTE (Optimal Trade Entry)</strong> — les retracements Fibonacci utilises par les institutions — et les zones Premium/Discount sur 8 timeframes simultanement.
+    </p>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3>Detection des Swings</h3>
+        <p>L'indicateur utilise <code style="color:var(--cyan)">ta.highest</code> et <code style="color:var(--cyan)">ta.lowest</code> sur un lookback configurable, puis <code style="color:var(--cyan)">ta.valuewhen</code> pour capturer les vrais Swing High et Swing Low. Le Dealing Range est defini entre ces deux niveaux.</p>
+      </div>
+      <div class="concept-card">
+        <h3>Niveaux OTE</h3>
+        <p>Six niveaux Fibonacci OTE sont traces dans le Dealing Range : <strong>0.79</strong>, <strong>0.705</strong>, <strong>0.618</strong> (zone premium) et <strong>0.382</strong>, <strong>0.295</strong>, <strong>0.21</strong> (zone discount). La zone entre 0.618 et 0.79 est l'OTE classique ICT.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--red)">Zone Premium</h3>
+        <p>Au-dessus de l'EQ (50%), le prix est en zone premium. Les niveaux OTE 0.618, 0.705 et 0.79 sont les zones d'entree short optimales. Le tableau affiche <span style="color:var(--red)">Premium</span> en rouge.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--green)">Zone Discount</h3>
+        <p>En-dessous de l'EQ, le prix est en zone discount. Les niveaux OTE 0.382, 0.295 et 0.21 sont les zones d'entree long optimales. Le tableau affiche <span style="color:var(--green)">Discount</span> en vert.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- NIVEAUX -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--orange)"></span> Les 11 Niveaux du Dealing Range</div>
+    <table>
+      <tr><th>NIVEAU</th><th>VALEUR</th><th>TYPE</th><th>ROLE</th></tr>
+      <tr><td><strong>High</strong></td><td>1.00</td><td>Solide</td><td>Swing High — sommet du Dealing Range</td></tr>
+      <tr><td><strong>0.79</strong></td><td>79%</td><td>OTE Premium</td><td>Deep premium — zone de vente optimale</td></tr>
+      <tr><td><strong>0.75</strong></td><td>75%</td><td>Pointille</td><td>Quart superieur du range</td></tr>
+      <tr><td><strong>0.705</strong></td><td>70.5%</td><td>OTE Premium</td><td>Midpoint OTE premium</td></tr>
+      <tr><td><strong>0.618</strong></td><td>61.8%</td><td>OTE Premium</td><td>Golden ratio — debut OTE premium</td></tr>
+      <tr><td><strong>EQ (0.50)</strong></td><td>50%</td><td>Tirets</td><td>Equilibrium — separe premium/discount</td></tr>
+      <tr><td><strong>0.382</strong></td><td>38.2%</td><td>OTE Discount</td><td>Golden ratio — debut OTE discount</td></tr>
+      <tr><td><strong>0.295</strong></td><td>29.5%</td><td>OTE Discount</td><td>Midpoint OTE discount</td></tr>
+      <tr><td><strong>0.25</strong></td><td>25%</td><td>Pointille</td><td>Quart inferieur du range</td></tr>
+      <tr><td><strong>0.21</strong></td><td>21%</td><td>OTE Discount</td><td>Deep discount — zone d'achat optimale</td></tr>
+      <tr><td><strong>Low</strong></td><td>0.00</td><td>Solide</td><td>Swing Low — base du Dealing Range</td></tr>
+    </table>
+  </div>
+
+  <!-- MTF -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--blue)"></span> Multi-Timeframe : 8 TF Simultanes</div>
+    <p style="color:var(--t2);line-height:1.7;margin-bottom:12px;">
+      Le Dealing Range est calcule independamment sur chaque TF via <code style="color:var(--cyan)">request.security()</code>. Chaque TF a sa propre couleur pour identifier facilement les niveaux.
+    </p>
+    <table>
+      <tr><th>TF</th><th>COULEUR</th><th>USAGE</th></tr>
+      <tr><td><span class="tag tag-green">5m</span></td><td style="color:#26A69A">#26A69A</td><td>Scalping, entrees precises dans l'OTE</td></tr>
+      <tr><td><span class="tag tag-blue">15m</span></td><td style="color:#42A5F5">#42A5F5</td><td>Confirmations, macro windows</td></tr>
+      <tr><td><span class="tag tag-purple">30m</span></td><td style="color:#5C6BC0">#5C6BC0</td><td>Sessions, structure intermediaire</td></tr>
+      <tr><td><span class="tag tag-orange">1H</span></td><td style="color:#FFA726">#FFA726</td><td>Biais intraday, OTE primaire</td></tr>
+      <tr><td><span class="tag tag-red">4H</span></td><td style="color:#EF5350">#EF5350</td><td>Swing trading, ranges journaliers</td></tr>
+      <tr><td><span class="tag tag-purple">D</span></td><td style="color:#AB47BC">#AB47BC</td><td>Biais daily, structure HTF</td></tr>
+      <tr><td><span class="tag tag-red">W</span></td><td style="color:#EC407A">#EC407A</td><td>Weekly ranges, narrative HTF</td></tr>
+      <tr><td><span class="tag tag-orange">M</span></td><td style="color:#8D6E63">#8D6E63</td><td>Monthly dealing ranges</td></tr>
+    </table>
+  </div>
+
+  <!-- UTILISATION -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--green)"></span> Comment Utiliser</div>
+    <ul class="list-styled">
+      <li><strong>OTE comme zone d'entree :</strong> Quand le prix est en discount, cherchez des longs dans la zone OTE 0.21-0.382. En premium, des shorts dans la zone 0.618-0.79.</li>
+      <li><strong>Confluence MTF :</strong> Si 1H et 4H montrent tous deux "Discount" dans le tableau, le biais haussier est fort. Attendez l'alignement multi-TF.</li>
+      <li><strong>EQ comme target :</strong> Le premier objectif depuis un niveau OTE est toujours l'EQ (50%). C'est un target conservateur a haute probabilite.</li>
+      <li><strong>Table de confluence :</strong> Le tableau recapitulatif montre la zone actuelle (Premium/Discount/Above/Below) et l'EQ pour chaque TF actif.</li>
+      <li><strong>Lookback :</strong> Par defaut 20 barres. Augmentez pour des ranges plus larges (swing), reduisez pour du scalping plus reactif.</li>
+    </ul>
+  </div>
+
+  <!-- INPUTS -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--cyan)"></span> Parametres (Inputs)</div>
+    <table>
+      <tr><th>GROUPE</th><th>PARAMETRE</th><th>DESCRIPTION</th></tr>
+      <tr><td>Dealing Range</td><td>Range Lookback Bars</td><td>Nombre de barres pour detecter les swings (defaut: 20)</td></tr>
+      <tr><td>Timeframes</td><td>Current / 5m-M</td><td>Activer les TF a afficher (defaut: 1H + 4H)</td></tr>
+      <tr><td>Levels</td><td>High / Low / 75% / 50% / 25%</td><td>Niveaux classiques du Dealing Range</td></tr>
+      <tr><td>OTE Levels</td><td>0.79 / 0.705 / 0.618 / 0.382 / 0.295 / 0.21</td><td>Niveaux Fibonacci OTE individuellement activables</td></tr>
+      <tr><td>Lines</td><td>Width / Color / Extend Right</td><td>Epaisseur, couleur (TF Color/White/Gray/Custom), extension droite</td></tr>
+      <tr><td>Labels</td><td>Show / Color / Size / Per Level</td><td>Affichage des labels par niveau avec taille configurable</td></tr>
+      <tr><td>Zones</td><td>Shading / Premium / Discount / Table</td><td>Coloration des zones et tableau de synthese</td></tr>
+      <tr><td>TF Colors</td><td>Couleur par TF</td><td>Couleur dediee pour chaque timeframe</td></tr>
+    </table>
+  </div>
+
+  <!-- INSTALLATION -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Installation</div>
+    <ul class="list-styled">
+      <li><strong>1.</strong> Telechargez le fichier <code style="color:var(--cyan)">.pine</code> via le bouton ci-dessus</li>
+      <li><strong>2.</strong> Ouvrez TradingView et allez dans l'editeur Pine Script (icone <code style="color:var(--cyan)">{}</code> en bas)</li>
+      <li><strong>3.</strong> Creez un nouveau script, collez le code, et cliquez sur "Ajouter au graphique"</li>
+      <li><strong>4.</strong> Activez les timeframes souhaites et configurez les niveaux OTE dans les parametres</li>
+      <li><strong>5.</strong> L'indicateur s'affiche en overlay avec les zones colorees et le tableau de synthese</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>

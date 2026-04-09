@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script src="../auth.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — HTF Structure & ORG</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #07080b;
+    --s1: #0e1116;
+    --s2: #13171e;
+    --s3: #191e27;
+    --bd: #1c2230;
+    --bd2: #232c3a;
+    --gold: #c8a228;
+    --gold2: #e5bc3c;
+    --blue: #3d82e0;
+    --green: #2ec974;
+    --red: #e05050;
+    --orange: #e08830;
+    --purple: #9b72e0;
+    --cyan: #28bfcf;
+    --text: #cdd5e2;
+    --t2: #8594a8;
+    --t3: #4a5668;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; }
+
+  .banner { background: var(--s1); border-bottom: 1px solid var(--bd2); padding: 36px 56px 32px; position: relative; }
+  .banner::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg, transparent 0%, var(--gold) 30%, var(--gold2) 50%, var(--gold) 70%, transparent 100%); }
+  .banner-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+  .banner h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: #fff; line-height: 1.1; }
+  .banner h1 em { color: var(--gold2); font-style: normal; }
+  .banner-sub { margin-top: 10px; color: var(--t2); font-size: 13px; max-width: 700px; line-height: 1.6; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 40px; }
+
+  .section { background: var(--s1); border: 1px solid var(--bd); border-radius: 10px; padding: 28px 32px; margin-bottom: 24px; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section-title .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  @media(max-width:800px) { .concept-grid { grid-template-columns: 1fr; } .container { padding: 16px; } .banner { padding: 24px; } }
+
+  .concept-card { background: var(--s2); border: 1px solid var(--bd); border-radius: 8px; padding: 18px 20px; }
+  .concept-card h3 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--gold2); margin-bottom: 8px; }
+  .concept-card p { color: var(--t2); line-height: 1.7; font-size: 12px; }
+  .concept-card.full { grid-column: 1 / -1; }
+
+  .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 9px; padding: 2px 8px; border-radius: 4px; margin-right: 4px; margin-bottom: 4px; }
+  .tag-blue { background: rgba(61,130,224,0.12); color: var(--blue); }
+  .tag-green { background: rgba(46,201,116,0.10); color: var(--green); }
+  .tag-orange { background: rgba(224,136,48,0.10); color: var(--orange); }
+  .tag-red { background: rgba(224,80,80,0.10); color: var(--red); }
+  .tag-purple { background: rgba(155,114,224,0.10); color: var(--purple); }
+  .tag-cyan { background: rgba(40,191,207,0.10); color: var(--cyan); }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 12px; }
+  th { text-align: left; padding: 8px 12px; background: var(--s2); color: var(--gold); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1px; border-bottom: 1px solid var(--bd); }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--bd); color: var(--t2); }
+  tr:hover td { color: var(--text); background: rgba(255,255,255,0.02); }
+
+  .btn-row { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+  .btn { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 10px 22px; border-radius: 6px; border: 1px solid var(--bd); background: var(--s2); color: var(--text); cursor: pointer; transition: all 0.15s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+  .btn:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-gold { border-color: var(--gold); color: var(--gold); }
+  .btn-gold:hover { background: rgba(200,162,40,0.1); }
+
+  .list-styled { padding-left: 20px; margin-top: 8px; }
+  .list-styled li { color: var(--t2); line-height: 1.8; font-size: 12px; }
+  .list-styled li strong { color: var(--text); }
+
+  .highlight { color: var(--gold2); font-weight: 500; }
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+<link rel="stylesheet" href="../readability.css">
+
+<div class="banner">
+  <div class="banner-eyebrow">Module 20 &mdash; Indicateur Pine Script</div>
+  <h1>AA &mdash; <em>HTF Structure & ORG</em></h1>
+  <p class="banner-sub">
+    Affiche les bougies HTF sur le chart LTF avec trace OHLC, detection des FVG, Open Range Gap (ORG du 9:30), et NWOG/NDOG. Combine les travaux de alex, fadizeidan et cryptonnnite en un seul indicateur.
+  </p>
+  <div class="btn-row">
+    <a class="btn btn-gold" href="../pdf/htf-structure-org-guide.html" target="_blank">Telecharger le Guide PDF</a>
+    <a class="btn btn-gold" href="../pine/htf-structure-org.pine" download>Telecharger le .pine</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- CONCEPT -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--gold)"></span> Qu'est-ce que HTF Structure & ORG ?</div>
+    <p style="color:var(--t2);line-height:1.7;">
+      Cet indicateur est une <span class="highlight">fusion de trois modules ICT</span> en un seul outil overlay. Il permet de visualiser la structure Higher Timeframe directement sur votre chart intraday, d'identifier les Fair Value Gaps sur les bougies HTF, de tracer l'Open Range Gap du 9:30 NY, et d'afficher les NWOG (New Week Opening Gap) et NDOG (New Day Opening Gap).
+    </p>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3>Bougies HTF (alex)</h3>
+        <p>Affiche jusqu'a 12 niveaux de bougies HTF avec body, wick et couleurs personnalisables. Chaque bougie est dessinee directement sur le chart LTF avec les traces OHLC pour suivre les niveaux cles.</p>
+      </div>
+      <div class="concept-card">
+        <h3>FVG / Volume Imbalance</h3>
+        <p>Detection automatique des <strong>Fair Value Gaps</strong> (bullish/bearish) et des <strong>Volume Imbalances</strong> sur les bougies HTF. Les FVG mitigees sont colorees differemment. Le midpoint (half) est affiche en option.</p>
+      </div>
+      <div class="concept-card">
+        <h3>Open Range Gap (fadizeidan)</h3>
+        <p>Identifie l'<strong>ORG du 9:30 NY</strong> — le gap entre la cloture pre-market et l'ouverture du marche regulier. Affiche les niveaux Open, Close, C.E. (Consequent Encroachment), quadrants et background colore.</p>
+      </div>
+      <div class="concept-card">
+        <h3>NWOG / NDOG (cryptonnnite)</h3>
+        <p>Trace les <strong>NWOG</strong> (gap entre la cloture vendredi et l'ouverture dimanche/lundi) et les <strong>NDOG</strong> (gap entre la cloture de la veille et l'ouverture du jour). Inclut le C.E. et l'extension des gaps precedents.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- HTF SETS -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--blue)"></span> 12 Niveaux HTF Configurables</div>
+    <p style="color:var(--t2);line-height:1.7;margin-bottom:12px;">
+      L'indicateur supporte jusqu'a <strong>12 jeux de bougies HTF</strong> (HTF 1 a HTF 12), chacun avec son propre timeframe, nombre de bougies, et couleurs bull/bear. Les timeframes disponibles vont du tick (1T) au mensuel (12M).
+    </p>
+    <table>
+      <tr><th>SLOT</th><th>TF DEFAUT</th><th>COULEUR BULL</th><th>USAGE TYPE</th></tr>
+      <tr><td><span class="tag tag-green">HTF 1</span></td><td>3m</td><td style="color:#26A69A">Vert</td><td>Micro-structure, scalping</td></tr>
+      <tr><td><span class="tag tag-blue">HTF 2</span></td><td>9m</td><td style="color:#42A5F5">Bleu</td><td>Structure Goldbach / QT micro</td></tr>
+      <tr><td><span class="tag tag-orange">HTF 3</span></td><td>27m</td><td style="color:#FFD700">Jaune</td><td>Structure intermediaire</td></tr>
+      <tr><td><span class="tag tag-red">HTF 4</span></td><td>81m</td><td style="color:#FF69B4">Rose</td><td>Structure Goldbach etage 1</td></tr>
+      <tr><td><span class="tag tag-purple">HTF 8</span></td><td>1H</td><td style="color:#00FFFF">Cyan</td><td>Structure intraday primaire</td></tr>
+      <tr><td><span class="tag tag-cyan">HTF 5-12</span></td><td>Varies</td><td style="color:#888">Gris</td><td>Configurable selon les besoins</td></tr>
+    </table>
+  </div>
+
+  <!-- ORG DETAILS -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--green)"></span> Open Range Gap (ORG)</div>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3 style="color:var(--blue)">Niveaux ORG</h3>
+        <p>L'ORG trace l'<strong>Open</strong> (pre-market close) et le <strong>Close</strong> (9:30 open), le <strong>C.E.</strong> (midpoint), et des <strong>quadrants</strong> pour reperer les zones de reaction. Le background est colore par quadrant.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:var(--orange)">1st FVG</h3>
+        <p>Detecte le <strong>premier Fair Value Gap</strong> qui se forme apres l'ouverture du marche regulier. Ce FVG est souvent un point de reference pour le biais de la journee et les retracements.</p>
+      </div>
+      <div class="concept-card full">
+        <h3>NWOG / NDOG</h3>
+        <p>Les <strong>NWOG</strong> et <strong>NDOG</strong> sont des gaps institutionnels majeurs. Le NWOG se forme entre le close vendredi (16:00-17:00 NY) et l'open dimanche/lundi. Le NDOG entre le close de la veille et l'open du jour. Jusqu'a 4 gaps precedents sont affiches avec option d'extension.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- UTILISATION -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--green)"></span> Comment Utiliser</div>
+    <ul class="list-styled">
+      <li><strong>Contexte HTF :</strong> Activez 2-3 niveaux HTF (ex: 27m + 81m + 1H) pour voir la structure institutionnelle depuis votre chart 1m ou 3m.</li>
+      <li><strong>FVG HTF :</strong> Les FVG detectees sur les bougies HTF servent de zones d'entree/sortie. Cherchez un retour vers le midpoint (half FVG).</li>
+      <li><strong>ORG comme reference :</strong> L'Open Range Gap du 9:30 donne le biais de la session NY. Si le prix reste au-dessus du C.E., biais haussier. En-dessous, biais baissier.</li>
+      <li><strong>NWOG/NDOG :</strong> Ces gaps agissent comme des aimants de prix. Le C.E. du NWOG est souvent un target hebdomadaire.</li>
+      <li><strong>Traces OHLC :</strong> Les lignes trace (Open, Close, High, Low) s'etendent vers la droite pour garder les niveaux visibles meme quand la bougie HTF est hors ecran.</li>
+    </ul>
+  </div>
+
+  <!-- INPUTS -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--cyan)"></span> Parametres (Inputs)</div>
+    <table>
+      <tr><th>GROUPE</th><th>PARAMETRE</th><th>DESCRIPTION</th></tr>
+      <tr><td>HTF 1-12</td><td>Show / TF / Max / Colors</td><td>Activer/desactiver, choisir le timeframe, nombre de bougies, couleurs bull/bear pour chaque slot</td></tr>
+      <tr><td>Styling</td><td>Bordures / Wick / Padding / Width</td><td>Apparence des bougies HTF : couleurs des bordures, wicks, espacement, largeur</td></tr>
+      <tr><td>Label Settings</td><td>HTF Label / Timer / Position</td><td>Labels de timeframe, temps restant, position (Top/Bottom/Both), alignement</td></tr>
+      <tr><td>Imbalance</td><td>FVG / Mitigated / Half / VI</td><td>Detection FVG, FVG mitigees, midpoint, Volume Imbalance</td></tr>
+      <tr><td>Trace</td><td>Open / Close / High / Low</td><td>Lignes trace OHLC avec couleur, style (solid/dashed/dotted), epaisseur</td></tr>
+      <tr><td>ORG General</td><td>Hide above / Limit / Buffer</td><td>Masquer au-dessus d'un TF, limiter a X jours, extension droite</td></tr>
+      <tr><td>Open Range Gap</td><td>Open / Close / C.E. / Quadrants</td><td>Niveaux ORG, couleurs, styles de ligne, background et fill</td></tr>
+      <tr><td>NWOG</td><td>Show / Label / C.E. / Previous</td><td>NWOG actuel et precedents, C.E., couleurs, extension</td></tr>
+      <tr><td>NDOG</td><td>Show / Label / C.E. / Previous</td><td>NDOG actuel et precedents, C.E., couleurs, extension</td></tr>
+    </table>
+  </div>
+
+  <!-- INSTALLATION -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Installation</div>
+    <ul class="list-styled">
+      <li><strong>1.</strong> Telechargez le fichier <code style="color:var(--cyan)">.pine</code> via le bouton ci-dessus</li>
+      <li><strong>2.</strong> Ouvrez TradingView et allez dans l'editeur Pine Script (icone <code style="color:var(--cyan)">{}</code> en bas)</li>
+      <li><strong>3.</strong> Creez un nouveau script, collez le code, et cliquez sur "Ajouter au graphique"</li>
+      <li><strong>4.</strong> Configurez les slots HTF selon vos besoins dans les parametres de l'indicateur</li>
+      <li><strong>5.</strong> L'indicateur s'affiche en overlay directement sur votre chart</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>

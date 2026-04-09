@@ -1,0 +1,437 @@
+// Quarterly Theory — QT Clone v5 + Rich Bvwy Pane
+// Overlay = cycles + True Opens + Table | Pane = Rich Bvwy QT 101 blocks
+// © Rich Bvwy (pane logic) + QT Clone v5 (overlay logic)
+
+//@version=6
+indicator("Quarterly Theory [QT Clone v5]", overlay=false, max_bars_back=5000, max_boxes_count=500, max_labels_count=500, max_lines_count=500)
+
+string TZ = "America/New_York"
+
+// ═══════ INPUTS — QT CLONE OVERLAY ═══════════════════════════════════════════
+bool showYearly  = input.bool(false, "Show Yearly Cycle (Boxes)",  group="OVERLAY — YEARLY CYCLE")
+bool showMonthly = input.bool(false, "Show Monthly Cycle (Boxes)", group="OVERLAY — MONTHLY CYCLE")
+bool showWeekly  = input.bool(false, "Show Weekly Cycle (Boxes)",  group="OVERLAY — WEEKLY CYCLE")
+bool showDailyC  = input.bool(false, "Show Daily Cycle (Boxes)",   group="OVERLAY — DAILY CYCLE")
+bool show90m     = input.bool(false, "Show 90M Cycle (Boxes)",     group="OVERLAY — NINETY MIN CYCLE")
+bool showMicro   = input.bool(true,  "Show Micro Cycle (Boxes)",   group="OVERLAY — MICRO CYCLE")
+bool showMicroTO = input.bool(true,  "Show Micro True Open (TMSO)",group="OVERLAY — MICRO CYCLE")
+
+bool showTable   = input.bool(true, "Show Table", group="TABLE SETTING")
+string tablePos  = input.string("Middle Right", "Table Position", options=["Top Left","Top Center","Top Right","Middle Left","Middle Center","Middle Right","Bottom Left","Bottom Center","Bottom Right"], group="TABLE SETTING")
+string tableSz   = input.string("Small", "Table Text Size", options=["Tiny","Small","Normal","Large","Huge"], group="TABLE SETTING")
+color tblAC = input.color(#2196F3, '"Above" Text Color', group="TABLE SETTING")
+color tblBC = input.color(#F44336, '"Below" Text Color', group="TABLE SETTING")
+color tblBg = input.color(#E0E0E0, "Background Color",   group="TABLE SETTING")
+color tblBd = input.color(#808080, "Border Color",        group="TABLE SETTING")
+color tblHd = input.color(#1565C0, "Header/Label Text Color", group="TABLE SETTING")
+
+int    boxT  = input.int(90, "Box Transparency (0-100)", minval=0, maxval=100, group="APPEARANCE")
+string bSt   = input.string("Dotted", "Box Border Style", options=["Solid","Dashed","Dotted"], group="APPEARANCE")
+string cSz   = input.string("Small", "Cycle Label Size", options=["Tiny","Small","Normal","Large","Huge"], group="APPEARANCE")
+bool   show18 = input.bool(true, "Show 18:00 Daily Divider", group="APPEARANCE")
+
+color hq1 = input.color(#9E9E9E, "HTF Q1 Color", group="HTF CYCLE COLORS (YEARLY/MONTHLY/WEEKLY)")
+color hq2 = input.color(#F44336, "HTF Q2 Color", group="HTF CYCLE COLORS (YEARLY/MONTHLY/WEEKLY)")
+color hq3 = input.color(#4CAF50, "HTF Q3 Color", group="HTF CYCLE COLORS (YEARLY/MONTHLY/WEEKLY)")
+color hq4 = input.color(#2196F3, "HTF Q4 Color", group="HTF CYCLE COLORS (YEARLY/MONTHLY/WEEKLY)")
+
+color dq1 = input.color(#9E9E9E, "Daily Q1 Color", group="DAILY CYCLE COLORS")
+color dq2 = input.color(#F44336, "Daily Q2 Color", group="DAILY CYCLE COLORS")
+color dq3 = input.color(#4CAF50, "Daily Q3 Color", group="DAILY CYCLE COLORS")
+color dq4 = input.color(#2196F3, "Daily Q4 Color", group="DAILY CYCLE COLORS")
+
+color nq1 = input.color(#9E9E9E, "90M Q1 Color", group="90M CYCLE COLORS")
+color nq2 = input.color(#F44336, "90M Q2 Color", group="90M CYCLE COLORS")
+color nq3 = input.color(#4CAF50, "90M Q3 Color", group="90M CYCLE COLORS")
+color nq4 = input.color(#2196F3, "90M Q4 Color", group="90M CYCLE COLORS")
+
+color miq1 = input.color(#9E9E9E, "Micro Q1 Color", group="MICRO CYCLE COLORS")
+color miq2 = input.color(#F44336, "Micro Q2 Color", group="MICRO CYCLE COLORS")
+color miq3 = input.color(#4CAF50, "Micro Q3 Color", group="MICRO CYCLE COLORS")
+color miq4 = input.color(#2196F3, "Micro Q4 Color", group="MICRO CYCLE COLORS")
+
+color tc930  = input.color(#383838, "09:30 Color",        group="TRUE OPEN LINE COLORS")
+color tcTMO  = input.color(#383838, "TMO Color (Monthly)", group="TRUE OPEN LINE COLORS")
+color tcTWO  = input.color(#383838, "TWO Color (Weekly)",  group="TRUE OPEN LINE COLORS")
+color tcTDO  = input.color(#383838, "TDO Color (Daily)",   group="TRUE OPEN LINE COLORS")
+color tc90m  = input.color(#383838, "90M True Open Color", group="TRUE OPEN LINE COLORS")
+color tcTMSO = input.color(#383838, "TMSO Color (Micro)",  group="TRUE OPEN LINE COLORS")
+
+// ═══════ HELPERS ══════════════════════════════════════════════════════════════
+f_sz(string s) =>
+    switch s
+        "Tiny" => size.tiny
+        "Small" => size.small
+        "Normal" => size.normal
+        "Large" => size.large
+        "Huge" => size.huge
+        => size.small
+f_bd() =>
+    switch bSt
+        "Solid" => line.style_solid
+        "Dashed" => line.style_dashed
+        "Dotted" => line.style_dotted
+        => line.style_dotted
+f_tp() =>
+    switch tablePos
+        "Top Left" => position.top_left
+        "Top Center" => position.top_center
+        "Top Right" => position.top_right
+        "Middle Left" => position.middle_left
+        "Middle Center" => position.middle_center
+        "Middle Right" => position.middle_right
+        "Bottom Left" => position.bottom_left
+        "Bottom Center" => position.bottom_center
+        "Bottom Right" => position.bottom_right
+        => position.middle_right
+f_c(int q, color a, color b, color c, color d) =>
+    switch q
+        1 => a
+        2 => b
+        3 => c
+        4 => d
+        => na
+f_bg(int q, color a, color b, color c, color d) =>
+    color.new(f_c(q, a, b, c, d), boxT)
+
+// ═══════ TIME CALC ════════════════════════════════════════════════════════════
+int he = hour(time, TZ)
+int me = minute(time, TZ)
+int tt = he * 60 + me
+int dw = dayofweek(time, TZ)
+int dm = dayofmonth(time, TZ)
+int mn = month(time, TZ)
+int tfS = timeframe.in_seconds()
+
+bool nD  = ta.change(time("D")) != 0
+bool nW  = nD and dw == dayofweek.monday
+bool nMo = ta.change(time("M")) != 0
+
+// ═══════ CYCLE DETECTION ══════════════════════════════════════════════════════
+
+// ── Yearly Q ──
+int yQ = mn <= 3 ? 1 : mn <= 6 ? 2 : mn <= 9 ? 3 : 4
+var int pyQ = 0
+bool yCh = yQ != pyQ
+
+// ── Monthly Q (trading weeks via Monday count) ──
+var int _weekInMonth = 1
+if nMo
+    _weekInMonth := 1
+else if nW
+    _weekInMonth := math.min(_weekInMonth + 1, 4)
+int mQ = _weekInMonth
+var int pmQ = 0
+bool mCh = mQ != pmQ
+
+// ── Daily Q (sessions from 18:00 ET) ──
+int dQ = he >= 18 ? 1 : he < 6 ? 2 : he < 12 ? 3 : 4
+var int pdQ = 0
+bool dCh = dQ != pdQ
+string dn = dQ == 1 ? "ASIA" : dQ == 2 ? "LDN" : dQ == 3 ? "NYAM" : "NYPM"
+
+// ── Weekly Q (aligned to 18:00 session boundaries) ──
+int wQ = he >= 18 ? (dw == dayofweek.sunday ? 1 : dw == dayofweek.monday ? 2 : dw == dayofweek.tuesday ? 3 : dw == dayofweek.wednesday ? 4 : 0) : (dw == dayofweek.monday ? 1 : dw == dayofweek.tuesday ? 2 : dw == dayofweek.wednesday ? 3 : dw == dayofweek.thursday ? 4 : 0)
+string wn = wQ == 1 ? "Monday" : wQ == 2 ? "Tuesday" : wQ == 3 ? "Wednesday" : wQ == 4 ? "Thursday" : ""
+bool wCh = dCh and dQ == 1 and wQ > 0
+
+// ── 90M Q ──
+int ss = dQ == 1 ? 1080 : dQ == 2 ? 0 : dQ == 3 ? 360 : 720
+int mi = tt >= ss ? tt - ss : tt + 1440 - ss
+int q9 = math.min(math.floor(mi / 90) + 1, 4)
+var int p9 = 0
+bool c9 = q9 != p9
+
+// ── Micro Q ──
+int mr = mi - (q9 - 1) * 90
+int qM = math.min(math.floor(mr / 22) + 1, 4)
+var int pMi = 0
+bool cMi = qM != pMi
+
+// ═══════ TRACKED H/L PER CYCLE ════════════════════════════════════════════════
+var float yH = high, var float yL = low
+var float moH = high, var float moL = low
+var float wH = high, var float wL = low
+var float dH = high, var float dL = low
+var float n9H = high, var float n9L = low
+var float miH = high, var float miL = low
+
+if yCh
+    yH := high
+    yL := low
+yH := math.max(yH, high)
+yL := math.min(yL, low)
+
+if mCh
+    moH := high
+    moL := low
+moH := math.max(moH, high)
+moL := math.min(moL, low)
+
+if wCh
+    wH := high
+    wL := low
+if wQ > 0
+    wH := math.max(wH, high)
+    wL := math.min(wL, low)
+
+if dCh
+    dH := high
+    dL := low
+dH := math.max(dH, high)
+dL := math.min(dL, low)
+
+if c9
+    n9H := high
+    n9L := low
+n9H := math.max(n9H, high)
+n9L := math.min(n9L, low)
+
+if cMi
+    miH := high
+    miL := low
+miH := math.max(miH, high)
+miL := math.min(miL, low)
+
+// ═══════ OVERLAY BOXES (chart, force_overlay) ═════════════════════════════════
+var box xY = na, var box xMo = na, var box xW = na
+var box xD = na, var box x9 = na, var box xMi = na
+
+// Yearly — visible from Daily (tfS >= 86400) and above
+if showYearly and yCh and tfS >= 86400
+    if not na(xY)
+        box.set_right(xY, time)
+    xY := box.new(time, yH, time, yL, xloc=xloc.bar_time, border_color=f_c(yQ, hq1, hq2, hq3, hq4), bgcolor=f_bg(yQ, hq1, hq2, hq3, hq4), border_width=1, border_style=f_bd(), force_overlay=true)
+pyQ := yQ
+if showYearly and not na(xY) and tfS >= 86400
+    box.set_right(xY, time)
+    box.set_top(xY, yH)
+    box.set_bottom(xY, yL)
+
+// Monthly — visible from 1H (tfS >= 3600) and above
+if showMonthly and mCh and tfS >= 3600
+    if not na(xMo)
+        box.set_right(xMo, time)
+    xMo := box.new(time, moH, time, moL, xloc=xloc.bar_time, border_color=f_c(mQ, hq1, hq2, hq3, hq4), bgcolor=f_bg(mQ, hq1, hq2, hq3, hq4), border_width=1, border_style=f_bd(), force_overlay=true)
+pmQ := mQ
+if showMonthly and not na(xMo) and tfS >= 3600
+    box.set_right(xMo, time)
+    box.set_top(xMo, moH)
+    box.set_bottom(xMo, moL)
+
+// Weekly — label centered above box top, label.delete(prev)
+var label wLbl = na
+var int wStart = 0
+if showWeekly and wCh and tfS >= 900
+    if not na(xW)
+        box.set_right(xW, time)
+    label.delete(wLbl)
+    xW := box.new(time, wH, time, wL, xloc=xloc.bar_time, border_color=f_c(wQ, hq1, hq2, hq3, hq4), bgcolor=f_bg(wQ, hq1, hq2, hq3, hq4), border_width=1, border_style=f_bd(), force_overlay=true)
+    wLbl := label.new(time, wH, wn, xloc=xloc.bar_time, yloc=yloc.price, style=label.style_label_down, color=color(na), textcolor=f_c(wQ, hq1, hq2, hq3, hq4), size=f_sz(cSz), force_overlay=true)
+    wStart := time
+if showWeekly and not na(xW) and wQ > 0 and tfS >= 900
+    box.set_right(xW, time)
+    box.set_top(xW, wH)
+    box.set_bottom(xW, wL)
+    label.set_y(wLbl, wH)
+    label.set_x(wLbl, int(wStart + (time - wStart) / 2))
+
+// Daily — label centered above box top, label.delete(prev)
+var label dLbl = na
+var int dStart = 0
+if showDailyC and dCh and tfS <= 3600
+    if not na(xD)
+        box.set_right(xD, time)
+    label.delete(dLbl)
+    xD := box.new(time, dH, time, dL, xloc=xloc.bar_time, border_color=f_c(dQ, dq1, dq2, dq3, dq4), bgcolor=f_bg(dQ, dq1, dq2, dq3, dq4), border_width=1, border_style=f_bd(), force_overlay=true)
+    dLbl := label.new(time, dH, dn, xloc=xloc.bar_time, yloc=yloc.price, style=label.style_label_down, color=color(na), textcolor=f_c(dQ, dq1, dq2, dq3, dq4), size=f_sz(cSz), force_overlay=true)
+    dStart := time
+pdQ := dQ
+if showDailyC and not na(xD) and tfS <= 3600
+    box.set_right(xD, time)
+    box.set_top(xD, dH)
+    box.set_bottom(xD, dL)
+    label.set_y(dLbl, dH)
+    label.set_x(dLbl, int(dStart + (time - dStart) / 2))
+
+// 90M — label centered above box top, label.delete(prev)
+var label n9Lbl = na
+var int n9Start = 0
+if show90m and c9 and tfS <= 900
+    if not na(x9)
+        box.set_right(x9, time)
+    label.delete(n9Lbl)
+    x9 := box.new(time, n9H, time, n9L, xloc=xloc.bar_time, border_color=f_c(q9, nq1, nq2, nq3, nq4), bgcolor=f_bg(q9, nq1, nq2, nq3, nq4), border_width=1, border_style=f_bd(), force_overlay=true)
+    n9Lbl := label.new(time, n9H, dn + " Q" + str.tostring(q9), xloc=xloc.bar_time, yloc=yloc.price, style=label.style_label_down, color=color(na), textcolor=f_c(q9, nq1, nq2, nq3, nq4), size=f_sz(cSz), force_overlay=true)
+    n9Start := time
+p9 := q9
+if show90m and not na(x9) and tfS <= 900
+    box.set_right(x9, time)
+    box.set_top(x9, n9H)
+    box.set_bottom(x9, n9L)
+    label.set_y(n9Lbl, n9H)
+    label.set_x(n9Lbl, int(n9Start + (time - n9Start) / 2))
+
+// Micro
+if showMicro and cMi and tfS <= 300
+    if not na(xMi)
+        box.set_right(xMi, time)
+    xMi := box.new(time, miH, time, miL, xloc=xloc.bar_time, border_color=f_c(qM, miq1, miq2, miq3, miq4), bgcolor=f_bg(qM, miq1, miq2, miq3, miq4), border_width=1, border_style=f_bd(), force_overlay=true)
+pMi := qM
+if showMicro and not na(xMi) and tfS <= 300
+    box.set_right(xMi, time)
+    box.set_top(xMi, miH)
+    box.set_bottom(xMi, miL)
+
+// ═══════ 18:00 DIVIDER ════════════════════════════════════════════════════════
+if show18 and dCh and dQ == 1
+    line.new(time, dL - (dH - dL) * 0.5, time, dH + (dH - dL) * 0.5, xloc=xloc.bar_time, color=color.new(#555555, 50), style=line.style_dotted, width=1, force_overlay=true)
+
+// ═══════ TRUE OPENS (boxes with force_overlay, top==bottom for flat line) ════
+
+// TDO — Daily True Open (18:00 ET)
+var float tdoP = na
+var box tdoB = na
+if dCh and dQ == 1
+    tdoP := close
+    box.delete(tdoB)
+    tdoB := box.new(time, tdoP, time, tdoP, xloc=xloc.bar_time, border_color=tcTDO, bgcolor=color.new(tcTDO, 100), border_width=1, border_style=line.style_dotted, force_overlay=true)
+if not na(tdoB)
+    box.set_right(tdoB, time)
+
+// TWO — Weekly True Open (Sunday 18:00 ET)
+var float twoP = na
+var box twoB = na
+if dCh and dQ == 1 and dw == dayofweek.sunday
+    twoP := close
+    box.delete(twoB)
+    twoB := box.new(time, twoP, time, twoP, xloc=xloc.bar_time, border_color=tcTWO, bgcolor=color.new(tcTWO, 100), border_width=1, border_style=line.style_dashed, force_overlay=true)
+if not na(twoB)
+    box.set_right(twoB, time)
+
+// TMO — Monthly True Open
+var float tmoP = na
+var box tmoB = na
+if nMo
+    tmoP := close
+    box.delete(tmoB)
+    tmoB := box.new(time, tmoP, time, tmoP, xloc=xloc.bar_time, border_color=tcTMO, bgcolor=color.new(tcTMO, 100), border_width=1, border_style=line.style_dashed, force_overlay=true)
+if not na(tmoB)
+    box.set_right(tmoB, time)
+
+// 9:30 Open (uses _need930 flag, reset at dCh and dQ == 3)
+var float o930P = na
+var box o930B = na
+var bool _need930 = true
+if dCh and dQ == 3
+    _need930 := true
+if _need930 and he == 9 and me == 30
+    o930P := close
+    _need930 := false
+    box.delete(o930B)
+    o930B := box.new(time, o930P, time, o930P, xloc=xloc.bar_time, border_color=tc930, bgcolor=color.new(tc930, 100), border_width=1, border_style=line.style_solid, force_overlay=true)
+if not na(o930B)
+    box.set_right(o930B, time)
+
+// T90 — 90M True Open
+var float t90P = na
+var box t90B = na
+if c9
+    t90P := close
+    box.delete(t90B)
+    t90B := box.new(time, t90P, time, t90P, xloc=xloc.bar_time, border_color=tc90m, bgcolor=color.new(tc90m, 100), border_width=1, border_style=line.style_dotted, force_overlay=true)
+if not na(t90B)
+    box.set_right(t90B, time)
+
+// TMSO — Micro True Open
+var float tmsoP = na
+var box tmsoB = na
+if showMicroTO and cMi
+    tmsoP := close
+    box.delete(tmsoB)
+    tmsoB := box.new(time, tmsoP, time, tmsoP, xloc=xloc.bar_time, border_color=tcTMSO, bgcolor=color.new(tcTMSO, 100), border_width=1, border_style=line.style_dotted, force_overlay=true)
+if showMicroTO and not na(tmsoB)
+    box.set_right(tmsoB, time)
+
+// True Open labels at barstate.islast
+if barstate.islast
+    if not na(tdoP)
+        label.new(time, tdoP, "TDO", xloc=xloc.bar_time, style=label.style_label_left, color=color.new(tcTDO, 80), textcolor=tcTDO, size=size.tiny, force_overlay=true)
+    if not na(twoP)
+        label.new(time, twoP, "TWO", xloc=xloc.bar_time, style=label.style_label_left, color=color.new(tcTWO, 80), textcolor=tcTWO, size=size.tiny, force_overlay=true)
+    if not na(tmoP)
+        label.new(time, tmoP, "TMO", xloc=xloc.bar_time, style=label.style_label_left, color=color.new(tcTMO, 80), textcolor=tcTMO, size=size.tiny, force_overlay=true)
+    if not na(o930P)
+        label.new(time, o930P, "9:30", xloc=xloc.bar_time, style=label.style_label_left, color=color.new(tc930, 80), textcolor=tc930, size=size.tiny, force_overlay=true)
+    if not na(t90P)
+        label.new(time, t90P, "T90", xloc=xloc.bar_time, style=label.style_label_left, color=color.new(tc90m, 80), textcolor=tc90m, size=size.tiny, force_overlay=true)
+    if showMicroTO and not na(tmsoP)
+        label.new(time, tmsoP, "TMSO", xloc=xloc.bar_time, style=label.style_label_left, color=color.new(tcTMSO, 80), textcolor=tcTMSO, size=size.tiny, force_overlay=true)
+
+// ═══════ PANE (aligned to overlay cycles) ════════════════════════════════════
+plot(50, color=color.new(color.gray, 100), editable=false, display=display.pane)
+
+bool pane_showWeekly  = tfS > 300 and tfS <= 3600
+bool pane_show90m     = tfS <= 300
+
+// Bottom row (y=0→50): Parent cycle
+var box paneBot = na
+if pane_showWeekly and not pane_show90m and wCh
+    if not na(paneBot)
+        box.set_right(paneBot, time)
+    paneBot := box.new(time, 50, time, 0, xloc=xloc.bar_time, border_color=color.gray, bgcolor=f_bg(wQ, hq1, hq2, hq3, hq4), border_width=1, border_style=line.style_dotted, text=wn, text_size=f_sz(cSz), text_color=f_c(wQ, hq1, hq2, hq3, hq4), text_halign=text.align_center, text_valign=text.align_center)
+if pane_show90m and dCh
+    if not na(paneBot)
+        box.set_right(paneBot, time)
+    paneBot := box.new(time, 50, time, 0, xloc=xloc.bar_time, border_color=color.gray, bgcolor=f_bg(dQ, dq1, dq2, dq3, dq4), border_width=1, border_style=line.style_dotted, text=dn, text_size=f_sz(cSz), text_color=f_c(dQ, dq1, dq2, dq3, dq4), text_halign=text.align_center, text_valign=text.align_center)
+if not na(paneBot)
+    box.set_right(paneBot, time)
+
+// Top row (y=50→100): Child cycle
+var box paneTop = na
+if pane_showWeekly and not pane_show90m and dCh
+    if not na(paneTop)
+        box.set_right(paneTop, time)
+    paneTop := box.new(time, 100, time, 50, xloc=xloc.bar_time, border_color=color.gray, bgcolor=f_bg(dQ, dq1, dq2, dq3, dq4), border_width=1, border_style=line.style_dotted, text=dn, text_size=f_sz(cSz), text_color=f_c(dQ, dq1, dq2, dq3, dq4), text_halign=text.align_center, text_valign=text.align_center)
+if pane_show90m and c9
+    if not na(paneTop)
+        box.set_right(paneTop, time)
+    paneTop := box.new(time, 100, time, 50, xloc=xloc.bar_time, border_color=color.gray, bgcolor=f_bg(q9, nq1, nq2, nq3, nq4), border_width=1, border_style=line.style_dotted, text=dn + " Q" + str.tostring(q9), text_size=f_sz(cSz), text_color=f_c(q9, nq1, nq2, nq3, nq4), text_halign=text.align_center, text_valign=text.align_center)
+if not na(paneTop)
+    box.set_right(paneTop, time)
+
+// ═══════ TABLE (True Open Status — matches original) ══════════════════════════
+if showTable and barstate.islast
+    var table tbl = table.new(f_tp(), 2, 6, bgcolor=tblBg, border_color=tblBd, border_width=1)
+    table.cell(tbl, 0, 0, "True Open", text_color=tblHd, text_size=f_sz(tableSz), text_halign=text.align_left)
+    table.cell(tbl, 1, 0, "Status",   text_color=tblHd, text_size=f_sz(tableSz))
+
+    // Monthly
+    string mSt = na(tmoP) ? "Waiting" : close > tmoP ? "Above" : "Below"
+    color  mCl = mSt == "Above" ? tblAC : mSt == "Below" ? tblBC : color.gray
+    table.cell(tbl, 0, 1, "Monthly", text_color=tblHd, text_size=f_sz(tableSz), text_halign=text.align_left)
+    table.cell(tbl, 1, 1, mSt, text_color=mCl, text_size=f_sz(tableSz))
+
+    // Weekly
+    string wSt = na(twoP) ? "Waiting" : close > twoP ? "Above" : "Below"
+    color  wCl = wSt == "Above" ? tblAC : wSt == "Below" ? tblBC : color.gray
+    table.cell(tbl, 0, 2, "Weekly", text_color=tblHd, text_size=f_sz(tableSz), text_halign=text.align_left)
+    table.cell(tbl, 1, 2, wSt, text_color=wCl, text_size=f_sz(tableSz))
+
+    // Daily
+    string dSt = na(tdoP) ? "Waiting" : close > tdoP ? "Above" : "Below"
+    color  dCl = dSt == "Above" ? tblAC : dSt == "Below" ? tblBC : color.gray
+    table.cell(tbl, 0, 3, "Daily", text_color=tblHd, text_size=f_sz(tableSz), text_halign=text.align_left)
+    table.cell(tbl, 1, 3, dSt, text_color=dCl, text_size=f_sz(tableSz))
+
+    // Quarter (90M)
+    string qSt = na(t90P) ? "Waiting" : close > t90P ? "Above" : "Below"
+    color  qCl = qSt == "Above" ? tblAC : qSt == "Below" ? tblBC : color.gray
+    table.cell(tbl, 0, 4, "Quarter", text_color=tblHd, text_size=f_sz(tableSz), text_halign=text.align_left)
+    table.cell(tbl, 1, 4, qSt, text_color=qCl, text_size=f_sz(tableSz))
+
+    // Micro
+    string miSt = (not showMicroTO or na(tmsoP)) ? "Waiting" : close > tmsoP ? "Above" : "Below"
+    color  miCl = miSt == "Above" ? tblAC : miSt == "Below" ? tblBC : color.gray
+    table.cell(tbl, 0, 5, "Micro", text_color=tblHd, text_size=f_sz(tableSz), text_halign=text.align_left)
+    table.cell(tbl, 1, 5, miSt, text_color=miCl, text_size=f_sz(tableSz))
