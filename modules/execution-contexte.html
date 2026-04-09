@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Execution & Contexte de Marche</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0C0F0A;
+  --bg2:      #111510;
+  --bg3:      #181D14;
+  --border:   #1F2A1A;
+  --em:       #3D7A3A;
+  --em2:      #56A853;
+  --em-light: #A3D9A1;
+  --em-pale:  #E8F5E8;
+  --amber:    #D4882A;
+  --amber-l:  #F5C56A;
+  --red:      #C9453A;
+  --blue:     #4A90B8;
+  --muted:    #3A4535;
+  --text:     #DDE8D8;
+  --text-dim: #7D9478;
+  --serif:    'Playfair Display', serif;
+  --sans:     'Syne', sans-serif;
+  --body:     'Source Serif 4', serif;
+  --mono:     'Roboto Mono', monospace;
+  --sw: 270px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.75; display: flex; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── SIDEBAR ─────────────────────────── */
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 100;
+}
+
+.sb-logo {
+  padding: 28px 22px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sb-logo .mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--em), var(--em2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(61,122,58,.3);
+}
+
+.sb-logo h1 {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--em-light);
+  line-height: 1.25;
+}
+
+.sb-logo p {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.sb-section {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 16px 22px 5px;
+}
+
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 22px; text-decoration: none;
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 500;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.sb-link:hover { background: rgba(86,168,83,.06); color: var(--text); }
+.sb-link.active { background: rgba(86,168,83,.1); color: var(--em-light); border-left-color: var(--em2); }
+
+.sb-link .n {
+  font-family: var(--mono);
+  font-size: 0.62rem; font-weight: 500;
+  color: var(--muted); min-width: 22px;
+}
+.sb-link.active .n { color: var(--em2); }
+
+/* ── PROGRESS ────────────────────────── */
+#pbar {
+  position: fixed; top: 0; left: var(--sw); right: 0;
+  height: 2px; background: var(--border); z-index: 200;
+}
+#pfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--em), var(--em2), var(--amber));
+  width: 0%; transition: width 0.1s linear;
+}
+
+/* ── MAIN ────────────────────────────── */
+#main { margin-left: var(--sw); flex: 1; min-height: 100vh; }
+
+/* ── HERO ────────────────────────────── */
+#hero {
+  position: relative; overflow: hidden;
+  padding: 80px 64px 72px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-noise {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-lines {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 20px,
+    rgba(61,122,58,.04) 20px, rgba(61,122,58,.04) 21px
+  );
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(86,168,83,.12);
+  border: 1px solid rgba(86,168,83,.3);
+  color: var(--em-light);
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+
+#hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 5.5vw, 5rem);
+  line-height: 1.0;
+  color: #fff;
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+#hero h1 .em {
+  display: block;
+  background: linear-gradient(90deg, var(--em2), var(--em-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+#hero .sub {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 400;
+  color: var(--text-dim); max-width: 560px; margin-bottom: 44px;
+  line-height: 1.8;
+}
+
+.hero-kpis {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 14px; max-width: 660px;
+}
+
+.kpi {
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+}
+.kpi:hover { border-color: rgba(86,168,83,.35); }
+
+.kpi-v {
+  font-family: var(--mono);
+  font-size: 1.5rem; font-weight: 500;
+  color: var(--em-light); line-height: 1;
+  margin-bottom: 5px;
+}
+.kpi-l {
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── MODULE ──────────────────────────── */
+.mod {
+  padding: 64px; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.mod.vis { opacity: 1; transform: none; }
+
+.mod-head {
+  display: flex; align-items: flex-start; gap: 18px;
+  margin-bottom: 40px;
+}
+
+.mod-tag {
+  font-family: var(--mono);
+  font-size: 0.65rem; font-weight: 500;
+  color: var(--em2);
+  background: rgba(86,168,83,.1);
+  border: 1px solid rgba(86,168,83,.22);
+  padding: 5px 12px; border-radius: 6px;
+  white-space: nowrap; margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+.mod-head h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: #fff; line-height: 1.1;
+}
+
+/* ── SECTION TITLES ─────────────────── */
+.sec {
+  font-family: var(--sans);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--em-light);
+  margin: 42px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+  display: flex; align-items: center; gap: 10px;
+}
+.sec::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 18px;
+  background: linear-gradient(var(--em), var(--em2));
+  border-radius: 2px; flex-shrink: 0;
+}
+
+.subsec {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 700;
+  color: var(--text); margin: 26px 0 10px;
+}
+
+p {
+  font-size: 0.95rem; color: var(--text-dim);
+  line-height: 1.85; margin-bottom: 12px;
+}
+p strong { color: var(--text); font-weight: 600; }
+em { color: var(--em-light); font-style: italic; }
+
+/* ── CALLOUTS ────────────────────────── */
+.box {
+  border-radius: 10px; padding: 20px 24px;
+  margin: 18px 0; border-left: 3px solid;
+  background: rgba(255,255,255,.022);
+}
+.box-em  { border-color: var(--em2);  background: rgba(86,168,83,.06); }
+.box-am  { border-color: var(--amber); background: rgba(212,136,42,.06); }
+.box-re  { border-color: var(--red);   background: rgba(201,69,58,.06); }
+.box-bl  { border-color: var(--blue);  background: rgba(74,144,184,.06); }
+
+.box-title {
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 7px;
+}
+.box-em .box-title  { color: var(--em-light); }
+.box-am .box-title  { color: var(--amber-l); }
+.box-re .box-title  { color: #FCA5A5; }
+.box-bl .box-title  { color: #93C5FD; }
+.box p { margin: 0; font-size: 0.88rem; }
+
+/* ── LISTS ───────────────────────────── */
+ul.cl { list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 8px; }
+ul.cl li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ul.cl li::before {
+  content: '>'; color: var(--em2); font-size: 1rem;
+  margin-top: 1px; flex-shrink: 0;
+}
+ul.cl li strong { color: var(--text); }
+
+ol.nl { counter-reset: nl; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 9px; }
+ol.nl li {
+  counter-increment: nl;
+  display: flex; align-items: flex-start; gap: 13px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ol.nl li::before {
+  content: counter(nl);
+  background: rgba(86,168,83,.15);
+  border: 1px solid rgba(86,168,83,.28);
+  color: var(--em-light);
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+}
+
+/* ── TABLE ───────────────────────────── */
+.tbl {
+  width: 100%; border-collapse: collapse;
+  margin: 18px 0; font-size: 0.87rem;
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.tbl th {
+  background: rgba(86,168,83,.1);
+  color: var(--em-light);
+  font-family: var(--sans); font-weight: 700;
+  font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 11px 18px; text-align: left;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+}
+.tbl td {
+  padding: 10px 18px; color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top; line-height: 1.6;
+}
+.tbl td:first-child { color: var(--text); font-weight: 600; font-size: 0.83rem; white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(255,255,255,.015); }
+
+/* ── FOUNDATIONAL LEVELS ────────────── */
+.levels {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 3px; margin: 18px 0;
+}
+.lv {
+  padding: 18px 14px; border-radius: 10px;
+  text-align: center; border: 1px solid; z-index: 1;
+  transition: transform 0.2s;
+}
+.lv:hover { transform: translateY(-3px); }
+.lv .phase {
+  font-family: var(--sans); font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.lv .name { font-family: var(--serif); font-size: 1.15rem; margin-bottom: 4px; line-height: 1.1; }
+.lv .desc { font-size: 0.72rem; opacity: 0.75; line-height: 1.4; }
+.lv-g { background: rgba(86,168,83,.08); border-color: rgba(86,168,83,.3); color: var(--em-light); }
+.lv-a { background: rgba(212,136,42,.08); border-color: rgba(212,136,42,.3); color: var(--amber-l); }
+.lv-r { background: rgba(201,69,58,.08); border-color: rgba(201,69,58,.3); color: #FCA5A5; }
+.lv-b { background: rgba(74,144,184,.08); border-color: rgba(74,144,184,.3); color: #93C5FD; }
+
+/* ── QUOTE ──────────────────────────── */
+.quote {
+  position: relative;
+  padding: 26px 28px; margin: 28px 0;
+  background: var(--bg3);
+  border-left: 3px solid var(--em2);
+  border-radius: 0 10px 10px 0;
+}
+.quote::before {
+  content: '\201C'; position: absolute; top: -12px; left: 14px;
+  font-family: var(--serif); font-size: 5rem;
+  color: rgba(86,168,83,.18); line-height: 1;
+}
+.quote p {
+  font-family: var(--serif); font-size: 1.2rem; font-style: italic;
+  color: var(--text); margin: 0; line-height: 1.65;
+}
+.quote cite {
+  display: block; margin-top: 12px;
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.09em; text-transform: uppercase; color: var(--em2);
+}
+
+/* ── FOOTER ──────────────────────────── */
+#footer { padding: 48px 64px; text-align: center; border-top: 1px solid var(--border); }
+#footer p { font-family: var(--sans); color: var(--muted); font-size: 0.8rem; margin: 0; }
+
+/* ── ANIMATIONS ──────────────────────── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+.hero-tag, #hero h1, #hero .sub, .hero-kpis { animation: fadeUp 0.6s ease both; }
+.hero-tag { animation-delay: 0.1s; }
+#hero h1 { animation-delay: 0.22s; }
+#hero .sub { animation-delay: 0.34s; }
+.hero-kpis { animation-delay: 0.46s; }
+
+@media (max-width: 900px) {
+  :root { --sw: 0px; }
+  #sidebar { transform: translateX(-270px); }
+  #main { margin-left: 0; }
+  .mod, #hero { padding: 36px 22px; }
+  .hero-kpis { grid-template-columns: 1fr 1fr; }
+  .levels { grid-template-columns: 1fr; }
+}
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+
+<div id="pbar"><div id="pfill"></div></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="mark">AA</div>
+    <h1>Execution & Contexte de Marche</h1>
+    <p>Algorithmic Academy -- Cours Complet</p>
+  </div>
+
+  <div class="sb-section">Fondations Analytiques</div>
+  <a class="sb-link active" href="#hero"><span class="n">00</span>Vue d'ensemble</a>
+  <a class="sb-link" href="#m1"><span class="n">01</span>Introduction & Regles</a>
+  <a class="sb-link" href="#m2"><span class="n">02</span>Structure de Marche</a>
+  <a class="sb-link" href="#m3"><span class="n">03</span>PD Arrays</a>
+  <a class="sb-link" href="#m4"><span class="n">04</span>FVG en Profondeur</a>
+  <a class="sb-link" href="#m5"><span class="n">05</span>Order Flow</a>
+
+  <div class="sb-section">Contexte & Decision</div>
+  <a class="sb-link" href="#m6"><span class="n">06</span>No Return Theory</a>
+  <a class="sb-link" href="#m7"><span class="n">07</span>Types d'Entree</a>
+  <a class="sb-link" href="#m8"><span class="n">08</span>Contexte de Marche</a>
+  <a class="sb-link" href="#m9"><span class="n">09</span>Contexte Disparu</a>
+  <a class="sb-link" href="#m10"><span class="n">10</span>Candle Science</a>
+
+  <div class="sb-section">Execution & Timing</div>
+  <a class="sb-link" href="#m11"><span class="n">11</span>HP vs LP</a>
+  <a class="sb-link" href="#m12"><span class="n">12</span>Temps HTF</a>
+  <a class="sb-link" href="#m13"><span class="n">13</span>Temps LTF</a>
+  <a class="sb-link" href="#m14"><span class="n">14</span>Targets & Objectifs</a>
+
+  <div class="sb-section">Gestion & Patterns</div>
+  <a class="sb-link" href="#m15"><span class="n">15</span>Stop Loss</a>
+  <a class="sb-link" href="#m16"><span class="n">16</span>Risk Management</a>
+  <a class="sb-link" href="#m17"><span class="n">17</span>Analyse Top-Down</a>
+  <a class="sb-link" href="#m18"><span class="n">18</span>Patterns Speciaux</a>
+  <a class="sb-link" href="#m19"><span class="n">19</span>Psychologie & Plan</a>
+  <a class="sb-link" href="#m20"><span class="n">20</span>Prop Firms</a>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-tag">Execution -- Contexte -- Order Flow -- Timeframes</div>
+  <h1>Execution &<br><span class="em">Contexte de Marche</span></h1>
+  <p class="sub">Formation complete Algorithmic Academy -- De l'analyse des PD Arrays a l'execution precise, en passant par l'order flow, le contexte et la gestion du risque. 20 modules pour maitriser chaque etape du processus de trading.</p>
+  <div class="hero-kpis">
+    <div class="kpi"><div class="kpi-v" style="color:var(--em-light)">6</div><div class="kpi-l">Niveaux Fondation</div></div>
+    <div class="kpi"><div class="kpi-v" style="color:var(--amber-l)">20</div><div class="kpi-l">Modules</div></div>
+    <div class="kpi"><div class="kpi-v" style="color:#93C5FD">M1-M</div><div class="kpi-l">Timeframes</div></div>
+    <div class="kpi"><div class="kpi-v" style="color:#FCA5A5">FVG</div><div class="kpi-l">PD Array Cle</div></div>
+  </div>
+</section>
+
+<!-- ══════ M1 ══════ -->
+<section class="mod" id="m1">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 01</span>
+    <h2>Introduction & Regles de Base</h2>
+  </div>
+
+  <div class="sec">Les Niveaux Fondamentaux</div>
+  <p>Tout commence par les <strong>niveaux fondamentaux</strong> (foundational levels). Ce sont les etapes sequentielles qui menent a un trade profitable. Chaque niveau doit etre compris et valide avant de passer au suivant.</p>
+
+  <div class="levels">
+    <div class="lv lv-g"><div class="phase">Niveau 1</div><div class="name">Bias</div><div class="desc">Direction du marche : haussier ou baissier</div></div>
+    <div class="lv lv-g"><div class="phase">Niveau 2</div><div class="name">Narrative</div><div class="desc">Comment le prix va livrer vers le bias</div></div>
+    <div class="lv lv-a"><div class="phase">Niveau 3</div><div class="name">Boundary</div><div class="desc">Le PD Array servant de frontiere / contexte</div></div>
+    <div class="lv lv-a"><div class="phase">Niveau 4</div><div class="name">Target</div><div class="desc">Cible du contexte (premium ou discount)</div></div>
+    <div class="lv lv-b"><div class="phase">Niveau 5</div><div class="name">Entry Pattern</div><div class="desc">Pattern d'entree sur le timeframe inferieur</div></div>
+    <div class="lv lv-r"><div class="phase">Niveau 6</div><div class="name">Risk Mgmt</div><div class="desc">Gestion du risque, SL, partiels, BE</div></div>
+  </div>
+
+  <p>Les niveaux 3 et 4 (Boundary + Target) forment ensemble le <strong>contexte</strong>. Sans contexte, il n'y a pas de trade valide. Le travail le plus difficile se fait dans la <strong>phase analytique</strong> (niveaux 1 a 4). L'execution (niveaux 5-6) est mecanique une fois le contexte etabli.</p>
+
+  <div class="box box-em">
+    <div class="box-title">PRINCIPE CLE</div>
+    <p>Chaque video, chaque concept s'appuie sur le precedent comme une serie TV. Le plot twist de la fin ne fait pas sens au debut. Accepter de ne pas tout comprendre immediatement est normal et attendu.</p>
+  </div>
+
+  <div class="sec">Regles de la Maison</div>
+  <ul class="cl">
+    <li><strong>Pas de raccourcis</strong> -- maitriser les bases avant de chercher des concepts avances.</li>
+    <li><strong>Patience</strong> -- compter un minimum de 6 mois pour une comprehension solide.</li>
+    <li><strong>Un concept a la fois</strong> -- etudier un seul sujet par session de 24h puis passer au suivant.</li>
+    <li><strong>Backtesting en hindsight</strong> -- creer des etudes de cas sur les concepts appris avant de trader en live.</li>
+    <li><strong>Pas de shiny object syndrome</strong> -- choisir une approche, la maitriser, rester discipline.</li>
+  </ul>
+</section>
+
+<!-- ══════ M2 ══════ -->
+<section class="mod" id="m2">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 02</span>
+    <h2>Structure de Marche</h2>
+  </div>
+
+  <div class="sec">Pourquoi la Structure de Marche est dans l'Execution</div>
+  <p>La structure de marche (market structure) est un outil de <strong>confirmation</strong>, pas d'analyse. Elle s'utilise sur les timeframes d'entree (Daily et en dessous : 4H, 1H, 15mn, 5mn, 1mn) pour ne pas se perdre sur le LTF une fois le contexte HTF etabli.</p>
+  <p>Sans contexte prealable (bias, narrative, boundary), la structure de marche seule n'est pas fiable. Elle ne devient pertinente qu'au <strong>niveau 5 -- Entry Pattern</strong>.</p>
+
+  <div class="sec">Intermediate Term High/Low (ITH/ITL)</div>
+  <p>Un <strong>ITH</strong> est un swing high entoure de swing highs plus bas a gauche et a droite. Un <strong>ITL</strong> est l'inverse. L'ITL se cree toujours dans la zone discount du contexte (la boundary). L'ITH est toujours la cible (target).</p>
+  <ul class="cl">
+    <li><strong>ITL = contexte low</strong> -- le bas protege dont on ne devrait pas revenir en dessous.</li>
+    <li><strong>ITH = contexte high</strong> -- la cible vers laquelle on trade.</li>
+    <li>En contexte haussier, on va de l'ITL vers l'ITH. En baissier, l'inverse.</li>
+  </ul>
+
+  <div class="sec">Short Term Highs/Lows (STH/STL)</div>
+  <p>Entre l'ITL et l'ITH, chaque swing low cree est un <strong>Short Term Low</strong>. Ces STL sont des <em>order flow lags</em> -- des ranges a court terme. Chaque STL responsable d'un nouveau FVG constitue un <strong>short term range</strong>.</p>
+
+  <div class="sec">Confirmation par le Sharp Turn (ST)</div>
+  <p>L'ITL est confirme par un <strong>Sharp Turn</strong> : displacement <em>dans</em> le PD Array (FVG baissier), puis displacement <em>hors</em> du PD Array (FVG haussier). C'est le signal que le retournement est en cours.</p>
+
+  <div class="box box-am">
+    <div class="box-title">COMBINAISON DES TIMEFRAMES</div>
+    <p><strong>Monthly PDA</strong> : Daily ST ou 4H ST + RE | <strong>Weekly PDA</strong> : 4H ST ou 1H ST + RE | <strong>Daily PDA</strong> : 1H ST ou 15mn ST + RE | <strong>4H PDA</strong> : 15mn ST ou 5mn ST + RE | <strong>1H PDA</strong> : 5mn ST ou 1mn ST + RE</p>
+  </div>
+</section>
+
+<!-- ══════ M3 ══════ -->
+<section class="mod" id="m3">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 03</span>
+    <h2>PD Arrays -- Premium & Discount</h2>
+  </div>
+
+  <div class="sec">Le Marche = Fair Value + Liquidite</div>
+  <p>Le marche ne fait que deux choses : <strong>offrir de la fair value</strong> ou <strong>capturer de la liquidite</strong>. Tous les PD Arrays s'inscrivent dans cette logique. Comprendre cela rend le debat "est-ce un order block ou un breaker ?" completement inutile.</p>
+
+  <div class="sec">Les PD Arrays Essentiels</div>
+  <table class="tbl">
+    <thead><tr><th>PD Array</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Breaker Block</td><td>Liquidite + FV</td><td>Premier point de retournement dans un leg. C'est le dernier down-move avant l'up-move qui se fait violer. Apparait une seule fois.</td></tr>
+      <tr><td>Mitigation Block</td><td>Fair Value</td><td>Dernier leg haussier avant le mouvement baissier. Peut contenir des bougies opposees entre les bougies directionnelles.</td></tr>
+      <tr><td>Order Block</td><td>Fair Value</td><td>Bougies consecutives dans la meme direction avant le mouvement opposant. Support/resistance base sur la fair value.</td></tr>
+      <tr><td>Swing Points</td><td>Liquidite</td><td>Swing high/low = pools de liquidite. Stop losses et ordres breakout des autres participants.</td></tr>
+      <tr><td>Previous X H/L</td><td>Liquidite</td><td>High/low de la bougie precedente sur n'importe quel timeframe. Cibles et boundaries.</td></tr>
+      <tr><td>Fair Value Gap</td><td>Fair Value</td><td>Le PD Array supreme. Pattern a 3 bougies laissant un desequilibre. Sans FVG, aucun autre PD Array n'est valide.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box box-re">
+    <div class="box-title">REGLE CRITIQUE</div>
+    <p>Tout PD Array (breaker, mitigation, order block) <strong>doit avoir un FVG qui le chevauche</strong> pour etre valide. Sans FVG, ce n'est pas un PD Array utilisable. Le FVG est la fondation de tout.</p>
+  </div>
+
+  <div class="sec">Wick vs Body : Lequel Utiliser ?</div>
+  <p>Si le point le plus bas (tip du wick) du PD Array chevauche directement un FVG, on utilise le <strong>wick</strong>. Sinon, si seul le body est en zone de fair value non encore rebalancee, on utilise le <strong>body</strong>. La logique est simple : la zone en dessous du low qui n'a pas encore ete offerte en fair value est la zone pertinente.</p>
+
+  <div class="sec">Piegeage et Liberation</div>
+  <p>Au-dessus des swing highs, des participants ont des ordres breakout (buy stops). Le marche les piege en montant au-dessus, puis reverse. Si le prix revient au-dessus d'un breaker, cela signifie que les pieges sont <em>liberes</em> -- signal que le prix veut aller dans la direction opposee.</p>
+</section>
+
+<!-- ══════ M4 ══════ -->
+<section class="mod" id="m4">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 04</span>
+    <h2>FVG en Profondeur</h2>
+  </div>
+
+  <div class="sec">Le FVG est l'Intention du Marche</div>
+  <p>Un Fair Value Gap represente l'<strong>empreinte des gros acteurs</strong>. Quand une institution deplace le prix avec un volume massif, elle laisse une trace -- le FVG. Cette trace revele la <em>direction intentionnelle</em> du marche.</p>
+
+  <div class="sec">Pattern a 3 Bougies</div>
+  <ol class="nl">
+    <li><strong>Bougie 1</strong> -- peut etre expansion ou consolidation.</li>
+    <li><strong>Bougie 2 (Expansion)</strong> -- toujours la phase d'expansion du FVG. C'est le corps du gap.</li>
+    <li><strong>Bougie 3 (Confirmation)</strong> -- cree le FVG a sa cloture. Si elle ferme au-dessus du high de la bougie 2, c'est un potentiel <em>breakaway gap</em>. Si elle se consolide, le prix se prepare a revenir dans le FVG.</li>
+  </ol>
+
+  <div class="sec">FVG = Bias + Narrative</div>
+  <p>En suivant simplement les FVG haussiers respectes (le prix rebondit dessus et cree de nouveaux FVG), on obtient le <strong>bias</strong> (direction). Les swing lows responsables de la creation de chaque FVG sont <strong>proteges</strong> -- ils ne seront pas casses tant que le leg est valide. Cela donne la <strong>narrative</strong> (d'ou on continue).</p>
+
+  <div class="sec">Hierarchie des Timeframes pour les FVG</div>
+  <p>Plus le timeframe est eleve, plus le FVG est puissant. Un FVG weekly surpasse un FVG daily. Un FVG daily surpasse un FVG 4H. Si un FVG 1H baissier ne tient pas, verifier s'il y a un FVG 4H ou weekly haussier en dessous -- c'est l'aimant le plus fort.</p>
+
+  <div class="box box-bl">
+    <div class="box-title">FVG DEJA UTILISE</div>
+    <p>Un FVG dans lequel le prix revient <strong>deux fois</strong> est considere comme epuise. La fair value a deja ete offerte -- on ne la rebalance pas 500 fois. Si le FVG ne produit pas de nouveau FVG dans la meme direction apres la premiere visite, il est neutralise.</p>
+  </div>
+
+  <div class="sec">Anticiper le Prochain FVG</div>
+  <p>Le marche <strong>anticipe deja</strong> les futurs FVG. Quand la bougie 2 (expansion) est en cours, le prix sait ou le FVG va se creer. En comprenant le pattern a 3 bougies, on peut anticiper la creation du prochain FVG avant meme qu'il existe formellement.</p>
+</section>
+
+<!-- ══════ M5 ══════ -->
+<section class="mod" id="m5">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 05</span>
+    <h2>Order Flow</h2>
+  </div>
+
+  <div class="sec">Definition de l'Order Flow</div>
+  <p>L'order flow est le flux des ordres institutionnels. Si les <strong>discount arrays tiennent</strong>, l'order flow est haussier. Si les <strong>premium arrays tiennent</strong>, l'order flow est baissier. C'est le coeur de la strategie.</p>
+
+  <div class="sec">Order Flow Lag</div>
+  <p>Un <strong>order flow lag</strong> est un leg de prix contenant un FVG. Sans FVG dans le leg, ce n'est pas un order flow lag valide. On utilise toujours le <em>leg le plus recent</em> sur chaque timeframe.</p>
+
+  <div class="sec">FLOD, LOD, OD -- Les Trois Defenses</div>
+  <table class="tbl">
+    <thead><tr><th>Acronyme</th><th>Nom</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td>FLOD</td><td>First Line of Defense</td><td>Premier premium/discount array rencontre dans le leg. Souvent un FVG.</td></tr>
+      <tr><td>OD</td><td>Overlapping Defense</td><td>Premier point de chevauchement entre PD Arrays. Si le FVG n'est pas le FLOD, il devient automatiquement l'OD.</td></tr>
+      <tr><td>LOD</td><td>Last Line of Defense</td><td>Le swing high/low du leg. Si ce niveau ne tient pas, tout le leg est invalide.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Confirmation de l'Order Flow</div>
+  <p>L'order flow est confirme quand on a <strong>deux FVG dans la meme direction</strong> : un premier order flow lag, puis un retracement dans un PD Array, suivi d'un nouveau FVG creant un second order flow lag. C'est le ST (Sharp Turn) + RE (Retracement Entry).</p>
+
+  <div class="sec">Relativite de l'Order Flow</div>
+  <p>L'order flow est <strong>relatif a chaque timeframe</strong>. L'OF monthly peut etre haussier pendant que l'OF 1H est baissier. Le timeframe superieur domine toujours. L'OF 1mn doit etre en contexte du 5mn, qui doit etre en contexte du 15mn, etc.</p>
+
+  <div class="box box-am">
+    <div class="box-title">NE PAS MELANGER LES LAGS</div>
+    <p>Les PD Arrays marques doivent etre dans le <strong>leg actuel de l'order flow</strong> du timeframe concerne. On ne marque pas des PD Arrays 4H venant de la gauche du chart qui ne sont pas dans le leg 4H actuel. Les anciens PD Arrays servent de targets, pas de boundaries.</p>
+  </div>
+</section>
+
+<!-- ══════ M6 ══════ -->
+<section class="mod" id="m6">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 06</span>
+    <h2>No Return Theory</h2>
+  </div>
+
+  <div class="sec">Qu'est-ce qu'un Niveau Protege ?</div>
+  <p>Un <strong>low protege</strong> est un swing low responsable de la creation d'un FVG dans la direction du bias. Le prix n'a aucune raison de revenir en dessous. Si cela arrive, l'idee de trade est invalidee.</p>
+
+  <div class="sec">Processus de Raffinement</div>
+  <ol class="nl">
+    <li><strong>HTF</strong> -- identifier le contexte (bias, boundary, target) sur le Monthly/Weekly/Daily.</li>
+    <li><strong>Raffiner</strong> -- descendre un timeframe pour trouver le low/high protege plus precis.</li>
+    <li><strong>Verifier le contexte</strong> -- s'assurer qu'il n'y a pas de FVG sur le timeframe superieur en dessous du low protege.</li>
+    <li><strong>Entrer</strong> -- le low protege raffine sur le LTF est le point d'entree.</li>
+  </ol>
+
+  <div class="sec">Quand un Order Flow Lag est-il Low Probability ?</div>
+  <p>Un OF lag est <strong>low probability</strong> si un FVG sur le timeframe au-dessus existe en dessous de ce lag. Cela signifie que le lag n'est pas en contexte du timeframe superieur. Exemple : un OF lag haussier 15mn est low probability s'il y a un FVG 1H en dessous.</p>
+
+  <div class="box box-em">
+    <div class="box-title">LA QUESTION A SE POSER</div>
+    <p>"Ou est-ce que le prix n'a <strong>aucune raison</strong> de revenir ?" -- Cette question unique remplace toute checklist. Elle declenche une chaine logique : quel est l'OF lag ? Est-il en contexte du TF superieur ? Y a-t-il un FVG en dessous sur un TF plus haut ?</p>
+  </div>
+</section>
+
+<!-- ══════ M7 ══════ -->
+<section class="mod" id="m7">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 07</span>
+    <h2>Types d'Entree</h2>
+  </div>
+
+  <div class="sec">Choisir son Poison</div>
+  <p>Les types d'entree se reduisent au choix entre <strong>FLOD</strong>, <strong>OD</strong> ou <strong>LOD</strong>. Chaque option a ses avantages et inconvenients. Il faut en choisir un et s'y tenir pendant au moins un an avant de diversifier.</p>
+
+  <table class="tbl">
+    <thead><tr><th>Entree</th><th>Avantage</th><th>Inconvenient</th></tr></thead>
+    <tbody>
+      <tr><td>FLOD</td><td>Plus haute probabilite d'etre execute (le prix touche le FLOD en premier)</td><td>Stop loss potentiellement plus large, RR moins optimal</td></tr>
+      <tr><td>OD</td><td>Meilleur RR, entree plus raffinee, break-even plus rapide</td><td>On manque certains mouvements qui ne retracent pas jusque la</td></tr>
+      <tr><td>LOD</td><td>RR maximal</td><td>Tres rarement atteint dans un OF lag valide -- deconseille comme entree standard</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Strategie de Repartition</div>
+  <p>Option avancee : si vous risquez 1%, placer 0.5% sur le FLOD et 0.5% sur l'OD. Ainsi vous etes toujours implique tout en ayant une position raffinee si le prix retrace davantage.</p>
+
+  <div class="box box-re">
+    <div class="box-title">AVERTISSEMENT</div>
+    <p>Ne changez pas de type d'entree apres chaque perte. Donnez au minimum <strong>10 trades</strong> a chaque approche avant d'evaluer. Le core de la strategie reste identique -- seul le point d'execution change.</p>
+  </div>
+</section>
+
+<!-- ══════ M8 ══════ -->
+<section class="mod" id="m8">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 08</span>
+    <h2>Contexte de Marche</h2>
+  </div>
+
+  <div class="sec">Toujours Trader en Contexte</div>
+  <p>Le contexte est le mouvement d'un PD Array a un autre PD Array sur le <strong>meme timeframe</strong>. La boundary (discount array en haussier) et le target (premium array) definissent la zone ou vos PD Arrays LTF tiendront.</p>
+
+  <div class="sec">Contexte Usuel</div>
+  <p>Le contexte usuel se forme quand l'order flow suit son cours normal. Discount array vers premium array (haussier) ou premium array vers discount array (baissier). C'est le cas standard ou tout est aligne.</p>
+
+  <div class="sec">Contexte Inhabituel</div>
+  <p>Le contexte inhabituel apparait quand l'order flow <strong>ne suit pas</strong>. Le prix ne cree pas de nouveau FVG dans la direction attendue. Les niveaux proteges deviennent les cibles : le "protected high" devient le "weak high", et le "weak low" devient le "protected low".</p>
+
+  <div class="box box-bl">
+    <div class="box-title">CONTEXTE INHABITUEL -- PROCEDURE</div>
+    <p>Si l'OF ne suit pas sur le TF actuel, descendre d'un timeframe pour trouver le contexte usuel qui capitalise sur l'idee inhabituelle. Maximum : descendre de <strong>2 timeframes</strong>. Au-dela, l'idee n'est probablement plus valide.</p>
+  </div>
+
+  <div class="sec">Target du Contexte</div>
+  <p>Le target est toujours le <strong>premier PD Array oppose</strong> rencontre : un previous X high/low ou un swing high/low. Une fois le target atteint, on ne cherche plus d'entrees. On repart a zero : nouveau bias, nouvelle narrative, nouveau contexte.</p>
+  <p>Les targets au-dela du contexte immediat (lows/highs plus lointains) existent mais necessitent un <strong>nouveau contexte</strong> a chaque etape pour y naviguer. On ne trade pas en continu vers un target lointain sans reconfirmer le contexte a chaque leg.</p>
+</section>
+
+<!-- ══════ M9 ══════ -->
+<section class="mod" id="m9">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 09</span>
+    <h2>Quand le Contexte Disparait</h2>
+  </div>
+
+  <div class="sec">Le Target est Atteint -- Et Maintenant ?</div>
+  <p>Une fois le contexte target touche, <strong>on arrete de chercher des entrees</strong>. Le prix est sorti de la zone de haute probabilite. On a besoin de nouveau contexte avant de reprendre.</p>
+
+  <div class="sec">Regle Generale : Descendre d'Un Timeframe</div>
+  <p>Quand le contexte est epuise sur un TF donne, la regle generale est de descendre d'un timeframe pour trouver un nouveau contexte. Mais attention aux conditions prealables :</p>
+  <ul class="cl">
+    <li>Le TF actuel ne cree-t-il vraiment pas de nouveau contexte ? (pas de nouveau FVG dans la direction)</li>
+    <li>Le TF inferieur offre-t-il un contexte exploitable ?</li>
+    <li>Maximum 2 TF en dessous -- au-dela, la qualite se degrade.</li>
+    <li>Y a-t-il un FVG en creation au-dessus/en dessous sur un TF superieur ? (attention au piege)</li>
+  </ul>
+
+  <div class="sec">Le Cycle Perpetuel</div>
+  <p>Le trading est un cycle constant : <strong>etablir contexte → entrer → atteindre target → nouveau contexte</strong>. Les niveaux fondamentaux reprennent depuis le debut a chaque fois. Le bias est rarement a recalculer, mais la boundary et le target changent a chaque leg.</p>
+
+  <div class="quote">
+    <p>L'analyste fait le travail difficile. Le trader execute mecaniquement. Si vous comprenez le contexte -- ou trader et quand trader -- le plus dur est fait.</p>
+    <cite>Algorithmic Academy</cite>
+  </div>
+</section>
+
+<!-- ══════ M10 ══════ -->
+<section class="mod" id="m10">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 10</span>
+    <h2>Candle Science</h2>
+  </div>
+
+  <div class="sec">Trader Une Seule Bougie</div>
+  <p>Tout le trading se resume a predire la direction de <strong>la prochaine bougie</strong>. Si vous savez ou la prochaine bougie monthly va aller, vous avez 30 jours de bougies 1mn pour capitaliser. Si vous savez ou la prochaine weekly va, vous avez 5 jours.</p>
+
+  <div class="sec">Respect vs Irrespect</div>
+  <p>Le <strong>respect</strong> d'un PD Array signifie que le prix ne cloture pas a l'interieur (ou au-dela) sur le meme timeframe que celui du PD Array. L'<strong>irrespect</strong> signifie le contraire -- la cloture penetre ou depasse le PD Array, signalant que ce niveau ne tient plus.</p>
+
+  <div class="box box-am">
+    <div class="box-title">REGLE FONDAMENTALE</div>
+    <p>Toujours evaluer le respect/irrespect <strong>sur le meme timeframe</strong> que le PD Array. Un FVG weekly qui se fait traverser par une bougie 1H n'est pas irrespete -- c'est normal. Seule une cloture weekly a l'interieur compte.</p>
+  </div>
+
+  <div class="sec">La 3eme Bougie Revele Tout</div>
+  <p>Dans le pattern a 3 bougies du FVG, la <strong>3eme bougie</strong> est la cle. Si elle continue l'expansion (cloture au-dela du high de la bougie 2), c'est un breakaway gap -- le prix ne reviendra probablement pas dans ce FVG avant d'atteindre le draw on liquidity. Si elle consolide ou se retourne, le prix se prepare a revenir dans le FVG.</p>
+
+  <div class="sec">Application au Contexte</div>
+  <p>Candle science permet de detecter quand le contexte usuel va basculer en inhabituel. Si un FVG premium est irrespete, les highs "proteges" deviennent les "weak highs". La lecture de chaque bougie en contexte de l'OF et des TF superieurs donne un avantage constant.</p>
+</section>
+
+<!-- ══════ M11 ══════ -->
+<section class="mod" id="m11">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 11</span>
+    <h2>Haute Probabilite vs Basse Probabilite</h2>
+  </div>
+
+  <div class="sec">Empiler les Arguments</div>
+  <p>Le marche se lit en empilant des <strong>arguments</strong> (confluences). Si tous les arguments pointent dans une direction sans contre-argument, c'est haute probabilite (HP). Si les arguments sont partages, c'est 50/50 = basse probabilite (LP).</p>
+
+  <div class="sec">HP ne Veut Pas Dire "Gain Garanti"</div>
+  <p>Un setup HP a peut-etre 80% de chances de fonctionner. Il y a toujours 20% de risque d'echec. La probabilite est un spectre, pas un binaire. Si vous traitez HP comme un gain assure, vous manquez la fondation meme du trading.</p>
+
+  <div class="box box-re">
+    <div class="box-title">LP NE VEUT PAS DIRE "PERDANT"</div>
+    <p>Un jour LP a 20% de chance de donner un beau mouvement. La question n'est pas "est-ce que ca peut marcher ?" mais "est-ce que je risquerais 10 000 EUR la-dessus ?". Si la reponse est non, attendez un jour HP.</p>
+  </div>
+
+  <div class="sec">L'Objectif a Long Terme</div>
+  <p>L'objectif n'est pas de transformer un compte 10K en 1M. C'est d'obtenir un compte de 1M et d'en tirer 10K regulierement. Risquer 0.25% sur 1M = 2 500 EUR par trade. La patience dans la construction du capital est la cle.</p>
+</section>
+
+<!-- ══════ M12 ══════ -->
+<section class="mod" id="m12">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 12</span>
+    <h2>Temps HTF -- Calendrier Economique</h2>
+  </div>
+
+  <div class="sec">Le Temps = Volatilite</div>
+  <p>Le prix sans le temps est une voiture sans essence. Meme si le prix "a l'air bien" (beau FVG, bon contexte), sans volatilite pour soutenir le mouvement, le trade n'ira nulle part. Le temps <strong>doit valider</strong> ce que le prix propose.</p>
+
+  <div class="sec">Mois a Eviter/Reduire</div>
+  <ul class="cl">
+    <li><strong>Aout</strong> -- mois d'ete, faible volatilite, consolider l'experience.</li>
+    <li><strong>Decembre</strong> -- fetes, marches ralentis. Reduire le risque et les attentes.</li>
+    <li><strong>Juin-Juillet</strong> -- acceptables mais rester prudent.</li>
+  </ul>
+
+  <div class="sec">Jours de la Semaine</div>
+  <table class="tbl">
+    <thead><tr><th>Jour</th><th>Probabilite</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td>Lundi</td><td style="color:#FCA5A5">Basse</td><td>Le marche se reveille. Pas de news majeure. Utiliser comme jour de preparation.</td></tr>
+      <tr><td>Mardi</td><td style="color:var(--em-light)">Haute</td><td>Premiere vraie journee de range. Souvent le debut du mouvement weekly.</td></tr>
+      <tr><td>Mercredi</td><td style="color:var(--em-light)">Haute</td><td>Continuation du mouvement de mardi. Journee de news importante.</td></tr>
+      <tr><td>Jeudi</td><td style="color:var(--amber-l)">Moyenne-Haute</td><td>Le trend peut se terminer en fin de journee. Prudence si le target weekly est atteint.</td></tr>
+      <tr><td>Vendredi</td><td style="color:#FCA5A5">Basse</td><td>Contre-tendance frequente. Eviter sauf conditions specifiques (TGIF).</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Le Calendrier Economique est Superieur aux Kill Zones</div>
+  <p>Les news (NFP, CPI, FOMC) sont la source de volatilite HTF. Les institutions connaissent les annonces avant le public. Le calendrier economique vous dit <strong>quel jour</strong> sera volatile. Les kill zones vous disent <em>a quelle heure</em> -- mais sans un jour valide, l'heure est inutile.</p>
+</section>
+
+<!-- ══════ M13 ══════ -->
+<section class="mod" id="m13">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 13</span>
+    <h2>Temps LTF -- Kill Zones & Sessions</h2>
+  </div>
+
+  <div class="sec">Pourquoi des Kill Zones ?</div>
+  <p>Les institutions executent leurs ordres via des algorithmes de settlement qui operent pendant des heures specifiques. Ces heures creent des zones de volatilite sur le LTF. Ce n'est ni magique ni secret -- ce sont les heures d'operation des banques.</p>
+
+  <div class="sec">Sessions Forex (UTC-5 / New York)</div>
+  <table class="tbl">
+    <thead><tr><th>Session</th><th>Heures</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td>London</td><td>02:00 - 05:00</td><td>Ouverture europeenne, debut du mouvement journalier.</td></tr>
+      <tr><td>New York</td><td>07:00 - 10:00</td><td>Volume maximal, continuation ou retournement du mouvement London.</td></tr>
+      <tr><td>London Close</td><td>10:00 - 12:00</td><td>Derniere heure de la session europeenne, potentiels retournements.</td></tr>
+      <tr><td>Asia</td><td>20:00 - 00:00</td><td>Consolidation typique. Rarement exploitable pour les paires majeures.</td></tr>
+      <tr><td>London Majors</td><td>02:00 - 10:00</td><td>Session etendue couvrant London + debut NY -- la fenetre optimale.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Limite d'Application</div>
+  <p>Les kill zones ne s'appliquent qu'au <strong>15mn et en dessous</strong>. Au-dessus (1H+), le calendrier economique suffit. Plus vous descendez en timeframe, plus les kill zones deviennent importantes pour filtrer vos entrees.</p>
+
+  <div class="box box-re">
+    <div class="box-title">ROLLOVER HOUR (17:00 NY)</div>
+    <p>A 17h, le broker roule votre position au jour suivant. Les spreads s'ecartent. Sur 1mn/5mn, <strong>fermez vos positions</strong> avant le rollover. Sur 15mn, evaluez si la position est en zone de securite. Le break-even ne vous protege pas du slippage pendant le rollover.</p>
+  </div>
+</section>
+
+<!-- ══════ M14 ══════ -->
+<section class="mod" id="m14">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 14</span>
+    <h2>Targets & Objectifs</h2>
+  </div>
+
+  <div class="sec">Targets du Contexte</div>
+  <p>Le target du contexte est toujours le <strong>premier PD Array oppose</strong> sur le meme timeframe. En haussier : premier premium array (previous X high ou swing high). En baissier : premier discount array (previous X low ou swing low).</p>
+  <ul class="cl">
+    <li>S'il y a un <strong>swing low</strong> et un <strong>previous X low</strong>, on vise le swing low (plus precis).</li>
+    <li>S'il n'y a pas de swing low dans le leg actuel, on vise le previous X low.</li>
+    <li>Au-dela du target contexte, les targets supplementaires existent mais necessitent un <strong>nouveau contexte</strong> a chaque etape.</li>
+  </ul>
+
+  <div class="sec">Une Fois le Target Atteint</div>
+  <p>Stop. Plus d'entrees. Plus de recherche de setups. On revient aux niveaux fondamentaux : nouveau bias (souvent identique), nouvelle boundary, nouveau target. C'est le cycle perpetuel du trading.</p>
+
+  <div class="sec">Target Usuel vs Inhabituel</div>
+  <p><strong>Usuel</strong> : le premier PD Array oppose dans la direction de l'OF. <strong>Inhabituel</strong> : quand l'OF ne suit pas, les niveaux proteges deviennent les targets. Le "protected high" devient le "weak high" a cibler. Apres l'atteinte, le contexte inhabituel se transforme generalement en contexte usuel sur un TF inferieur.</p>
+</section>
+
+<!-- ══════ M15 ══════ -->
+<section class="mod" id="m15">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 15</span>
+    <h2>Stop Loss & Placement</h2>
+  </div>
+
+  <div class="sec">La Question Directrice</div>
+  <p>"<strong>Ou est-ce que le prix n'a aucune raison de revenir ?</strong>" -- La reponse a cette question definit votre stop loss. C'est le LOD (Last Line of Defense) de votre order flow lag d'entree.</p>
+
+  <div class="sec">Processus de Placement</div>
+  <ol class="nl">
+    <li><strong>Identifier l'OF lag</strong> sur le TF d'entree -- le swing low/high responsable du FVG.</li>
+    <li><strong>Scanner les TF superieurs</strong> -- y a-t-il un FVG au-dessus/en dessous de ce low/high ? Si oui, le low/high n'est pas aussi protege qu'il parait.</li>
+    <li><strong>Raffiner</strong> -- si deux lows sont proches et qu'il n'y a rien a rebalancer entre eux sur les TF superieurs, utiliser le low le plus proche.</li>
+    <li><strong>Placer le SL</strong> en dessous du low protege raffine.</li>
+  </ol>
+
+  <div class="sec">Probabilite de Sweep</div>
+  <p>Un swing low avec un FVG dans le leg a une probabilite <strong>extremement faible</strong> d'etre sweep. C'est pourquoi les OF lags valides offrent des stop losses fiables. Si le low est sweep, c'est que l'idee etait fondamentalement fausse -- et c'est correct d'etre sorti.</p>
+
+  <div class="box box-em">
+    <div class="box-title">CHECKLIST → QUESTION</div>
+    <p>Au debut, suivez la checklist mecanique. Avec l'experience, remplacez-la par la question unique. Si vous pouvez y repondre instantanement, la checklist est internalisee.</p>
+  </div>
+</section>
+
+<!-- ══════ M16 ══════ -->
+<section class="mod" id="m16">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 16</span>
+    <h2>Risk Management</h2>
+  </div>
+
+  <div class="sec">Le RM Permet d'Etre Trader</div>
+  <p>Sans risk management, vous etes un joueur de casino. Le RM est ce qui separe un trader d'un parieur. Si vous ne respectez pas le RM, vous ne respectez pas la profession.</p>
+
+  <div class="box box-re">
+    <div class="box-title">NE JAMAIS TRADER LES RELEASES NFP/CPI/FOMC</div>
+    <p>Sur la bougie de release elle-meme, les spreads explosent, le slippage rend le SL inoperant. Votre risque reel peut passer de 1% a 5% sans avertissement. Ce n'est pas du trading, c'est du gambling. Attendre apres la release pour s'impliquer.</p>
+  </div>
+
+  <div class="sec">Risque par Paliers</div>
+  <table class="tbl">
+    <thead><tr><th>Situation</th><th>Risque Suggere</th></tr></thead>
+    <tbody>
+      <tr><td>Au-dessus du solde initial</td><td>0.5% - 1%</td></tr>
+      <tr><td>0 a 4% de drawdown</td><td>0.5%</td></tr>
+      <tr><td>Au-dela de 4% de drawdown</td><td>0.25%</td></tr>
+      <tr><td>Apres confiance etablie</td><td>Jusqu'a 2% (max)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Break Even -- 3 Regles</div>
+  <ol class="nl">
+    <li><strong>Dans le contexte</strong> -- passer BE quand l'OF confirme qu'il n'y a plus de raison de revenir a votre entry.</li>
+    <li><strong>Contexte target atteint</strong> -- obligatoirement BE si vous n'y etes pas deja.</li>
+    <li><strong>Draw on liquidity atteint</strong> -- BE imperativement.</li>
+  </ol>
+
+  <div class="sec">Partiels</div>
+  <p>La gestion des partiels depend de la distance entre l'entry et le target. Si le target est un 1:2 RR, evaluer l'OF en cours pour decider quand alleger. Toujours prendre en compte la position relative par rapport au target avant de decider de prendre un partiel ou de laisser courir.</p>
+</section>
+
+<!-- ══════ M17 ══════ -->
+<section class="mod" id="m17">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 17</span>
+    <h2>Analyse Top-Down</h2>
+  </div>
+
+  <div class="sec">Les 3 Regles de l'Analyse</div>
+  <ol class="nl">
+    <li><strong>PD Arrays les plus proches</strong> sur chaque timeframe -- marquer le discount et le premium array le plus proche.</li>
+    <li><strong>FVG a exploiter</strong> -- quels FVG sont actifs ? Lequel va dominer ?</li>
+    <li><strong>Contexte</strong> -- peut-on definir un contexte (boundary → target) sur ce timeframe ?</li>
+  </ol>
+
+  <div class="sec">Procedure Concrete</div>
+  <p>Commencer par le <strong>Dollar Index</strong> (DXY). Si le dollar monte, les devises et indices descendent, et vice versa. Analyser le dollar donne le bias pour l'ensemble du marche.</p>
+  <ul class="cl">
+    <li><strong>Monthly</strong> -- une fois par mois. Identifier les PD Arrays proches, les FVG, la direction globale.</li>
+    <li><strong>Weekly</strong> -- une fois par semaine. Raffiner la zone d'interet, verifier les FVG en jeu.</li>
+    <li><strong>Daily</strong> -- chaque jour. Contexte precis, boundary et target pour la journee.</li>
+    <li><strong>4H / 1H</strong> -- toutes les quelques heures. Raffiner l'entree, preparer l'execution.</li>
+    <li><strong>15mn / 5mn / 1mn</strong> -- execution. Chercher le ST + RE dans le contexte etabli par les TF superieurs.</li>
+  </ul>
+
+  <div class="sec">Multi-Paires vs Mono-Paire</div>
+  <p>Plus vous tradez de paires, plus vous devez rester sur les <strong>HTF (4H+)</strong>. Analyser 10 paires sur le 15mn force des idees. Si vous focalisez sur 1-2 paires, vous pouvez descendre jusqu'au 15mn/1H dans votre top-down.</p>
+</section>
+
+<!-- ══════ M18 ══════ -->
+<section class="mod" id="m18">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 18</span>
+    <h2>Patterns Speciaux</h2>
+  </div>
+
+  <div class="sec">OSOK -- One Shot One Kill</div>
+  <p>Modele concu pour capter le <strong>range weekly entier</strong>. Ideal pour les traders avec peu de temps disponible (emploi a temps plein, autre activite).</p>
+  <ul class="cl">
+    <li><strong>Setup</strong> : identifier un daily PD Array dans la direction du trend weekly.</li>
+    <li><strong>Entry</strong> : attendre un 1H Sharp Turn dans le PD Array. Entrer sur le premier FVG du ST.</li>
+    <li><strong>SL</strong> : couvrir le low/high du ST. Si trop large, entrer sur le premier PD Array en premium/discount.</li>
+    <li><strong>Target</strong> : premier daily PD Array oppose (discount en baissier, premium en haussier).</li>
+    <li><strong>Variante fractale</strong> : weekly PD Array + 4H ST = meme principe, echelle differente.</li>
+    <li>Pas de trades le vendredi. Prudence le jeudi. Break-even selon l'order flow.</li>
+  </ul>
+
+  <div class="sec">TGIF -- Thank God It's Friday</div>
+  <p>Modele de <strong>fin de trend weekly</strong>. On trade le retournement du vendredi apres une semaine clairement directionnelle.</p>
+  <ul class="cl">
+    <li><strong>Condition</strong> : semaine clairement trending (Mardi/Mercredi = high ou low de la semaine).</li>
+    <li><strong>Candle Science</strong> : Jeudi cloture pres de l'extreme du range (haut si semaine haussiere).</li>
+    <li><strong>Setup vendredi</strong> : sweep du previous day high/low de jeudi, rejet, puis 15mn ST dans la direction opposee.</li>
+    <li><strong>Target</strong> : FVG 1H ou 4H. Si deja atteint avant le setup, invalider.</li>
+    <li><strong>RR</strong> : setup London → viser 1:2. Setup NY → viser 1:1 (moins de temps avant cloture).</li>
+    <li>Semaine haussiere = short vendredi. Semaine baissiere = long vendredi. Toujours contre-tendance.</li>
+  </ul>
+
+  <div class="sec">Breakaway Gaps</div>
+  <p>Un FVG que le prix ne reviendra probablement pas combler avant d'atteindre le draw on liquidity. Trois types :</p>
+  <table class="tbl">
+    <thead><tr><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Classique</td><td>La 3eme bougie cloture au-dela du high de la bougie 2 (expansion). Trop de retracement necessaire pour revenir dans le FVG.</td></tr>
+      <tr><td>Variation</td><td>Ressemble a un FVG normal mais le draw on liquidity est plus proche que le FVG. Le marche prefere atteindre la cible d'abord.</td></tr>
+      <tr><td>Fair Value</td><td>Zone deja en fair value (fair value area -- buy side et sell side ont ete offerts). Pas de raison de revenir en profondeur.</td></tr>
+    </tbody>
+  </table>
+  <p>Quand un breakaway gap est identifie, descendre d'un timeframe pour trouver du contexte exploitable en dessous. Le breakaway gap n'est pas un PD Array d'entree -- c'est un signal de momentum.</p>
+</section>
+
+<!-- ══════ M19 ══════ -->
+<section class="mod" id="m19">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 19</span>
+    <h2>Psychologie & Plan de Trading</h2>
+  </div>
+
+  <div class="sec">Reduire le Risque d'Erreur</div>
+  <p>Apres chaque trade (win, loss ou BE), <strong>arretez pour la journee</strong>. Vous n'etes plus la meme personne apres un trade : trop euphorie apres un win, trop emotionnel apres un loss, trop gourmand apres un BE. Chaque trade supplementaire augmente le risque d'erreur de maniere significative.</p>
+
+  <div class="sec">Le Pendule</div>
+  <p>L'euphorie d'une serie gagnante va inevitablement se transformer en une serie perdante. C'est la nature du marche et de la psychologie humaine. L'equilibre est la cle : ne pas etre trop haut apres les gains, ne pas etre trop bas apres les pertes.</p>
+
+  <div class="box box-am">
+    <div class="box-title">PARADOXE</div>
+    <p>Une serie gagnante est plus dangereuse qu'une serie perdante. En serie perdante, on corrige ses erreurs. En serie gagnante, on relache la discipline, on arrete le journal, on se croit invincible -- puis le pendule bascule.</p>
+  </div>
+
+  <div class="sec">Le Trading Plan</div>
+  <ul class="cl">
+    <li>Definir bias, narrative, boundary, target <strong>avant</strong> de regarder le LTF.</li>
+    <li>Entree mecanique : un seul type (FLOD, OD ou LOD) pendant minimum 1 an.</li>
+    <li>Journal obligatoire : chaque trade, chaque emotion, chaque lecon.</li>
+    <li>Brain points tracker : chaque trade consomme de l'energie mentale. Quand les points sont epuises, on arrete.</li>
+    <li>Pas de second trade de la journee pendant la phase d'apprentissage.</li>
+  </ul>
+
+  <div class="sec">Les 3 Phases du Parcours</div>
+  <ol class="nl">
+    <li><strong>Phase de pertes</strong> -- inevitable. Apprentissage actif, erreurs necessaires.</li>
+    <li><strong>Phase de break-even</strong> -- le systeme commence a fonctionner mais manque de regularite.</li>
+    <li><strong>Phase de profitabilite</strong> -- l'intuition nait de l'experience, les regles sont internalisees.</li>
+  </ol>
+</section>
+
+<!-- ══════ M20 ══════ -->
+<section class="mod" id="m20">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 20</span>
+    <h2>Prop Firms -- Etre Finance</h2>
+  </div>
+
+  <div class="sec">Criteres de Selection</div>
+  <ul class="cl">
+    <li><strong>No time limit</strong> -- pas de raison de prendre un challenge avec limite de temps. Cela retire la pression et les excuses.</li>
+    <li><strong>Static drawdown</strong> -- le trailing drawdown est un piege qui fait echouer les traders inutilement.</li>
+    <li><strong>Pas de limite de lot size</strong> -- verifier aussi le levier (1:50 ou 1:100 ideal).</li>
+    <li><strong>Prop firms reconnues</strong> -- choisir des firmes avec une communaute active et transparente.</li>
+  </ul>
+
+  <div class="sec">Approche Pratique</div>
+  <p>Commencer par un <strong>petit challenge (10K)</strong> meme si le trading plan n'est pas parfait. La pratique revele ce qui manque : regles de BE, regles de partiels, regles de news. Le demo est insuffisant pour exposer les failles psychologiques.</p>
+
+  <div class="sec">Methode de Scaling</div>
+  <ol class="nl">
+    <li>Passer un petit challenge. Obtenir un payout.</li>
+    <li>Racheter un challenge avec le payout. Avoir 2 comptes actifs.</li>
+    <li>Scaler progressivement : 10K → 20K → 50K → 100K.</li>
+    <li>Objectif final : risquer 0.25% sur 1M = 2 500 EUR par trade.</li>
+  </ol>
+
+  <div class="box box-em">
+    <div class="box-title">ETAT D'ESPRIT</div>
+    <p>Echouer des challenges fait partie du processus. Ce n'est pas une science spatiale -- c'est du risk management et de la psychologie. Si ces deux aspects sont sous controle, le passage n'est qu'une question de temps.</p>
+  </div>
+
+  <div class="sec">Metrics a Surveiller</div>
+  <p><strong>1 trade par jour maximum</strong> au debut. Win rate > 50% avec un RR positif moyen. Si le loss maximal depasse 2% du compte sur un seul trade, il y a un probleme de RM. Si le nombre de trades/jour depasse 3, il y a un probleme de discipline. Le journal revele tout.</p>
+</section>
+
+<!-- FOOTER QUOTE -->
+<section class="mod" id="outro">
+  <div class="quote">
+    <p>Le marche ne fait que deux choses : offrir de la fair value ou capturer de la liquidite. Si vous comprenez cela, vous comprenez tout.</p>
+    <cite>Algorithmic Academy -- Execution & Contexte de Marche</cite>
+  </div>
+</section>
+
+<footer id="footer">
+  <p>Execution & Contexte de Marche -- Cours Algorithmic Academy -- 20 Modules -- PD Arrays -- Order Flow -- Contexte -- Kill Zones -- Risk Management</p>
+  <p style="margin-top:8px;color:var(--border)">Le trading comporte des risques. Ce cours est educatif uniquement.</p>
+</footer>
+
+</main>
+
+<script>
+// Progress bar
+const pf = document.getElementById('pfill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  pf.style.width = (window.scrollY / h * 100) + '%';
+}, { passive: true });
+
+// Fade in modules
+const io = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.05 });
+document.querySelectorAll('.mod').forEach(m => io.observe(m));
+
+// Active nav
+const secs = [...document.querySelectorAll('[id]')];
+const links = document.querySelectorAll('.sb-link');
+function updateNav() {
+  const y = window.scrollY + 110;
+  let cur = secs[0]?.id;
+  for (const s of secs) { if (s.offsetTop <= y) cur = s.id; }
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>

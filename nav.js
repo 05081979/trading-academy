@@ -16,6 +16,7 @@
       { id: 'market-maker-model',   label: 'Market Maker Model' },
       { id: 'candle-range-theory',  label: 'Candle Range Theory' },
       { id: 'analyse-mtf-avancee', label: 'Analyse MTF Avancee' },
+      { id: 'execution-contexte',  label: 'Execution & Contexte' },
     ]},
     { name: 'Protocole', items: [
       { id: 'hub-cours',     label: 'Bibliotheque' },
