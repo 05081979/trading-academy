@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Market Maker Model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0C0F0A;
+  --bg2:      #111510;
+  --bg3:      #181D14;
+  --border:   #1F2A1A;
+  --em:       #3D7A3A;
+  --em2:      #56A853;
+  --em-light: #A3D9A1;
+  --em-pale:  #E8F5E8;
+  --amber:    #D4882A;
+  --amber-l:  #F5C56A;
+  --red:      #C9453A;
+  --blue:     #4A90B8;
+  --muted:    #3A4535;
+  --text:     #DDE8D8;
+  --text-dim: #7D9478;
+  --serif:    'Playfair Display', serif;
+  --sans:     'Syne', sans-serif;
+  --body:     'Source Serif 4', serif;
+  --mono:     'Roboto Mono', monospace;
+  --sw: 270px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.75; display: flex; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 100;
+}
+
+.sb-logo {
+  padding: 28px 22px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sb-logo .mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--em), var(--em2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(61,122,58,.3);
+}
+
+.sb-logo h1 {
+  font-family: var(--serif);
+  font-size: 1.05rem; font-weight: 700;
+  color: var(--em-light); line-height: 1.25;
+}
+
+.sb-logo p {
+  font-family: var(--sans);
+  font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-dim); margin-top: 4px;
+}
+
+.sb-section {
+  font-family: var(--sans); font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); padding: 16px 22px 5px;
+}
+
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 22px; text-decoration: none;
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 500;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.sb-link:hover { background: rgba(86,168,83,.06); color: var(--text); }
+.sb-link.active { background: rgba(86,168,83,.1); color: var(--em-light); border-left-color: var(--em2); }
+
+.sb-link .n {
+  font-family: var(--mono); font-size: 0.62rem; font-weight: 500;
+  color: var(--muted); min-width: 22px;
+}
+.sb-link.active .n { color: var(--em2); }
+
+#pbar {
+  position: fixed; top: 0; left: var(--sw); right: 0;
+  height: 2px; background: var(--border); z-index: 200;
+}
+#pfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--em), var(--em2), var(--amber));
+  width: 0%; transition: width 0.1s linear;
+}
+
+#main { margin-left: var(--sw); flex: 1; min-height: 100vh; }
+
+#hero {
+  position: relative; overflow: hidden;
+  padding: 80px 64px 72px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-noise {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-lines {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 20px,
+    rgba(61,122,58,.04) 20px, rgba(61,122,58,.04) 21px
+  );
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(86,168,83,.12);
+  border: 1px solid rgba(86,168,83,.3);
+  color: var(--em-light);
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+
+#hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 5.5vw, 5rem);
+  line-height: 1.0;
+  color: #fff;
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+#hero h1 .em {
+  display: block;
+  background: linear-gradient(90deg, var(--em2), var(--em-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+#hero .sub {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 400;
+  color: var(--text-dim); max-width: 560px; margin-bottom: 44px;
+  line-height: 1.8;
+}
+
+.hero-kpis {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 14px; max-width: 660px;
+}
+
+.kpi {
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+}
+.kpi:hover { border-color: rgba(86,168,83,.35); }
+
+.kpi-v {
+  font-family: var(--mono);
+  font-size: 1.5rem; font-weight: 500;
+  color: var(--em-light); line-height: 1;
+  margin-bottom: 5px;
+}
+.kpi-l {
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.mod {
+  padding: 64px; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.mod.vis { opacity: 1; transform: none; }
+
+.mod-head {
+  display: flex; align-items: flex-start; gap: 18px;
+  margin-bottom: 40px;
+}
+
+.mod-tag {
+  font-family: var(--mono); font-size: 0.65rem; font-weight: 500;
+  color: var(--em2);
+  background: rgba(86,168,83,.1);
+  border: 1px solid rgba(86,168,83,.22);
+  padding: 5px 12px; border-radius: 6px;
+  white-space: nowrap; margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+.mod-head h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: #fff; line-height: 1.1;
+}
+
+.sec {
+  font-family: var(--sans); font-size: 1.1rem; font-weight: 700;
+  color: var(--em-light);
+  margin: 42px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+  display: flex; align-items: center; gap: 10px;
+}
+.sec::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 18px;
+  background: linear-gradient(var(--em), var(--em2));
+  border-radius: 2px; flex-shrink: 0;
+}
+
+.subsec {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 700;
+  color: var(--text); margin: 26px 0 10px;
+}
+
+p {
+  font-size: 0.95rem; color: var(--text-dim);
+  line-height: 1.85; margin-bottom: 12px;
+}
+p strong { color: var(--text); font-weight: 600; }
+em { color: var(--em-light); font-style: italic; }
+
+.box {
+  border-radius: 10px; padding: 20px 24px;
+  margin: 18px 0; border-left: 3px solid;
+  background: rgba(255,255,255,.022);
+}
+.box-em  { border-color: var(--em2);  background: rgba(86,168,83,.06); }
+.box-am  { border-color: var(--amber); background: rgba(212,136,42,.06); }
+.box-re  { border-color: var(--red);   background: rgba(201,69,58,.06); }
+.box-bl  { border-color: var(--blue);  background: rgba(74,144,184,.06); }
+
+.box-title {
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 7px;
+}
+.box-em .box-title  { color: var(--em-light); }
+.box-am .box-title  { color: var(--amber-l); }
+.box-re .box-title  { color: #FCA5A5; }
+.box-bl .box-title  { color: #93C5FD; }
+.box p { margin: 0; font-size: 0.88rem; }
+
+ul.cl { list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 8px; }
+ul.cl li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ul.cl li::before {
+  content: '>'; color: var(--em2); font-size: 1rem;
+  margin-top: 1px; flex-shrink: 0;
+}
+ul.cl li strong { color: var(--text); }
+
+ol.nl { counter-reset: nl; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 9px; }
+ol.nl li {
+  counter-increment: nl;
+  display: flex; align-items: flex-start; gap: 13px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ol.nl li::before {
+  content: counter(nl);
+  background: rgba(86,168,83,.15);
+  border: 1px solid rgba(86,168,83,.28);
+  color: var(--em-light);
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+}
+
+footer {
+  padding: 40px 64px;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem; color: var(--text-dim);
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  :root { --sw: 0px; }
+  #sidebar { display: none; }
+  #main { margin-left: 0; }
+  .mod { padding: 36px 20px; }
+  #hero { padding: 50px 20px 40px; }
+  .hero-kpis { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+
+<aside id="sidebar">
+  <div class="sb-logo">
+    <div class="mark">A</div>
+    <h1>Market Maker Model</h1>
+    <p>Formation Algorithmic Academy</p>
+  </div>
+  <div class="sb-section">Modules</div>
+  <a class="sb-link" href="#m1"><span class="n">01</span> Introduction</a>
+  <a class="sb-link" href="#m2"><span class="n">02</span> Consolidation Initiale</a>
+  <a class="sb-link" href="#m3"><span class="n">03</span> Buy Side (MMSM)</a>
+  <a class="sb-link" href="#m4"><span class="n">04</span> Sell Side (MMSM)</a>
+  <a class="sb-link" href="#m5"><span class="n">05</span> Sell Side Part 2</a>
+  <a class="sb-link" href="#m6"><span class="n">06</span> Accumulation &amp; Distribution Block</a>
+  <a class="sb-link" href="#m7"><span class="n">07</span> Les Gaps</a>
+  <a class="sb-link" href="#m8"><span class="n">08</span> Le Temps</a>
+  <a class="sb-link" href="#m9"><span class="n">09</span> Entrees</a>
+  <a class="sb-link" href="#m10"><span class="n">10</span> Exemple Graphique</a>
+</aside>
+
+<div id="pbar"><div id="pfill"></div></div>
+
+<main id="main">
+
+<section id="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-tag">Formation Avancee</div>
+  <h1>Market Maker<span class="em">Buy &amp; Sell Models</span></h1>
+  <p class="sub">
+    Cours avance sur les modeles Market Maker : comprendre comment l'algorithme deplace le prix a travers les programmes d'achat et de vente, les cycles d'accumulation/distribution, les gaps, le temps et les entrees haute probabilite.
+  </p>
+  <div class="hero-kpis">
+    <div class="kpi"><div class="kpi-v">10</div><div class="kpi-l">Modules</div></div>
+    <div class="kpi"><div class="kpi-v">MMM</div><div class="kpi-l">Modele</div></div>
+    <div class="kpi"><div class="kpi-v">MTF</div><div class="kpi-l">Multi-Timeframe</div></div>
+    <div class="kpi"><div class="kpi-v">SD</div><div class="kpi-l">Deviations</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 1 — Introduction                -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m1">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 01</span>
+    <h2>Introduction au Market Maker Model</h2>
+  </div>
+
+  <p>
+    Les Market Maker Models sont une serie de <strong>programmes d'achat et de vente</strong> qui constituent le fonctionnement fondamental du marche. L'algorithme qui deplace le prix est limite dans ses actions : il ne peut realiser que quatre operations fondamentales.
+  </p>
+
+  <div class="sec">Les 4 mouvements de l'algorithme</div>
+  <ol class="nl">
+    <li><strong>Consolidation</strong> -- le prix reste confine dans un range</li>
+    <li><strong>Expansion</strong> -- le prix s'eloigne du range</li>
+    <li><strong>Retracement</strong> -- le prix revient partiellement sur ses pas</li>
+    <li><strong>Reversal</strong> -- le prix change de direction (Type 1 : higher high puis cassure / Type 2 : lower high puis cassure)</li>
+  </ol>
+
+  <div class="sec">Enchainement des mouvements</div>
+  <ul class="cl">
+    <li>Tout commence par une <strong>consolidation</strong>, suivie d'une <strong>expansion</strong></li>
+    <li>Apres l'expansion : <strong>retracement</strong> ou <strong>reversal</strong></li>
+    <li>On ne peut pas passer de consolidation a retracement (il n'y a rien a retracer)</li>
+    <li>On ne peut pas passer de consolidation a reversal (il n'y a rien a renverser)</li>
+    <li>Apres un retracement ou reversal, on peut revenir en consolidation puis expansion</li>
+  </ul>
+
+  <div class="sec">Les deux modeles</div>
+  <p>
+    Il existe deux types de modeles Market Maker qui fonctionnent en miroir l'un de l'autre.
+  </p>
+  <ul class="cl">
+    <li><strong>Market Maker Sell Model (MMSM)</strong> -- un programme d'achat (buy program) suivi d'un programme de vente (sell program). Utilise en conditions HTF baissieres. L'objectif est de pieger les acheteurs retail, puis de cibler la liquidite sell-side sous la consolidation initiale.</li>
+    <li><strong>Market Maker Buy Model (MMBM)</strong> -- un programme de vente suivi d'un programme d'achat. Utilise en conditions HTF haussieres. L'objectif est de pieger les vendeurs retail, puis de cibler la liquidite buy-side au-dessus de la consolidation initiale.</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Concept cle</div>
+    <p>Le but de ces modeles est de <strong>manipuler la psychologie humaine</strong>. Quand le marche baisse, les retail vendent massivement -- le marche se retourne alors et chasse leurs stops. Comprendre ce mecanisme est la fondation de toute cette approche.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 2 — La Consolidation Initiale   -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m2">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 02</span>
+    <h2>La Consolidation Initiale</h2>
+  </div>
+
+  <p>
+    Tout Market Maker Model commence par une <strong>consolidation initiale</strong>. L'algorithme maintient le prix dans un range pour permettre a la liquidite de s'accumuler au-dessus (buy stops) et en dessous (sell stops) du marche.
+  </p>
+
+  <div class="sec">Caracteristiques</div>
+  <ul class="cl">
+    <li><strong>Petites bougies</strong> dans un range serre, generalement apres un run de liquidite sell-side</li>
+    <li>Des <strong>equal lows</strong> se forment sous la consolidation, creant un pool de liquidite sell-side</li>
+    <li>Des <strong>equal highs</strong> se forment au-dessus, creant un pool de liquidite buy-side</li>
+    <li>La consolidation se forme souvent au-dessus d'un <em>array HTF</em> (order block, FVG, breaker, mitigation block)</li>
+  </ul>
+
+  <div class="sec">Variantes de manipulation</div>
+  <ul class="cl">
+    <li><strong>Run des sell stops d'abord</strong> -- le prix descend sous la consolidation, touche un array HTF, puis expanse a la hausse. Cela piege les breakout traders qui placent des sells sous les lows.</li>
+    <li><strong>Run des buy stops d'abord</strong> -- le prix monte au-dessus de la consolidation, piege les longs, puis revient prendre les sell stops avant d'expanser.</li>
+    <li>La variante preferee combine le <strong>temps</strong> avec le run de liquidite dans un array HTF pour un setup haute probabilite</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">A retenir</div>
+    <p>La liquidite est le moteur du marche. Sans liquidite, rien ne bouge. La consolidation initiale est le mecanisme par lequel l'algorithme <strong>construit</strong> cette liquidite avant de lancer le modele.</p>
+  </div>
+
+  <div class="sec">Equal lows et equal bodies</div>
+  <p>
+    Recherchez les <strong>equal lows</strong> (meches alignees) et les <strong>equal bodies</strong> (corps de bougies alignes) sous la consolidation. Ces niveaux concentrent une quantite importante de sell stops qui seront utilises comme <em>exit liquidity</em> par le smart money lorsque le sell program sera initie.
+  </p>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 3 — MMSM Buy Side               -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m3">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 03</span>
+    <h2>MMSM — Le Buy Side (Programme d'achat)</h2>
+  </div>
+
+  <p>
+    Dans un Market Maker Sell Model, le <strong>buy program</strong> est la phase de retracement haussier qui amene le prix jusqu'a un niveau HTF premium. C'est le cote gauche de la courbe. En conditions HTF baissieres, ce retracement haussier piege les acheteurs retail avant le retournement.
+  </p>
+
+  <div class="sec">Buy Side Delivery Range (BDR)</div>
+  <p>
+    Le BDR est le range entre le <strong>point d'origine</strong> (consolidation initiale low) et le <strong>terminus</strong> (niveau HTF cible). C'est notre zone d'opportunite pour chercher des setups haussiers pendant le buy program.
+  </p>
+  <ul class="cl">
+    <li>On grade le BDR en <strong>quadrants de 25%</strong> avec l'outil Fibonacci</li>
+    <li>L'ancrage du Fib se fait du high au low du BDR</li>
+    <li>La consolidation initiale se forme generalement dans le <strong>quadrant inferieur (0-25%)</strong></li>
+  </ul>
+
+  <div class="sec">Stages d'accumulation</div>
+  <ul class="cl">
+    <li><strong>25-50%</strong> -- premiere phase d'accumulation ou retour a la consolidation. Le prix rebalance un FVG ou run des sell stops.</li>
+    <li><strong>50% (equilibre)</strong> -- on cherche un <strong>measuring gap</strong> (gap non comble, point median du range). Si on projette 1 deviation du measuring gap, on obtient le high theorique du BDR.</li>
+    <li><strong>50-75%</strong> -- seconde phase de reaccumulation. Meme logique : rebalance ou run de liquidite sell-side.</li>
+    <li><strong>75-100%</strong> -- mouvement explosif final vers le terminus. Ce dernier leg est rapide pour empecher les traders d'entrer en retracement.</li>
+  </ul>
+
+  <div class="sec">Projections par deviations</div>
+  <p>
+    Prenez le range de la consolidation initiale (high - low) et projetez des deviations a la hausse avec le Fibonacci (niveaux 0.5 par 0.5). Les swing points se forment souvent autour de ces deviations. Si une deviation coincide avec un array HTF et de la liquidite buy-side, c'est un <strong>terminus haute probabilite</strong>.
+  </p>
+
+  <div class="box box-am">
+    <div class="box-title">Kill Two Birds</div>
+    <p>L'algorithme cherche toujours a accomplir deux choses simultanement : <strong>chercher de la liquidite</strong> et <strong>rebalancer des inefficiences</strong>. Quand un old high se situe juste sous un FVG HTF, la probabilite d'un reversal a ce niveau est tres elevee.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 4 — MMSM Sell Side              -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m4">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 04</span>
+    <h2>MMSM — Le Sell Side (Programme de vente)</h2>
+  </div>
+
+  <p>
+    Une fois le buy program termine et le terminus atteint, un <strong>Smart Money Reversal (SMR)</strong> se produit : l'algorithme passe d'un programme d'achat a un programme de vente. C'est le cote droit de la courbe du MMSM.
+  </p>
+
+  <div class="sec">Smart Money Reversal</div>
+  <ul class="cl">
+    <li><strong>Type 1 (prefere)</strong> -- le prix fait un higher high au-dessus d'un ancien high, touche un niveau HTF, puis casse sous un ancien swing low = break of market structure</li>
+    <li><strong>Type 2</strong> -- le prix fait un lower high (n'arrive pas a depasser le high precedent) puis casse sous un swing low</li>
+    <li>Pour confirmation supplementaire : chercher une <strong>SMT divergence</strong> avec un actif correle</li>
+    <li>Le break de structure doit etre accompagne d'un <strong>Fair Value Gap</strong> dans le leg d'expansion pour etre valide</li>
+  </ul>
+
+  <div class="sec">Change in State of Delivery (CISD)</div>
+  <p>
+    Le CISD se produit quand le prix traverse le <strong>prix d'ouverture de la derniere bougie haussiere</strong> qui a run la liquidite buy-side. Cette bougie devient un <em>bearish order block</em>. Le CISD confirme le passage du buy program au sell program.
+  </p>
+
+  <div class="sec">Sell Side Delivery Range (SDR)</div>
+  <ul class="cl">
+    <li>Le SDR va du <strong>point d'origine</strong> (high du MMSM) au <strong>terminus</strong> (liquidite sell-side sous la consolidation initiale)</li>
+    <li>On grade le SDR en <strong>quadrants de 25%</strong> comme le BDR</li>
+    <li>La premiere distribution se forme autour de <strong>25%</strong></li>
+    <li>Le measuring gap se trouve a <strong>50%</strong></li>
+    <li>Le silver bullet (seconde distribution) se forme autour de <strong>75%</strong></li>
+  </ul>
+
+  <div class="sec">Calibration du terminus</div>
+  <ul class="cl">
+    <li>Chercher un <strong>HIP range</strong> (5-20 pips) sous la consolidation initiale</li>
+    <li>Verifier si un <strong>niveau HTF</strong> se trouve dans cette zone</li>
+    <li>Projeter des <strong>deviations standard</strong> du manipulation swing vers le bas (2-3 SD courant)</li>
+    <li>Projeter les deviations du <strong>breaker swing</strong> vers le bas pour confluence supplementaire</li>
+    <li>Si plusieurs deviations convergent avec un niveau HTF et un HIP range : <strong>terminus haute probabilite</strong></li>
+  </ul>
+
+  <div class="box box-re">
+    <div class="box-title">Precision</div>
+    <p>Quand vous comprenez vraiment les modeles Market Maker, vous decouvrez une symetrie remarquable dans le price action. Les deviations peuvent donner le high ou low exact au pip pres dans de nombreux cas.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 5 — Sell Side Part 2            -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m5">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 05</span>
+    <h2>Sell Side Delivery — Detail</h2>
+  </div>
+
+  <p>
+    Ce module approfondit la mecanique du sell program apres le Smart Money Reversal, en detaillant les cycles de distribution et les entrees specifiques du cote droit de la courbe.
+  </p>
+
+  <div class="sec">Low Risk Sell</div>
+  <p>
+    Apres le CISD confirme, la premiere entree est le <strong>low risk sell</strong> : un retracement dans le bearish order block. Sur un timeframe inferieur, un FVG haute probabilite se trouve a l'interieur de cet order block.
+  </p>
+  <ul class="cl">
+    <li>Le prix peut remonter dans l'order block mais ne doit <strong>pas depasser le mean threshold</strong> en cloture</li>
+    <li>Le FVG n'a pas besoin d'etre entierement rebalance -- il peut simplement toucher le low de l'OB</li>
+  </ul>
+
+  <div class="sec">Cycles de distribution</div>
+  <p>
+    Chaque cycle de distribution suit un schema en 4 etapes qui se repete.
+  </p>
+  <ol class="nl">
+    <li><strong>Run de liquidite</strong> -- prendre les sell stops sous un swing low</li>
+    <li><strong>Rebalance / Run de stops</strong> -- combler un FVG ou chasser les buy stops au-dessus d'un short-term high</li>
+    <li><strong>Mitigation</strong> -- mitiger dans un distribution block (anciennes zones d'accumulation du buy side)</li>
+    <li><strong>Continuation</strong> -- poursuivre vers la prochaine liquidite sell-side</li>
+  </ol>
+
+  <div class="box box-em">
+    <div class="box-title">Structure break valide</div>
+    <p>La cassure la plus significative est celle qui se produit sous le <strong>second stage d'accumulation</strong> (ou le dernier stage). Les petites cassures dans le manipulation swing ne sont pas significatives -- il faut zoomer out et regarder ou vous etes dans les stages d'accumulation.</p>
+  </div>
+
+  <div class="sec">Silver Bullet</div>
+  <p>
+    Le second stage de distribution est connu sous le nom de <strong>Silver Bullet</strong>. C'est generalement l'entree la plus explosive et la plus rapide a atteindre le target. Elle se forme quand le prix revient mitiger dans un <em>distribution block</em> avec un <em>fair value gap</em>.
+  </p>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 6 — Accumulation & Distribution Block -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m6">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 06</span>
+    <h2>Accumulation &amp; Distribution Blocks</h2>
+  </div>
+
+  <p>
+    Les <strong>Accumulation Blocks</strong> et <strong>Distribution Blocks</strong> sont des niveaux d'inversion specifiques aux Market Maker Models. Ce sont essentiellement des zones ou le smart money revient <strong>mitiger</strong> d'anciennes positions lors de la phase opposee du modele.
+  </p>
+
+  <div class="sec">Distribution Block (MMSM)</div>
+  <ul class="cl">
+    <li>Se trouve dans les <strong>anciennes zones d'accumulation</strong> du buy side</li>
+    <li>Composee des <strong>bougies baissieres consecutives</strong> (down close candles) dans un stage d'accumulation</li>
+    <li>Le smart money mitigue ses anciens longs dans ces zones pendant le sell program</li>
+    <li>Le <strong>discount end</strong> (50% inferieur) est la zone la plus sensible et haute probabilite</li>
+    <li>Le prix peut remonter jusqu'au premium end et rester valide</li>
+    <li>A coupler avec un <strong>FVG</strong> pour un setup haute probabilite</li>
+  </ul>
+
+  <div class="sec">Accumulation Block (MMBM)</div>
+  <ul class="cl">
+    <li>Se trouve dans les <strong>anciennes zones de distribution</strong> du sell side</li>
+    <li>Composee des <strong>bougies haussieres consecutives</strong> (up close candles) dans un stage de distribution</li>
+    <li>Le smart money mitigue ses anciens shorts dans ces zones pendant le buy program</li>
+    <li>La zone du <strong>high au mean threshold</strong> est la plus sensible</li>
+    <li>Le prix peut descendre jusqu'au discount end et rester valide</li>
+    <li>A coupler avec un <strong>FVG</strong> pour des entrees long haute probabilite</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Difference avec le Breaker</div>
+    <p>Les accumulation/distribution blocks n'ont pas besoin du pattern high-low-higher high classique du breaker. Les caracteristiques sont legerement differentes mais le principe est similaire : ce sont des niveaux d'inversion. Si vous utilisez un distribution block pour une entree, placez votre stop au-dessus du premium high.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 7 — Les Gaps                    -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m7">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 07</span>
+    <h2>Les Gaps dans les Market Maker Models</h2>
+  </div>
+
+  <p>
+    Les Fair Value Gaps (FVG) ont des roles tres differents selon leur position dans le modele. Comprendre la relation entre les trois types de gaps permet d'identifier ou vous etes dans le cycle d'accumulation ou de distribution.
+  </p>
+
+  <div class="sec">Common Gap</div>
+  <ul class="cl">
+    <li>Le type le plus frequent de FVG</li>
+    <li>Se <strong>rebalance entierement</strong></li>
+    <li>En climat haussier, le premium end agit comme <strong>support</strong> apres rebalance</li>
+    <li>Si le prix repasse sous le gap, le discount end peut agir comme <strong>resistance</strong></li>
+    <li>Peut etre trade plusieurs fois -- represente les vrais supports/resistances du price action</li>
+  </ul>
+
+  <div class="sec">Breakaway Gap</div>
+  <ul class="cl">
+    <li>Se rebalance <strong>partiellement ou pas du tout</strong></li>
+    <li>Indique que l'algorithme est <strong>presse de quitter</strong> une zone de prix</li>
+    <li>Confirme quand le prix casse au-dessus/en dessous du high/low de reference</li>
+    <li>On ne s'attend pas a ce que le prix revienne dans cette zone</li>
+    <li>Se forme souvent apres la consolidation initiale</li>
+  </ul>
+
+  <div class="sec">Measuring Gap</div>
+  <ul class="cl">
+    <li>Se trouve a <strong>50% (equilibre)</strong> du dealing range</li>
+    <li>Se rebalance <strong>partiellement ou reste ouvert</strong></li>
+    <li>Technique de mesure : ancrer un Fib du point d'origine au measuring gap, projeter 1 SD = terminus theorique</li>
+    <li>Si 1 SD du measuring gap coincide avec les grades, un niveau HTF et d'autres deviations : <strong>haute probabilite</strong></li>
+    <li>Permet d'ajuster les stops et de planifier des positions supplementaires</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Balanced Price Range</div>
+    <p>Quand un common gap du buy side est traverse par le sell program, cela cree un <strong>Balanced Price Range</strong> qui agit comme niveau d'inversion. C'est souvent la raison pour laquelle les breakaway gaps et measuring gaps se forment -- il y a un BPR en dessous qui empeche le prix de revenir.</p>
+  </div>
+
+  <div class="sec">Sequence typique</div>
+  <p>
+    Sur le sell side : <strong>Breakaway Gap</strong> (apres le break de structure) > <strong>Common Gap</strong> (rebalance complet) > <strong>Measuring Gap</strong> (50% du range, reste ouvert) > Common Gap secondaire (vers 75%). Cette sequence vous indique ou vous etes dans la distribution.
+  </p>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 8 — Le Temps                    -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m8">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 08</span>
+    <h2>Le Temps et les Market Maker Models</h2>
+  </div>
+
+  <p>
+    Les Market Maker Models operent dans le cadre temporel. L'algorithme refere aux <strong>data points</strong> (open, high, low, close) du passe dans des <strong>fenetres de temps specifiques</strong>. Quand les data points s'alignent avec le temps, l'algorithme delivre ses instructions (macros).
+  </p>
+
+  <div class="sec">Profil hebdomadaire typique</div>
+  <ul class="cl">
+    <li><strong>Lundi</strong> -- Consolidation. Les ordres s'accumulent au-dessus et en dessous du marche.</li>
+    <li><strong>Mardi</strong> -- Retracement dans le leg d'expansion. Premier stage d'accumulation dans une kill zone.</li>
+    <li><strong>Mercredi</strong> -- Expansion apres accumulation, suivie d'un retracement et second stage d'accumulation dans une autre kill zone.</li>
+    <li><strong>Jeudi</strong> -- Formation du high/low de la semaine, generalement en session New York. Smart Money Reversal. Le buy program se termine, le sell program commence.</li>
+    <li><strong>Vendredi</strong> -- Retracement dans le leg cree apres le SMR. Premier stage de distribution. Trade TGIF (retracement de 20-30% du range hebdomadaire).</li>
+    <li><strong>Lundi suivant</strong> -- Second stage de distribution (Silver Bullet) si pas de nouvelle consolidation.</li>
+  </ul>
+
+  <div class="sec">Cycles AMD intraday</div>
+  <p>
+    Les cycles <strong>Accumulation - Manipulation - Distribution</strong> (AMD) s'imbriquent dans les Market Maker Models. Les retracements du buy program contiennent des <em>market maker buy models fractals</em>. Les retracements de distribution contiennent des <em>market maker sell models fractals</em>.
+  </p>
+
+  <div class="sec">Profil journalier (Power of Three)</div>
+  <ul class="cl">
+    <li><strong>Asia</strong> -- Consolidation initiale</li>
+    <li><strong>Midnight NY (00h00)</strong> -- Reference de prix. Le Judas swing se forme en dessous/au-dessus de ce prix.</li>
+    <li><strong>London</strong> -- Judas swing (manipulation). Premier stage d'accumulation.</li>
+    <li><strong>New York 8h30</strong> -- News embargo, retracement, second stage d'accumulation.</li>
+    <li><strong>New York PM</strong> -- Expansion vers l'objectif buy-side/sell-side.</li>
+    <li><strong>London Close</strong> -- Formation du high/low du jour. SMR si l'objectif est atteint.</li>
+  </ul>
+
+  <div class="sec">Deviations et Power of Three</div>
+  <ul class="cl">
+    <li><strong>Manipulation leg</strong> -- projeter des deviations vers le haut pour estimer le buy program</li>
+    <li><strong>Accumulation range</strong> -- projeter des deviations (2-3 SD pour la manipulation)</li>
+    <li><strong>Manipulation swing</strong> -- projeter 4-5 SD vers le bas pour estimer la distribution</li>
+    <li>3-4 SD du manipulation leg et 4-5 SD du distribution leg sont des reperes fiables</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Silver Bullet Timing</div>
+    <p>La zone <strong>10h-11h NY</strong> correspond au premier stage d'accumulation de la session AM. La zone <strong>14h-15h NY</strong> correspond au second stage de distribution qui cible les lows de la session AM. Ce sont les "silver bullet zones" -- des fenetres temporelles ou les setups haute probabilite se forment.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 9 — Entrees                     -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m9">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 09</span>
+    <h2>Entrees Haute Probabilite</h2>
+  </div>
+
+  <p>
+    Ce module synthetise toutes les connaissances precedentes en un <strong>processus d'entree structure</strong>. Chaque entree necessite une comprehension claire de votre position dans le modele HTF.
+  </p>
+
+  <div class="sec">Etape 1 : Identifier votre position</div>
+  <ul class="cl">
+    <li>Etes-vous dans un <strong>MMSM ou MMBM</strong> sur le timeframe superieur ?</li>
+    <li>Etes-vous sur le <strong>buy side ou sell side</strong> de la courbe ?</li>
+    <li>Quel <strong>stage d'accumulation/distribution</strong> etes-vous ? (1er, 2eme, 3eme...)</li>
+    <li>Avez-vous identifie un <strong>terminus</strong> avec confluence (deviations + niveau HTF + liquidite) ?</li>
+  </ul>
+
+  <div class="sec">Etape 2 : Identifier le draw HTF</div>
+  <ul class="cl">
+    <li>L'algorithme cherche-t-il la <strong>buy-side liquidity</strong> au-dessus d'un old high ?</li>
+    <li>Cherche-t-il la <strong>sell-side liquidity</strong> sous un old low ?</li>
+    <li>Y a-t-il un <strong>BISI ou SIBI</strong> que l'algorithme veut rebalancer ?</li>
+  </ul>
+
+  <div class="sec">Les 3 timeframes</div>
+  <ul class="cl">
+    <li><strong>HTF (Draw)</strong> -- identifie le draw on liquidity et le cadre directeur</li>
+    <li><strong>MTF (Stage)</strong> -- definit le contexte et la raison d'entree</li>
+    <li><strong>LTF (Entree)</strong> -- utilise uniquement pour le placement d'entree et de stop-loss</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Choix des timeframes</div>
+    <p><strong>Position trader</strong> : Monthly > Weekly/Daily. <strong>Swing trader</strong> : Weekly > Daily/4H. <strong>Short-term</strong> : Daily/4H > 1H/15M. <strong>Scalper</strong> : 1H > 15M/5M. Choisissez selon votre personnalite et votre style naturel.</p>
+  </div>
+
+  <div class="sec">Etape 3 : Les entrees du Buy Program</div>
+  <ol class="nl">
+    <li><strong>Consolidation entry</strong> -- FVG ou order block inside la consolidation initiale (OB a equilibre = haute probabilite)</li>
+    <li><strong>Breakaway gap entry</strong> -- retour dans un FVG du leg d'expansion qui a quitte la consolidation</li>
+    <li><strong>Accumulation entry</strong> -- FVG dans le leg d'expansion apres le premier stage d'accumulation, avec liquidite sell-side au-dessus</li>
+  </ol>
+
+  <div class="sec">Etape 4 : Les entrees du Sell Program</div>
+  <ol class="nl">
+    <li><strong>Turtle Soup</strong> -- entree short au-dessus d'un old high quand le terminus s'aligne avec un niveau HTF. Haute probabilite quand l'algo cherche 2 objectifs simultanes (liquidite + rebalance)</li>
+    <li><strong>Low Risk Sell</strong> -- retracement dans le bearish order block apres le CISD confirme</li>
+    <li><strong>Unicorn Entry</strong> -- breaker qui chevauche un FVG. Pattern d'entree tres puissant</li>
+    <li><strong>Silver Bullet</strong> -- distribution block + FVG au second stage de distribution. L'entree la plus explosive et rapide vers le target</li>
+  </ol>
+
+  <div class="box box-re">
+    <div class="box-title">Si vous ne deviez trader qu'un seul pattern</div>
+    <p>Le <strong>second stage de distribution</strong> (MMSM) ou le <strong>second stage d'accumulation</strong> (MMBM) est le setup le plus fiable. Si le temps, la liquidite sell-side, un niveau HTF sous la consolidation, et 4-5 SD du manipulation swing convergent -- c'est un trade haute probabilite.</p>
+  </div>
+
+  <div class="sec">Gestion du risque par modele</div>
+  <ul class="cl">
+    <li>Entree <strong>counter-trend</strong> (buy program dans un HTF bearish) : risque reduit de moitie</li>
+    <li>Entree <strong>with-trend</strong> (sell program dans un HTF bearish) : risque maximum</li>
+    <li>Turtle soup sans confirmation CISD : quart ou moitie du risque normal</li>
+    <li>Reservez votre risque maximum pour les entrees <strong>avec confirmation</strong></li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 10 — Exemple Graphique          -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m10">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 10</span>
+    <h2>Exemple Graphique Complet</h2>
+  </div>
+
+  <p>
+    Ce module final illustre l'application complete de tous les concepts sur un graphique reel (EURUSD 15M/5M/1M). L'exemple montre un MMSM complet avec buy program, smart money reversal, et sell program.
+  </p>
+
+  <div class="sec">Setup du contexte HTF</div>
+  <ul class="cl">
+    <li>HTF bearish avec <strong>buy-side liquidity</strong> au-dessus d'un old high</li>
+    <li>Un <strong>SIBI (Sell Side Imbalance Buy Side Inefficiency)</strong> partiellement ouvert au-dessus du old high</li>
+    <li>L'algorithme va chercher 2 objectifs : la liquidite + la rebalance du SIBI</li>
+    <li>Draw sell-side : equal lows en dessous du range</li>
+  </ul>
+
+  <div class="sec">Consolidation initiale</div>
+  <ul class="cl">
+    <li>Dealing range defini entre le run des buy stops et le run des sell stops</li>
+    <li>Observation pendant la session <strong>Asia</strong></li>
+    <li><strong>Equal lows</strong> au low du dealing range = pool de sell-side liquidity ingeniee</li>
+    <li><strong>Order block haute probabilite</strong> trouve a l'equilibre de la consolidation</li>
+  </ul>
+
+  <div class="sec">Buy program</div>
+  <ul class="cl">
+    <li>Expansion hors de la consolidation avec <strong>displacement</strong></li>
+    <li>Retracement a l'equilibre ou l'order block HP est touche -- rallye haussier</li>
+    <li>Le prix sweep les buy stops au-dessus du old high</li>
+    <li>Les corps s'arretent au old high -- les meches penetrent le SIBI. <strong>Footprint algorithmique</strong> : le prix n'offre plus de buy-side delivery</li>
+  </ul>
+
+  <div class="sec">Deviations et confluences</div>
+  <ul class="cl">
+    <li><strong>Dealing range</strong> projete a la hausse : 1.25 SD = 1.08753</li>
+    <li><strong>Consolidation fractale</strong> (manipulation leg) projetee : 1.25 SD = 1.08753 (meme niveau)</li>
+    <li><strong>Breaker range</strong> projete : deviation = 1.08753 (identique)</li>
+    <li>Trois ranges independants convergent sur le meme prix, au-dessus de la liquidite buy-side et du niveau HTF</li>
+    <li>High reel du mouvement : 1.08754 -- a <strong>1 pipette</strong> de la projection</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Precision des deviations</div>
+    <p>Cet exemple illustre a quel point les modeles peuvent etre precis quand on combine correctement les deviations, les niveaux HTF et la liquidite. C'est la symetrie intrinseque du price action que les Market Maker Models revelent.</p>
+  </div>
+
+  <div class="sec">Graded range du BDR</div>
+  <ul class="cl">
+    <li><strong>25%</strong> -- Premier stage d'accumulation + breakaway gap</li>
+    <li><strong>50%</strong> -- Common gap (rebalance complet)</li>
+    <li><strong>75%</strong> -- Second stage d'accumulation</li>
+    <li><strong>100%</strong> -- Terminus avec reaction a partir du stage 2 : rebalance BISI puis rallye explosif</li>
+  </ul>
+
+  <div class="sec">Sell program</div>
+  <ul class="cl">
+    <li><strong>CISD</strong> confirme quand le prix traverse le prix d'ouverture de la derniere bougie haussiere avec displacement + FVG</li>
+    <li><strong>Low Risk Sell</strong> -- retracement dans le FVG/order block, arrete par le Balanced Price Range en dessous</li>
+    <li><strong>Stage 1 de distribution</strong> -- break de structure, retour dans le breaker + FVG, mitigation dans le distribution block</li>
+    <li><strong>Stage 2 de distribution</strong> (Silver Bullet) -- bodies restent sous le CE du gap, distribution block de la gauche agit comme inversion</li>
+    <li>Le prix plonge en 1-2-3 drives vers le bas</li>
+  </ul>
+
+  <div class="sec">Gaps observes sur le sell side</div>
+  <ul class="cl">
+    <li><strong>Breakaway gap</strong> apres le break de structure (partiellement comble)</li>
+    <li><strong>Common gap</strong> (rebalance complet)</li>
+    <li><strong>Measuring gap</strong> a 50% du range (reste ouvert, overlap avec le measuring gap du buy side)</li>
+    <li>Projection 1 SD du measuring gap = 1.08632 = niveau exact du low a 1 pipette pres</li>
+  </ul>
+
+  <div class="sec">Manipulation leg final</div>
+  <p>
+    Le manipulation leg projete vers le bas donne un midpoint de <strong>1.08600</strong> entre 2 et 3 SD. Le low reel de la bougie : <strong>1.08601</strong> -- encore une fois a 1 pipette de la projection.
+  </p>
+
+  <div class="box box-am">
+    <div class="box-title">Synthese</div>
+    <p>Le marche est structure en programmes d'achat et de vente qui s'enchainent en permanence. En combinant les grades de range, les deviations de swings, les niveaux HTF, les zones de liquidite et les gaps, on obtient des projections d'une precision remarquable. L'etude reguliere et le backtesting sont indispensables pour entrainer votre oeil a reconnaitre ces patterns en temps reel.</p>
+  </div>
+</section>
+
+<!-- ── FOOTER ───────────────────────────── -->
+<footer id="footer">
+  <p>Market Maker Model · Algorithmic Academy · 10 Modules · Buy/Sell Programs · Deviations · Gaps · Time · Entries</p>
+  <p style="margin-top:8px;color:var(--border)">Le trading comporte des risques. Ce cours est educatif uniquement.</p>
+</footer>
+
+</main>
+
+<script>
+const pf = document.getElementById('pfill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  pf.style.width = (window.scrollY / h * 100) + '%';
+}, { passive: true });
+
+const io = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.05 });
+document.querySelectorAll('.mod').forEach(m => io.observe(m));
+
+const secs = [...document.querySelectorAll('[id]')];
+const links = document.querySelectorAll('.sb-link');
+function updateNav() {
+  const y = window.scrollY + 110;
+  let cur = secs[0]?.id;
+  for (const s of secs) { if (s.offsetTop <= y) cur = s.id; }
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>

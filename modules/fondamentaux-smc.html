@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Fondamentaux SMC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0C0F0A;
+  --bg2:      #111510;
+  --bg3:      #181D14;
+  --border:   #1F2A1A;
+  --em:       #3D7A3A;
+  --em2:      #56A853;
+  --em-light: #A3D9A1;
+  --em-pale:  #E8F5E8;
+  --amber:    #D4882A;
+  --amber-l:  #F5C56A;
+  --red:      #C9453A;
+  --blue:     #4A90B8;
+  --muted:    #3A4535;
+  --text:     #DDE8D8;
+  --text-dim: #7D9478;
+  --serif:    'Playfair Display', serif;
+  --sans:     'Syne', sans-serif;
+  --body:     'Source Serif 4', serif;
+  --mono:     'Roboto Mono', monospace;
+  --sw: 270px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.75; display: flex; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── SIDEBAR ─────────────────────────── */
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 100;
+}
+
+.sb-logo {
+  padding: 28px 22px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sb-logo .mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--em), var(--em2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(61,122,58,.3);
+}
+
+.sb-logo h1 {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--em-light);
+  line-height: 1.25;
+}
+
+.sb-logo p {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.sb-section {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 16px 22px 5px;
+}
+
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 22px; text-decoration: none;
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 500;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.sb-link:hover { background: rgba(86,168,83,.06); color: var(--text); }
+.sb-link.active { background: rgba(86,168,83,.1); color: var(--em-light); border-left-color: var(--em2); }
+
+.sb-link .n {
+  font-family: var(--mono);
+  font-size: 0.62rem; font-weight: 500;
+  color: var(--muted); min-width: 22px;
+}
+.sb-link.active .n { color: var(--em2); }
+
+/* ── PROGRESS ────────────────────────── */
+#pbar {
+  position: fixed; top: 0; left: var(--sw); right: 0;
+  height: 2px; background: var(--border); z-index: 200;
+}
+#pfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--em), var(--em2), var(--amber));
+  width: 0%; transition: width 0.1s linear;
+}
+
+/* ── MAIN ────────────────────────────── */
+#main { margin-left: var(--sw); flex: 1; min-height: 100vh; }
+
+/* ── HERO ────────────────────────────── */
+#hero {
+  position: relative; overflow: hidden;
+  padding: 80px 64px 72px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-noise {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-lines {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 20px,
+    rgba(61,122,58,.04) 20px, rgba(61,122,58,.04) 21px
+  );
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(86,168,83,.12);
+  border: 1px solid rgba(86,168,83,.3);
+  color: var(--em-light);
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+
+#hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 5.5vw, 5rem);
+  line-height: 1.0;
+  color: #fff;
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+#hero h1 .em {
+  display: block;
+  background: linear-gradient(90deg, var(--em2), var(--em-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+#hero .sub {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 400;
+  color: var(--text-dim); max-width: 560px; margin-bottom: 44px;
+  line-height: 1.8;
+}
+
+.hero-kpis {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 14px; max-width: 660px;
+}
+
+.kpi {
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+}
+.kpi:hover { border-color: rgba(86,168,83,.35); }
+
+.kpi-v {
+  font-family: var(--mono);
+  font-size: 1.5rem; font-weight: 500;
+  color: var(--em-light); line-height: 1;
+  margin-bottom: 5px;
+}
+.kpi-l {
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── MODULE ──────────────────────────── */
+.mod {
+  padding: 64px; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.mod.vis { opacity: 1; transform: none; }
+
+.mod-head {
+  display: flex; align-items: flex-start; gap: 18px;
+  margin-bottom: 40px;
+}
+
+.mod-tag {
+  font-family: var(--mono);
+  font-size: 0.65rem; font-weight: 500;
+  color: var(--em2);
+  background: rgba(86,168,83,.1);
+  border: 1px solid rgba(86,168,83,.22);
+  padding: 5px 12px; border-radius: 6px;
+  white-space: nowrap; margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+.mod-head h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: #fff; line-height: 1.1;
+}
+
+/* ── SECTION TITLES ─────────────────── */
+.sec {
+  font-family: var(--sans);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--em-light);
+  margin: 42px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+  display: flex; align-items: center; gap: 10px;
+}
+.sec::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 18px;
+  background: linear-gradient(var(--em), var(--em2));
+  border-radius: 2px; flex-shrink: 0;
+}
+
+.subsec {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 700;
+  color: var(--text); margin: 26px 0 10px;
+}
+
+p {
+  font-size: 0.95rem; color: var(--text-dim);
+  line-height: 1.85; margin-bottom: 12px;
+}
+p strong { color: var(--text); font-weight: 600; }
+em { color: var(--em-light); font-style: italic; }
+
+/* ── CALLOUTS ────────────────────────── */
+.box {
+  border-radius: 10px; padding: 20px 24px;
+  margin: 18px 0; border-left: 3px solid;
+  background: rgba(255,255,255,.022);
+}
+.box-em  { border-color: var(--em2);  background: rgba(86,168,83,.06); }
+.box-am  { border-color: var(--amber); background: rgba(212,136,42,.06); }
+.box-re  { border-color: var(--red);   background: rgba(201,69,58,.06); }
+.box-bl  { border-color: var(--blue);  background: rgba(74,144,184,.06); }
+
+.box-title {
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 7px;
+}
+.box-em .box-title  { color: var(--em-light); }
+.box-am .box-title  { color: var(--amber-l); }
+.box-re .box-title  { color: #FCA5A5; }
+.box-bl .box-title  { color: #93C5FD; }
+.box p { margin: 0; font-size: 0.88rem; }
+
+/* ── LISTS ───────────────────────────── */
+ul.cl { list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 8px; }
+ul.cl li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ul.cl li::before {
+  content: '>'; color: var(--em2); font-size: 1rem;
+  margin-top: 1px; flex-shrink: 0;
+}
+ul.cl li strong { color: var(--text); }
+
+ol.nl { counter-reset: nl; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 9px; }
+ol.nl li {
+  counter-increment: nl;
+  display: flex; align-items: flex-start; gap: 13px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ol.nl li::before {
+  content: counter(nl);
+  background: rgba(86,168,83,.15);
+  border: 1px solid rgba(86,168,83,.28);
+  color: var(--em-light);
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+}
+
+/* ── FOOTER ──────────────────────────── */
+footer {
+  padding: 40px 64px;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem; color: var(--text-dim);
+  text-align: center;
+}
+
+/* ── RESPONSIVE ──────────────────────── */
+@media (max-width: 900px) {
+  :root { --sw: 0px; }
+  #sidebar { display: none; }
+  #main { margin-left: 0; }
+  .mod { padding: 36px 20px; }
+  #hero { padding: 50px 20px 40px; }
+  .hero-kpis { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+
+<!-- ── SIDEBAR ──────────────────────────── -->
+<aside id="sidebar">
+  <div class="sb-logo">
+    <div class="mark">A</div>
+    <h1>Fondamentaux SMC</h1>
+    <p>Formation Algorithmic Academy</p>
+  </div>
+  <div class="sb-section">Modules</div>
+  <a class="sb-link" href="#m1"><span class="n">01</span> Introduction</a>
+  <a class="sb-link" href="#m2"><span class="n">02</span> Market Structure</a>
+  <a class="sb-link" href="#m3"><span class="n">03</span> Supply &amp; Demand</a>
+  <a class="sb-link" href="#m4"><span class="n">04</span> Impulse &amp; Imbalance</a>
+  <a class="sb-link" href="#m5"><span class="n">05</span> Liquidite</a>
+  <a class="sb-link" href="#m6"><span class="n">06</span> Risk Management</a>
+  <a class="sb-link" href="#m7"><span class="n">07</span> Regles d'Entree</a>
+  <a class="sb-link" href="#m8"><span class="n">08</span> Trades Pratiques</a>
+  <a class="sb-link" href="#m9"><span class="n">09</span> Psychologie</a>
+</aside>
+
+<div id="pbar"><div id="pfill"></div></div>
+
+<!-- ── MAIN ─────────────────────────────── -->
+<main id="main">
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-tag">Formation</div>
+  <h1>Fondamentaux<span class="em">Smart Money Concepts</span></h1>
+  <p class="sub">
+    Cours complet couvrant les bases essentielles du trading institutionnel : structure de marche, offre et demande, impulsion, desequilibre, liquidite, gestion du risque, regles d'entree et psychologie du trader.
+  </p>
+  <div class="hero-kpis">
+    <div class="kpi"><div class="kpi-v">9</div><div class="kpi-l">Modules</div></div>
+    <div class="kpi"><div class="kpi-v">SMC</div><div class="kpi-l">Methode</div></div>
+    <div class="kpi"><div class="kpi-v">H1-M1</div><div class="kpi-l">Timeframes</div></div>
+    <div class="kpi"><div class="kpi-v">5R+</div><div class="kpi-l">Objectif R:R</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 1 — Introduction                -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m1">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 01</span>
+    <h2>Introduction aux Smart Money Concepts</h2>
+  </div>
+
+  <p>
+    Les Smart Money Concepts (SMC) sont une approche du trading basee sur la comprehension des mouvements institutionnels du marche. Contrairement aux methodes retail traditionnelles basees sur des indicateurs techniques, le SMC se concentre sur l'analyse de <strong>qui</strong> controle et deplace le marche, <strong>comment</strong> lire correctement les mouvements de prix, et <strong>comment</strong> aborder le marche de maniere strategique.
+  </p>
+
+  <div class="sec">Principes fondamentaux</div>
+  <ul class="cl">
+    <li>Les <strong>grandes institutions</strong> (banques, hedge funds) controlent et deplacent le marche -- les traders retail ne representent qu'un infime pourcentage du volume</li>
+    <li>L'objectif est de <strong>suivre les mouvements institutionnels</strong>, pas de predire le marche de maniere independante</li>
+    <li>Le trader doit analyser les donnees historiques pour identifier les manipulations institutionnelles et en profiter</li>
+    <li>La <strong>gestion du risque</strong> et la <strong>psychologie</strong> representent la majorite du succes en trading (environ 90%)</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Etat d'esprit</div>
+    <p>Abordez cette formation avec un esprit ouvert. Mettez de cote les connaissances retail precedentes et soyez pret a voir le marche sous un angle completement different -- celui des institutions.</p>
+  </div>
+
+  <div class="sec">Ce que couvre cette formation</div>
+  <ul class="cl">
+    <li><strong>Structure de marche</strong> -- identifier les tendances haussieres, baissieres et les ranges</li>
+    <li><strong>Offre et Demande</strong> -- localiser les zones ou les institutions placent leurs ordres</li>
+    <li><strong>Impulsion et Desequilibre</strong> -- reconnaitre les mouvements institutionnels forts</li>
+    <li><strong>Liquidite</strong> -- comprendre le carburant qui alimente tous les mouvements de prix</li>
+    <li><strong>Gestion du risque</strong> -- proteger votre capital de maniere professionnelle</li>
+    <li><strong>Regles d'entree</strong> -- un systeme precis pour entrer en position</li>
+    <li><strong>Psychologie</strong> -- maitriser vos emotions pour trader avec discipline</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 2 — Market Structure            -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m2">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 02</span>
+    <h2>Market Structure</h2>
+  </div>
+
+  <p>
+    La structure de marche designe le schema de mouvement des prix represente par les <strong>swing highs</strong> et <strong>swing lows</strong> sur les graphiques. C'est la base absolue de toute analyse price action -- la capacite a lire correctement la structure determine la qualite de toutes vos decisions de trading.
+  </p>
+
+  <div class="sec">Les trois types de tendances</div>
+  <ul class="cl">
+    <li><strong>Tendance haussiere (Bullish)</strong> -- serie de Higher Highs (HH) et Higher Lows (HL). Chaque sommet depasse le precedent, chaque creux reste au-dessus du creux precedent.</li>
+    <li><strong>Tendance baissiere (Bearish)</strong> -- serie de Lower Highs (LH) et Lower Lows (LL). Chaque sommet reste sous le precedent, chaque creux enfonce le precedent.</li>
+    <li><strong>Range (Consolidation)</strong> -- le prix ne fait ni nouveaux sommets ni nouveaux creux. Il oscille dans la meme zone horizontale.</li>
+  </ul>
+
+  <div class="sec">Break of Structure (BOS)</div>
+  <p>
+    Un <strong>Break of Structure</strong> (BOS) se produit lorsque le prix casse un niveau structurel dans la direction de la tendance dominante. C'est un signal de <strong>continuation</strong>.
+  </p>
+  <ul class="cl">
+    <li>En tendance haussiere : le prix casse un <em>swing high</em> precedent pour creer un nouveau HH</li>
+    <li>En tendance baissiere : le prix casse un <em>swing low</em> precedent pour creer un nouveau LL</li>
+    <li>Chaque BOS confirme que les acheteurs (ou vendeurs) restent en controle</li>
+  </ul>
+
+  <div class="sec">Change of Character (CHoCH)</div>
+  <p>
+    Un <strong>Change of Character</strong> (CHoCH) se produit lorsque la structure casse dans la direction <strong>opposee</strong> a la tendance. C'est un signal potentiel de <strong>retournement</strong>.
+  </p>
+  <ul class="cl">
+    <li>En tendance haussiere : le prix casse le dernier <em>swing low</em>, signalant un potentiel passage en baisse</li>
+    <li>En tendance baissiere : le prix casse le dernier <em>swing high</em>, signalant un potentiel passage en hausse</li>
+  </ul>
+
+  <div class="box box-re">
+    <div class="box-title">Attention</div>
+    <p>Les graphiques ne sont pas toujours propres et organises. Identifier les BOS et CHoCH demande beaucoup de pratique. C'est la competence la plus importante a developper -- c'est le fondement de tout le reste.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 3 — Supply & Demand             -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m3">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 03</span>
+    <h2>Supply &amp; Demand</h2>
+  </div>
+
+  <p>
+    Les zones d'offre (Supply) et de demande (Demand) sont les zones ou les institutions placent leurs ordres massifs. Quand plus d'acteurs veulent acheter que vendre, le prix monte. Quand plus veulent vendre qu'acheter, le prix descend. Ces zones sont le champ de bataille entre acheteurs et vendeurs institutionnels.
+  </p>
+
+  <div class="sec">Identifier les zones</div>
+  <ul class="cl">
+    <li>Une zone de <strong>Demand</strong> se trouve a l'origine d'un mouvement haussier impulsif qui a casse la structure (BOS)</li>
+    <li>Une zone de <strong>Supply</strong> se trouve a l'origine d'un mouvement baissier impulsif qui a casse la structure</li>
+    <li>On marque la <strong>derniere bougie avant la bougie impulsive</strong> qui a provoque la cassure</li>
+    <li>La bougie peut etre pleine (fort corps) ou de type <strong>doji</strong> (longues meches) -- les deux sont valides</li>
+  </ul>
+
+  <div class="sec">La bougie Doji</div>
+  <p>
+    Une bougie doji (tres fine, presque uniquement composee de meches) dans une zone d'interet est un signal tres puissant. Elle represente la <strong>guerre entre acheteurs et vendeurs</strong> a ce niveau precis. Elle contient enormement d'ordres et indique un point de decision institutionnelle majeur.
+  </p>
+
+  <div class="sec">Strategie d'entree sur les zones</div>
+
+  <div class="box box-em">
+    <div class="box-title">Regle du 50%</div>
+    <p>On divise toujours la zone d'interet (POI) en deux. L'entree ne se fait que lorsque le prix atteint la <strong>moitie</strong> de la zone. Cela evite les entrees prematurees et les trades perdants. Meme si le prix touche la zone, on attend qu'il atteigne le 50% avant d'agir.</p>
+  </div>
+
+  <ul class="cl">
+    <li>Identifier la cassure de structure (BOS ou CHoCH)</li>
+    <li>Marquer la derniere bougie avant le mouvement impulsif comme POI</li>
+    <li>Diviser la zone en deux et placer l'entree au niveau 50%</li>
+    <li>Descendre en timeframe inferieur pour confirmation supplementaire</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 4 — Impulse & Imbalance         -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m4">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 04</span>
+    <h2>Impulse &amp; Imbalance</h2>
+  </div>
+
+  <div class="sec">L'Impulsion (Impulse)</div>
+  <p>
+    Une impulsion est un mouvement de prix <strong>puissant et rapide</strong> dans une direction, generalement cause par une intervention institutionnelle. C'est un outil cle pour identifier ou se trouvent l'offre et la demande.
+  </p>
+  <ul class="cl">
+    <li>Generalement une <strong>grande bougie avec un corps important</strong> et peu de meches</li>
+    <li>Provoque souvent un BOS ou un CHoCH</li>
+    <li>Peut creer un desequilibre (imbalance)</li>
+    <li>Plus le corps est grand et les meches petites, plus la conviction institutionnelle est forte</li>
+    <li>Des meches importantes indiquent une <strong>bataille</strong> entre acheteurs et vendeurs</li>
+  </ul>
+
+  <div class="sec">Le Desequilibre (Imbalance / FVG)</div>
+  <p>
+    Un desequilibre (aussi appele Fair Value Gap) se produit quand un mouvement impulsif cree un <strong>ecart entre trois bougies consecutives</strong> -- les meches de la premiere et de la troisieme bougie ne se touchent pas.
+  </p>
+  <ul class="cl">
+    <li>L'ecart represente une zone ou les transactions sont <strong>incompletes</strong></li>
+    <li>Les institutions reviennent generalement <strong>combler ce gap</strong> avant de continuer</li>
+    <li>Si les meches de la premiere et troisieme bougie se touchent, il n'y a <strong>pas</strong> de desequilibre</li>
+    <li>Un desequilibre non comble dans la direction du POI <strong>valide</strong> la zone d'interet</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Regle pratique</div>
+    <p>L'imbalance est une piece essentielle du puzzle. Quand vous identifiez un POI (Supply ou Demand) accompagne d'un desequilibre, la probabilite que les institutions reviennent dans cette zone augmente significativement. Le comblement du gap confirme la validite de votre analyse.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 5 — Liquidite                   -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m5">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 05</span>
+    <h2>Liquidite</h2>
+  </div>
+
+  <p>
+    La liquidite est sans doute le concept le plus important du trading institutionnel. Elle represente <strong>l'argent</strong> -- plus precisement, les stop-loss et les ordres en attente qui constituent le carburant des mouvements de prix. Les institutions ne s'interessent pas aux zones sans liquidite suffisante.
+  </p>
+
+  <div class="sec">Formes de liquidite</div>
+  <ul class="cl">
+    <li><strong>Double tops / Double bottoms</strong> -- lignes claires de stop-loss qui attirent les institutions</li>
+    <li><strong>Lignes de tendance</strong> -- accumulation d'ordres le long d'une trendline visible</li>
+    <li><strong>Grandes meches (wicks)</strong> -- indiquent des poches d'ordres significatives</li>
+    <li><strong>Equal highs / Equal lows</strong> -- niveaux horizontaux evidents ou la liquidite s'accumule</li>
+  </ul>
+
+  <div class="sec">Liquidity Taken (Liquidite prise)</div>
+  <p>
+    La prise de liquidite se produit quand les institutions <strong>capturent les ordres</strong> accumules a un niveau avant de poursuivre dans la direction souhaitee. C'est une des regles essentielles du systeme.
+  </p>
+  <ul class="cl">
+    <li>On observe une meche ou un mouvement rapide qui <strong>depasse</strong> un niveau de liquidite visible</li>
+    <li>Puis le prix <strong>revient immediatement</strong> dans la direction opposee</li>
+    <li>Cela confirme que les institutions ont pris la liquidite et sont pretes a bouger</li>
+  </ul>
+
+  <div class="sec">Liquidite creee pendant l'analyse</div>
+  <p>
+    Pendant que vous analysez le graphique et attendez que le prix atteigne votre zone d'interet, de la <strong>nouvelle liquidite se cree en continu</strong>. Chaque nouveau swing, chaque nouvelle meche ajoute des ordres que les institutions voudront prendre.
+  </p>
+
+  <div class="box box-re">
+    <div class="box-title">Regle absolue</div>
+    <p>Si aucune liquidite n'est creee ou visible, <strong>n'entrez pas en position</strong>. Les institutions n'entrent pas dans une zone sans liquidite suffisante -- et vous ne devriez pas non plus. Pas de liquidite = pas de trade.</p>
+  </div>
+
+  <div class="box box-em">
+    <div class="box-title">Astuce pratique</div>
+    <p>Recherchez les grandes meches comme indicateurs de liquidite. Les meches significatives sont particulierement precieuses dans cette strategie. Plus il y a de liquidite accumulee autour de votre zone, plus la probabilite que les institutions viennent la chercher est elevee.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 6 — Risk Management             -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m6">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 06</span>
+    <h2>Risk Management</h2>
+  </div>
+
+  <p>
+    Vous pouvez etre le meilleur analyste du monde, mais sans une gestion rigoureuse de votre capital, cela ne sert a rien. La gestion du risque est ce qui separe les traders rentables des perdants sur le long terme.
+  </p>
+
+  <div class="sec">Calcul du risque</div>
+  <ul class="cl">
+    <li><strong>Risque par trade</strong> : 0.5% a 1% maximum du capital par position</li>
+    <li>Sur un compte de 100 000$, risquer 0.5% = 500$ par trade</li>
+    <li>Definissez a l'avance combien vous etes pret a perdre et a gagner par jour</li>
+    <li>Vous pouvez diviser votre risque en plusieurs positions (ex: 2 trades a 250$ chacun)</li>
+  </ul>
+
+  <div class="sec">Ratio Risque/Recompense (R:R)</div>
+
+  <div class="box box-em">
+    <div class="box-title">Objectif minimum</div>
+    <p>Visez un ratio recompense/risque d'au moins <strong>5R</strong>. Un R:R inferieur ne fera pas croitre votre portefeuille de maniere significative. Avec un R:R de 5+, vous pouvez perdre plusieurs trades consecutifs et rester rentable grace a un seul trade gagnant.</p>
+  </div>
+
+  <ul class="cl">
+    <li>Un trade a 5R avec 0.5% de risque sur 100k$ = <strong>2 500$</strong> de profit</li>
+    <li>Un trade a 8R avec 0.5% de risque sur 100k$ = <strong>4 000$</strong> de profit</li>
+    <li>Le <strong>Reward Ratio</strong> est ce qui compte, pas la taille du Take Profit en pips</li>
+  </ul>
+
+  <div class="sec">Breakeven</div>
+  <ul class="cl">
+    <li>Deplacer le stop-loss au point d'entree quand le trade atteint <strong>au moins 3R</strong></li>
+    <li>Avant 3R, le mouvement est trop incertain -- 1 ou 2R peut encore revenir</li>
+    <li>Le breakeven protege votre capital et votre rentabilite</li>
+    <li>Evitez le <strong>trailing stop</strong> agressif qui reduit votre pourcentage de profit</li>
+  </ul>
+
+  <div class="sec">Calculateur de lots</div>
+  <p>
+    Utilisez systematiquement un calculateur de taille de position avant chaque trade. Renseignez la paire tradee, votre solde, le pourcentage de risque et le stop-loss en pips. Le calculateur vous donnera le nombre exact de lots a utiliser. <strong>Verifiez toujours</strong> le montant risque avant de valider l'ordre.
+  </p>
+
+  <div class="box box-am">
+    <div class="box-title">Discipline</div>
+    <p>Evitez les erreurs de calcul de lots -- elles peuvent etre catastrophiques. Travaillez de maniere ordonnee, verifiez vos chiffres a chaque trade. L'attention aux details est ce qui distingue un trader professionnel.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 7 — Regles d'Entree             -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m7">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 07</span>
+    <h2>Regles d'Entree</h2>
+  </div>
+
+  <p>
+    Le systeme repose sur une <strong>checklist de 6 regles</strong> strictes. Chaque regle doit etre validee avant d'entrer en position. Si une seule regle manque, <strong>on n'entre pas</strong>.
+  </p>
+
+  <div class="sec">La checklist</div>
+  <ol class="nl">
+    <li><strong>Market Structure</strong> -- Identifier la tendance (haussiere ou baissiere)</li>
+    <li><strong>Impulse Break</strong> -- Voir une bougie impulsive qui casse la structure</li>
+    <li><strong>Liquidity Taken</strong> -- Confirmer que les institutions ont pris la liquidite</li>
+    <li><strong>Imbalance</strong> -- Identifier un gap cree par le mouvement impulsif</li>
+    <li><strong>POI (Point of Interest)</strong> -- Marquer la zone de demand ou supply</li>
+    <li><strong>Liquidity Created</strong> -- Verifier que de la liquidite s'est creee pendant l'analyse</li>
+  </ol>
+
+  <div class="box box-re">
+    <div class="box-title">Regle absolue</div>
+    <p>N'entrez <strong>jamais</strong> en trade si une seule de ces 6 regles n'est pas validee. L'ordre exact peut varier (sauf les 2 premieres qui doivent etre identifiees en premier), mais toutes les 6 doivent etre presentes.</p>
+  </div>
+
+  <div class="sec">Processus d'execution</div>
+  <ol class="nl">
+    <li>Analyser le timeframe superieur (H1-M15) et identifier toutes les regles</li>
+    <li>Attendre que le prix atteigne le <strong>50% du POI</strong></li>
+    <li>Descendre en timeframe inferieur (M5-M1) pour une <strong>seconde confirmation</strong></li>
+    <li>Repeter la meme analyse sur le timeframe inferieur</li>
+    <li>Placer l'entree au 50% du POI du timeframe inferieur</li>
+    <li>Definir le stop-loss et le take profit avant de valider</li>
+  </ol>
+
+  <div class="sec">Conseils d'execution</div>
+  <ul class="cl">
+    <li>Lisez les structures comme des <strong>jambes</strong> (legs) qui ont une continuite et qui cassent parfois</li>
+    <li>Donnez de l'importance a chaque bougie individuellement, pas seulement aux grandes structures</li>
+    <li>La bougie <strong>doji</strong> est extremement puissante -- utilisez-la quand vous n'avez pas de POI propre</li>
+    <li>N'hesitez pas a <strong>changer de timeframe</strong> pour mieux voir les bougies et marquer plus precisement</li>
+    <li>Le trading est dynamique -- adaptez-vous en temps reel tout en respectant les regles</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Lire entre les bougies</div>
+    <p>Racontez-vous l'histoire du graphique. Demandez-vous ce que font les institutions, ou elles vont, quelle liquidite elles vont cibler. Cette narration interne est une partie essentielle de l'analyse. Ne travaillez pas comme un robot -- utilisez votre logique et votre intuition.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 8 — Trades Pratiques            -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m8">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 08</span>
+    <h2>Trades Pratiques</h2>
+  </div>
+
+  <p>
+    Ce module illustre l'application concrete de toutes les regles a travers des exemples de trades reels. Chaque trade suit la meme methodologie systematique du timeframe superieur au timeframe d'entree.
+  </p>
+
+  <div class="sec">Deroulement type d'un trade</div>
+  <ol class="nl">
+    <li>Observer le graphique a partir de 9h et attendre un mouvement significatif (generalement entre 10h30 et 11h)</li>
+    <li>Identifier la structure, l'impulsion, la liquidite prise et le desequilibre sur le timeframe superieur</li>
+    <li>Marquer le POI et attendre que le prix atteigne son 50%</li>
+    <li>Descendre en timeframe inferieur et repeter l'analyse</li>
+    <li>Calculer la taille de lot avec le calculateur de position</li>
+    <li>Placer l'entree, le stop-loss (generalement 2-4 pips) et le take profit</li>
+  </ol>
+
+  <div class="sec">Resultats typiques</div>
+  <ul class="cl">
+    <li>Duree moyenne d'un trade : <strong>10 minutes a 2 heures</strong></li>
+    <li>Reward Ratio typique : <strong>5R a 22R</strong></li>
+    <li>Avec 0.5% de risque sur 100k$ : profits de 2 500$ a 11 000$+ par trade</li>
+    <li>Opportunites quasi-quotidiennes avec cette methode</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Timeframes recommandes</div>
+    <p>L'analyse principale se fait generalement sur le graphique <strong>10-15 minutes</strong>, avec l'entree sur <strong>1-2 minutes</strong>. Pour certaines paires (comme USDJPY), le timeframe principal peut etre le <strong>5 minutes</strong>. Adaptez-vous selon ce que le graphique vous montre.</p>
+  </div>
+
+  <div class="sec">Points cles des exemples</div>
+  <ul class="cl">
+    <li>La <strong>validite du POI</strong> depend de si les bougies restent a l'interieur -- si le corps entier d'une bougie depasse la zone, elle n'est plus valide</li>
+    <li>Quand il y a deux demands ou supplies possibles, le choix se fait par <strong>logique</strong> : presence d'une bougie doji, trendline de liquidite, proximite de l'impulsion</li>
+    <li>Attention aux faux BOS -- sur les petits timeframes (M1), un break minuscule n'est pas significatif. Attendez un break avec impulsion reelle</li>
+    <li>Les institutions collectent la liquidite <strong>comme un serpent</strong>, montant et descendant -- c'est normal et attendu</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Patience</div>
+    <p>Il est normal de rater des trades parfaits, meme a un pip pres. Chaque jour apporte de nouvelles opportunites. Le marche ne va nulle part -- il y aura toujours un prochain setup.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODULE 9 — Psychologie                 -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="m9">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 09</span>
+    <h2>Psychologie du Trader</h2>
+  </div>
+
+  <p>
+    La psychologie est le sujet le plus vaste et le plus important du trading. La majorite des traders sont gouvernes par leurs emotions. Tres peu arrivent a les maitriser. Ce sont toujours les memes schemas comportementaux qui se repetent -- et les maitriser est ce qui fait la difference entre un trader rentable et un perdant.
+  </p>
+
+  <div class="sec">L'etat d'esprit optimal</div>
+  <ul class="cl">
+    <li>Etre <strong>calme et equilibre</strong> a tout moment -- cela commence des le reveil</li>
+    <li>Commencer la journee avec une energie positive, prendre des notes, venir prepare</li>
+    <li>Faire du sport, bien manger, mediter -- prendre soin de son corps et de son esprit</li>
+    <li>Penser positivement et parler calmement tout au long de la journee</li>
+    <li>Etre reconnaissant pour ce que l'on a</li>
+  </ul>
+
+  <div class="sec">Pieges psychologiques</div>
+  <ul class="cl">
+    <li><strong>Le cycle de la revanche</strong> -- apres une perte, le cerveau veut immediatement recuperer. Cela mene a un cercle vicieux de trades impulsifs</li>
+    <li><strong>La cupidite</strong> -- apres un gain, vouloir entrer un autre trade au lieu de terminer la journee</li>
+    <li><strong>Le FOMO</strong> -- entrer en position par peur de rater une opportunite, sans que toutes les regles soient validees</li>
+    <li><strong>Le bruit exterieur</strong> -- ignorer les opinions negatives. Entourez-vous de personnes qui vous elevent</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Regle d'or</div>
+    <p>Vous avez gagne un trade ? <strong>Terminez votre journee.</strong> Sachez quand vous arreter. C'est la clarte et le calme mental qui vous permettront de rester rentable sur le long terme, pas l'accumulation de trades.</p>
+  </div>
+
+  <div class="sec">Gestion financiere</div>
+  <ul class="cl">
+    <li>Gerez votre argent avec un <strong>plan organise</strong> -- faites appel a un professionnel si necessaire</li>
+    <li>Ces fonds sont votre <strong>stabilite</strong> et votre liberte -- ne soyez pas imprudent</li>
+    <li>Ne soyez pas avide -- la discipline genere plus de profits que la prise de risque</li>
+  </ul>
+
+  <div class="sec">Accepter les pertes</div>
+  <ul class="cl">
+    <li>Les pertes sont une <strong>partie integrale</strong> du trading -- le marche fait ce qu'il veut</li>
+    <li>Vous perdrez probablement plus souvent que vous ne gagnerez, surtout au debut</li>
+    <li>Un seul trade gagnant avec un bon R:R (8R+) compense plusieurs pertes</li>
+    <li><strong>Ne jamais abandonner</strong> -- la persistance est la cle du succes a long terme</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Conseil final</div>
+    <p>Le trading vous apprend enormement sur vous-meme. Votre vision de la vie, vos objectifs, votre discipline -- tout evolue. Faites confiance au processus, investissez en vous, et les resultats viendront. Soyez constant, patient, et ne lachez rien.</p>
+  </div>
+</section>
+
+<!-- ── FOOTER ───────────────────────────── -->
+<footer id="footer">
+  <p>Fondamentaux SMC · Algorithmic Academy · 9 Modules · Structure · Supply & Demand · Liquidity · Entries · Psychology</p>
+  <p style="margin-top:8px;color:var(--border)">Le trading comporte des risques. Ce cours est educatif uniquement.</p>
+</footer>
+
+</main>
+
+<script>
+// Progress bar
+const pf = document.getElementById('pfill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  pf.style.width = (window.scrollY / h * 100) + '%';
+}, { passive: true });
+
+// Fade in modules
+const io = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.05 });
+document.querySelectorAll('.mod').forEach(m => io.observe(m));
+
+// Active nav
+const secs = [...document.querySelectorAll('[id]')];
+const links = document.querySelectorAll('.sb-link');
+function updateNav() {
+  const y = window.scrollY + 110;
+  let cur = secs[0]?.id;
+  for (const s of secs) { if (s.offsetTop <= y) cur = s.id; }
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>

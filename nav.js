@@ -12,6 +12,8 @@
       { id: 'niveaux-algorithmiques', label: 'Niveaux Algorithmiques' },
       { id: 'ranges-fractals',      label: 'Ranges Fractals' },
       { id: 'strategie-entree',     label: 'Strategie d Entree Algo' },
+      { id: 'fondamentaux-smc',     label: 'Fondamentaux SMC' },
+      { id: 'market-maker-model',   label: 'Market Maker Model' },
     ]},
     { name: 'Protocole', items: [
       { id: 'hub-cours',     label: 'Bibliotheque' },
