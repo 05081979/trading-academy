@@ -1,0 +1,333 @@
+//@version=6
+indicator("Market Structure + Inducements [Clean]", "MS + IDM", overlay=true, max_bars_back=5000, max_lines_count=500, max_labels_count=500)
+
+// ─── Inputs ───────────────────────────────────────────────────
+LongP       = input.int(30, 'ChoCh Detector Period', minval=1, group='Logical Setting')
+ShortP      = input.int(1, 'BoS & Liquidity Detector Period', minval=1, group='Logical Setting')
+InducementP = input.int(3, 'Inducement Detector Period', minval=1, group='Logical Setting')
+FTD         = input.bool(true, 'Fast Trend Detector', group='Logical Setting')
+IDMT_Type   = input.string('Sweeps', 'Inducement Type', options=['Total', 'Sweeps'], group='Logical Setting')
+structTF    = input.timeframe("", "Structure Timeframe", group='Logical Setting', tooltip="Laissez vide pour le TF du chart. Selectionnez un HTF (ex: 15m) pour voir sa structure sur un TF inferieur (ex: 1m).")
+
+Show_ChoCh    = input.bool(true, 'Show ChoCh', group='ChoCh Display')
+Color_BuChoCh = input.color(#005503, 'Bull', group='ChoCh Display', inline='ChoCh')
+Color_BeChoCh = input.color(#630000, 'Bear', group='ChoCh Display', inline='ChoCh')
+Size_ChoCh    = input.string(size.small, 'Size', options=[size.tiny, size.small, size.normal, size.large], group='ChoCh Display')
+
+Show_BoS    = input.bool(true, 'Show BoS & LQDY', group='BoS & LQDY Display')
+Color_BuBoS = input.color(#006bc2, 'Bull', group='BoS & LQDY Display', inline='BoS')
+Color_BeBoS = input.color(#e79e01, 'Bear', group='BoS & LQDY Display', inline='BoS')
+Color_LQDY  = input.color(#7905af, 'LQDY', group='BoS & LQDY Display', inline='BoS')
+Size_BoS    = input.string(size.small, 'Size', options=[size.tiny, size.small, size.normal, size.large], group='BoS & LQDY Display')
+
+Show_IDMT  = input.bool(true, 'Show Inducement', group='Inducement Display', inline='IDMT')
+Color_IDMT = input.color(#666566, '', group='Inducement Display', inline='IDMT')
+Size_IDMT  = input.string(size.small, 'Size', options=[size.tiny, size.small, size.normal, size.large], group='Inducement Display')
+
+// ─── HTF Pivot Calculation ────────────────────────────────────
+f_pivots(int _LongP, int _ShortP, int _InducementP, bool _FTD) =>
+    float _LHP = ta.pivothigh(_FTD ? int(_LongP / 2) : _LongP, _LongP)
+    float _LLP = ta.pivotlow(_FTD ? int(_LongP / 2) : _LongP, _LongP)
+    float _SHP = ta.pivothigh(_ShortP, _ShortP)
+    float _SLP = ta.pivotlow(_ShortP, _ShortP)
+    float _IHP = ta.pivothigh(_InducementP, _InducementP)
+    float _ILP = ta.pivotlow(_InducementP, _InducementP)
+    [_LHP, _LLP, _SHP, _SLP, _IHP, _ILP]
+
+[htfLHP, htfLLP, htfSHP, htfSLP, htfIHP, htfILP] = request.security(syminfo.tickerid, structTF, f_pivots(LongP, ShortP, InducementP, FTD))
+
+// ─── Structure Function ──────────────────────────────────────
+Structure(float LHP, float LLP, float SHP, float SLP, float IHP, float ILP, int _LongP, int _ShortP, int _InducementP, string _LQDY_Type, bool _Show_ChoCh, color _Color_BuChoCh, color _Color_BeChoCh, string _Size_ChoCh, bool _Show_BoS, color _Color_BuBoS, color _Color_BeBoS, color _Color_LQDY, string _Size_BoS, bool _Show_IDMT, color _Color_IDMT, string _Size_IDMT) =>
+    float ATR = ta.atr(50)
+
+    var string Trend = ''
+    var float BuChoCh_P = 0.0, var int BuChoCh_I = 0, var int BuChoCh_IB = 0, var int BuCount = 0
+    var string BuChoCh_B = '', var string BuChoCh_BB = ''
+    var line BuChoCh_Line = na, var label BuChoCh_Label = na
+    var float BeChoCh_P = 0.0, var int BeChoCh_I = 0, var int BeChoCh_IB = 0, var int BeCount = 0
+    var string BeChoCh_B = '', var string BeChoCh_BB = ''
+    var line BeChoCh_Line = na, var label BeChoCh_Label = na
+    var line Inducement_Line = na, var label Inducement_Label = na, var bool IDM_Permit = true
+    var float High = 0.0, var float Low = 0.0, var int Index = 0
+    var line BoS_Line = na, var label BoS_Label = na, var bool BoS_Permit = true
+
+    // ═══ ChoCh Block ═══
+    if nz(LHP) != 0
+        if Trend == '' or Trend == 'Down Trend'
+            BuChoCh_P := LHP
+            BuChoCh_I := bar_index[_LongP]
+        else if Trend == 'Up Trend'
+            if LHP > BuChoCh_P
+                BuChoCh_P := LHP
+                BuChoCh_I := bar_index[_LongP]
+    if nz(LLP) != 0
+        if Trend == '' or Trend == 'Up Trend'
+            BeChoCh_P := LLP
+            BeChoCh_I := bar_index[_LongP]
+        else if Trend == 'Down Trend'
+            if LLP < BeChoCh_P
+                BeChoCh_P := LLP
+                BeChoCh_I := bar_index[_LongP]
+    if BuChoCh_P > 0 and BeChoCh_P > 0
+        if ta.crossover(close, BuChoCh_P) and (Trend == 'Down Trend' or Trend == '')
+            Trend := 'Up Trend'
+            BuChoCh_B := 'Break'
+            BuChoCh_BB := 'Break'
+            BuChoCh_IB := line.get_x1(BuChoCh_Line)
+            BuCount := 0
+        else
+            BuChoCh_B := ''
+        if ta.crossunder(close, BeChoCh_P) and (Trend == 'Up Trend' or Trend == '')
+            Trend := 'Down Trend'
+            BeChoCh_B := 'Break'
+            BeChoCh_BB := 'Break'
+            BeChoCh_IB := line.get_x1(BeChoCh_Line)
+            BeCount := 0
+        else
+            BeChoCh_B := ''
+    if BeChoCh_B == 'Break' or BuChoCh_B == 'Break'
+        if BoS_Permit == true
+            line.delete(BoS_Line)
+            label.delete(BoS_Label)
+    if BuChoCh_I != BuChoCh_I[1] and Trend == 'Down Trend'
+        BuChoCh_BB := ''
+        BuCount := BuCount + 1
+        if Trend[1] == 'Down Trend' and BuCount > 1
+            line.delete(BuChoCh_Line[1])
+            label.delete(BuChoCh_Label[1])
+        if _Show_ChoCh
+            BuChoCh_Line := line.new(BuChoCh_I, BuChoCh_P, bar_index, BuChoCh_P, color=color.new(_Color_BuChoCh, 30), style=line.style_solid)
+            BuChoCh_Label := label.new(int(math.avg(BuChoCh_I, bar_index)), BuChoCh_P + ATR * 0.1, 'Bullish ChoCh', color=na, textcolor=_Color_BuChoCh, style=label.style_label_down, size=_Size_ChoCh)
+    if BeChoCh_I != BeChoCh_I[1] and Trend == 'Up Trend'
+        BeChoCh_BB := ''
+        BeCount := BeCount + 1
+        if Trend[1] == 'Up Trend' and BeCount > 1
+            line.delete(BeChoCh_Line[1])
+            label.delete(BeChoCh_Label[1])
+        if _Show_ChoCh
+            BeChoCh_Line := line.new(BeChoCh_I, BeChoCh_P, bar_index, BeChoCh_P, color=color.new(_Color_BeChoCh, 30), style=line.style_solid)
+            BeChoCh_Label := label.new(int(math.avg(BeChoCh_I, bar_index)), BeChoCh_P - ATR * 0.5, 'Bearish ChoCh', color=na, textcolor=_Color_BeChoCh, style=label.style_label_up, size=_Size_ChoCh)
+    if BuCount == 0 and BeChoCh_B == 'Break' and BuChoCh_IB != BuChoCh_I
+        BuCount := BuCount + 1
+        if _Show_ChoCh
+            int x1 = (bar_index - Index) > _LongP ? BuChoCh_I : Index
+            float y1 = (bar_index - Index) > _LongP ? BuChoCh_P : high[bar_index - Index]
+            BuChoCh_Line := line.new(x1, y1, bar_index, y1, color=color.new(_Color_BuChoCh, 30), style=line.style_solid)
+            BuChoCh_Label := label.new(int(math.avg(x1, bar_index)), y1 + ATR * 0.1, 'Bullish ChoCh', color=na, textcolor=_Color_BuChoCh, style=label.style_label_down, size=_Size_ChoCh)
+    if BeCount == 0 and BuChoCh_B == 'Break' and BeChoCh_IB != BeChoCh_I
+        BeCount := BeCount + 1
+        if _Show_ChoCh
+            int x1 = (bar_index - Index) > _LongP ? BeChoCh_I : Index
+            float y1 = (bar_index - Index) > _LongP ? BeChoCh_P : low[bar_index - Index]
+            BeChoCh_Line := line.new(x1, y1, bar_index, y1, color=color.new(_Color_BeChoCh, 30), style=line.style_solid)
+            BeChoCh_Label := label.new(int(math.avg(x1, bar_index)), y1 - ATR * 0.5, 'Bearish ChoCh', color=na, textcolor=_Color_BeChoCh, style=label.style_label_up, size=_Size_ChoCh)
+    if BuChoCh_I == BuChoCh_I[1] and Trend == 'Down Trend' and BuCount > 0
+        line.set_x2(BuChoCh_Line, bar_index + 1)
+        label.set_x(BuChoCh_Label, int(math.avg(line.get_x1(BuChoCh_Line), bar_index)))
+    if BeChoCh_I == BeChoCh_I[1] and Trend == 'Up Trend' and BeCount > 0
+        line.set_x2(BeChoCh_Line, bar_index + 1)
+        label.set_x(BeChoCh_Label, int(math.avg(line.get_x1(BeChoCh_Line), bar_index)))
+
+    // ═══ BoS & Liquidity Block ═══
+    if Trend == 'Up Trend'
+        Low := 0.0
+        if nz(SHP) != 0
+            if High == 0.0 ? High == 0.0 : High <= high[_ShortP]
+                High := high[_ShortP]
+                Index := bar_index[_ShortP]
+                BoS_Permit := true
+                if _Show_BoS
+                    BoS_Line := line.new(bar_index[_ShortP], high[_ShortP], bar_index, high[_ShortP], color=color.new(_Color_BuBoS, 30), style=line.style_dashed)
+                    BoS_Label := label.new(int((bar_index[_ShortP] + bar_index) / 2), high[_ShortP] + ATR * 0.1, 'BoS', color=na, textcolor=_Color_BuBoS, size=_Size_BoS, style=label.style_label_center)
+                if BoS_Permit[1] == true
+                    line.delete(BoS_Line[1])
+                    label.delete(BoS_Label[1])
+        if nz(SHP) == 0 and BoS_Permit
+            line.set_x2(BoS_Line, bar_index)
+            label.set_x(BoS_Label, int((line.get_x1(BoS_Line) + bar_index) / 2))
+        if close > line.get_y1(BoS_Line) and BoS_Permit
+            BoS_Permit := false
+        if close < line.get_y1(BoS_Line) and high > line.get_y1(BoS_Line) and BoS_Permit
+            BoS_Permit := false
+            line.set_color(BoS_Line, color.new(_Color_LQDY, 30))
+            line.set_style(BoS_Line, line.style_dotted)
+            label.set_text(BoS_Label, 'LQDT')
+            label.set_textcolor(BoS_Label, _Color_LQDY)
+    if Trend == 'Down Trend'
+        High := 0.0
+        if nz(SLP) != 0
+            if Low == 0.0 ? Low == 0.0 : Low >= low[_ShortP]
+                Low := low[_ShortP]
+                Index := bar_index[_ShortP]
+                BoS_Permit := true
+                if _Show_BoS
+                    BoS_Line := line.new(bar_index[_ShortP], low[_ShortP], bar_index, low[_ShortP], color=color.new(_Color_BeBoS, 30), style=line.style_dashed)
+                    BoS_Label := label.new(int((bar_index[_ShortP] + bar_index) / 2), low[_ShortP] - ATR * 0.4, 'BoS', color=na, textcolor=_Color_BeBoS, size=_Size_BoS, style=label.style_label_center)
+                if BoS_Permit[1] == true
+                    line.delete(BoS_Line[1])
+                    label.delete(BoS_Label[1])
+        if nz(SLP) == 0 and BoS_Permit
+            line.set_x2(BoS_Line, bar_index)
+            label.set_x(BoS_Label, int((line.get_x1(BoS_Line) + bar_index) / 2))
+        if close < line.get_y1(BoS_Line) and BoS_Permit
+            BoS_Permit := false
+        if close > line.get_y1(BoS_Line) and low < line.get_y1(BoS_Line) and BoS_Permit
+            BoS_Permit := false
+            line.set_color(BoS_Line, color.new(_Color_LQDY, 30))
+            line.set_style(BoS_Line, line.style_dotted)
+            label.set_text(BoS_Label, 'LQDT')
+            label.set_textcolor(BoS_Label, _Color_LQDY)
+
+    // ═══ Inducement Block ═══
+    if Trend == 'Up Trend'
+        if nz(ILP) != 0
+            IDM_Permit := true
+            if _Show_IDMT
+                Inducement_Line := line.new(bar_index[_InducementP], low[_InducementP], bar_index, low[_InducementP], color=color.new(_Color_IDMT, 30), style=line.style_dotted)
+                Inducement_Label := label.new(int((bar_index[_InducementP] + bar_index) / 2), low[_InducementP] - ATR * 0.4, 'IDMT', color=na, textcolor=_Color_IDMT, size=_Size_IDMT, style=label.style_label_center)
+            if IDM_Permit[1] == true
+                line.delete(Inducement_Line[1])
+                label.delete(Inducement_Label[1])
+        if nz(ILP) == 0 and IDM_Permit == true
+            line.set_x2(Inducement_Line, bar_index)
+            label.set_x(Inducement_Label, int((line.get_x1(Inducement_Line) + bar_index) / 2))
+        if _LQDY_Type == 'Total'
+            if low < line.get_y1(Inducement_Line)
+                IDM_Permit := false
+        if _LQDY_Type == 'Sweeps'
+            if low < line.get_y1(Inducement_Line) and close > line.get_y1(Inducement_Line)
+                IDM_Permit := false
+            if close < line.get_y1(Inducement_Line)
+                line.delete(Inducement_Line)
+                label.delete(Inducement_Label)
+    if Trend == 'Down Trend'
+        if nz(IHP) != 0
+            IDM_Permit := true
+            if _Show_IDMT
+                Inducement_Line := line.new(bar_index[_InducementP], high[_InducementP], bar_index, high[_InducementP], color=color.new(_Color_IDMT, 30), style=line.style_dotted)
+                Inducement_Label := label.new(int((bar_index[_InducementP] + bar_index) / 2), high[_InducementP] + ATR * 0.1, 'IDMT', color=na, textcolor=_Color_IDMT, size=_Size_IDMT, style=label.style_label_center)
+            if IDM_Permit[1] == true
+                line.delete(Inducement_Line[1])
+                label.delete(Inducement_Label[1])
+        if nz(IHP) == 0 and IDM_Permit
+            line.set_x2(Inducement_Line, bar_index)
+            label.set_x(Inducement_Label, int((line.get_x1(Inducement_Line) + bar_index) / 2))
+        if _LQDY_Type == 'Total'
+            if high > line.get_y1(Inducement_Line)
+                IDM_Permit := false
+        if _LQDY_Type == 'Sweeps'
+            if high > line.get_y1(Inducement_Line) and close < line.get_y1(Inducement_Line)
+                IDM_Permit := false
+            if close > line.get_y1(Inducement_Line)
+                line.delete(Inducement_Line)
+                label.delete(Inducement_Label)
+
+// ─── Call ─────────────────────────────────────────────────────
+Structure(htfLHP, htfLLP, htfSHP, htfSLP, htfIHP, htfILP, LongP, ShortP, InducementP, IDMT_Type, Show_ChoCh, Color_BuChoCh, Color_BeChoCh, Size_ChoCh, Show_BoS, Color_BuBoS, Color_BeBoS, Color_LQDY, Size_BoS, Show_IDMT, Color_IDMT, Size_IDMT)
+
+// ═══════════════════════════════════════════════════════════════
+// UAlgo IDM — Inside-bar + leg tracking
+// ═══════════════════════════════════════════════════════════════
+grp_ualgo = "UAlgo IDM"
+_ualgoEnable = input.bool(true, "Enable UAlgo IDM", group=grp_ualgo)
+colorBullIDM = input.color(color.new(#ff5252, 0), "Bullish IDM (Support)", group=grp_ualgo)
+colorBearIDM = input.color(color.new(#00e676, 0), "Bearish IDM (Resistance)", group=grp_ualgo)
+
+type InducementLevel
+    float price
+    int   bIndex
+    int   dir
+    line  idmLine
+    label idmLabel
+    bool  isSwept
+
+method draw(InducementLevel this, color c_bull, color c_bear) =>
+    color c = this.dir == 1 ? c_bull : c_bear
+    string txt = this.isSwept ? "IDM ok" : "IDM"
+    if na(this.idmLine)
+        this.idmLine := line.new(this.bIndex, this.price, bar_index, this.price, color=c, style=line.style_dashed)
+    else if not this.isSwept
+        this.idmLine.set_x2(bar_index)
+    if na(this.idmLabel)
+        this.idmLabel := label.new(bar_index, this.price, txt, style=label.style_none, textcolor=c, size=size.small, textalign=text.align_left)
+    else if not this.isSwept
+        this.idmLabel.set_x(bar_index)
+    this
+
+method checkSweep(InducementLevel this, float currLow, float currHigh, color c_bull, color c_bear) =>
+    if not this.isSwept
+        bool swept = false
+        if this.dir == 1 and currLow <= this.price
+            swept := true
+        else if this.dir == -1 and currHigh >= this.price
+            swept := true
+        if swept
+            this.isSwept := true
+            color c = this.dir == 1 ? color.new(c_bull, 50) : color.new(c_bear, 50)
+            this.idmLine.set_color(c)
+            this.idmLine.set_style(line.style_dotted)
+            this.idmLine.set_x2(bar_index)
+            this.idmLabel.set_text("IDM ok")
+            this.idmLabel.set_textcolor(c)
+            this.idmLabel.set_x(bar_index)
+    this
+
+if _ualgoEnable
+    var array<InducementLevel> activeIDMs = array.new<InducementLevel>()
+    var float mHigh = high
+    var float mLow  = low
+    bool isInside = high <= mHigh and low >= mLow
+    var int uTrend = 1
+    var float legHigh = high
+    var float legLow  = low
+    var float pullbackLow = float(na)
+    var int   pullbackLowBar = int(na)
+    var float pullbackHigh = float(na)
+    var int   pullbackHighBar = int(na)
+
+    if not isInside
+        bool brokeLow  = low < mLow
+        bool brokeHigh = high > mHigh
+        mHigh := high
+        mLow  := low
+        if uTrend == 1
+            if high > legHigh
+                if not na(pullbackLow)
+                    activeIDMs.push(InducementLevel.new(pullbackLow, pullbackLowBar, 1, na, na, false))
+                    legLow := pullbackLow
+                    pullbackLow := float(na)
+                legHigh := high
+            else if brokeLow
+                if na(pullbackLow) or low < pullbackLow
+                    pullbackLow := low
+                    pullbackLowBar := bar_index
+            if low < legLow
+                uTrend := -1
+                legLow := low
+                pullbackLow := float(na)
+                pullbackHigh := float(na)
+        else if uTrend == -1
+            if low < legLow
+                if not na(pullbackHigh)
+                    activeIDMs.push(InducementLevel.new(pullbackHigh, pullbackHighBar, -1, na, na, false))
+                    legHigh := pullbackHigh
+                    pullbackHigh := float(na)
+                legLow := low
+            else if brokeHigh
+                if na(pullbackHigh) or high > pullbackHigh
+                    pullbackHigh := high
+                    pullbackHighBar := bar_index
+            if high > legHigh
+                uTrend := 1
+                legHigh := high
+                pullbackHigh := float(na)
+                pullbackLow := float(na)
+
+    if activeIDMs.size() > 0
+        for i = 0 to activeIDMs.size() - 1
+            InducementLevel idm = activeIDMs.get(i)
+            idm.checkSweep(low, high, colorBullIDM, colorBearIDM)
+            idm.draw(colorBullIDM, colorBearIDM)
+
+    if activeIDMs.size() > 50
+        activeIDMs.shift()

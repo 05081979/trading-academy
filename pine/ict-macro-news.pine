@@ -1,0 +1,651 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © toodegrees — adapted by mmxm
+
+import toodegrees/forex_factory_utility/16 as ffUtil
+import toodegrees/forex_factory_decoding/39 as ffDec
+
+//@version=5
+indicator("ICT Macro Tracker° + News | mmxm"
+         , shorttitle       = "Macro+News°"
+         , overlay          = false
+         , max_lines_count  = 500
+         , max_labels_count = 500
+         , max_boxes_count  = 500)
+
+//#region ─── TIMEFRAME CHECK ─────────────────────────────────────────────────
+if timeframe.in_seconds(timeframe.period) > 86400
+    runtime.error("Go to the Daily Timeframe or lower!")
+else if timeframe.in_seconds(timeframe.period) < 30
+    runtime.error("Go to the 30-Second Timeframe or higher!")
+//#endregion
+
+//#region ─── GLOBAL ──────────────────────────────────────────────────────────
+oneDayMS = 86400000
+oneBarMS = time_close - time
+noColor  = color.new(#ffffff, 100)
+one      = ta.highest(timeframe.in_seconds("15") / timeframe.in_seconds(timeframe.period)) + syminfo.mintick * 10
+y_btm    = one
+y_top    = one + syminfo.mintick * 5
+
+var line[]  EXT = array.new_line()
+var label[] LBL = array.new_label()
+var line[]  VL  = array.new_line()
+var line[]  FUT = array.new_line()   // future macro windows
+
+// News day tracking
+var mdnCheck = false
+if hour(time, "America/New_York") == 0 and hour(time[1], "America/New_York") != 0 and not mdnCheck
+    mdnCheck := true
+newDay = mdnCheck ? hour(time, "America/New_York") == 0 and hour(time[1], "America/New_York") != 0 : timeframe.change("D")
+//#endregion
+
+//#region ─── INPUTS ──────────────────────────────────────────────────────────
+// ── Settings ─────────────────────────────────────────────────────────────────
+_mode  = input.string("New Pane", title = "Mode",              group = "Settings", options = ["On Chart", "New Pane"])
+_lwStr = input.string("2px",      title = "Largeur de ligne",  group = "Settings", options = ["1px", "2px", "3px", "4px"])
+_lw    = _lwStr == "1px" ? 1 : _lwStr == "2px" ? 2 : _lwStr == "3px" ? 3 : 4
+_showL = input.bool(true,  title = "Labels?",      group = "Settings", inline = "sh")
+_mTxt  = input.bool(false, title = "Temps?",       group = "Settings", inline = "sh")
+_extt  = input.bool(false, title = "Projections?", group = "Settings", inline = "sh")
+
+// ── Vertical Lines ────────────────────────────────────────────────────────────
+_vl_on  = input.bool(true,                    title = "Enable for Macros", group = "Vertical Lines")
+_vl_col = input.color(color.new(#787B86, 50), title = "Color",             group = "Vertical Lines", inline = "vl")
+_vl_wS  = input.string("1px",                 title = "Width",             group = "Vertical Lines", inline = "vl", options = ["1px", "2px", "3px", "4px"])
+_vl_stS = input.string("Pointillé",           title = "Style",             group = "Vertical Lines", inline = "vl", options = ["Solide", "Pointillé", "Tirets"])
+_vlw    = _vl_wS == "1px" ? 1 : _vl_wS == "2px" ? 2 : _vl_wS == "3px" ? 3 : 4
+_vls    = _vl_stS == "Pointillé" ? line.style_dotted : _vl_stS == "Tirets" ? line.style_dashed : line.style_solid
+
+// ── News Calendar ─────────────────────────────────────────────────────────────
+var n_high   = input.bool(true,  title = "🔴", group = "News Calendar", inline = "ni")
+var n_med    = input.bool(true,  title = "🟠", group = "News Calendar", inline = "ni")
+var n_low    = input.bool(false, title = "🟡", group = "News Calendar", inline = "ni")
+var n_hol    = input.bool(false, title = "⚪", group = "News Calendar", inline = "ni")
+var n_auto   = input.bool(true,  title = "Auto Currency?", group = "News Calendar")
+var n_usd    = input.bool(false, title = "USD", group = "News Calendar", inline = "nc")
+var n_eur    = input.bool(false, title = "EUR", group = "News Calendar", inline = "nc")
+var n_gbp    = input.bool(false, title = "GBP", group = "News Calendar", inline = "nc")
+var n_show   = input.bool(true,  title = "Show Events?",   group = "News Calendar", inline = "nd")
+var n_chart  = input.string("This Week", title = "History", group = "News Calendar", inline = "nd", options = ["Today", "This Week", "Manual"])
+var n_days   = input.int(30, title = "", group = "News Calendar")
+
+var n_impFilter = ffUtil.impFilter(n_hol, n_low, n_med, n_high)
+var n_curFilter = ffUtil.curFilter(n_auto, false, false, false, false, n_eur, n_gbp, false, false, n_usd)
+//#endregion
+
+//#region ─── FUNCTIONS ───────────────────────────────────────────────────────
+// ── Macro helpers ─────────────────────────────────────────────────────────────
+time_isMacro(int Hs, int Ms, int He, int Me) =>
+    h = hour(time, "America/New_York")
+    m = minute(time, "America/New_York")
+    h == Hs ? (Hs != He ? m >= Ms : m >= Ms and m < Me) : (h > Hs ? (h == He ? m < Me : h < He) : false)
+
+method memoryCleanLine(line[] A) =>
+    if A.size() > 300
+        for i = 0 to 3
+            A.shift().delete()
+
+method memoryCleanLabel(label[] A) =>
+    if A.size() > 100
+        A.shift().delete()
+
+macroNP(line[] NP, bool _t, string _lbl, color _col, bool _vl) =>
+    if not _t[1] and _t
+        NP.push(line.new(time, 1, time + oneBarMS, 1, xloc = xloc.bar_time, color = _col, width = _lw, style = line.style_solid))
+        if _vl_on and _vl
+            VL.push(line.new(time, 0, time, 2, xloc = xloc.bar_time, color = _vl_col, width = _vlw, style = _vls, extend = extend.both))
+    if _t and NP.size() > 0
+        NP.last().set_x2(time + oneBarMS)
+    if _t[1] and not _t and NP.size() > 0
+        NP.last().set_x2(time)
+        label.new(math.round(math.avg(NP.last().get_x1(), NP.last().get_x2())), 1, text = "", tooltip = "MACRO\n" + _lbl, xloc = xloc.bar_time, style = label.style_label_center, color = noColor, textcolor = _col, size = size.small)
+
+macroOC(line[] OC, bool _t, string _lbl, color _col, bool _vl) =>
+    _txt = _mTxt ? "MACRO\n" + _lbl : "MACRO"
+    if not _t[1] and _t
+        v1 = line.new(time, y_btm, time, y_top, xloc = xloc.bar_time, color = _col)
+        OC.push(v1)
+        OC.push(line.new(time, y_top, time + oneBarMS, y_top, xloc = xloc.bar_time, color = _col))
+        if _extt
+            EXT.push(line.new(time, high, time, v1.get_y2(), xloc = xloc.bar_time, color = _col, style = line.style_dotted))
+        if _vl_on and _vl
+            VL.push(line.new(time, low - syminfo.mintick * 10000, time, high + syminfo.mintick * 10000, xloc = xloc.bar_time, color = _vl_col, width = _vlw, style = _vls, extend = extend.both))
+        LBL.push(label.new(time, OC.get(OC.size() - 2).get_y2(), _showL ? _txt : "", tooltip = "MACRO\n" + _lbl, xloc = xloc.bar_time, style = label.style_label_down, color = noColor, textcolor = _col, size = size.small))
+    if _t[1] and not _t and OC.size() > 0 and LBL.size() > 0
+        v2 = line.new(time, y_btm, time, y_top, xloc = xloc.bar_time, color = _col)
+        LBL.last().set_x(math.round(math.avg(OC.get(OC.size() - 2).get_x1(), time)))
+        if y_top > OC.get(OC.size() - 2).get_y2()
+            OC.get(OC.size() - 2).set_y2(y_top)
+            OC.last().set_y1(y_top)
+            OC.last().set_y2(y_top)
+            LBL.last().set_y(y_top)
+        else if y_top < OC.get(OC.size() - 2).get_y2()
+            v2.set_y2(OC.get(OC.size() - 2).get_y2())
+        if _extt
+            EXT.push(line.new(time, high, time, v2.get_y2(), xloc = xloc.bar_time, color = _col, style = line.style_dotted))
+        OC.push(v2)
+    if _t and OC.size() > 0 and LBL.size() > 0
+        LBL.last().set_x(math.round(math.avg(OC.get(OC.size() - 2).get_x1(), time)))
+        if high > OC.last().get_y2() - syminfo.mintick * 10
+            OC.get(OC.size() - 2).set_y2(high + syminfo.mintick * 10)
+            OC.last().set_y1(high + syminfo.mintick * 10)
+            OC.last().set_y2(high + syminfo.mintick * 10)
+            LBL.last().set_y(high + syminfo.mintick * 10)
+        if na or OC.last().get_x2() == time
+            OC.last().set_x2(time + oneBarMS)
+
+// ── Trace les fenêtres futures (pas encore arrivées) dans le volet ────────────
+drawFutureNP(int Hs, int Ms, int He, int Me, color _col) =>
+    _nyY = year(timenow, "America/New_York")
+    _nyM = month(timenow, "America/New_York")
+    _nyD = dayofmonth(timenow, "America/New_York")
+    _s   = timestamp("America/New_York", _nyY, _nyM, _nyD, Hs, Ms, 0)
+    _eD  = He < Hs or (He == Hs and Me <= Ms) ? _nyD + 1 : _nyD
+    _e   = timestamp("America/New_York", _nyY, _nyM, _eD, He, Me, 0)
+    if _e > timenow
+        FUT.push(line.new(_s, 1, _e, 1, xloc = xloc.bar_time, color = _col, width = _lw, style = line.style_solid))
+requestData() =>
+    [request.seed("seed_toodegrees_toogit", "TOODEGREES_FOREX_FACTORY_SLOT_1", str.tostring(open) + "," + str.tostring(high) + "," + str.tostring(low) + "," + str.tostring(close) + "," + str.tostring(volume)),
+     request.seed("seed_toodegrees_toogit", "TOODEGREES_FOREX_FACTORY_SLOT_2", str.tostring(open) + "," + str.tostring(high) + "," + str.tostring(low) + "," + str.tostring(close) + "," + str.tostring(volume)),
+     request.seed("seed_toodegrees_toogit", "TOODEGREES_FOREX_FACTORY_SLOT_3", str.tostring(open) + "," + str.tostring(high) + "," + str.tostring(low) + "," + str.tostring(close) + "," + str.tostring(volume)),
+     request.seed("seed_toodegrees_toogit", "TOODEGREES_FOREX_FACTORY_SLOT_4", str.tostring(open) + "," + str.tostring(high) + "," + str.tostring(low) + "," + str.tostring(close) + "," + str.tostring(volume)),
+     request.seed("seed_toodegrees_toogit", "TOODEGREES_FOREX_FACTORY_SLOT_5", str.tostring(open) + "," + str.tostring(high) + "," + str.tostring(low) + "," + str.tostring(close) + "," + str.tostring(volume)),
+     request.seed("seed_toodegrees_toogit", "TOODEGREES_FOREX_FACTORY_SLOT_6", str.tostring(open) + "," + str.tostring(high) + "," + str.tostring(low) + "," + str.tostring(close) + "," + str.tostring(volume)),
+     request.seed("seed_toodegrees_toogit", "TOODEGREES_FOREX_FACTORY_SLOT_7", str.tostring(open) + "," + str.tostring(high) + "," + str.tostring(low) + "," + str.tostring(close) + "," + str.tostring(volume)),
+     request.seed("seed_toodegrees_toogit", "TOODEGREES_FOREX_FACTORY_SLOT_8", str.tostring(open) + "," + str.tostring(high) + "," + str.tostring(low) + "," + str.tostring(close) + "," + str.tostring(volume)),
+     request.seed("seed_toodegrees_toogit", "TOODEGREES_FOREX_FACTORY_SLOT_9", str.tostring(open) + "," + str.tostring(high) + "," + str.tostring(low) + "," + str.tostring(close) + "," + str.tostring(volume))]
+
+method processData(ffUtil.News[] N, string S1, string S2, string S3, string S4, string S5, string S6, string S7, string S8, string S9) =>
+    ffDec.readNews(N, S1), ffDec.readNews(N, S2), ffDec.readNews(N, S3)
+    ffDec.readNews(N, S4), ffDec.readNews(N, S5), ffDec.readNews(N, S6)
+    ffDec.readNews(N, S7), ffDec.readNews(N, S8), ffDec.readNews(N, S9)
+
+// ── News display — tableau natif ffUtil (fonctionne dans tout volet) ──────────
+// Pour connaître les noms de champs de ffUtil.News : Pine Editor > Libraries >
+// toodegrees/forex_factory_utility > view source > chercher "type News"
+var n_locT    = ffUtil.boxLoc("Right", "Bottom")
+var n_tableBC = color.new(#000000, 0)
+var _ntable   = ffUtil.newTable(n_locT, n_tableBC)
+//#endregion
+
+//#region ─── MACRO DEFINITIONS ───────────────────────────────────────────────
+show1  = input.bool(false, title = "00:45 - 01:15",                  group = "Hourly Macros", inline = "m1")
+col1   = input.color(color.new(#FF9800, 0), title = "",              group = "Hourly Macros", inline = "m1")
+vl1    = input.bool(false, title = "Vertical Line",                  group = "Hourly Macros", inline = "m1")
+var line[] OC1 = array.new_line()
+var line[] NP1 = array.new_line()
+t1 = time_isMacro(0, 45, 1, 15)
+l1 = "00:45 - 01:15"
+
+show2  = input.bool(false, title = "01:45 - 02:15",                  group = "Hourly Macros", inline = "m2")
+col2   = input.color(color.new(#FF9800, 0), title = "",              group = "Hourly Macros", inline = "m2")
+vl2    = input.bool(false, title = "Vertical Line",                  group = "Hourly Macros", inline = "m2")
+var line[] OC2 = array.new_line()
+var line[] NP2 = array.new_line()
+t2 = time_isMacro(1, 45, 2, 15)
+l2 = "01:45 - 02:15"
+
+show3  = input.bool(true,  title = "02:45 - 03:15",                  group = "Hourly Macros", inline = "m3")
+col3   = input.color(color.new(#FF9800, 0), title = "",              group = "Hourly Macros", inline = "m3")
+vl3    = input.bool(false, title = "Vertical Line",                  group = "Hourly Macros", inline = "m3")
+var line[] OC3 = array.new_line()
+var line[] NP3 = array.new_line()
+t3 = time_isMacro(2, 45, 3, 15)
+l3 = "02:45 - 03:15"
+
+show4  = input.bool(true,  title = "03:45 - 04:15",                  group = "Hourly Macros", inline = "m4")
+col4   = input.color(color.new(#2196F3, 0), title = "",              group = "Hourly Macros", inline = "m4")
+vl4    = input.bool(false, title = "Vertical Line",                  group = "Hourly Macros", inline = "m4")
+var line[] OC4 = array.new_line()
+var line[] NP4 = array.new_line()
+t4 = time_isMacro(3, 45, 4, 15)
+l4 = "03:45 - 04:15"
+
+show5  = input.bool(true,  title = "04:45 - 05:15",                  group = "Hourly Macros", inline = "m5")
+col5   = input.color(color.new(#FF9800, 0), title = "",              group = "Hourly Macros", inline = "m5")
+vl5    = input.bool(false, title = "Vertical Line",                  group = "Hourly Macros", inline = "m5")
+var line[] OC5 = array.new_line()
+var line[] NP5 = array.new_line()
+t5 = time_isMacro(4, 45, 5, 15)
+l5 = "04:45 - 05:15"
+
+show6  = input.bool(false, title = "05:45 - 06:15",                  group = "Hourly Macros", inline = "m6")
+col6   = input.color(color.new(#FF9800, 0), title = "",              group = "Hourly Macros", inline = "m6")
+vl6    = input.bool(false, title = "Vertical Line",                  group = "Hourly Macros", inline = "m6")
+var line[] OC6 = array.new_line()
+var line[] NP6 = array.new_line()
+t6 = time_isMacro(5, 45, 6, 15)
+l6 = "05:45 - 06:15"
+
+show7  = input.bool(false, title = "06:45 - 07:15",                  group = "Hourly Macros", inline = "m7")
+col7   = input.color(color.new(#FF9800, 0), title = "",              group = "Hourly Macros", inline = "m7")
+vl7    = input.bool(false, title = "Vertical Line",                  group = "Hourly Macros", inline = "m7")
+var line[] OC7 = array.new_line()
+var line[] NP7 = array.new_line()
+t7 = time_isMacro(6, 45, 7, 15)
+l7 = "06:45 - 07:15"
+
+show8  = input.bool(false, title = "07:45 - 08:15",                  group = "Hourly Macros", inline = "m8")
+col8   = input.color(color.new(#FF9800, 0), title = "",              group = "Hourly Macros", inline = "m8")
+vl8    = input.bool(false, title = "Vertical Line",                  group = "Hourly Macros", inline = "m8")
+var line[] OC8 = array.new_line()
+var line[] NP8 = array.new_line()
+t8 = time_isMacro(7, 45, 8, 15)
+l8 = "07:45 - 08:15"
+
+show9  = input.bool(false, title = "08:45 - 09:15",                  group = "Hourly Macros", inline = "m9")
+col9   = input.color(color.new(#FF9800, 0), title = "",              group = "Hourly Macros", inline = "m9")
+vl9    = input.bool(false, title = "Vertical Line",                  group = "Hourly Macros", inline = "m9")
+var line[] OC9 = array.new_line()
+var line[] NP9 = array.new_line()
+t9 = time_isMacro(8, 45, 9, 15)
+l9 = "08:45 - 09:15"
+
+show10  = input.bool(true,  title = "09:45 - 10:15",                 group = "Hourly Macros", inline = "m10")
+col10   = input.color(color.new(#2196F3, 0), title = "",             group = "Hourly Macros", inline = "m10")
+vl10    = input.bool(false, title = "Vertical Line",                 group = "Hourly Macros", inline = "m10")
+var line[] OC10 = array.new_line()
+var line[] NP10 = array.new_line()
+t10 = time_isMacro(9, 45, 10, 15)
+l10 = "09:45 - 10:15"
+
+show11  = input.bool(true,  title = "10:45 - 11:15",                 group = "Hourly Macros", inline = "m11")
+col11   = input.color(color.new(#FF9800, 0), title = "",             group = "Hourly Macros", inline = "m11")
+vl11    = input.bool(false, title = "Vertical Line",                 group = "Hourly Macros", inline = "m11")
+var line[] OC11 = array.new_line()
+var line[] NP11 = array.new_line()
+t11 = time_isMacro(10, 45, 11, 15)
+l11 = "10:45 - 11:15"
+
+show12  = input.bool(true,  title = "11:45 - 12:15",                 group = "Hourly Macros", inline = "m12")
+col12   = input.color(color.new(#9E9E9E, 0), title = "",             group = "Hourly Macros", inline = "m12")
+vl12    = input.bool(false, title = "Vertical Line",                 group = "Hourly Macros", inline = "m12")
+var line[] OC12 = array.new_line()
+var line[] NP12 = array.new_line()
+t12 = time_isMacro(11, 45, 12, 15)
+l12 = "11:45 - 12:15"
+
+show13  = input.bool(true,  title = "12:45 - 13:15",                 group = "Hourly Macros", inline = "m13")
+col13   = input.color(color.new(#FF9800, 0), title = "",             group = "Hourly Macros", inline = "m13")
+vl13    = input.bool(false, title = "Vertical Line",                 group = "Hourly Macros", inline = "m13")
+var line[] OC13 = array.new_line()
+var line[] NP13 = array.new_line()
+t13 = time_isMacro(12, 45, 13, 15)
+l13 = "12:45 - 13:15"
+
+show14  = input.bool(true,  title = "13:45 - 14:15",                 group = "Hourly Macros", inline = "m14")
+col14   = input.color(color.new(#2196F3, 0), title = "",             group = "Hourly Macros", inline = "m14")
+vl14    = input.bool(false, title = "Vertical Line",                 group = "Hourly Macros", inline = "m14")
+var line[] OC14 = array.new_line()
+var line[] NP14 = array.new_line()
+t14 = time_isMacro(13, 45, 14, 15)
+l14 = "13:45 - 14:15"
+
+show15  = input.bool(true,  title = "14:45 - 15:15",                 group = "Hourly Macros", inline = "m15")
+col15   = input.color(color.new(#FF9800, 0), title = "",             group = "Hourly Macros", inline = "m15")
+vl15    = input.bool(false, title = "Vertical Line",                 group = "Hourly Macros", inline = "m15")
+var line[] OC15 = array.new_line()
+var line[] NP15 = array.new_line()
+t15 = time_isMacro(14, 45, 15, 15)
+l15 = "14:45 - 15:15"
+
+showPH  = input.bool(true,  title = "ICT Power Hour (15:15 - 15:45)", group = "Hourly Macros", inline = "mph")
+colPH   = input.color(color.new(#9C27B0, 0), title = "",              group = "Hourly Macros", inline = "mph")
+vlPH    = input.bool(false, title = "Vertical Line",                   group = "Hourly Macros", inline = "mph")
+var line[] OCPH = array.new_line()
+var line[] NPPH = array.new_line()
+tPH = time_isMacro(15, 15, 15, 45)
+lPH = "15:15 - 15:45"
+
+show16  = input.bool(true,  title = "15:45 - 16:15",                 group = "Hourly Macros", inline = "m16")
+col16   = input.color(color.new(#FF9800, 0), title = "",             group = "Hourly Macros", inline = "m16")
+vl16    = input.bool(false, title = "Vertical Line",                 group = "Hourly Macros", inline = "m16")
+var line[] OC16 = array.new_line()
+var line[] NP16 = array.new_line()
+t16 = time_isMacro(15, 45, 16, 15)
+l16 = "15:45 - 16:15"
+
+show17  = input.bool(false, title = "16:45 - 17:15",                 group = "Hourly Macros", inline = "m17")
+col17   = input.color(color.new(#FF9800, 0), title = "",             group = "Hourly Macros", inline = "m17")
+vl17    = input.bool(false, title = "Vertical Line",                 group = "Hourly Macros", inline = "m17")
+var line[] OC17 = array.new_line()
+var line[] NP17 = array.new_line()
+t17 = time_isMacro(16, 45, 17, 15)
+l17 = "16:45 - 17:15"
+
+show18  = input.bool(false, title = "17:45 - 18:15",                 group = "Hourly Macros", inline = "m18")
+col18   = input.color(color.new(#FF9800, 0), title = "",             group = "Hourly Macros", inline = "m18")
+vl18    = input.bool(false, title = "Vertical Line",                 group = "Hourly Macros", inline = "m18")
+var line[] OC18 = array.new_line()
+var line[] NP18 = array.new_line()
+t18 = time_isMacro(17, 45, 18, 15)
+l18 = "17:45 - 18:15"
+
+show19  = input.bool(false, title = "18:45 - 19:15",                 group = "Hourly Macros", inline = "m19")
+col19   = input.color(color.new(#FF9800, 0), title = "",             group = "Hourly Macros", inline = "m19")
+vl19    = input.bool(false, title = "Vertical Line",                 group = "Hourly Macros", inline = "m19")
+var line[] OC19 = array.new_line()
+var line[] NP19 = array.new_line()
+t19 = time_isMacro(18, 45, 19, 15)
+l19 = "18:45 - 19:15"
+
+show20  = input.bool(false, title = "19:45 - 20:15",                 group = "Hourly Macros", inline = "m20")
+col20   = input.color(color.new(#FF9800, 0), title = "",             group = "Hourly Macros", inline = "m20")
+vl20    = input.bool(false, title = "Vertical Line",                 group = "Hourly Macros", inline = "m20")
+var line[] OC20 = array.new_line()
+var line[] NP20 = array.new_line()
+t20 = time_isMacro(19, 45, 20, 15)
+l20 = "19:45 - 20:15"
+
+show21  = input.bool(false, title = "20:45 - 21:15",                 group = "Hourly Macros", inline = "m21")
+col21   = input.color(color.new(#FF9800, 0), title = "",             group = "Hourly Macros", inline = "m21")
+vl21    = input.bool(false, title = "Vertical Line",                 group = "Hourly Macros", inline = "m21")
+var line[] OC21 = array.new_line()
+var line[] NP21 = array.new_line()
+t21 = time_isMacro(20, 45, 21, 15)
+l21 = "20:45 - 21:15"
+
+show22  = input.bool(false, title = "21:45 - 22:15",                 group = "Hourly Macros", inline = "m22")
+col22   = input.color(color.new(#FF9800, 0), title = "",             group = "Hourly Macros", inline = "m22")
+vl22    = input.bool(false, title = "Vertical Line",                 group = "Hourly Macros", inline = "m22")
+var line[] OC22 = array.new_line()
+var line[] NP22 = array.new_line()
+t22 = time_isMacro(21, 45, 22, 15)
+l22 = "21:45 - 22:15"
+
+show23  = input.bool(false, title = "22:45 - 23:15",                 group = "Hourly Macros", inline = "m23")
+col23   = input.color(color.new(#FF9800, 0), title = "",             group = "Hourly Macros", inline = "m23")
+vl23    = input.bool(false, title = "Vertical Line",                 group = "Hourly Macros", inline = "m23")
+var line[] OC23 = array.new_line()
+var line[] NP23 = array.new_line()
+t23 = time_isMacro(22, 45, 23, 15)
+l23 = "22:45 - 23:15"
+
+show24  = input.bool(false, title = "23:45 - 00:15",                 group = "Hourly Macros", inline = "m24")
+col24   = input.color(color.new(#FF9800, 0), title = "",             group = "Hourly Macros", inline = "m24")
+vl24    = input.bool(false, title = "Vertical Line",                 group = "Hourly Macros", inline = "m24")
+var line[] OC24 = array.new_line()
+var line[] NP24 = array.new_line()
+t24 = time_isMacro(23, 45, 0, 15)
+l24 = "23:45 - 00:15"
+//#endregion
+
+//#region ─── NEWS DATA ────────────────────────────────────────────────────────
+var currWeek = array.new<ffUtil.News>()
+var nextWeek = array.new<ffUtil.News>()
+var currDay  = array.new<ffUtil.News>()
+
+[slot1, slot2, slot3, slot4, slot5, slot6, slot7, slot8, slot9] = requestData()
+
+if timeframe.change("W")
+    nextWeek := ffUtil.bubbleSort_News(nextWeek)
+    currWeek := nextWeek.copy()
+    currWeek := ffUtil.weekNews(currWeek, n_curFilter, n_impFilter)
+    nextWeek.clear()
+
+if newDay
+    currDay.clear()
+    currDay := ffUtil.todayNews(currWeek, currDay, mdnCheck)
+
+nextWeek.processData(slot1, slot2, slot3, slot4, slot5, slot6, slot7, slot8, slot9)
+//#endregion
+
+//#region ─── PLOT ─────────────────────────────────────────────────────────────
+isFri = dayofweek(time) == dayofweek.friday and syminfo.type != 'crypto'
+
+if _mode == "On Chart"
+    if show1
+        macroOC(OC1,  t1,  l1,  col1,  vl1)
+    if show2
+        macroOC(OC2,  t2,  l2,  col2,  vl2)
+    if show3
+        macroOC(OC3,  t3,  l3,  col3,  vl3)
+    if show4
+        macroOC(OC4,  t4,  l4,  col4,  vl4)
+    if show5
+        macroOC(OC5,  t5,  l5,  col5,  vl5)
+    if show6
+        macroOC(OC6,  t6,  l6,  col6,  vl6)
+    if show7
+        macroOC(OC7,  t7,  l7,  col7,  vl7)
+    if show8
+        macroOC(OC8,  t8,  l8,  col8,  vl8)
+    if show9
+        macroOC(OC9,  t9,  l9,  col9,  vl9)
+    if show10
+        macroOC(OC10, t10, l10, col10, vl10)
+    if show11
+        macroOC(OC11, t11, l11, col11, vl11)
+    if show12
+        macroOC(OC12, t12, l12, col12, vl12)
+    if show13
+        macroOC(OC13, t13, l13, col13, vl13)
+    if show14
+        macroOC(OC14, t14, l14, col14, vl14)
+    if show15
+        macroOC(OC15, t15, l15, col15, vl15)
+    if showPH
+        macroOC(OCPH, tPH, lPH, colPH, vlPH)
+    if show16
+        macroOC(OC16, t16, l16, col16, vl16)
+    if show17
+        macroOC(OC17, t17, l17, col17, vl17)
+    if show18
+        macroOC(OC18, t18, l18, col18, vl18)
+    if show19
+        macroOC(OC19, t19, l19, col19, vl19)
+    if show20
+        macroOC(OC20, t20, l20, col20, vl20)
+    if show21
+        macroOC(OC21, t21, l21, col21, vl21)
+    if show22
+        macroOC(OC22, t22, l22, col22, vl22)
+    if show23
+        macroOC(OC23, t23, l23, col23, vl23)
+    if show24
+        macroOC(OC24, t24, l24, col24, vl24)
+
+else
+    if show1
+        macroNP(NP1,  t1,  l1,  col1,  vl1)
+    if show2
+        macroNP(NP2,  t2,  l2,  col2,  vl2)
+    if show3
+        macroNP(NP3,  t3,  l3,  col3,  vl3)
+    if show4
+        macroNP(NP4,  t4,  l4,  col4,  vl4)
+    if show5
+        macroNP(NP5,  t5,  l5,  col5,  vl5)
+    if show6
+        macroNP(NP6,  t6,  l6,  col6,  vl6)
+    if show7
+        macroNP(NP7,  t7,  l7,  col7,  vl7)
+    if show8
+        macroNP(NP8,  t8,  l8,  col8,  vl8)
+    if show9
+        macroNP(NP9,  t9,  l9,  col9,  vl9)
+    if show10
+        macroNP(NP10, t10, l10, col10, vl10)
+    if show11
+        macroNP(NP11, t11, l11, col11, vl11)
+    if show12
+        macroNP(NP12, t12, l12, col12, vl12)
+    if show13
+        macroNP(NP13, t13, l13, col13, vl13)
+    if show14
+        macroNP(NP14, t14, l14, col14, vl14)
+    if show15
+        macroNP(NP15, t15, l15, col15, vl15)
+    if showPH
+        macroNP(NPPH, tPH, lPH, colPH, vlPH)
+    if show16
+        macroNP(NP16, t16, l16, col16, vl16)
+    if show17
+        macroNP(NP17, t17, l17, col17, vl17)
+    if show18
+        macroNP(NP18, t18, l18, col18, vl18)
+    if show19
+        macroNP(NP19, t19, l19, col19, vl19)
+    if show20
+        macroNP(NP20, t20, l20, col20, vl20)
+    if show21
+        macroNP(NP21, t21, l21, col21, vl21)
+    if show22
+        macroNP(NP22, t22, l22, col22, vl22)
+    if show23
+        macroNP(NP23, t23, l23, col23, vl23)
+    if show24
+        macroNP(NP24, t24, l24, col24, vl24)
+
+// ── News table display ──────────────────────────────────────────────────────────
+if n_show and currWeek.size() > 0
+    if n_chart == "Today"
+        if newDay
+            _ntable := ffUtil.FF_Table(currDay, n_locT, "Small", color.new(#dee1e9,0), color.new(#283c70,0), color.new(#000000,0), color.new(#dee1e9,0), n_tableBC)
+        ffUtil.timeline(currDay, _ntable, color.new(#787b86,0), 0, 0, true)
+    else
+        if timeframe.change("W")
+            _ntable := ffUtil.FF_Table(currWeek, n_locT, "Small", color.new(#dee1e9,0), color.new(#283c70,0), color.new(#000000,0), color.new(#dee1e9,0), n_tableBC)
+        ffUtil.timeline(currWeek, _ntable, color.new(#787b86,0), 0, 0)
+else
+    _ntable.delete()
+
+// ── Tracé des macros futures (prochaines fenêtres non encore arrivées) ────────
+if barstate.islast and _mode != "On Chart"
+    for fl in FUT
+        fl.delete()
+    FUT.clear()
+    if show1
+        drawFutureNP(0,  45, 1,  15, col1)
+    if show2
+        drawFutureNP(1,  45, 2,  15, col2)
+    if show3
+        drawFutureNP(2,  45, 3,  15, col3)
+    if show4
+        drawFutureNP(3,  45, 4,  15, col4)
+    if show5
+        drawFutureNP(4,  45, 5,  15, col5)
+    if show6
+        drawFutureNP(5,  45, 6,  15, col6)
+    if show7
+        drawFutureNP(6,  45, 7,  15, col7)
+    if show8
+        drawFutureNP(7,  45, 8,  15, col8)
+    if show9
+        drawFutureNP(8,  45, 9,  15, col9)
+    if show10
+        drawFutureNP(9,  45, 10, 15, col10)
+    if show11
+        drawFutureNP(10, 45, 11, 15, col11)
+    if show12
+        drawFutureNP(11, 45, 12, 15, col12)
+    if show13
+        drawFutureNP(12, 45, 13, 15, col13)
+    if show14
+        drawFutureNP(13, 45, 14, 15, col14)
+    if show15
+        drawFutureNP(14, 45, 15, 15, col15)
+    if showPH
+        drawFutureNP(15, 15, 15, 45, colPH)
+    if show16
+        drawFutureNP(15, 45, 16, 15, col16)
+    if show17
+        drawFutureNP(16, 45, 17, 15, col17)
+    if show18
+        drawFutureNP(17, 45, 18, 15, col18)
+    if show19
+        drawFutureNP(18, 45, 19, 15, col19)
+    if show20
+        drawFutureNP(19, 45, 20, 15, col20)
+    if show21
+        drawFutureNP(20, 45, 21, 15, col21)
+    if show22
+        drawFutureNP(21, 45, 22, 15, col22)
+    if show23
+        drawFutureNP(22, 45, 23, 15, col23)
+    if show24
+        drawFutureNP(23, 45, 0,  15, col24)
+//#endregion
+
+//#region ─── MEMORY CLEAN UP ─────────────────────────────────────────────────
+if show1
+    OC1.memoryCleanLine()
+    NP1.memoryCleanLine()
+if show2
+    OC2.memoryCleanLine()
+    NP2.memoryCleanLine()
+if show3
+    OC3.memoryCleanLine()
+    NP3.memoryCleanLine()
+if show4
+    OC4.memoryCleanLine()
+    NP4.memoryCleanLine()
+if show5
+    OC5.memoryCleanLine()
+    NP5.memoryCleanLine()
+if show6
+    OC6.memoryCleanLine()
+    NP6.memoryCleanLine()
+if show7
+    OC7.memoryCleanLine()
+    NP7.memoryCleanLine()
+if show8
+    OC8.memoryCleanLine()
+    NP8.memoryCleanLine()
+if show9
+    OC9.memoryCleanLine()
+    NP9.memoryCleanLine()
+if show10
+    OC10.memoryCleanLine()
+    NP10.memoryCleanLine()
+if show11
+    OC11.memoryCleanLine()
+    NP11.memoryCleanLine()
+if show12
+    OC12.memoryCleanLine()
+    NP12.memoryCleanLine()
+if show13
+    OC13.memoryCleanLine()
+    NP13.memoryCleanLine()
+if show14
+    OC14.memoryCleanLine()
+    NP14.memoryCleanLine()
+if show15
+    OC15.memoryCleanLine()
+    NP15.memoryCleanLine()
+if showPH
+    OCPH.memoryCleanLine()
+    NPPH.memoryCleanLine()
+if show16
+    OC16.memoryCleanLine()
+    NP16.memoryCleanLine()
+if show17
+    OC17.memoryCleanLine()
+    NP17.memoryCleanLine()
+if show18
+    OC18.memoryCleanLine()
+    NP18.memoryCleanLine()
+if show19
+    OC19.memoryCleanLine()
+    NP19.memoryCleanLine()
+if show20
+    OC20.memoryCleanLine()
+    NP20.memoryCleanLine()
+if show21
+    OC21.memoryCleanLine()
+    NP21.memoryCleanLine()
+if show22
+    OC22.memoryCleanLine()
+    NP22.memoryCleanLine()
+if show23
+    OC23.memoryCleanLine()
+    NP23.memoryCleanLine()
+if show24
+    OC24.memoryCleanLine()
+    NP24.memoryCleanLine()
+
+EXT.memoryCleanLine()
+LBL.memoryCleanLabel()
+VL.memoryCleanLine()
+FUT.memoryCleanLine()
+//#endregion

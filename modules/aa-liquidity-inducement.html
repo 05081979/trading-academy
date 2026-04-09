@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <script src="../auth.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AA Liquidity &amp; Inducements — Liquidite, IDM, Sweeps, Structure</title>
+<title>AA — Market Structure + Inducements</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
 
@@ -77,13 +77,14 @@
 <link rel="stylesheet" href="../readability.css">
 
 <div class="banner">
-  <div class="banner-eyebrow">Module 15 &mdash; Indicateur Pine Script</div>
-  <h1>AA Liquidity &amp; <em>Inducements</em></h1>
+  <div class="banner-eyebrow">Algorithmic Academy &mdash; Indicateur Pine Script</div>
+  <h1>AA &mdash; Market Structure + <em>Inducements</em></h1>
   <p class="banner-sub">
-    Indicateur tout-en-un : Market Structure (BoS/ChoCh), Liquidite (Grabs, Sweeps, BSL/SSL, Equal H/L, Turtle Soups), Inducements (Retracement IDM + UAlgo inside-bar). Base sur la librairie mickes/PriceAction.
+    Indicateur clean tout-en-un : Market Structure (ChoCh + BoS) via pivots natifs, Liquidite (BoS devient LQDT quand swept), Inducements (IDMT) avec mode Sweeps/Total, UAlgo IDM (inside-bar + leg tracking), MTF Structure Timeframe. Sans librairie externe.
   </p>
   <div class="btn-row">
     <a class="btn btn-accent" href="../pdf/aa-liquidity-inducement-guide.html" target="_blank">Telecharger le Guide PDF</a>
+    <a class="btn btn-accent" href="../pine/aa-liquidity-inducement.pine" download>Telecharger le .pine</a>
     <button class="btn" onclick="document.getElementById('code-section').scrollIntoView({behavior:'smooth'})">Voir le Code Source</button>
   </div>
 </div>
@@ -92,73 +93,66 @@
 
   <!-- STRUCTURE -->
   <div class="section">
-    <div class="section-title"><span class="dot" style="background:#00e676"></span> Market Structure (BoS / ChoCh)</div>
+    <div class="section-title"><span class="dot" style="background:#00e676"></span> Market Structure (ChoCh / BoS / LQDT)</div>
     <p style="color:var(--t2);line-height:1.7;">
-      La base de tout : la <span class="highlight">structure de marche</span> est detectee via la librairie <code style="color:var(--cyan)">mickes/PriceAction/4</code>. L'indicateur identifie les pivots (swing H/L), puis detecte les <strong>Break of Structure (BoS)</strong> et <strong>Change of Character (ChoCh)</strong> pour determiner la tendance.
+      La <span class="highlight">structure de marche</span> est detectee via des pivots natifs Pine Script (<code style="color:var(--cyan)">ta.pivothigh</code> / <code style="color:var(--cyan)">ta.pivotlow</code>). Aucune librairie externe requise. L'indicateur identifie les <strong>ChoCh</strong> (retournement) et les <strong>BoS</strong> (continuation), puis transforme un BoS en <strong>LQDT</strong> quand le prix sweep le niveau sans cloture au-dela.
     </p>
     <div class="concept-grid">
       <div class="concept-card">
-        <h3 style="color:#26A69A">BoS (Break of Structure)</h3>
-        <p>Le prix casse un pivot structural dans la <strong>meme direction</strong> que la tendance. Confirme la continuation. En uptrend : nouveau high au-dessus du previous high.</p>
+        <h3 style="color:#005503">ChoCh (Change of Character)</h3>
+        <p>Detecte via des pivots a periode longue (<code style="color:var(--cyan)">ChoCh Detector Period</code>, defaut 30). Le prix casse un pivot structural dans la <strong>direction opposee</strong> a la tendance. Signal de retournement. Quand un ChoCh se produit, tout BoS en attente est efface.</p>
       </div>
       <div class="concept-card">
-        <h3 style="color:#EF5350">ChoCh (Change of Character)</h3>
-        <p>Le prix casse un pivot structural dans la <strong>direction opposee</strong> a la tendance. Signal de retournement potentiel. En uptrend : low casse le previous low.</p>
+        <h3 style="color:#006bc2">BoS (Break of Structure)</h3>
+        <p>Detecte via des pivots a periode courte (<code style="color:var(--cyan)">BoS &amp; Liquidity Detector Period</code>, defaut 1). Le prix casse un pivot dans la <strong>meme direction</strong> que la tendance. La ligne est en pointilles (dashed) et se prolonge jusqu'a cassure ou sweep.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:#7905af">LQDT (Liquidite)</h3>
+        <p>Un BoS devient <strong>LQDT</strong> quand le prix fait un wick a travers le niveau mais <strong>cloture de l'autre cote</strong>. C'est une prise de liquidite — les stops ont ete touches sans cassure reelle. La ligne passe en <code style="color:var(--cyan)">dotted</code> violet.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:#00e676">Fast Trend Detector</h3>
+        <p>Option activable (<code style="color:var(--cyan)">FTD</code>) qui divise par 2 le lookback gauche des pivots ChoCh. Permet une detection plus rapide des retournements, utile en scalping et sur LTF.</p>
       </div>
     </div>
   </div>
 
-  <!-- LIQUIDITY -->
+  <!-- MTF STRUCTURE -->
   <div class="section">
-    <div class="section-title"><span class="dot" style="background:var(--orange)"></span> Liquidite ($$$)</div>
-    <p style="color:var(--t2);line-height:1.7;margin-bottom:12px;">
-      L'indicateur detecte 5 types de liquidite differents, chacun avec son propre mecanisme de detection et son propre timeframe configurable.
+    <div class="section-title"><span class="dot" style="background:var(--blue)"></span> Structure MTF (Multi-Timeframe)</div>
+    <p style="color:var(--t2);line-height:1.7;">
+      L'input <span class="highlight">Structure Timeframe</span> permet de calculer les pivots sur un HTF (ex: 15m) et de les afficher sur un LTF (ex: 1m). Les 6 pivots (LHP, LLP, SHP, SLP, IHP, ILP) sont calcules via <code style="color:var(--cyan)">request.security()</code> puis passes a la fonction Structure.
     </p>
-    <table>
-      <tr><th>TYPE</th><th>MECANISME</th><th>LABEL</th></tr>
-      <tr><td><span class="tag tag-orange">Grabs</span></td><td>Wick a travers un pivot, puis cloture de l'autre cote — prise de liquidite rapide</td><td>$$$</td></tr>
-      <tr><td><span class="tag tag-cyan">Big Grabs</span></td><td>Meme chose mais avec des pivots plus larges (HTF) — liquidite majeure</td><td>$$$</td></tr>
-      <tr><td><span class="tag tag-green">Sweeps</span></td><td>Wick a travers un pivot ET cloture au-dela — sweep confirme avec direction</td><td>$</td></tr>
-      <tr><td><span class="tag tag-purple">Turtle Soups</span></td><td>Sweep suivi d'un ChoCh — retournement apres prise de liquidite (avec confirmation optionnelle)</td><td>Zone coloree</td></tr>
-      <tr><td><span class="tag tag-blue">Equal H/L</span></td><td>Pivots a prix egal (double top/bottom) — affiche $$$ (liquidite) ou IDM (inducement) selon la tendance</td><td>$$$ / IDM</td></tr>
-    </table>
-  </div>
-
-  <!-- BSL SSL -->
-  <div class="section">
-    <div class="section-title"><span class="dot" style="background:var(--red)"></span> BSL &amp; SSL (External Liquidity)</div>
     <div class="concept-grid">
-      <div class="concept-card">
-        <h3 style="color:#26A69A">BSL (Buyside Liquidity)</h3>
-        <p>Pools de liquidite acheteuse au-dessus des swing highs de structure. Ce sont les <strong>stop-loss des vendeurs</strong> et les <strong>buy-stops des breakout traders</strong>. Le prix est attire vers ces niveaux.</p>
-      </div>
-      <div class="concept-card">
-        <h3 style="color:#EF5350">SSL (Sellside Liquidity)</h3>
-        <p>Pools de liquidite vendeuse en-dessous des swing lows de structure. Ce sont les <strong>stop-loss des acheteurs</strong>. Le market maker cible ces niveaux pour alimenter ses positions.</p>
+      <div class="concept-card full">
+        <h3 style="color:var(--cyan)">Utilisation</h3>
+        <p>Laissez le champ vide pour utiliser le timeframe du chart. Selectionnez un HTF (ex: "15" pour 15 minutes) pour voir la structure HTF sur votre chart LTF. Tres utile pour voir les ChoCh/BoS du 15m directement sur le chart 1m sans changer de timeframe.</p>
       </div>
     </div>
   </div>
 
   <!-- INDUCEMENTS -->
   <div class="section">
-    <div class="section-title"><span class="dot" style="background:#00e676"></span> Inducements (IDM) — Double Systeme</div>
+    <div class="section-title"><span class="dot" style="background:var(--orange)"></span> Inducements (IDMT) — Double Systeme</div>
     <p style="color:var(--t2);line-height:1.7;margin-bottom:12px;">
-      L'indicateur combine <strong>deux systemes</strong> de detection d'inducement complementaires :
+      L'indicateur combine <strong>deux systemes</strong> d'inducement complementaires :
     </p>
     <div class="concept-grid">
       <div class="concept-card">
-        <h3 style="color:#26A69A">1. Retracement IDM (mickes)</h3>
-        <p>Le <strong>premier pullback</strong> apres un BoS ou ChoCh est marque comme inducement. Ce retracement piege les traders qui entrent trop tot dans le mouvement. L'IDM est invalide au prochain structure break.</p>
-        <p style="margin-top:8px;"><span class="tag tag-green">IDM</span> avec ligne pointillee etendue jusqu'a invalidation ou sweep.</p>
+        <h3 style="color:#666566">1. IDMT (Pivot-based)</h3>
+        <p>Detecte via des pivots a periode configurable (<code style="color:var(--cyan)">Inducement Detector Period</code>, defaut 3). Le <strong>premier pullback</strong> apres un BoS ou ChoCh est marque comme inducement. Ligne pointillee (dotted) etendue jusqu'a invalidation ou sweep.</p>
+        <p style="margin-top:8px;"><strong>Mode Sweeps :</strong> L'IDMT n'est invalide que si le prix fait un wick a travers + cloture de l'autre cote (sweep). Si le prix cloture au-dela, la ligne est supprimee.</p>
+        <p style="margin-top:4px;"><strong>Mode Total :</strong> L'IDMT est invalide des que le prix touche le niveau (wick suffit).</p>
       </div>
       <div class="concept-card">
         <h3 style="color:#00e676">2. UAlgo IDM (inside-bar + legs)</h3>
-        <p>Systeme base sur les <strong>inside bars</strong> et le tracking des legs. Detecte les pullbacks dans les legs de prix et les marque comme inducement quand le prix fait un nouveau high/low. Sweep detection automatique.</p>
-        <p style="margin-top:8px;"><span class="tag tag-green">IDM ✗</span> = actif, <span class="tag tag-orange">IDM ✓</span> = swept (pris).</p>
+        <p>Systeme independant base sur les <strong>inside bars</strong> et le tracking des legs de prix. Quand le prix fait un pullback dans une leg puis que la leg continue (nouveau high/low), le pullback est confirme comme inducement.</p>
+        <p style="margin-top:8px;"><span class="tag tag-red">IDM</span> = actif (support bullish, ligne rouge), <span class="tag tag-green">IDM</span> = actif (resistance bearish, ligne verte).</p>
+        <p style="margin-top:4px;"><span class="tag tag-orange">IDM ok</span> = swept (la liquidite a ete prise). Ligne passe en dotted avec couleur attenuee.</p>
       </div>
       <div class="concept-card full">
-        <h3 style="color:var(--orange)">Pourquoi deux systemes ?</h3>
-        <p>Le systeme mickes est lie a la <strong>structure formelle</strong> (pivots confirmes avec right length). Le systeme UAlgo est plus <strong>reactif</strong> (inside bars, pas de confirmation). Ensemble, ils couvrent les inducements a differentes echelles — le mickes pour les swings confirmes, UAlgo pour les micro-inducements intra-leg.</p>
+        <h3 style="color:var(--cyan)">Pourquoi deux systemes ?</h3>
+        <p>Le systeme IDMT est lie a la <strong>structure formelle</strong> (pivots confirmes). Le systeme UAlgo est plus <strong>reactif</strong> (inside bars, pas de confirmation de pivot). Ensemble, ils couvrent les inducements a differentes echelles — IDMT pour les swings confirmes, UAlgo pour les micro-inducements intra-leg. Maximum 50 UAlgo IDM actifs avec cleanup automatique.</p>
       </div>
     </div>
   </div>
@@ -168,12 +162,11 @@
     <div class="section-title"><span class="dot" style="background:var(--blue)"></span> Comment Utiliser</div>
     <ul class="list-styled">
       <li><strong>Lecture de la structure :</strong> Identifiez la tendance via les BoS. Un ChoCh signale un retournement potentiel — cherchez une confirmation.</li>
-      <li><strong>Zones de liquidite :</strong> Les BSL/SSL vous montrent ou le prix est attire. Tradez AVEC la liquidite, pas contre elle.</li>
-      <li><strong>Grabs vs Sweeps :</strong> Un Grab ($$$) = le prix a pris la liquidite et est revenu. Un Sweep ($) = le prix a traverse et continue. Distinction cruciale pour le biais.</li>
-      <li><strong>IDM comme targets :</strong> Les inducements sont des niveaux de piege. Quand un IDM est marque, attendez qu'il soit sweep (IDM ✓) avant de trader dans la direction opposee.</li>
-      <li><strong>Turtle Soups :</strong> Un sweep suivi d'un ChoCh = signal de retournement fort. C'est le setup ICT classique.</li>
-      <li><strong>Equal H/L :</strong> Les equal highs/lows sont des aimants a liquidite. Quand ils apparaissent comme "$$$", le prix ira probablement les chercher.</li>
-      <li><strong>Confluence :</strong> Combinez avec le DRT MTF (Module 13) pour les niveaux, les Macros (Module 14) pour le timing.</li>
+      <li><strong>LQDT = piege :</strong> Quand un BoS se transforme en LQDT (violet), c'est une prise de liquidite. Le prix a fait un faux breakout — cherchez un trade dans la direction opposee.</li>
+      <li><strong>IDMT comme cible :</strong> Les inducements sont des niveaux de piege. Attendez qu'ils soient sweep avant de trader dans la direction opposee.</li>
+      <li><strong>UAlgo IDM ok :</strong> Quand un IDM passe en "ok", la liquidite a ete prise. C'est souvent le moment d'un reversal ou d'une continuation forte.</li>
+      <li><strong>MTF Structure :</strong> Utilisez le Structure Timeframe pour voir la structure HTF sur votre chart LTF. Ex: structure 15m sur chart 1m pour le timing precis.</li>
+      <li><strong>Confluence :</strong> Combinez avec le AA DR OTE MTF (Module 20) pour les niveaux, le AA Macro+News (Module 13) pour le timing.</li>
     </ul>
   </div>
 
@@ -182,31 +175,31 @@
     <div class="section-title"><span class="dot" style="background:var(--cyan)"></span> Parametres Principaux</div>
     <table>
       <tr><th>GROUPE</th><th>PARAMETRE</th><th>DEFAUT</th><th>DESCRIPTION</th></tr>
-      <tr><td>Market Structure</td><td>Pivot Left/Right</td><td>5/5</td><td>Longueur des pivots pour la structure (BoS/ChoCh/tendance)</td></tr>
-      <tr><td>Liquidity ($$$)</td><td>Grabs</td><td>ON</td><td>Prise de liquidite rapide (wick + retour)</td></tr>
-      <tr><td>Liquidity ($$$)</td><td>Big Grabs</td><td>ON</td><td>Grabs avec pivots plus larges (HTF)</td></tr>
-      <tr><td>Liquidity ($$$)</td><td>Sweeps</td><td>ON</td><td>Sweep confirme (wick + continuation)</td></tr>
-      <tr><td>Liquidity ($$$)</td><td>Turtle Soups</td><td>ON</td><td>Sweep + ChoCh = retournement</td></tr>
-      <tr><td>Liquidity ($$$)</td><td>Equal H/L</td><td>ON</td><td>Double tops/bottoms comme liquidite ou IDM</td></tr>
-      <tr><td>Liquidity ($$$)</td><td>BSL &amp; SSL</td><td>ON</td><td>Pools de liquidite externe aux pivots de structure</td></tr>
-      <tr><td>Inducement (IDM)</td><td>Retracement</td><td>ON</td><td>Premier pullback apres BoS = inducement</td></tr>
-      <tr><td>UAlgo Inducement</td><td>UAlgo IDM</td><td>ON</td><td>Inducement via inside-bar + leg tracking</td></tr>
-      <tr><td>Grabs</td><td>Pivot / Lookback / TF</td><td>3/5/current</td><td>Sensibilite et timeframe des grabs</td></tr>
-      <tr><td>Sweeps</td><td>Pivot / Lookback / TF</td><td>3/5/current</td><td>Sensibilite et timeframe des sweeps</td></tr>
-      <tr><td>Equal H/L</td><td>ATR Factor</td><td>0.5</td><td>Tolerance pour considerer deux pivots comme "egaux"</td></tr>
+      <tr><td>Logical Setting</td><td>ChoCh Detector Period</td><td>30</td><td>Periode des pivots pour la detection ChoCh (retournement)</td></tr>
+      <tr><td>Logical Setting</td><td>BoS &amp; Liquidity Detector Period</td><td>1</td><td>Periode des pivots pour BoS et detection LQDT</td></tr>
+      <tr><td>Logical Setting</td><td>Inducement Detector Period</td><td>3</td><td>Periode des pivots pour les inducements IDMT</td></tr>
+      <tr><td>Logical Setting</td><td>Fast Trend Detector</td><td>ON</td><td>Divise par 2 le lookback gauche des pivots ChoCh</td></tr>
+      <tr><td>Logical Setting</td><td>Inducement Type</td><td>Sweeps</td><td>"Sweeps" (wick+retour) ou "Total" (tout contact)</td></tr>
+      <tr><td>Logical Setting</td><td>Structure Timeframe</td><td>Vide (chart)</td><td>TF pour le calcul des pivots HTF (laissez vide = chart actuel)</td></tr>
+      <tr><td>ChoCh Display</td><td>Show ChoCh / Colors / Size</td><td>ON</td><td>Affichage des lignes et labels ChoCh bull/bear</td></tr>
+      <tr><td>BoS &amp; LQDY Display</td><td>Show BoS / Colors / LQDY Color</td><td>ON</td><td>Affichage BoS (bleu/orange) et LQDT (violet)</td></tr>
+      <tr><td>Inducement Display</td><td>Show IDMT / Color / Size</td><td>ON</td><td>Affichage des lignes IDMT en pointilles gris</td></tr>
+      <tr><td>UAlgo IDM</td><td>Enable / Bull Color / Bear Color</td><td>ON</td><td>IDM inside-bar : rouge (bull support) / vert (bear resistance)</td></tr>
     </table>
   </div>
 
-  <!-- DEPENDANCES -->
+  <!-- NOTES TECHNIQUES -->
   <div class="section">
     <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Notes Techniques</div>
     <ul class="list-styled">
       <li><strong>Version :</strong> Pine Script v6</li>
-      <li><strong>Dependance :</strong> <code style="color:var(--cyan)">mickes/PriceAction/4</code> (librairie publique TradingView)</li>
+      <li><strong>Dependance :</strong> Aucune — pivots natifs <code style="color:var(--cyan)">ta.pivothigh</code> / <code style="color:var(--cyan)">ta.pivotlow</code></li>
       <li><strong>Overlay :</strong> Oui (directement sur le chart)</li>
       <li><strong>Limites :</strong> 500 labels, 500 lignes</li>
-      <li><strong>Multi-TF :</strong> Chaque module (Grabs, Sweeps, Equal H/L, etc.) a son propre input timeframe via <code style="color:var(--cyan)">request.security()</code></li>
-      <li><strong>UAlgo max :</strong> 50 IDM actifs simultanes avec cleanup auto</li>
+      <li><strong>Max bars back :</strong> 5000</li>
+      <li><strong>MTF :</strong> Via <code style="color:var(--cyan)">request.security()</code> pour le Structure Timeframe</li>
+      <li><strong>UAlgo max :</strong> 50 IDM actifs simultanes avec cleanup auto (shift)</li>
+      <li><strong>Types custom :</strong> <code style="color:var(--cyan)">InducementLevel</code> avec methods <code style="color:var(--cyan)">draw()</code> et <code style="color:var(--cyan)">checkSweep()</code></li>
     </ul>
   </div>
 
@@ -214,58 +207,47 @@
   <div class="section" id="code-section">
     <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Code Source</div>
     <p style="color:var(--t2);margin-bottom:8px;">
-      Le code complet (~700 lignes) est fourni dans le fichier <code>.pine</code>. Il combine la librairie mickes/PriceAction avec le systeme UAlgo Inducement.
+      Le code complet (~330 lignes) est fourni dans le fichier <code>.pine</code>. Il combine la detection de structure via pivots natifs avec le systeme UAlgo Inducement.
     </p>
     <div class="btn-row" style="margin-top:0;margin-bottom:12px;">
+      <a class="btn btn-accent" href="../pine/aa-liquidity-inducement.pine" download>Telecharger le .pine</a>
       <button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('pine-code').textContent).then(()=>this.textContent='Copie !')">Copier le code</button>
     </div>
     <div class="code-block">
-      <pre id="pine-code">// Le code source complet est disponible dans le fichier
-// AA_Liquidity_Inducements.pine fourni avec ce cours.
+      <pre id="pine-code">// AA — Market Structure + Inducements [Clean]
+// Pine Script v6 — Algorithmic Academy
+//
+// AUCUNE librairie externe — pivots natifs uniquement
 //
 // Principales sections :
 //
-// 1. MARKET STRUCTURE (mickes/PriceAction/4)
-//    - Pivot detection, BoS, ChoCh, trend tracking
+// 1. INPUTS (Logical Setting)
+//    - ChoCh Detector Period (30)
+//    - BoS &amp; Liquidity Detector Period (1)
+//    - Inducement Detector Period (3)
+//    - Fast Trend Detector (ON)
+//    - Inducement Type : Sweeps / Total
+//    - Structure Timeframe (MTF)
 //
-// 2. LIQUIDITY GRABS ($$$)
-//    - Wick through pivot + close back = grab confirmed
-//    - Configurable pivot length, lookback, timeframe
+// 2. HTF PIVOT CALCULATION
+//    - f_pivots() calcule 6 pivots (LHP, LLP, SHP, SLP, IHP, ILP)
+//    - request.security() pour le MTF
 //
-// 3. BIG GRABS ($$$)
-//    - Same as grabs but with larger pivot settings (HTF)
+// 3. STRUCTURE FUNCTION
+//    - ChoCh Block : pivots longs, detection retournement
+//    - BoS Block : pivots courts, detection continuation
+//    - BoS → LQDT : si wick traverse mais close revient
+//    - Inducement Block : premier pullback = IDMT
 //
-// 4. LIQUIDITY SWEEPS ($)
-//    - Wick through pivot + close beyond = sweep confirmed
-//    - Filtered: excluded if pivot is a structure break point
-//
-// 5. TURTLE SOUPS
-//    - Sweep + optional ChoCh confirmation = reversal setup
-//
-// 6. EQUAL HIGHS/LOWS
-//    - Pivots within ATR tolerance = equal
-//    - Labeled as $$$ (liquidity) or IDM (inducement) based on trend
-//    - Sweep detection: when price takes the equal level
-//
-// 7. BSL &amp; SSL (External Liquidity)
-//    - Buyside/Sellside pools at structure pivots
-//    - Auto-cleared when price takes the level
-//    - Configurable: show last N pools
-//
-// 8. RETRACEMENT INDUCEMENTS (mickes)
-//    - First pullback pivot after BoS/ChoCh = IDM
-//    - Extended line until swept or invalidated
-//    - Invalidated on next structure break
-//
-// 9. UALGO INDUCEMENT (inside-bar + legs)
+// 4. UALGO IDM (inside-bar + legs)
+//    - InducementLevel type avec draw() et checkSweep()
 //    - Mother candle tracking (inside bar detection)
-//    - Leg high/low tracking with pullback detection
-//    - IDM created when pullback is confirmed by new leg extreme
-//    - Sweep detection: IDM ✗ (active) → IDM ✓ (swept)
-//    - Max 50 active IDMs with auto cleanup
+//    - Leg high/low tracking avec pullback detection
+//    - IDM → IDM ok quand swept
+//    - Max 50 actifs avec cleanup auto
 //
-// Copiez le fichier .pine complet dans l'editeur Pine de TradingView.
-// La librairie mickes/PriceAction/4 sera importee automatiquement.</pre>
+// Telechargez le fichier .pine complet et collez-le
+// dans l'editeur Pine de TradingView.</pre>
     </div>
   </div>
 

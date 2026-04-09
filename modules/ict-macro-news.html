@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <script src="../auth.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ICT Macro Tracker + News — Fenetres Macro &amp; Calendrier</title>
+<title>AA — ICT Macro &amp; News</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
 
@@ -94,13 +94,14 @@
 <link rel="stylesheet" href="../readability.css">
 
 <div class="banner">
-  <div class="banner-eyebrow">Module 14 &mdash; Indicateur Pine Script</div>
-  <h1>ICT Macro Tracker &mdash; <em>+ News Calendar</em></h1>
+  <div class="banner-eyebrow">Algorithmic Academy &mdash; Indicateur Pine Script</div>
+  <h1>AA &mdash; <em>ICT Macro &amp; News</em></h1>
   <p class="banner-sub">
-    Indicateur qui affiche les fenetres macro ICT (horaires et demi-heure) avec un calendrier economique Forex Factory integre. Adapte par mmxm, base sur toodegrees. Fonctionne en overlay ou en volet separe.
+    Indicateur Algorithmic Academy qui affiche les fenetres macro ICT (horaires et demi-heure) avec un calendrier economique Forex Factory integre. Adapte par mmxm, base sur toodegrees. Fonctionne en overlay ou en volet separe.
   </p>
   <div class="btn-row">
     <a class="btn btn-orange" href="../pdf/ict-macro-news-guide.html" target="_blank">Telecharger le Guide PDF</a>
+    <a class="btn btn-orange" href="../pine/ict-macro-news.pine" download>Telecharger le .pine</a>
     <button class="btn" onclick="document.getElementById('code-section').scrollIntoView({behavior:'smooth'})">Voir le Code Source</button>
   </div>
 </div>
@@ -189,7 +190,7 @@
   <div class="section">
     <div class="section-title"><span class="dot" style="background:var(--green)"></span> Comment Utiliser</div>
     <ul class="list-styled">
-      <li><strong>Confluence Macro + DRT :</strong> Quand une macro s'aligne avec un niveau DRT (EQ, 75%, 25%), la probabilite d'un mouvement significatif augmente fortement.</li>
+      <li><strong>Confluence Macro + DR OTE :</strong> Quand une macro s'aligne avec un niveau AA DR OTE MTF (EQ, 75%, 25%), la probabilite d'un mouvement significatif augmente fortement.</li>
       <li><strong>Eviter les news :</strong> Ne pas entrer en position 15 minutes avant un evenement rouge. Attendre la reaction et trader la continuation.</li>
       <li><strong>Silver Bullet (10:45-11:15) :</strong> Cherchez un FVG (Fair Value Gap) pendant cette fenetre — c'est la strategie ICT la plus connue.</li>
       <li><strong>Lignes verticales :</strong> Activez-les sur les macros cles pour voir visuellement ou commencent les mouvements.</li>
@@ -254,11 +255,12 @@
 
   <!-- CODE -->
   <div class="section" id="code-section">
-    <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Code Source Pine Script v5</div>
+    <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Code Source &mdash; AA ICT Macro &amp; News (Pine Script v5)</div>
     <p style="color:var(--t2);margin-bottom:8px;">
       <strong>Note :</strong> Cet indicateur utilise les librairies externes <code style="color:var(--cyan)">toodegrees/forex_factory_utility</code> et <code style="color:var(--cyan)">toodegrees/forex_factory_decoding</code>. Il faut les importer depuis TradingView (elles sont publiques).
     </p>
     <div class="btn-row" style="margin-top:0;margin-bottom:12px;">
+      <a class="btn btn-orange" href="../pine/ict-macro-news.pine" download>Telecharger le .pine</a>
       <button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('pine-code').textContent).then(()=>this.textContent='Copie !')">Copier le code</button>
     </div>
     <div class="code-block">
