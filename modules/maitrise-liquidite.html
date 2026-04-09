@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Maitrise de la Liquidite</title>
+<link rel="stylesheet" href="../readability.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080910;
+    --surface: #0e1018;
+    --card: #12141e;
+    --border: #1c1f2e;
+    --border-bright: #2a2f45;
+    --gold: #c8a96e;
+    --gold-dim: #8a7048;
+    --gold-glow: rgba(200,169,110,0.12);
+    --text: #ddd8cc;
+    --text-dim: #888278;
+    --text-muted: #4a4840;
+    --green: #4ade80;
+    --green-dim: rgba(74,222,128,0.1);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.1);
+    --blue: #60a5fa;
+    --blue-dim: rgba(96,165,250,0.1);
+    --amber: #fbbf24;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.65;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(200,169,110,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 90% 50%, rgba(96,165,250,0.02) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+  /* ─── HEADER ─── */
+  header {
+    padding: 40px 0 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-bottom: 28px;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .header-left {}
+
+  .logo-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .logo-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(24px, 4vw, 40px);
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+
+  .logo-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-style: italic;
+    margin-top: 6px;
+    letter-spacing: 0.03em;
+  }
+
+  .header-badges {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 4px 12px;
+    border: 1px solid var(--border-bright);
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .badge.active { border-color: var(--gold-dim); color: var(--gold); }
+
+  /* ─── TABS ─── */
+  .tabs-nav {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tabs-nav::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 16px 28px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    position: relative;
+    top: 1px;
+  }
+
+  .tab-btn:hover { color: var(--text-dim); }
+  .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* ─── CONTENT ─── */
+  .tab-content { display: none; padding: 36px 0 60px; }
+  .tab-content.active { display: block; }
+
+  /* ─── GRID LAYOUTS ─── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  @media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  @media (max-width: 1100px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
+
+  .section-gap { margin-bottom: 36px; }
+
+  /* ─── SECTION HEADERS ─── */
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 24px;
+  }
+
+  .card-title {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+  }
+
+  /* ─── PHILOSOPHY BOX ─── */
+  .philosophy-box {
+    border: 1px solid var(--gold-dim);
+    background: var(--gold-glow);
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .philosophy-box::before {
+    content: '"';
+    position: absolute;
+    top: -16px;
+    left: 20px;
+    font-family: 'Cinzel', serif;
+    font-size: 60px;
+    color: var(--gold-dim);
+    line-height: 1;
+  }
+
+  .philosophy-box p {
+    font-size: 18px;
+    font-style: italic;
+    color: var(--text);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  .philosophy-box .attrib {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--gold-dim);
+    letter-spacing: 0.15em;
+    margin-top: 10px;
+    text-transform: uppercase;
+  }
+
+  /* ─── RULES LIST ─── */
+  .rules-list { list-style: none; }
+
+  .rules-list li {
+    display: flex;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14.5px;
+    line-height: 1.5;
+    align-items: flex-start;
+  }
+
+  .rules-list li:last-child { border-bottom: none; }
+
+  .rule-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--gold-dim);
+    min-width: 24px;
+    padding-top: 3px;
+  }
+
+  .rule-cat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    background: var(--border);
+    padding: 2px 6px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    margin-top: 3px;
+    min-width: fit-content;
+  }
+
+  /* ─── TABLE ─── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+
+  .data-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-bright);
+    background: var(--surface);
+  }
+
+  .data-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.45;
+  }
+
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(255,255,255,0.015); }
+
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    padding: 2px 7px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .tag-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
+  .tag-red { background: var(--red-dim); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
+  .tag-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(96,165,250,0.2); }
+  .tag-gold { background: var(--gold-glow); color: var(--gold); border: 1px solid rgba(200,169,110,0.2); }
+  .tag-muted { background: var(--border); color: var(--text-muted); }
+
+  /* ─── KILL ZONES ─── */
+  .kz-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+
+  .kz-item {
+    border: 1px solid var(--border);
+    padding: 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .kz-item.trading {
+    border-color: var(--gold-dim);
+    background: var(--gold-glow);
+  }
+
+  .kz-item.danger {
+    border-color: rgba(248,113,113,0.3);
+    background: var(--red-dim);
+  }
+
+  .kz-item.neutral {
+    border-color: var(--border);
+    background: transparent;
+  }
+
+  .kz-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  .kz-item.danger .kz-time { color: var(--red); }
+
+  .kz-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .kz-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  /* ─── IPDA PHASES ─── */
+  .phases-row {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .phase-item {
+    flex: 1;
+    padding: 16px 12px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+    position: relative;
+  }
+
+  .phase-item:last-child { border-right: none; }
+  .phase-item.tradable { background: var(--gold-glow); }
+  .phase-item.not-tradable { background: var(--red-dim); }
+
+  .phase-name {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .phase-item.not-tradable .phase-name { color: var(--red); }
+
+  .phase-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.4;
+  }
+
+  .phase-arrow {
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: var(--gold-dim);
+    z-index: 1;
+  }
+
+  /* ─── DECISION TREE ─── */
+  .decision-tree {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .dt-node {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 4px 0;
+  }
+
+  .dt-indent { padding-left: 24px; }
+  .dt-indent-2 { padding-left: 48px; }
+  .dt-indent-3 { padding-left: 72px; }
+  .dt-indent-4 { padding-left: 96px; }
+  .dt-indent-5 { padding-left: 120px; }
+  .dt-indent-6 { padding-left: 144px; }
+  .dt-indent-7 { padding-left: 168px; }
+
+  .dt-question {
+    font-size: 11px;
+    color: var(--text);
+    padding: 6px 12px;
+    background: var(--border);
+    border-left: 2px solid var(--gold-dim);
+    margin: 3px 0;
+    line-height: 1.4;
+  }
+
+  .dt-no {
+    font-size: 11px;
+    color: var(--red);
+    padding: 4px 0;
+  }
+
+  .dt-yes {
+    font-size: 11px;
+    color: var(--green);
+    padding: 4px 0;
+  }
+
+  .dt-action {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-style: normal;
+    padding: 4px 10px;
+    background: var(--red-dim);
+    border-left: 2px solid var(--red);
+    margin: 2px 0;
+  }
+
+  .dt-execute {
+    font-size: 12px;
+    color: var(--green);
+    font-weight: 700;
+    padding: 10px 16px;
+    background: var(--green-dim);
+    border: 1px solid rgba(74,222,128,0.3);
+    margin: 4px 0;
+    letter-spacing: 0.08em;
+  }
+
+  .dt-line {
+    color: var(--text-muted);
+    font-size: 11px;
+    margin: 1px 0;
+  }
+
+  /* ─── CHECKLIST ─── */
+  .checklist-section {
+    margin-bottom: 28px;
+  }
+
+  .checklist-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    padding: 10px 16px;
+    background: var(--gold-glow);
+    border: 1px solid var(--gold-dim);
+    margin-bottom: 0;
+  }
+
+  .checklist-items { border: 1px solid var(--border); border-top: none; }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+  }
+
+  .check-item:last-child { border-bottom: none; }
+  .check-item:hover { background: rgba(255,255,255,0.02); }
+  .check-item.checked { opacity: 0.5; }
+  .check-item.checked .check-label { text-decoration: line-through; color: var(--text-muted); }
+
+  .check-box {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--border-bright);
+    background: var(--surface);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .check-item.checked .check-box {
+    background: var(--green-dim);
+    border-color: var(--green);
+  }
+
+  .check-item.checked .check-box::after {
+    content: '✓';
+    font-size: 10px;
+    color: var(--green);
+  }
+
+  .check-label {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.4;
+    flex: 1;
+  }
+
+  .check-source {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .check-source.ict { color: var(--gold-dim); }
+  .check-source.lm { color: rgba(96,165,250,0.5); }
+
+  /* ─── PROGRESS BAR ─── */
+  .progress-bar-wrap {
+    background: var(--border);
+    height: 3px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--gold);
+    transition: width 0.3s ease;
+  }
+
+  .progress-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--gold-dim);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    letter-spacing: 0.1em;
+  }
+
+  /* ─── RESET CHECKLIST ─── */
+  .reset-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid var(--border-bright);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 24px;
+  }
+
+  .reset-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+  /* ─── COMPARISON TABLE ─── */
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+  .compare-table th {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-bright);
+  }
+
+  .compare-table th:nth-child(1) { color: var(--text-dim); background: var(--surface); }
+  .compare-table th:nth-child(2) { color: var(--gold); background: var(--gold-glow); }
+  .compare-table th:nth-child(3) { color: var(--blue); background: var(--blue-dim); }
+
+  .compare-table td {
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .compare-table td:nth-child(1) {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    background: var(--surface);
+    width: 18%;
+  }
+
+  .compare-table td:nth-child(2) { border-left: 1px solid var(--border); width: 41%; }
+  .compare-table td:nth-child(3) { border-left: 1px solid var(--border); width: 41%; }
+
+  /* ─── PD ARRAYS ─── */
+  .pd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+
+  .pd-item {
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    background: var(--surface);
+  }
+
+  .pd-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  .pd-desc { font-size: 12.5px; color: var(--text-dim); line-height: 1.4; }
+
+  /* ─── GLOSSARY ─── */
+  .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
+
+  .gloss-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    align-items: flex-start;
+  }
+
+  .gloss-term {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--gold);
+    min-width: 70px;
+    padding-top: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  .gloss-def { font-size: 12.5px; color: var(--text-dim); line-height: 1.4; }
+
+  /* ─── ALERT BOXES ─── */
+  .alert {
+    padding: 14px 18px;
+    border-left: 3px solid;
+    margin: 12px 0;
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+
+  .alert-gold { border-color: var(--gold); background: var(--gold-glow); color: var(--text); }
+  .alert-red { border-color: var(--red); background: var(--red-dim); color: var(--text); }
+  .alert-green { border-color: var(--green); background: var(--green-dim); color: var(--text); }
+
+  .alert strong {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+    color: var(--gold);
+  }
+
+  .alert-red strong { color: var(--red); }
+  .alert-green strong { color: var(--green); }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 32px 0;
+  }
+
+  /* ─── FLOW ─── */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin: 12px 0;
+  }
+
+  .flow-step {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 6px 12px;
+    background: var(--border);
+    color: var(--text);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  .flow-step.highlight { background: var(--gold-glow); border: 1px solid var(--gold-dim); color: var(--gold); }
+  .flow-step.danger { background: var(--red-dim); border: 1px solid rgba(248,113,113,0.2); color: var(--red); }
+  .flow-step.success { background: var(--green-dim); border: 1px solid rgba(74,222,128,0.2); color: var(--green); }
+
+  .flow-arrow { color: var(--text-muted); font-size: 14px; }
+
+  /* ─── 3 QUESTIONS ─── */
+  .q3-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .q3-grid { grid-template-columns: 1fr; } }
+
+  .q3-item {
+    border: 1px solid var(--border);
+    padding: 20px;
+    text-align: center;
+    position: relative;
+  }
+
+  .q3-num {
+    font-family: 'Cinzel', serif;
+    font-size: 32px;
+    color: var(--gold-dim);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .q3-text {
+    font-size: 15px;
+    color: var(--text);
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  /* ─── STAT BAR ─── */
+  .stat-row { display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+
+  .stat-box {
+    border: 1px solid var(--border);
+    padding: 14px 18px;
+    flex: 1;
+    min-width: 120px;
+    background: var(--surface);
+  }
+
+  .stat-value {
+    font-family: 'Cinzel', serif;
+    font-size: 24px;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  /* ─── TRADE STEPS (Stratégie 9h45) ─── */
+  .trade-step {
+    display: flex;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .trade-step:last-child { border-bottom: none; }
+  .ts-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--gold-dim);
+    min-width: 28px;
+    padding-top: 3px;
+    opacity: .8;
+  }
+  .ts-body { flex: 1; }
+  .ts-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+  .ts-desc { font-size: 13.5px; color: var(--text-dim); line-height: 1.5; }
+  .ts-result {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin-top: 2px;
+  }
+
+  /* ─── DECISION TREE NODES ─── */
+  .dt-node { display: flex; align-items: flex-start; gap: 12px; margin: 4px 0; }
+  .dt-indent   { padding-left: 24px; }
+  .dt-indent-2 { padding-left: 48px; }
+  .dt-indent-3 { padding-left: 72px; }
+  .dt-indent-4 { padding-left: 96px; }
+  .dt-indent-5 { padding-left: 120px; }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <header>
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="logo-eyebrow">Protocol de Trading · Version Définitive</div>
+        <div class="logo-title">AA — MAITRISE DE LA LIQUIDITE</div>
+        <div class="logo-sub">Algorithmic Academy — Structure &amp; Liquidite</div>
+      </div>
+      <div class="header-badges">
+        <div class="badge active">42 Videos Structure</div>
+        <div class="badge active">65 Vidéos LM</div>
+        <div class="badge">~538 000 mots</div>
+      </div>
+    </div>
+
+    <nav class="tabs-nav">
+      <button class="tab-btn active" onclick="switchTab('structure')">01 · Structure &amp; Biais</button>
+      <button class="tab-btn" onclick="switchTab('liquidite')">02 · Liquidite &amp; Execution</button>
+      <button class="tab-btn" onclick="switchTab('compare')">03 · Synthèse</button>
+      <button class="tab-btn" onclick="switchTab('checklist')">04 · Checklist</button>
+      <button class="tab-btn" onclick="switchTab('strat9h45')">05 · Stratégie 9h45</button>
+    </nav>
+  </header>
+
+  <!-- ══════════════════════════════════════════
+       TAB 1 : STRUCTURE
+  ══════════════════════════════════════════ -->
+  <div id="structure" class="tab-content active">
+
+    <div class="philosophy-box">
+      <p>On ne trade pas des concepts. On trade une narrative.</p>
+      <div class="attrib">Algorithmic Academy — Philosophie fondatrice</div>
+    </div>
+
+    <div class="q3-grid section-gap">
+      <div class="q3-item">
+        <div class="q3-num">01</div>
+        <div class="q3-text">Qu'est-ce que le prix a fait ?</div>
+      </div>
+      <div class="q3-item">
+        <div class="q3-num">02</div>
+        <div class="q3-text">Où est-ce que le prix est arrivé ?</div>
+      </div>
+      <div class="q3-item">
+        <div class="q3-num">03</div>
+        <div class="q3-text">Où ira-t-il maintenant ?</div>
+      </div>
+    </div>
+    <div class="alert alert-red" style="margin-bottom:28px;">
+      <strong>Règle absolue</strong>
+      Si tu ne peux pas répondre à ces 3 questions, tu ne trades pas.
+    </div>
+
+    <div class="section-label">IPDA — Phases de livraison du prix</div>
+    <div style="margin-bottom:24px;">
+      <div class="phases-row">
+        <div class="phase-item not-tradable">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--red);letter-spacing:.1em;margin-bottom:4px;">NON TRADABLE</div>
+          <div class="phase-name">Consolidation</div>
+          <div class="phase-desc">Accumulation d'ordres<br>des deux côtés</div>
+        </div>
+        <div class="phase-item tradable">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--gold);letter-spacing:.1em;margin-bottom:4px;">TRADABLE</div>
+          <div class="phase-name">Expansion</div>
+          <div class="phase-desc">Mouvement directionnel<br>OB créés</div>
+        </div>
+        <div class="phase-item tradable">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--gold);letter-spacing:.1em;margin-bottom:4px;">TRADABLE</div>
+          <div class="phase-name">Retracement</div>
+          <div class="phase-desc">Retour FVG, OB<br>Rééquilibrage</div>
+        </div>
+        <div class="phase-item tradable">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--gold);letter-spacing:.1em;margin-bottom:4px;">AVEC CONF.</div>
+          <div class="phase-name">Reversal</div>
+          <div class="phase-desc">Retournement structurel<br>après liquidité majeure</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">AMD — Accumulation, Manipulation, Distribution</div>
+    <div class="flow section-gap">
+      <div class="flow-step">Accumulation<br><span style="font-size:9px;opacity:.6">Consolidation / Base</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step highlight">Manipulation<br><span style="font-size:9px;opacity:.6">Judas Swing</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step success">Distribution<br><span style="font-size:9px;opacity:.6">Vrai mouvement</span></div>
+    </div>
+
+    <div class="grid-2 section-gap">
+      <div>
+        <div class="section-label">DRT — Les niveaux</div>
+        <div class="card">
+          <table class="data-table">
+            <thead><tr><th>Niveau</th><th>Nom</th><th>Usage</th></tr></thead>
+            <tbody>
+              <tr><td><span class="tag tag-red">0%</span></td><td>Swing Low</td><td>Bas du range</td></tr>
+              <tr><td><span class="tag tag-green">25%</span></td><td>Deep Discount</td><td>Meilleure zone d'achat</td></tr>
+              <tr><td><span class="tag tag-gold">50%</span></td><td>Equilibrium / CE</td><td>Pivot algorithmique</td></tr>
+              <tr><td><span class="tag tag-red">75%</span></td><td>Deep Premium</td><td>Meilleure zone de vente</td></tr>
+              <tr><td><span class="tag tag-green">100%</span></td><td>Swing High</td><td>Haut du range</td></tr>
+            </tbody>
+          </table>
+          <div class="alert alert-red" style="margin-top:14px;">
+            <strong>Règle stricte du Deep</strong>
+            En Deep Discount : JAMAIS de sell.<br>En Deep Premium : JAMAIS de buy.<br>
+            Mais le DRT ne commande PAS l'entrée — il éclaire.
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Kill Zones — Horaires EST</div>
+        <div class="kz-grid">
+          <div class="kz-item neutral">
+            <div class="kz-time">18h–0h</div>
+            <div class="kz-name">Asia</div>
+            <div class="kz-desc">Consolidation, formation liquidité</div>
+          </div>
+          <div class="kz-item trading">
+            <div class="kz-time">2h–5h</div>
+            <div class="kz-name">London</div>
+            <div class="kz-desc">Manipulation. Volume max. Crée le LOW/HIGH</div>
+          </div>
+          <div class="kz-item trading">
+            <div class="kz-time">3h–4h</div>
+            <div class="kz-name">Silver Bullet 1</div>
+            <div class="kz-desc">Haute probabilité</div>
+          </div>
+          <div class="kz-item trading">
+            <div class="kz-time">7h–11h</div>
+            <div class="kz-name">New York AM</div>
+            <div class="kz-desc">Distribution/continuation</div>
+          </div>
+          <div class="kz-item trading">
+            <div class="kz-time">10h–11h</div>
+            <div class="kz-name">Silver Bullet 2</div>
+            <div class="kz-desc">London Close. Haute prob.</div>
+          </div>
+          <div class="kz-item danger">
+            <div class="kz-time">12h–14h</div>
+            <div class="kz-name">Dead Time</div>
+            <div class="kz-desc">CONSOLIDATION — NE PAS TRADER</div>
+          </div>
+          <div class="kz-item trading">
+            <div class="kz-time">13h30–16h</div>
+            <div class="kz-name">New York PM</div>
+            <div class="kz-desc">Nouvelles distributions</div>
+          </div>
+          <div class="kz-item trading">
+            <div class="kz-time">14h–15h</div>
+            <div class="kz-name">Silver Bullet 3</div>
+            <div class="kz-desc">Après-midi. Haute prob.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">PD Arrays — Catalogue complet</div>
+    <div class="pd-grid section-gap">
+      <div class="pd-item"><div class="pd-name">Order Block (OB)</div><div class="pd-desc">Dernière(s) bougie(s) avant inversion avec displacement. Zone d'entrée/réaction.</div></div>
+      <div class="pd-item"><div class="pd-name">Fair Value Gap (FVG)</div><div class="pd-desc">3 bougies avec trou d'inefficience. Zone de rééquilibrage. CE = 50% de la FVG.</div></div>
+      <div class="pd-item"><div class="pd-name">BPR</div><div class="pd-desc">Balanced Price Range — BISI + SIBI superposées. Zone extrêmement puissante.</div></div>
+      <div class="pd-item"><div class="pd-name">Breaker Block</div><div class="pd-desc">OB qui a échoué + MSS. Zone d'appui post-retournement.</div></div>
+      <div class="pd-item"><div class="pd-name">Unicorn Model</div><div class="pd-desc">Chevauchement FVG + Breaker = signature la plus puissante.</div></div>
+      <div class="pd-item"><div class="pd-name">IFVG</div><div class="pd-desc">FVG cassée et utilisée dans le sens opposé. Signal de changement.</div></div>
+      <div class="pd-item"><div class="pd-name">Mitigation Block</div><div class="pd-desc">Failure swing + OB de continuation. PE potentiel.</div></div>
+      <div class="pd-item"><div class="pd-name">Volume Imbalance</div><div class="pd-desc">Gap entre deux corps de bougies. Pépite sur NQ et DXY.</div></div>
+      <div class="pd-item"><div class="pd-name">FVG Protégée</div><div class="pd-desc">Non transpercée = Break Gap. Continuation très forte.</div></div>
+      <div class="pd-item"><div class="pd-name">Propulsion Block</div><div class="pd-desc">Zone de consolidation qui propulse le prix. Signal de continuation.</div></div>
+    </div>
+
+    <div class="section-label">Arbre de decision — Protocole Structure</div>
+    <div class="decision-tree section-gap">
+      <div class="dt-node"><div class="dt-question">❶ Les 3 questions fondamentales sont-elles répondues ?</div></div>
+      <div class="dt-node dt-indent"><div class="dt-no">✕ NON →</div><div class="dt-action">NE PAS TRADER</div></div>
+      <div class="dt-node dt-indent"><div class="dt-yes">✓ OUI →</div></div>
+      <div class="dt-node dt-indent-2"><div class="dt-question">❷ Le biais Weekly/Daily est-il clair ?</div></div>
+      <div class="dt-node dt-indent-3"><div class="dt-no">✕ NON →</div><div class="dt-action">NE PAS TRADER</div></div>
+      <div class="dt-node dt-indent-3"><div class="dt-yes">✓ OUI →</div></div>
+      <div class="dt-node dt-indent-4"><div class="dt-question">❸ Suis-je dans une Kill Zone ou Silver Bullet ?</div></div>
+      <div class="dt-node dt-indent-5"><div class="dt-no">✕ NON →</div><div class="dt-action">ATTENDRE</div></div>
+      <div class="dt-node dt-indent-5"><div class="dt-yes">✓ OUI →</div></div>
+      <div class="dt-node dt-indent-6"><div class="dt-question">❹ Prix dans la bonne zone DRT ? (discount pour buy / premium pour sell)</div></div>
+      <div class="dt-node dt-indent-6" style="padding-left:156px;"><div class="dt-no">✕ NON →</div><div class="dt-action">ATTENDRE</div></div>
+      <div class="dt-node dt-indent-6" style="padding-left:156px;"><div class="dt-yes">✓ OUI →</div></div>
+      <div class="dt-node" style="padding-left:168px;"><div class="dt-question">❺ CISD valide + displacement + FVG ?</div></div>
+      <div class="dt-node" style="padding-left:192px;"><div class="dt-no">✕ NON →</div><div class="dt-action">ATTENDRE</div></div>
+      <div class="dt-node" style="padding-left:192px;"><div class="dt-yes">✓ OUI →</div></div>
+      <div class="dt-node" style="padding-left:204px;"><div class="dt-question">❻ Prix retracé vers l'IRL ? (JAMAIS en extension)</div></div>
+      <div class="dt-node" style="padding-left:228px;"><div class="dt-no">✕ NON →</div><div class="dt-action">ATTENDRE</div></div>
+      <div class="dt-node" style="padding-left:228px;"><div class="dt-yes">✓ OUI →</div></div>
+      <div class="dt-node" style="padding-left:240px;"><div class="dt-question">❼ PD Array contraire HTF sur le chemin du TP ?</div></div>
+      <div class="dt-node" style="padding-left:264px;"><div class="dt-no">OUI →</div><div class="dt-action">RÉDUIRE LE TP ou NE PAS TRADER</div></div>
+      <div class="dt-node" style="padding-left:264px;"><div class="dt-yes">✕ NON →</div></div>
+      <div class="dt-node" style="padding-left:276px;"><div class="dt-execute">✅ EXECUTER — SL sous/dessus swing · TP croissant (crescendo) · Réduire RR si news</div></div>
+    </div>
+
+    <div class="section-label">Les 15 regles d'or — Structure</div>
+    <div class="card">
+      <ul class="rules-list">
+        <li><span class="rule-num">01</span><span class="rule-cat">Narrative</span>On ne trade pas des concepts, on trade une narrative — les concepts aident à comprendre la narrative</li>
+        <li><span class="rule-num">02</span><span class="rule-cat">Narrative</span>La HTF dirige le prix, la LTF manipule — toujours commencer par le HTF</li>
+        <li><span class="rule-num">03</span><span class="rule-cat">Narrative</span>49 points alignés + 1 désaligné = pas de trade — la rigueur est totale</li>
+        <li><span class="rule-num">04</span><span class="rule-cat">DRT</span>Le DRT est ta carte, pas ton dictateur — il éclaire, il ne commande pas</li>
+        <li><span class="rule-num">05</span><span class="rule-cat">DRT</span>Ne jamais sell en deep discount, ne jamais buy en deep premium — mais ne pas entrer automatiquement dans le sens opposé</li>
+        <li><span class="rule-num">06</span><span class="rule-cat">DRT</span>Le DRT interne est aussi important que l'externe — ne pas l'ignorer</li>
+        <li><span class="rule-num">07</span><span class="rule-cat">Liquidité</span>Retracement IRL obligatoire avant entrée — JAMAIS en extension</li>
+        <li><span class="rule-num">08</span><span class="rule-cat">Liquidité</span>Pas de reversal sans chasse de liquidité externe majeure — condition sine qua non</li>
+        <li><span class="rule-num">09</span><span class="rule-cat">Liquidité</span>Aller crescendo dans les DOL — zone par zone, pas de target extrême</li>
+        <li><span class="rule-num">10</span><span class="rule-cat">Temps</span>Le temps prévaut sur le prix — Kill Zones, Silver Bullets, Macros</li>
+        <li><span class="rule-num">11</span><span class="rule-cat">Temps</span>Ne pas trader l'open ni le Dead Time — attendre la manipulation terminée</li>
+        <li><span class="rule-num">12</span><span class="rule-cat">Signature</span>Le faux CISD est le piège principal — CISD sans contexte IPDA = perte</li>
+        <li><span class="rule-num">13</span><span class="rule-cat">Signature</span>Pas de displacement (FVG) = pas d'entrée — un MSS sans FVG n'a pas de poids</li>
+        <li><span class="rule-num">14</span><span class="rule-cat">Discipline</span>1–2 trades par semaine suffisent — qualité > quantité</li>
+        <li><span class="rule-num">15</span><span class="rule-cat">Discipline</span>Quand le DOL est atteint, éteindre les graphiques — que le trade ait été pris ou non</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB 2 : LIQUIDITE
+  ══════════════════════════════════════════ -->
+  <div id="liquidite" class="tab-content">
+
+    <div class="philosophy-box" style="border-color:rgba(96,165,250,0.4);background:rgba(96,165,250,0.05);">
+      <p>Si tu ne repères pas la liquidité, c'est toi la liquidité.<br>Si tu ne repères pas les pièges, c'est toi le piège.</p>
+      <div class="attrib">Algorithmic Academy — Maitrise de la Liquidite</div>
+    </div>
+
+    <div class="section-label">La loi de cause à effet</div>
+    <div class="flow section-gap">
+      <div class="flow-step danger">Phase 1<br><span style="font-size:9px">Besoin de lots</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step highlight">Phase 2<br><span style="font-size:9px">Manipulation retail</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step success">Phase 3<br><span style="font-size:9px">Vrai mouvement (Distribution)</span></div>
+    </div>
+    <div class="alert alert-gold section-gap">
+      <strong>Conséquence radicale</strong>
+      Tout ce que le retail voit (trendlines, supports, résistances, double tops, ranges) = de la LIQUIDITÉ, pas des zones de trading.
+    </div>
+
+    <div class="grid-2 section-gap">
+      <div>
+        <div class="section-label">Cycle AMD — Séquence universelle</div>
+        <table class="data-table">
+          <thead><tr><th>Phase</th><th>Description</th><th>Action trader</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag tag-muted">A — Accumulation</span></td><td>Range, faux setups, pièges retail</td><td><span class="tag tag-red">NE PAS TRADER</span></td></tr>
+            <tr><td><span class="tag tag-gold">M — Manipulation</span></td><td>Prise de liquidité violente, inducements</td><td><span class="tag tag-red">COMPRENDRE — NE PAS TRADER</span></td></tr>
+            <tr><td><span class="tag tag-green">D — Distribution</span></td><td>Le vrai mouvement</td><td><span class="tag tag-green">SE POSITIONNER ICI</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="section-label">Premium / Discount — Méthode correcte</div>
+        <div class="card">
+          <table class="data-table">
+            <thead><tr><th>Position vs Daily Open</th><th>Zone</th><th>Trade autorisé</th></tr></thead>
+            <tbody>
+              <tr><td>Au-dessus du Midnight Open</td><td><span class="tag tag-red">PREMIUM</span></td><td>VENTES uniquement</td></tr>
+              <tr><td>En-dessous du Midnight Open</td><td><span class="tag tag-green">DISCOUNT</span></td><td>ACHATS uniquement</td></tr>
+              <tr><td>Zone d'équilibre 50%</td><td><span class="tag tag-muted">NEUTRE</span></td><td style="color:var(--red)">NE PAS TRADER</td></tr>
+            </tbody>
+          </table>
+          <div class="alert alert-red" style="margin-top:12px;font-size:12.5px;">
+            <strong>Règle stricte</strong>
+            Daily Open = ouverture à minuit NY = 6h heure de Paris. C'est LA référence, pas le Fibonacci.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Kill Zones — Horaires PARIS</div>
+    <div class="kz-grid section-gap">
+      <div class="kz-item neutral">
+        <div class="kz-time" style="color:var(--text-dim)">23h–8h</div>
+        <div class="kz-name">Asia</div>
+        <div class="kz-desc">ACCUMULATION — NE PAS TRADER</div>
+      </div>
+      <div class="kz-item danger">
+        <div class="kz-time">7h–9h30</div>
+        <div class="kz-name">Francfort</div>
+        <div class="kz-desc">Avant 9h30 = TRAP. H/L Francfort = liquidités</div>
+      </div>
+      <div class="kz-item trading">
+        <div class="kz-time">9h30</div>
+        <div class="kz-name">Kill Zone London</div>
+        <div class="kz-desc">Manipulation → Distribution jusqu'à 12h</div>
+      </div>
+      <div class="kz-item danger">
+        <div class="kz-time">12h–14h30</div>
+        <div class="kz-name">Dead Time</div>
+        <div class="kz-desc">LUNCH TIME — NE PAS TRADER</div>
+      </div>
+      <div class="kz-item trading">
+        <div class="kz-time">14h30</div>
+        <div class="kz-name">Kill Zone New York</div>
+        <div class="kz-desc">Manipulation NY → Distribution 14h30–16h</div>
+      </div>
+      <div class="kz-item neutral">
+        <div class="kz-time">16h</div>
+        <div class="kz-name">Nouveau cycle</div>
+        <div class="kz-desc">Retracement possible ou nouveau cycle</div>
+      </div>
+    </div>
+
+    <div class="section-label">Règles opérationnelles — Liquidité</div>
+    <div class="card section-gap">
+      <div class="alert alert-green" style="margin-bottom:8px;">
+        <strong>Règle 1 — Liquidités internes</strong>
+        Avant de prendre un trade : TOUJOURS attendre que les liquidités INTERNES soient prises. Si elles ne sont pas prises = trade INVALIDE.
+      </div>
+      <div class="alert alert-gold" style="margin-bottom:8px;">
+        <strong>Règle 2 — Cible TP</strong>
+        Pour le TP : TOUJOURS viser une liquidité EXTERNE. La prochaine liquidité externe = le seul objectif valide.
+      </div>
+      <div class="alert alert-red" style="margin-bottom:8px;">
+        <strong>Règle 3 — Validation POI</strong>
+        Un POI n'est valide QUE s'il y a de la liquidité interne en-dessous (buy) ou au-dessus (sell). Sans ça = c'est VOUS qui serez la liquidité.
+      </div>
+      <div class="alert alert-red">
+        <strong>Règle 4 — POI à usage unique</strong>
+        Un POI ne se prend qu'UNE SEULE FOIS. Après un retest = invalide. Supprimer et chercher ailleurs.
+      </div>
+    </div>
+
+    <div class="section-label">Arbre de decision — Protocole Liquidite</div>
+    <div class="decision-tree section-gap">
+      <div class="dt-node"><div class="dt-question">❶ Suis-je dans une Kill Zone ? (9h30 / 14h30 / 16h heure Paris)</div></div>
+      <div class="dt-node dt-indent"><div class="dt-no">✕ NON →</div><div class="dt-action">ATTENDRE</div></div>
+      <div class="dt-node dt-indent"><div class="dt-yes">✓ OUI →</div></div>
+      <div class="dt-node dt-indent-2"><div class="dt-question">❷ La liquidité interne a-t-elle été prise ?</div></div>
+      <div class="dt-node dt-indent-3"><div class="dt-no">✕ NON →</div><div class="dt-action">ATTENDRE — trade invalide</div></div>
+      <div class="dt-node dt-indent-3"><div class="dt-yes">✓ OUI →</div></div>
+      <div class="dt-node dt-indent-4"><div class="dt-question">❸ Suis-je dans l'OTE ? (0.62–0.79 Fibonacci sur dernière expansion)</div></div>
+      <div class="dt-node dt-indent-5"><div class="dt-no">✕ NON →</div><div class="dt-action">ATTENDRE</div></div>
+      <div class="dt-node dt-indent-5"><div class="dt-yes">✓ OUI →</div></div>
+      <div class="dt-node dt-indent-6"><div class="dt-question">❹ Daily Open respecté ? (Premium pour sell / Discount pour buy)</div></div>
+      <div class="dt-node" style="padding-left:168px;"><div class="dt-no">✕ NON →</div><div class="dt-action">NE PAS TRADER</div></div>
+      <div class="dt-node" style="padding-left:168px;"><div class="dt-yes">✓ OUI →</div></div>
+      <div class="dt-node" style="padding-left:180px;"><div class="dt-question">❺ Breaker ou Mitigation Block valide ?</div></div>
+      <div class="dt-node" style="padding-left:204px;"><div class="dt-no">✕ NON →</div><div class="dt-action">ATTENDRE</div></div>
+      <div class="dt-node" style="padding-left:204px;"><div class="dt-yes">✓ OUI →</div></div>
+      <div class="dt-node" style="padding-left:216px;"><div class="dt-question">❻ L'inducement a-t-il été pris ?</div></div>
+      <div class="dt-node" style="padding-left:240px;"><div class="dt-no">✕ NON →</div><div class="dt-action">ATTENDRE</div></div>
+      <div class="dt-node" style="padding-left:240px;"><div class="dt-yes">✓ OUI →</div></div>
+      <div class="dt-node" style="padding-left:252px;"><div class="dt-execute">✅ EXECUTER — SL 3–5 pips · TP 5R (3R si SL > 10 pips) · Viser liquidité externe</div></div>
+    </div>
+
+    <div class="section-label">Les 12 regles d'or — Liquidite</div>
+    <div class="card">
+      <ul class="rules-list">
+        <li><span class="rule-num">01</span><span class="rule-cat">Liquidité</span>Si tu ne repères pas la liquidité, c'est toi la liquidité</li>
+        <li><span class="rule-num">02</span><span class="rule-cat">Liquidité</span>Si tu ne repères pas les pièges, c'est toi le piège</li>
+        <li><span class="rule-num">03</span><span class="rule-cat">Liquidité</span>Toujours attendre la prise de liquidité interne avant d'entrer</li>
+        <li><span class="rule-num">04</span><span class="rule-cat">Liquidité</span>Toujours viser une liquidité externe comme TP</li>
+        <li><span class="rule-num">05</span><span class="rule-cat">Inducement</span>JAMAIS entrer avant la prise d'inducement — se positionner à la cassure</li>
+        <li><span class="rule-num">06</span><span class="rule-cat">Inducement</span>Un high/low sans liquidité récupérée = inducement = sera cassé</li>
+        <li><span class="rule-num">07</span><span class="rule-cat">Inducement</span>Le premier inducement touché a gagné — l'autre côté = trap</li>
+        <li><span class="rule-num">08</span><span class="rule-cat">Timing</span>Ne JAMAIS trader avant 9h30 — tout ce qui précède = accumulation = trap</li>
+        <li><span class="rule-num">09</span><span class="rule-cat">Timing</span>Ne JAMAIS trader entre 12h et 14h30 — lunch = trap</li>
+        <li><span class="rule-num">10</span><span class="rule-cat">Timing</span>Breaker/Mitigation uniquement dans les Kill Zones — hors KZ = SL quasi garanti</li>
+        <li><span class="rule-num">11</span><span class="rule-cat">Discipline</span>Maximum 2 trades par jour — sniper, pas mitraillette</li>
+        <li><span class="rule-num">12</span><span class="rule-cat">Discipline</span>Moins tu trades, plus tu gagnes — 8–10 trades/mois suffisent</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB 3 : SYNTHÈSE / COMPARAISON
+  ══════════════════════════════════════════ -->
+  <div id="compare" class="tab-content">
+
+    <div class="section-label">Tableau comparatif Structure vs Liquidite</div>
+    <div style="overflow-x:auto;margin-bottom:36px;">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Aspect</th>
+            <th>Approche Structure</th>
+            <th>Approche Liquidite</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Outil central</td>
+            <td>DRT (Dealing Range Tool) — niveaux 0/25/50/75/100%</td>
+            <td>Cycle de Liquidité — interne/externe</td>
+          </tr>
+          <tr>
+            <td>Premium/Discount</td>
+            <td>Fibonacci tracé sur le DRT</td>
+            <td>Daily Open (Midnight, 6h Paris)</td>
+          </tr>
+          <tr>
+            <td>Biais</td>
+            <td>Top-Down : Weekly → Daily → H4 → H1</td>
+            <td>Intermarket + Daily Open + Liquidité HTF</td>
+          </tr>
+          <tr>
+            <td>Confirmation entrée</td>
+            <td>CISD + displacement + FVG dans Kill Zone</td>
+            <td>Inducement pris + Breaker/Mitigation dans OTE</td>
+          </tr>
+          <tr>
+            <td>Stop Loss</td>
+            <td>Sous le dernier swing point (large accepté)</td>
+            <td>3–5 pips (entrée sniper ultra-précise)</td>
+          </tr>
+          <tr>
+            <td>Take Profit</td>
+            <td>Crescendo zone par zone (DOL)</td>
+            <td>RR fixe 5:1 (ou 3:1 si SL > 10 pips)</td>
+          </tr>
+          <tr>
+            <td>Structure</td>
+            <td>DRT + CISD + MSS + IRL/ERL</td>
+            <td>H/L protégé vs non-protégé — liquidité</td>
+          </tr>
+          <tr>
+            <td>Wyckoff / AMD</td>
+            <td>Utilisé (accumulation/distribution)</td>
+            <td>AMD conservé, Wyckoff classique critiqué</td>
+          </tr>
+          <tr>
+            <td>Fréquence</td>
+            <td>1–2 trades par <strong>semaine</strong></td>
+            <td>Max 2 trades par <strong>jour</strong> — 8–10/mois</td>
+          </tr>
+          <tr>
+            <td>Gestion</td>
+            <td>DOL = clôturer. Éteindre les graphiques.</td>
+            <td>80% clôturé à 1:5 — 20% court avec SL déplacé</td>
+          </tr>
+          <tr>
+            <td>Analyse inter-marchés</td>
+            <td>SMT NQ/ES, EU/DXY — confirme, ne crée pas</td>
+            <td>EUR/GBP systématique — sélection de la paire</td>
+          </tr>
+          <tr>
+            <td>Annonces éco</td>
+            <td>Accélèrent le mouvement déjà codé. Réduire RR si news proche.</td>
+            <td>Accélérateurs de setup — la technique prime</td>
+          </tr>
+          <tr>
+            <td>Kill Zones (Paris)</td>
+            <td>London 8h–11h · NY 13h30–16h · Silver Bullets</td>
+            <td>9h30 · 14h30 · 16h (3 points précis)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-label">Points de convergence — Les deux mentorats disent la même chose</div>
+    <div class="grid-2 section-gap">
+      <div class="card">
+        <div class="card-title">Convergences fondamentales</div>
+        <ul class="rules-list">
+          <li><span class="rule-num" style="color:var(--green)">✓</span>AMD = Accumulation → Manipulation → Distribution (universel)</li>
+          <li><span class="rule-num" style="color:var(--green)">✓</span>Ne jamais trader en dehors des Kill Zones — le timing prime</li>
+          <li><span class="rule-num" style="color:var(--green)">✓</span>Retracement obligatoire avant entrée (IRL / liquidité interne)</li>
+          <li><span class="rule-num" style="color:var(--green)">✓</span>Sniper : qualité > quantité — peu de trades suffit</li>
+          <li><span class="rule-num" style="color:var(--green)">✓</span>Les annonces éco accélèrent, elles ne changent pas la direction</li>
+          <li><span class="rule-num" style="color:var(--green)">✓</span>DOL / Liquidité externe = la cible, toujours crescendo</li>
+          <li><span class="rule-num" style="color:var(--green)">✓</span>Dead Time 12h–14h = ne pas trader (les deux mentorats)</li>
+          <li><span class="rule-num" style="color:var(--green)">✓</span>Liquidity Grab puis PD Array = signature valide</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Complémentarités — Les deux s'enrichissent</div>
+        <ul class="rules-list">
+          <li><span class="rule-num" style="color:var(--blue)">+</span>Structure donne le cadre HTF (Weekly → Daily → H4) — LM affine l'exécution LTF</li>
+          <li><span class="rule-num" style="color:var(--blue)">+</span>DRT (STR) = cartographie du prix — Liquidité interne/externe (LIQ) = mécanisme</li>
+          <li><span class="rule-num" style="color:var(--blue)">+</span>CISD (STR) comme confirmation + Inducement pris (LIQ) comme déclencheur</li>
+          <li><span class="rule-num" style="color:var(--blue)">+</span>OTE 0.62–0.79 (LIQ) correspond au Deep Discount/Premium (STR)</li>
+          <li><span class="rule-num" style="color:var(--blue)">+</span>EUR/GBP intermarket (LIQ) complète la SMT NQ/ES (STR)</li>
+          <li><span class="rule-num" style="color:var(--blue)">+</span>Gestion 80%/20% (LIQ) = alternative au crescendo pur (STR)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-label">Protocole de trading unifié — Meilleur des deux mondes</div>
+    <div class="card section-gap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Étape</th><th>Action</th><th>Source</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag tag-gold">Pré-session</span></td>
+            <td>News vérifiées · Analyse EUR/GBP H1 (intermarket) · Biais Weekly/Daily Structure · Daily Open (Midnight) tracé · Range Asia identifié</td>
+            <td><span class="tag tag-muted">STR + LIQ</span></td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-gold">Biais H4/H1</span></td>
+            <td>DRT Weekly + Daily + H4 · Cycle AMD en cours · Liquidités internes/externes · DOL identifié crescendo · Biais 70/30</td>
+            <td><span class="tag tag-gold">STR</span></td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-gold">Contexte M15</span></td>
+            <td>Daily Open = Premium ou Discount · OTE Fibonacci tracé · Inducements identifiés · Paire la plus forte (EUR/GBP)</td>
+            <td><span class="tag tag-blue">LIQ</span></td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-gold">Kill Zone</span></td>
+            <td>9h30 ou 14h30 · London prend-elle le H/L Asia ? · Liquidité interne prise ? · CISD ou Breaker dans l'OTE ?</td>
+            <td><span class="tag tag-muted">STR + LIQ</span></td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-gold">Confirmation LTF</span></td>
+            <td>M5/M1 : cycle AMD complet · Inducement pris · FVG + displacement présents · SMT/Volumes confirment (optionnel)</td>
+            <td><span class="tag tag-muted">STR + LIQ</span></td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-gold">Exécution</span></td>
+            <td>Entrée sur Breaker/FVG dans l'OTE · SL sous/dessus swing (ou 3–5 pips en sniper) · TP : prochaine liquidité externe · Gestion : 80% à 1:5 si position size le permet</td>
+            <td><span class="tag tag-muted">STR + LIQ</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB 4 : CHECKLIST INTERACTIVE
+  ══════════════════════════════════════════ -->
+  <div id="checklist" class="tab-content">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:14px;">
+      <div>
+        <div class="progress-label">
+          <span>Progression de la session</span>
+          <span id="progress-text">0 / 0</span>
+        </div>
+        <div class="progress-bar-wrap" style="width:300px;">
+          <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <button class="reset-btn" onclick="resetChecklist()">↺ Réinitialiser la checklist</button>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="checklist-section">
+          <div class="checklist-section-title">□ Pré-session (avant la session)</div>
+          <div class="checklist-items" id="checklist-pre">
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Vérifier les NEWS du jour (CPI, NFP, FOMC)</div><div class="check-source ict">STR</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Analyser EUR/GBP H1 — quelle paire trader ?</div><div class="check-source lm">LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Tracer le DRT Weekly (swing high → swing low)</div><div class="check-source ict">STR</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Biais Weekly identifié (bullish / bearish / neutre)</div><div class="check-source ict">STR</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">PD Arrays Daily repérés (OB, FVG, Breakers)</div><div class="check-source ict">STR</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Daily Open (Midnight) tracé — Premium ou Discount ?</div><div class="check-source lm">LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Range de la session asiatique (high + low) identifié</div><div class="check-source lm">LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Liquidités externes repérées (session H/L, structure H/L)</div><div class="check-source lm">LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">DOL identifié (crescendo — zone par zone)</div><div class="check-source ict">STR</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">3 questions fondamentales répondues</div><div class="check-source ict">STR</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Biais 70/30 établi — prêt à réévaluer</div><div class="check-source ict">STR</div></div>
+          </div>
+        </div>
+
+        <div class="checklist-section">
+          <div class="checklist-section-title" style="border-color:rgba(248,113,113,0.4);color:var(--red);background:var(--red-dim);">✕ Interdits absolus</div>
+          <div class="checklist-items">
+            <div class="check-item" style="cursor:default;"><div class="check-box" style="border-color:var(--red);cursor:default;"></div><div class="check-label" style="color:var(--red);">NE PAS trader l'open — attendre la manipulation terminée</div><div class="check-source lm">LIQ</div></div>
+            <div class="check-item" style="cursor:default;"><div class="check-box" style="border-color:var(--red);cursor:default;"></div><div class="check-label" style="color:var(--red);">NE PAS trader avant 9h30 (heure Paris)</div><div class="check-source lm">LIQ</div></div>
+            <div class="check-item" style="cursor:default;"><div class="check-box" style="border-color:var(--red);cursor:default;"></div><div class="check-label" style="color:var(--red);">NE PAS trader entre 12h et 14h30 — Dead Time</div><div class="check-source ict">STR + LIQ</div></div>
+            <div class="check-item" style="cursor:default;"><div class="check-box" style="border-color:var(--red);cursor:default;"></div><div class="check-label" style="color:var(--red);">NE PAS entrer en extension — retracement IRL obligatoire</div><div class="check-source ict">STR</div></div>
+            <div class="check-item" style="cursor:default;"><div class="check-box" style="border-color:var(--red);cursor:default;"></div><div class="check-label" style="color:var(--red);">NE PAS déplacer un SL pour améliorer le RR</div><div class="check-source ict">STR</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="checklist-section">
+          <div class="checklist-section-title" style="border-color:rgba(96,165,250,0.4);color:var(--blue);background:rgba(96,165,250,0.06);">◈ Kill Zone — Confirmation d'entrée</div>
+          <div class="checklist-items">
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Je suis dans une Kill Zone (9h30 / 14h30 / 16h Paris) ou Silver Bullet</div><div class="check-source ict">STR + LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">London a-t-elle pris le high ou le low de l'Asia ?</div><div class="check-source lm">LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Liquidité INTERNE prise (equal H/L, trendline, ancien POI)</div><div class="check-source lm">LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Daily Open confirmé : Premium = sell uniquement / Discount = buy uniquement</div><div class="check-source lm">LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Prix dans la bonne zone DRT (discount pour buy, premium pour sell)</div><div class="check-source ict">STR</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">CISD valide avec contexte IPDA (pas un faux CISD)</div><div class="check-source ict">STR</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Displacement présent (mouvement rapide + FVG)</div><div class="check-source ict">STR</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Inducement pris — se positionner à la cassure de l'inducement</div><div class="check-source lm">LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Breaker Block ou Mitigation Block valide identifié</div><div class="check-source lm">LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Prix dans l'OTE 0.62–0.79 Fibonacci (LIQ) ou Deep zone DRT (STR)</div><div class="check-source lm">LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">SMT Divergence confirmée (optionnel — renforce mais ne crée pas)</div><div class="check-source ict">STR + LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Aucun PD Array contraire HTF sur le chemin du TP</div><div class="check-source ict">STR</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Aucune annonce éco dans les 30 prochaines minutes (ou RR réduit)</div><div class="check-source ict">STR + LIQ</div></div>
+          </div>
+        </div>
+
+        <div class="checklist-section">
+          <div class="checklist-section-title" style="border-color:rgba(74,222,128,0.4);color:var(--green);background:var(--green-dim);">✅ Exécution du trade</div>
+          <div class="checklist-items">
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Entrée sur FVG/Breaker/OB dans la zone confirmée</div><div class="check-source ict">STR + LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">SL placé sous/au-dessus du dernier swing point (ou 3–5 pips en sniper)</div><div class="check-source ict">STR + LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">TP = prochaine liquidité externe (crescendo / ou RR 5:1 fixe)</div><div class="check-source ict">STR + LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Si le DOL est atteint → clôturer 80%, laisser 20% courir</div><div class="check-source lm">LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Si le protected swing est violé → biais FAUX → SORTIR immédiatement</div><div class="check-source ict">STR</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Quand le DOL est atteint → ÉTEINDRE LES GRAPHIQUES</div><div class="check-source ict">STR</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Journal de trading rempli après le trade</div><div class="check-source ict">STR + LIQ</div></div>
+            <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Max 2 trades pris aujourd'hui — objectif respecté</div><div class="check-source lm">LIQ</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 5 — STRATÉGIE 9H45 (Structure)
+══════════════════════════════════════════ -->
+<div id="strat9h45" class="tab-content">
+
+  <!-- PHILOSOPHIE -->
+  <div class="philosophy-box">
+    <p>La stratégie 9h45 ne vous apprend pas à trader tout ce qui bouge. Elle vous apprend à vous focaliser — et c'est ça, le cadre.</p>
+    <div class="attrib">Algorithmic Academy — Strategie 9h45 NY Open</div>
+  </div>
+
+  <!-- CONCEPT CENTRAL -->
+  <div class="section-label">Pourquoi 9h45 ? — Le concept</div>
+  <div class="grid-2 section-gap">
+    <div class="card">
+      <div class="card-title">La bougie M15 de l'ouverture</div>
+      <p style="font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:14px;">À 9h30 NY, le marché ouvre. La <strong style="color:var(--gold)">bougie M15 de 9h30 se clôture à 9h45</strong>. C'est cette clôture qui donne le signal. Avant 9h45, on observe — on ne trade pas.</p>
+      <div class="alert alert-gold">
+        <strong>Ce que 9h45 apporte</strong>
+        Filtre le bruit des premières minutes d'ouverture. Donne un cadre précis au lieu de trader "tout ce qui bouge". Permet de voir comment le marché a digéré l'Open avant d'agir.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Les 4 prérequis avant 9h45</div>
+      <ul class="rules-list" style="font-size:13.5px;">
+        <li><span class="rule-num" style="color:var(--gold);">01</span>DRT tracé (Dealing Range Tool — swing H/L significatifs)</li>
+        <li><span class="rule-num" style="color:var(--gold);">02</span>Asian Low et Asian High identifiés sur le chart M15</li>
+        <li><span class="rule-num" style="color:var(--gold);">03</span>Attendre la clôture de la bougie M15 de 9h30 → 9h45</li>
+        <li><span class="rule-num" style="color:var(--gold);">04</span>Observer la réaction : prise de liquidité ou SMT présent ?</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PLAN DE TRADING -->
+  <div class="section-label">Plan de trading — La séquence exacte</div>
+  <div class="flow section-gap">
+    <div class="flow-step" style="background:var(--border);color:var(--text-dim);border:1px solid var(--border-bright);text-align:center;flex:1;min-width:100px;">
+      Biais + EPD<br><span style="font-size:9px;opacity:.6;">Contexte clair HTF</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="background:var(--gold-glow);border:1px solid var(--gold-dim);color:var(--gold);text-align:center;flex:1;min-width:120px;">
+      9h45<br><span style="font-size:9px;opacity:.7;">Clôture bougie M15</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="background:var(--border);color:var(--text-dim);border:1px solid var(--border-bright);text-align:center;flex:1;min-width:110px;">
+      Prise de liq.<br>ou SMT
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);color:var(--green);text-align:center;flex:1;min-width:120px;">
+      Réaction First FVG<br><span style="font-size:9px;opacity:.7;">Entrée prioritaire</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.3);color:var(--green);font-weight:600;text-align:center;flex:1;min-width:90px;">
+      RUN<br><span style="font-size:9px;opacity:.7;">Vers la prochaine liquidité</span>
+    </div>
+  </div>
+
+  <!-- FIRST FVG + OPR -->
+  <div class="grid-2 section-gap">
+    <div>
+      <div class="section-label">First FVG — L'outil prioritaire</div>
+      <div class="card">
+        <div class="card-title">First FVG (First Fair Value Gap)</div>
+        <p style="font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:12px;">La <strong style="color:var(--gold)">First FVG</strong> est la première Fair Value Gap formée après l'ouverture de la session. C'est l'arme principale de la stratégie 9h45.</p>
+        <div class="alert alert-gold" style="margin-bottom:8px;">
+          <strong>Timing de formation</strong>
+          La First FVG se forme à partir de <strong>9h31</strong> (première minute après l'open). Si elle se forme à 9h32, 9h35 ou 9h36 → c'est quand même la First FVG, peu importe la minute exacte.
+        </div>
+        <div class="alert alert-green">
+          <strong>Priorité d'entrée</strong>
+          La réaction sur la First FVG = entrée prioritaire. C'est elle qui offre le meilleur rapport qualité/précision sur l'IFVG ou le Breaker Block qui lui est associé.
+        </div>
+        <div class="alert" style="border-left:3px solid var(--red);background:var(--red-dim);color:var(--text);margin-top:8px;">
+          <strong style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:10px;display:block;margin-bottom:4px;">IFVG — Inverted FVG</strong>
+          Quand la First FVG est cassée et invertée → l'<strong>IFVG</strong> devient une opportunité en or. Entrée dans l'IFVG après validation du Breaker Block.
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">OPR — Opening Price Range</div>
+      <div class="card">
+        <div class="card-title">OPR (Opening Range Gap)</div>
+        <p style="font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:12px;">L'<strong style="color:var(--gold)">OPR</strong> (Opening Price Range / Opening Range Gap) est le range formé à l'open de la session NY. Il donne un cadre de lecture du prix immédiatement après 9h30.</p>
+        <table class="data-table" style="margin-bottom:12px;">
+          <thead><tr><th>Niveau OPR</th><th>Signal</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="tag tag-muted">50% OPR</span></td>
+              <td>Intervention sur les 50% de l'OPR + SMT</td>
+              <td style="color:var(--gold);">Signature confirmée → entrée légitimée</td>
+            </tr>
+            <tr>
+              <td><span class="tag tag-muted">High OPR</span></td>
+              <td>Rejet au high = résistance premium</td>
+              <td>Sell side liquidity potentielle</td>
+            </tr>
+            <tr>
+              <td><span class="tag tag-muted">Low OPR</span></td>
+              <td>Rejet au low = support discount</td>
+              <td>Buy side liquidity potentielle</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="alert alert-gold">
+          <strong>Lecture OPR + SMT</strong>
+          "SMT est 50% OPR" → quand les deux s'alignent au même niveau, la signature est valide. Le CISD qui suit confirme la direction et l'entrée dans le Breaker Block ou FVG.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIGNATURES ET CONFIRMATIONS -->
+  <div class="section-label">Signatures et confirmations — Ce qu'il faut voir à 9h45</div>
+  <div class="card section-gap">
+    <div class="card-title">Éléments de confirmation — Par ordre de priorité</div>
+    <table class="data-table">
+      <thead><tr><th>Élément</th><th>Description</th><th>Importance</th><th>TF de lecture</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="tag tag-gold">CISD</span></td>
+          <td>Change In State of Delivery — cassure corps-à-corps validée à 9h45</td>
+          <td><span class="tag" style="background:rgba(74,222,128,0.1);color:var(--green);border:1px solid rgba(74,222,128,.2);">OBLIGATOIRE</span></td>
+          <td>M15 / M5</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-gold">First FVG</span></td>
+          <td>Première FVG formée à partir de 9h31 — zone d'entrée prioritaire</td>
+          <td><span class="tag" style="background:rgba(74,222,128,0.1);color:var(--green);border:1px solid rgba(74,222,128,.2);">PRIORITAIRE</span></td>
+          <td>M1 / M5</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-gold">SMT</span></td>
+          <td>Divergence entre actifs corrélés — confirme la direction institutionnelle</td>
+          <td><span class="tag" style="background:rgba(74,222,128,0.1);color:var(--green);border:1px solid rgba(74,222,128,.2);">OBLIGATOIRE</span></td>
+          <td>M15 / M5</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-gold">Breaker Block</span></td>
+          <td>OB qui a échoué + retournement — zone d'appui post-cassure</td>
+          <td><span class="tag" style="background:rgba(74,222,128,0.1);color:var(--green);border:1px solid rgba(74,222,128,.2);">ENTRÉE</span></td>
+          <td>M5 / M15</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-gold">BPR H1</span></td>
+          <td>Balanced Price Range sur H1 — zone de réaction institutionnelle majeure</td>
+          <td><span class="tag" style="background:rgba(200,169,110,0.1);color:var(--gold);border:1px solid rgba(200,169,110,.2);">CONFLUENT</span></td>
+          <td>H1</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-gold">OPR 50%</span></td>
+          <td>50% de l'Opening Price Range + SMT = signature institutionnelle</td>
+          <td><span class="tag" style="background:rgba(200,169,110,0.1);color:var(--gold);border:1px solid rgba(200,169,110,.2);">CONFLUENT</span></td>
+          <td>M5</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-gold">IFVG</span></td>
+          <td>First FVG invertée — opportunité en or après cassure de la First FVG</td>
+          <td><span class="tag" style="background:rgba(200,169,110,0.1);color:var(--gold);border:1px solid rgba(200,169,110,.2);">PREMIUM</span></td>
+          <td>M1 / M5</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-muted">Equal Lows</span></td>
+          <td>Relative Equal Lows — prochaine cible de liquidité externe</td>
+          <td><span class="tag tag-muted">CIBLE TP</span></td>
+          <td>M15</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MACRO 9H50 / SILVER BULLET -->
+  <div class="section-label">Macro 9h50 et Silver Bullet 10h — Le timing</div>
+  <div class="grid-2 section-gap">
+    <div class="card">
+      <div class="card-title">Macro 9h50 — Raids de liquidité</div>
+      <p style="font-size:14px;color:var(--text-dim);line-height:1.5;margin-bottom:12px;">À <strong style="color:var(--gold)">9h50</strong>, la macro démarre. Son objectif unique : <strong>venir faire des raids de liquidités</strong>. C'est la raison d'être de la fenêtre 9h45–9h50.</p>
+      <div class="alert alert-gold" style="margin-bottom:8px;">
+        <strong>Séquence macro</strong>
+        9h45 → identification de la low resistance et accumulation de liquidité → 9h50 macro → raid de liquidité → confirmation du rush vers la première cible.
+      </div>
+      <div class="alert" style="border-left:3px solid var(--blue);background:var(--blue-dim);color:var(--text);">
+        <strong style="color:var(--blue);font-family:'JetBrains Mono',monospace;font-size:10px;display:block;margin-bottom:4px;">Deux scénarios post 9h45</strong>
+        <strong>1.</strong> Le marché chasse la contrepartie et se retourne dans la Silver Bullet de 10h<br>
+        <strong>2.</strong> Le marché fait de la contention depuis la prise de liquidité de 9h30
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Silver Bullet 10h — Kill Zone de confirmation</div>
+      <p style="font-size:14px;color:var(--text-dim);line-height:1.5;margin-bottom:12px;">La <strong style="color:var(--gold)">Silver Bullet 10h–11h</strong> est le confluent temporel parfait pour la stratégie 9h45. Si un trade est manqué à 9h45, la Silver Bullet de 10h donne une 2ème opportunité de grande qualité.</p>
+      <table class="data-table">
+        <thead><tr><th>Fenêtre</th><th>Rôle</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag tag-gold">9h30–9h45</span></td><td>Observation — bougie M15 en cours</td><td style="color:var(--red);">NE PAS TRADER</td></tr>
+          <tr><td><span class="tag tag-gold">9h45</span></td><td>Clôture M15 → lecture + entrée si setup</td><td style="color:var(--green);">ENTRÉE POSSIBLE</td></tr>
+          <tr><td><span class="tag tag-gold">9h50</span></td><td>Macro → raid de liquidité, confirmation</td><td style="color:var(--green);">CONFIRME LE TRADE</td></tr>
+          <tr><td><span class="tag tag-gold">10h–11h</span></td><td>Silver Bullet — haute probabilité</td><td style="color:var(--green);">2ÈME FENÊTRE</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- EXÉCUTION DÉTAILLÉE -->
+  <div class="section-label">Exécution pas à pas — Le trade live</div>
+  <div class="card section-gap">
+    <div class="card-title">Reconstitution du trade en live — Short NQ (exemple Structure)</div>
+    <div class="trade-step" style="padding-top:0;">
+      <div class="ts-num">01</div>
+      <div class="ts-body">
+        <div class="ts-title">HTF — BPR H1 au-dessus des 50%</div>
+        <div class="ts-desc">Remonté au-dessus des 50% du DRT pour la première fois → BPR H1 identifié. Le DRT est tracé avec swing low et swing high. Biais baissier car le prix arrive en premium dans le BPR.</div>
+      </div>
+      <div class="ts-result" style="background:var(--gold-glow);color:var(--gold);border:1px solid var(--gold-dim);font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 8px;">CONTEXTE</div>
+    </div>
+    <div class="trade-step">
+      <div class="ts-num">02</div>
+      <div class="ts-body">
+        <div class="ts-title">9h30 — Observation de l'open</div>
+        <div class="ts-desc">Prise de liquidité session matinale observée. Le marché rejette fortement au niveau du BPR H1. Aucune entrée — attente de la clôture M15 à 9h45.</div>
+      </div>
+      <div class="ts-result" style="background:var(--red-dim);color:var(--red);border:1px solid rgba(248,113,113,.3);font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 8px;">ATTENTE</div>
+    </div>
+    <div class="trade-step">
+      <div class="ts-num">03</div>
+      <div class="ts-body">
+        <div class="ts-title">9h45 — Lecture de la bougie M15 + SMT</div>
+        <div class="ts-desc">Bougie M15 de 9h30 clôture à 9h45. SMT identifiée entre les deux actifs. Intervention sur les 50% de l'OPR + SMT = signature confirmée. CISD formé → Breaker Block validé.</div>
+      </div>
+      <div class="ts-result" style="background:var(--gold-glow);color:var(--gold);border:1px solid var(--gold-dim);font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 8px;">SIGNAL ✓</div>
+    </div>
+    <div class="trade-step">
+      <div class="ts-num">04</div>
+      <div class="ts-body">
+        <div class="ts-title">M1 — First FVG à 9h31 + IFVG</div>
+        <div class="ts-desc">Passage en M1. First FVG formée à 9h31. CISD validé. IFVG identifiée — "une opportunité en or". Entrée dans l'IFVG après validation du Breaker Block M5/M15.</div>
+      </div>
+      <div class="ts-result" style="background:rgba(74,222,128,0.1);color:var(--green);border:1px solid rgba(74,222,128,.3);font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 8px;">ENTRÉE ✓</div>
+    </div>
+    <div class="trade-step">
+      <div class="ts-num">05</div>
+      <div class="ts-body">
+        <div class="ts-title">SL et TP — Placement précis</div>
+        <div class="ts-desc">SL placé au niveau du Breaker Block (pas en-dessous du swing — au niveau précis du BB). TP initial = prochaine liquidité externe (Relative Equal Lows). TP final = 50% de la dernière jambe de prix. Résultat : 4 TP dans la journée.</div>
+      </div>
+      <div class="ts-result" style="background:rgba(74,222,128,0.15);color:var(--green);border:1px solid rgba(74,222,128,.4);font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 8px;">4 TP ✓</div>
+    </div>
+  </div>
+
+  <!-- GESTION ET SCALPING -->
+  <div class="section-label">Gestion — Low Resistance &amp; Scalping</div>
+  <div class="grid-2 section-gap">
+    <div class="card">
+      <div class="card-title">Low Resistance Zone à 9h45</div>
+      <p style="font-size:14px;color:var(--text-dim);line-height:1.55;margin-bottom:12px;">À 9h45, une <strong style="color:var(--gold)">zone de faible résistance (low resistance)</strong> s'accumule. C'est là que le scalp est possible.</p>
+      <div class="alert alert-gold" style="margin-bottom:8px;">
+        <strong>Signature scalp</strong>
+        "J'ai ma signature qui s'est instaurée → j'ai un scalping à faire de là à là." — Dès que la signature est validée dans la low resistance, le scalp est légitime.
+      </div>
+      <div class="alert" style="border-left:3px solid var(--blue);background:var(--blue-dim);color:var(--text);">
+        <strong style="color:var(--blue);font-family:'JetBrains Mono',monospace;font-size:10px;display:block;margin-bottom:4px;">Lecture liquidité accumulée</strong>
+        Toute la zone de liquidité qui s'accumule à 9h45 = carburant du mouvement. S'approche + macro 9h50 = confirmation du rush vers la première cible.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">2ème entrée — Si le premier trade est raté</div>
+      <p style="font-size:14px;color:var(--text-dim);line-height:1.55;margin-bottom:12px;">Si le premier PE est manqué ou stoppé, une <strong style="color:var(--gold)">2ème entrée</strong> est disponible :</p>
+      <ul class="rules-list" style="font-size:13.5px;">
+        <li><span class="rule-num" style="color:var(--gold);">→</span>Attendre que le marché revienne travailler dans la zone</li>
+        <li><span class="rule-num" style="color:var(--gold);">→</span>Attendre un nouveau Breaker Block M5/M15</li>
+        <li><span class="rule-num" style="color:var(--gold);">→</span>SMT disponible sur le nouveau swing pour confirmer</li>
+        <li><span class="rule-num" style="color:var(--gold);">→</span>Nouveau PE avec SL ajusté au nouveau BB</li>
+        <li><span class="rule-num" style="color:var(--gold);">→</span>Si pas de setup → Silver Bullet 10h–11h</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ARBRE DE DÉCISION 9H45 -->
+  <div class="section-label">Arbre de décision — Stratégie 9h45</div>
+  <div class="decision-tree section-gap">
+    <div class="dt-node"><div class="dt-question">❶ Le DRT est-il tracé ? Asian Low/High identifiés ? Biais HTF clair ?</div></div>
+    <div class="dt-node dt-indent"><div class="dt-no">✕ NON →</div><div class="dt-action">NE PAS TRADER — setup incomplet</div></div>
+    <div class="dt-node dt-indent"><div class="dt-yes">✓ OUI →</div></div>
+    <div class="dt-node dt-indent-2"><div class="dt-question">❷ Sommes-nous à 9h45 ? (bougie M15 de 9h30 clôturée)</div></div>
+    <div class="dt-node dt-indent-3"><div class="dt-no">✕ NON →</div><div class="dt-action">ATTENDRE 9h45 — observer sans agir</div></div>
+    <div class="dt-node dt-indent-3"><div class="dt-yes">✓ OUI →</div></div>
+    <div class="dt-node dt-indent-4"><div class="dt-question">❸ Y a-t-il une prise de liquidité ou un SMT visible ?</div></div>
+    <div class="dt-node dt-indent-5"><div class="dt-no">✕ NON →</div><div class="dt-action">ATTENDRE la Silver Bullet 10h</div></div>
+    <div class="dt-node dt-indent-5"><div class="dt-yes">✓ OUI →</div></div>
+    <div class="dt-node" style="padding-left:144px;"><div class="dt-question">❹ CISD validé + Breaker Block présent ?</div></div>
+    <div class="dt-node" style="padding-left:168px;"><div class="dt-no">✕ NON →</div><div class="dt-action">ATTENDRE confirmation</div></div>
+    <div class="dt-node" style="padding-left:168px;"><div class="dt-yes">✓ OUI →</div></div>
+    <div class="dt-node" style="padding-left:180px;"><div class="dt-question">❺ First FVG ou IFVG identifiée (M1/M5) ? OPR 50% + SMT alignés ?</div></div>
+    <div class="dt-node" style="padding-left:204px;"><div class="dt-no">✕ NON →</div><div class="dt-action">ATTENDRE — pas de zone d'entrée précise</div></div>
+    <div class="dt-node" style="padding-left:204px;"><div class="dt-yes">✓ OUI →</div></div>
+    <div class="dt-node" style="padding-left:216px;"><div class="dt-question">❻ Macro 9h50 confirme le raid de liquidité dans le sens du trade ?</div></div>
+    <div class="dt-node" style="padding-left:240px;"><div class="dt-execute">✅ ENTRER — SL au Breaker Block · TP = Equal Lows / 50% dernière jambe · 2ème PE si raté</div></div>
+    <div class="dt-node" style="padding-left:240px;"><div class="dt-no">Macro opposée →</div><div class="dt-action">Réduire taille ou attendre Silver Bullet 10h</div></div>
+  </div>
+
+  <!-- RÈGLES D'OR -->
+  <div class="section-label">Règles d'or — Stratégie 9h45</div>
+  <div class="card">
+    <ul class="rules-list">
+      <li><span class="rule-num">01</span><span class="rule-cat">Timing</span>Ne jamais trader avant 9h45 — attendre la clôture complète de la bougie M15 de 9h30</li>
+      <li><span class="rule-num">02</span><span class="rule-cat">First FVG</span>La First FVG se forme à partir de 9h31 — c'est l'outil d'entrée prioritaire, peu importe la minute exacte</li>
+      <li><span class="rule-num">03</span><span class="rule-cat">OPR</span>SMT au 50% de l'OPR = signature institutionnelle confirmée — entrée légitimée</li>
+      <li><span class="rule-num">04</span><span class="rule-cat">IFVG</span>Une IFVG au niveau du Breaker Block = "opportunité en or" — priorité absolue sur les autres zones</li>
+      <li><span class="rule-num">05</span><span class="rule-cat">Macro</span>La macro à 9h50 sert à faire des raids de liquidité — elle confirme ou infirme le trade en cours</li>
+      <li><span class="rule-num">06</span><span class="rule-cat">SL</span>SL placé au niveau du Breaker Block — pas sous le swing point, au niveau précis du BB</li>
+      <li><span class="rule-num">07</span><span class="rule-cat">TP</span>TP = Equal Lows pour le scalp · 50% de la dernière jambe pour le swing complet</li>
+      <li><span class="rule-num">08</span><span class="rule-cat">Ratage</span>Trade manqué à 9h45 → attendre le retour sur BB M5/M15 ou la Silver Bullet 10h–11h</li>
+      <li><span class="rule-num">09</span><span class="rule-cat">Cadre</span>9h45 donne un cadre — si aucun signal clair, patience absolue. "Tant que je n'ai rien, je ne fais rien."</li>
+      <li><span class="rule-num">10</span><span class="rule-cat">Mindset</span>La discipline et la constance sont plus importantes que le setup. Pas de setup = journée gagnante.</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+function toggleCheck(item) {
+  item.classList.toggle('checked');
+  updateProgress();
+}
+
+function updateProgress() {
+  const allItems = document.querySelectorAll('#checklist .check-item[onclick]');
+  const checked = document.querySelectorAll('#checklist .check-item[onclick].checked');
+  const total = allItems.length;
+  const done = checked.length;
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = done + ' / ' + total;
+}
+
+function resetChecklist() {
+  document.querySelectorAll('#checklist .check-item.checked').forEach(el => el.classList.remove('checked'));
+  updateProgress();
+}
+
+updateProgress();
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>
