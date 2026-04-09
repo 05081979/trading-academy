@@ -24,6 +24,7 @@
       { id: 'time-price',      label: 'Calculateur Time x Price' },
       { id: 'calculatrice',    label: 'Calculatrice de Lots' },
       { id: 'financial-juice', label: 'News Live' },
+      { id: 'journal-trading', label: 'Journal de Trading' },
     ]},
     { name: 'Fiches', items: [
       { id: 'fiches-ict',       label: 'Fiches ICT' },
