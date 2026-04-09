@@ -9,8 +9,8 @@
       { id: 'inducement-theorem',  label: 'Inducement Theorem' },
       { id: 'cycle-trading',        label: 'Cycle Trading Operationnel' },
       { id: 'digital-time-theory',  label: 'Digital Time Theory' },
-      { id: 'goldbach-trifecta',    label: 'Goldbach Trifecta' },
-      { id: 'po3-sequence',         label: 'PO3 Sequence' },
+      { id: 'niveaux-algorithmiques', label: 'Niveaux Algorithmiques' },
+      { id: 'ranges-fractals',      label: 'Ranges Fractals' },
     ]},
     { name: 'Protocole', items: [
       { id: 'hub-cours',     label: 'Bibliotheque' },
