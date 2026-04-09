@@ -171,21 +171,24 @@ int lw_prev = input.int(1, "Previous Levels Line Width", minval=1, maxval=4, gro
 string sz_tc = input.string("Small", "Time Cycle Labels (Asia/LO/AM/PM)", options=["Tiny","Small","Normal","Large","Huge"], group=gLblSz)
 
 // ═══════════════════════════════════════
-// === CISD INPUTS ===
+// === CISD INPUTS (SB Instant) ===
 // ═══════════════════════════════════════
-i_cisd_show=input.bool(true,"Show CISD",group="[CISD]")
-i_cisd_max=input.int(15,"Max levels",minval=1,maxval=50,group="[CISD]")
-i_cisd_bull_c=input.color(#089981,"+CISD",group="[CISD]",inline="cc1")
-i_cisd_bear_c=input.color(#f23645,"-CISD",group="[CISD]",inline="cc1")
-i_cisd_w=input.int(1,"Width",minval=1,maxval=5,group="[CISD]")
-i_cisd_sz=input.string("Small","Label Size",options=["Tiny","Small","Normal","Large","Huge"],group="[CISD]")
-i_c1m=input.bool(false,"1m",group="[CISD] TF",inline="ct0")
-i_c5m=input.bool(false,"5m",group="[CISD] TF",inline="ct0")
-i_c15=input.bool(true,"15m",group="[CISD] TF",inline="ct1")
-i_c30=input.bool(false,"30m",group="[CISD] TF",inline="ct2")
-i_c1h=input.bool(true,"1H",group="[CISD] TF",inline="ct3")
-i_c4h=input.bool(false,"4H",group="[CISD] TF",inline="ct4")
-i_cD=input.bool(false,"Daily",group="[CISD] TF",inline="ct5")
+i_cisd_show    = input.bool(true, "Show CISD", group="[CISD]")
+i_cisd_length  = input.int(10, "Swing Length", minval=1, group="[CISD]")
+i_cisd_minDur  = input.int(0, "Min CISD Duration", minval=0, group="[CISD]")
+i_cisd_maxDur  = input.int(100, "Max Swing Validity", minval=1, maxval=1000, group="[CISD]")
+i_cisd_max     = input.int(15, "Max levels", minval=1, maxval=50, group="[CISD]")
+i_cisd_bull_c  = input.color(#089981, "+CISD", group="[CISD]", inline="cc1")
+i_cisd_bear_c  = input.color(#f23645, "-CISD", group="[CISD]", inline="cc1")
+i_cisd_w       = input.int(3, "Width", minval=1, maxval=10, group="[CISD]")
+i_cisd_sz      = input.string("Tiny", "Label Size", options=["Tiny","Small","Normal","Large","Huge"], group="[CISD]")
+i_c1m = input.bool(false, "1m", group="[CISD] TF", inline="ct0")
+i_c5m = input.bool(false, "5m", group="[CISD] TF", inline="ct0")
+i_c15 = input.bool(true,  "15m", group="[CISD] TF", inline="ct1")
+i_c30 = input.bool(false, "30m", group="[CISD] TF", inline="ct2")
+i_c1h = input.bool(true,  "1H", group="[CISD] TF", inline="ct3")
+i_c4h = input.bool(false, "4H", group="[CISD] TF", inline="ct4")
+i_cD  = input.bool(false, "Daily", group="[CISD] TF", inline="ct5")
 
 // ═══════════════════════════════════════
 // === MSB OB INPUTS ===
@@ -1045,92 +1048,87 @@ f_fib_draw(fib_new3, fib_s3on, fib_dur3, fib_s3name)
 f_fib_draw(fib_new4, fib_s4on, fib_dur4, fib_s4name)
 
 // ═══════════════════════════════════════
-// === CISD DETECTION ===
+// === CISD DETECTION (SB Instant) ===
 // ═══════════════════════════════════════
-f_find_extreme(int bias) =>
-    int shift = 0
-    float ext = open
-    int att = close > open ? 1 : close < open ? -1 : 0
-    if att == 0 or att != bias
-        [ext, time]
-    else
-        for i = 1 to 100
-            att := close[i] > open[i] ? 1 : close[i] < open[i] ? -1 : 0
-            if att == 0
-                continue
-            if att != bias
-                break
-            shift := i
-            if bias == 1
-                if open[i] < ext
-                    ext := open[i]
-            else
-                if open[i] > ext
-                    ext := open[i]
-        int extShift = 0
-        for k = 0 to shift
-            if open[k] == ext
-                extShift := k
-                break
-        [ext, time[extShift]]
+f_cisd_sb() =>
+    // Swing detection
+    float _ph = ta.pivothigh(high, i_cisd_length, 1)
+    float _pl = ta.pivotlow(low, i_cisd_length, 1)
+    var float _lastPH = na
+    var float _lastPL = na
+    if not na(_ph)
+        _lastPH := _ph
+    if not na(_pl)
+        _lastPL := _pl
 
-f_cisd_detect() =>
-    var int _vibes = 0
-    var float _entry = na
-    var int _entryT = na
-    var float _pain = na
-    if _vibes == 0 and bar_index > 10
-        int first = close > open ? 1 : close < open ? -1 : 0
-        if first == 0
-            for k = 1 to 50
-                first := close[k] > open[k] ? 1 : close[k] < open[k] ? -1 : 0
-                if first != 0
-                    break
-        if first != 0
-            _vibes := first
-            [p, t] = f_find_extreme(first)
-            _entry := p
-            _entryT := t
-            _pain := first == 1 ? high : low
-    if _vibes == 1 and high > _pain
-        _pain := high
-        [p, t] = f_find_extreme(1)
-        _entry := p
-        _entryT := t
-    else if _vibes == -1 and low < _pain
-        _pain := low
-        [p, t] = f_find_extreme(-1)
-        _entry := p
-        _entryT := t
-    bool _bullTrig = _vibes == -1 and close > _entry
-    bool _bearTrig = _vibes == 1 and close < _entry
-    float _trigPrc = na
-    int _trigT = na
-    if _bullTrig or _bearTrig
-        _trigPrc := _entry
-        _trigT := nz(_entryT, time)
-        int newVibes = _bullTrig ? 1 : -1
-        _vibes := newVibes
-        [rp, rt] = f_find_extreme(newVibes)
-        _entry := rp
-        _entryT := rt
-        _pain := newVibes == 1 ? high : low
-    [_bullTrig, _bearTrig, nz(_trigPrc), int(nz(_trigT, time))]
+    // Candle direction helpers
+    bool _isBull = close > open
+    bool _isBear = close < open
+    bool _wasBull = close[1] > open[1]
+    bool _wasBear = close[1] < open[1]
+
+    // Bin tracking: bullish bin (bull candle after bear) and bearish bin (bear candle after bull)
+    var float _bullBinPrc = na      // price of bullish tracking bin (open of bull candle)
+    var int   _bullBinBar = na      // bar_index when bullish bin was created
+    var bool  _bullBinActive = false
+
+    var float _bearBinPrc = na      // price of bearish tracking bin (open of bear candle)
+    var int   _bearBinBar = na      // bar_index when bearish bin was created
+    var bool  _bearBinActive = false
+
+    // Create new bins on candle color change
+    if _isBull and _wasBear
+        _bullBinPrc := open
+        _bullBinBar := bar_index
+        _bullBinActive := true
+    if _isBear and _wasBull
+        _bearBinPrc := open
+        _bearBinBar := bar_index
+        _bearBinActive := true
+
+    // Check duration validity and trigger CISDs
+    int _bullDur = _bullBinActive ? bar_index - nz(_bullBinBar, bar_index) : 0
+    int _bearDur = _bearBinActive ? bar_index - nz(_bearBinBar, bar_index) : 0
+
+    // Expire bins that exceed max duration
+    if _bullBinActive and _bullDur > i_cisd_maxDur
+        _bullBinActive := false
+    if _bearBinActive and _bearDur > i_cisd_maxDur
+        _bearBinActive := false
+
+    // Bearish CISD: price closes below the bullish bin price
+    bool _bearCISD = _bullBinActive and close < _bullBinPrc and _bullDur >= i_cisd_minDur and _bullDur <= i_cisd_maxDur
+    float _bearPrc = _bearCISD ? _bullBinPrc : na
+    // Bullish CISD: price closes above the bearish bin price
+    bool _bullCISD = _bearBinActive and close > _bearBinPrc and _bearDur >= i_cisd_minDur and _bearDur <= i_cisd_maxDur
+    float _bullPrc = _bullCISD ? _bearBinPrc : na
+
+    // Determine trigger price and time
+    float _trigPrc = _bullCISD ? _bullPrc : _bearCISD ? _bearPrc : na
+    int   _trigTime = _bullCISD or _bearCISD ? time : na
+
+    // Deactivate triggered bins
+    if _bearCISD
+        _bullBinActive := false
+    if _bullCISD
+        _bearBinActive := false
+
+    [_bullCISD, _bearCISD, nz(_trigPrc), int(nz(_trigTime, time))]
 
 // CISD MTF
-[cb1m,cs1m,cp1m,ct1m] = request.security(syminfo.tickerid,"1",f_cisd_detect())
-[cb5m,cs5m,cp5m,ct5m] = request.security(syminfo.tickerid,"5",f_cisd_detect())
-[cb15,cs15,cp15,ct15] = request.security(syminfo.tickerid,"15",f_cisd_detect())
-[cb30,cs30,cp30,ct30] = request.security(syminfo.tickerid,"30",f_cisd_detect())
-[cb1h,cs1h,cp1h,ct1h] = request.security(syminfo.tickerid,"60",f_cisd_detect())
-[cb4h,cs4h,cp4h,ct4h] = request.security(syminfo.tickerid,"240",f_cisd_detect())
-[cbD,csD,cpD,ctD] = request.security(syminfo.tickerid,"D",f_cisd_detect())
+[cb1m,cs1m,cp1m,ct1m] = request.security(syminfo.tickerid, "1",   f_cisd_sb())
+[cb5m,cs5m,cp5m,ct5m] = request.security(syminfo.tickerid, "5",   f_cisd_sb())
+[cb15,cs15,cp15,ct15]  = request.security(syminfo.tickerid, "15",  f_cisd_sb())
+[cb30,cs30,cp30,ct30]  = request.security(syminfo.tickerid, "30",  f_cisd_sb())
+[cb1h,cs1h,cp1h,ct1h]  = request.security(syminfo.tickerid, "60",  f_cisd_sb())
+[cb4h,cs4h,cp4h,ct4h]  = request.security(syminfo.tickerid, "240", f_cisd_sb())
+[cbD,csD,cpD,ctD]      = request.security(syminfo.tickerid, "D",   f_cisd_sb())
 
-var float[] ci_prc = array.new_float()
-var int[] ci_tL = array.new_int()
-var int[] ci_bar = array.new_int()
-var bool[] ci_bull = array.new_bool()
-var string[] ci_lbl = array.new_string()
+var float[]  ci_prc  = array.new_float()
+var int[]    ci_tL   = array.new_int()
+var int[]    ci_bar  = array.new_int()
+var bool[]   ci_bull = array.new_bool()
+var string[] ci_lbl  = array.new_string()
 
 f_store_cisd(bool bSig, bool sSig, float prc, int trig_time, string lbl) =>
     if bSig and not bSig[1] and not na(prc) and prc > 0
@@ -1148,20 +1146,21 @@ f_store_cisd(bool bSig, bool sSig, float prc, int trig_time, string lbl) =>
     true
 
 if i_cisd_show and i_c1m
-    f_store_cisd(cb1m,cs1m,cp1m,ct1m,"1m")
+    f_store_cisd(cb1m, cs1m, cp1m, ct1m, "1m")
 if i_cisd_show and i_c5m
-    f_store_cisd(cb5m,cs5m,cp5m,ct5m,"5m")
+    f_store_cisd(cb5m, cs5m, cp5m, ct5m, "5m")
 if i_cisd_show and i_c15
-    f_store_cisd(cb15,cs15,cp15,ct15,"15m")
+    f_store_cisd(cb15, cs15, cp15, ct15, "15m")
 if i_cisd_show and i_c30
-    f_store_cisd(cb30,cs30,cp30,ct30,"30m")
+    f_store_cisd(cb30, cs30, cp30, ct30, "30m")
 if i_cisd_show and i_c1h
-    f_store_cisd(cb1h,cs1h,cp1h,ct1h,"1H")
+    f_store_cisd(cb1h, cs1h, cp1h, ct1h, "1H")
 if i_cisd_show and i_c4h
-    f_store_cisd(cb4h,cs4h,cp4h,ct4h,"4H")
+    f_store_cisd(cb4h, cs4h, cp4h, ct4h, "4H")
 if i_cisd_show and i_cD
-    f_store_cisd(cbD,csD,cpD,ctD,"D")
+    f_store_cisd(cbD, csD, cpD, ctD, "D")
 
+// Remove broken CISD levels
 if array.size(ci_prc) > 0
     for i = array.size(ci_prc) - 1 to 0
         int cb = array.get(ci_bar, i)
@@ -1176,6 +1175,7 @@ if array.size(ci_prc) > 0
                 array.remove(ci_bull, i)
                 array.remove(ci_lbl, i)
 
+// Cap max levels
 while array.size(ci_prc) > i_cisd_max
     array.pop(ci_prc)
     array.pop(ci_tL)
