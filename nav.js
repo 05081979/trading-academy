@@ -7,6 +7,8 @@
       { id: 'time-cycles-protocol',label: 'Time Cycles Video' },
       { id: 'ipda-trainer',        label: 'Framework IPDA' },
       { id: 'inducement-theorem',  label: 'Inducement Theorem' },
+      { id: 'cycle-trading',        label: 'Cycle Trading Operationnel' },
+      { id: 'digital-time-theory',  label: 'Digital Time Theory' },
     ]},
     { name: 'Protocole', items: [
       { id: 'hub-cours',     label: 'Bibliotheque' },

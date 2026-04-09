@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Digital Time Theory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Barlow+Condensed:wght@400;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #04060C;
+  --bg2:     #080D18;
+  --bg3:     #0D1525;
+  --border:  #132240;
+  --cyan:    #00C8FF;
+  --cyan2:   #00E5FF;
+  --cyan-d:  #006B88;
+  --violet:  #7B5FFF;
+  --violet2: #A08CFF;
+  --amber:   #FFB340;
+  --amber2:  #FFD070;
+  --green:   #00E896;
+  --red:     #FF4D6D;
+  --muted:   #1D3055;
+  --text:    #D0E8FF;
+  --text-d:  #5A7FA8;
+  --orb:     'Orbitron', monospace;
+  --bar:     'Barlow', sans-serif;
+  --barc:    'Barlow Condensed', sans-serif;
+  --fira:    'Fira Code', monospace;
+  --sw: 260px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--bar); line-height: 1.75; display: flex; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--cyan-d); }
+
+/* ── SIDEBAR ───────────────────────────── */
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 100;
+}
+
+.sb-logo {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+.logo-mark {
+  width: 44px; height: 44px;
+  border: 2px solid var(--cyan);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--orb); font-size: 1rem; font-weight: 700;
+  color: var(--cyan); margin-bottom: 12px;
+  box-shadow: 0 0 12px rgba(0,200,255,.25), inset 0 0 12px rgba(0,200,255,.05);
+  animation: pulse-ring 3s ease-in-out infinite;
+}
+
+@keyframes pulse-ring {
+  0%, 100% { box-shadow: 0 0 12px rgba(0,200,255,.25), inset 0 0 12px rgba(0,200,255,.05); }
+  50%       { box-shadow: 0 0 20px rgba(0,200,255,.45), inset 0 0 20px rgba(0,200,255,.1); }
+}
+
+.sb-logo h1 {
+  font-family: var(--orb);
+  font-size: 0.72rem; font-weight: 700;
+  color: var(--cyan); letter-spacing: 0.08em;
+  line-height: 1.3;
+}
+.sb-logo p {
+  font-family: var(--barc);
+  font-size: 0.68rem; font-weight: 400;
+  color: var(--text-d); letter-spacing: 0.06em;
+  margin-top: 3px;
+}
+
+.sb-section {
+  font-family: var(--orb); font-size: 0.55rem; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); padding: 14px 20px 4px;
+}
+
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 20px; text-decoration: none;
+  color: var(--text-d); font-family: var(--barc);
+  font-size: 0.8rem; font-weight: 400;
+  border-left: 2px solid transparent;
+  transition: all 0.15s; letter-spacing: 0.02em;
+}
+.sb-link:hover { background: rgba(0,200,255,.05); color: var(--text); }
+.sb-link.active { background: rgba(0,200,255,.08); color: var(--cyan); border-left-color: var(--cyan); }
+
+.sb-link .n {
+  font-family: var(--fira); font-size: 0.6rem;
+  color: var(--muted); min-width: 20px;
+}
+.sb-link.active .n { color: var(--cyan); }
+
+/* ── PROGRESS ──────────────────────────── */
+#pbar { position: fixed; top: 0; left: var(--sw); right: 0; height: 2px; background: var(--border); z-index: 200; }
+#pfill { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--violet), var(--amber)); width: 0%; transition: width .1s linear; }
+
+/* ── MAIN ──────────────────────────────── */
+#main { margin-left: var(--sw); flex: 1; min-height: 100vh; }
+
+/* ── HERO ──────────────────────────────── */
+#hero {
+  position: relative; overflow: hidden;
+  padding: 72px 60px 64px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,200,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,200,255,.03) 1px, transparent 1px);
+  background-size: 36px 36px;
+  pointer-events: none;
+}
+
+.hero-circle {
+  position: absolute; right: -80px; top: -80px;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,200,255,.06);
+  box-shadow: 0 0 80px rgba(0,200,255,.04);
+  pointer-events: none;
+}
+.hero-circle2 {
+  position: absolute; right: -20px; top: -20px;
+  width: 360px; height: 360px;
+  border-radius: 50%;
+  border: 1px solid rgba(123,95,255,.08);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(0,200,255,.08);
+  border: 1px solid rgba(0,200,255,.25);
+  color: var(--cyan); font-family: var(--orb);
+  font-size: 0.6rem; font-weight: 600;
+  letter-spacing: 0.15em; padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+
+#hero h1 {
+  font-family: var(--orb);
+  font-size: clamp(2rem, 4.5vw, 3.8rem);
+  font-weight: 900; line-height: 1.05; color: #fff;
+  max-width: 680px; margin-bottom: 6px; letter-spacing: -0.01em;
+}
+
+#hero h1 span {
+  display: block;
+  background: linear-gradient(90deg, var(--cyan), var(--violet2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+#hero .subtitle {
+  font-family: var(--barc); font-size: 1rem; font-weight: 400;
+  color: var(--text-d); max-width: 520px; margin-bottom: 42px;
+  line-height: 1.8; letter-spacing: 0.02em;
+}
+
+.hero-metrics {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 10px; max-width: 700px;
+}
+
+.metric {
+  background: rgba(255,255,255,.02);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px 16px;
+  transition: border-color 0.2s;
+}
+.metric:hover { border-color: rgba(0,200,255,.3); }
+.metric .v {
+  font-family: var(--orb); font-size: 1.2rem; font-weight: 700;
+  line-height: 1; margin-bottom: 5px;
+}
+.metric .l {
+  font-family: var(--barc); font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-d);
+}
+
+/* ── MODULE ────────────────────────────── */
+.mod {
+  padding: 60px; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.mod.vis { opacity: 1; transform: none; }
+
+.mod-head {
+  display: flex; align-items: flex-start; gap: 16px; margin-bottom: 36px;
+}
+
+.mod-tag {
+  font-family: var(--orb); font-size: 0.58rem; font-weight: 600;
+  color: var(--cyan); background: rgba(0,200,255,.08);
+  border: 1px solid rgba(0,200,255,.2);
+  padding: 4px 12px; border-radius: 4px;
+  white-space: nowrap; margin-top: 8px; letter-spacing: 0.1em;
+}
+
+.mod-head h2 {
+  font-family: var(--barc); font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+  font-weight: 700; color: #fff; line-height: 1.1; letter-spacing: 0.01em;
+}
+
+/* ── SECTION ───────────────────────────── */
+.sec {
+  font-family: var(--barc); font-size: 1.05rem; font-weight: 700;
+  color: var(--cyan); margin: 38px 0 14px;
+  display: flex; align-items: center; gap: 10px;
+  letter-spacing: 0.04em;
+}
+.sec::before {
+  content: '//';
+  font-family: var(--fira); font-size: 0.85rem;
+  color: rgba(0,200,255,.4); flex-shrink: 0;
+}
+
+.subsec {
+  font-family: var(--barc); font-size: 0.95rem; font-weight: 700;
+  color: var(--text); margin: 22px 0 8px; letter-spacing: 0.03em;
+}
+
+p { font-size: 0.93rem; color: var(--text-d); line-height: 1.85; margin-bottom: 12px; }
+p strong { color: var(--text); font-weight: 600; }
+em { color: var(--cyan); font-style: italic; }
+
+/* ── CALLOUTS ──────────────────────────── */
+.box {
+  border-radius: 8px; padding: 18px 22px; margin: 16px 0;
+  border-left: 3px solid; position: relative; overflow: hidden;
+}
+.box::before {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(255,255,255,.015); pointer-events: none;
+}
+.box-cy { border-color: var(--cyan);   background: rgba(0,200,255,.04); }
+.box-vi { border-color: var(--violet); background: rgba(123,95,255,.05); }
+.box-am { border-color: var(--amber);  background: rgba(255,179,64,.05); }
+.box-re { border-color: var(--red);    background: rgba(255,77,109,.05); }
+.box-gr { border-color: var(--green);  background: rgba(0,232,150,.04); }
+
+.box-title {
+  font-family: var(--orb); font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px;
+}
+.box-cy .box-title  { color: var(--cyan); }
+.box-vi .box-title  { color: var(--violet2); }
+.box-am .box-title  { color: var(--amber2); }
+.box-re .box-title  { color: #FF8FA3; }
+.box-gr .box-title  { color: var(--green); }
+.box p { margin: 0; font-size: 0.88rem; }
+
+/* ── LISTS ─────────────────────────────── */
+ul.cl { list-style: none; margin: 10px 0 16px; display: flex; flex-direction: column; gap: 7px; }
+ul.cl li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 0.88rem; color: var(--text-d); line-height: 1.65;
+}
+ul.cl li::before {
+  content: '▶'; color: var(--cyan); font-size: 0.6rem;
+  margin-top: 4px; flex-shrink: 0;
+}
+ul.cl li strong { color: var(--text); }
+
+ol.nl { counter-reset: nl; margin: 10px 0 16px; display: flex; flex-direction: column; gap: 8px; }
+ol.nl li {
+  counter-increment: nl;
+  display: flex; align-items: flex-start; gap: 13px;
+  font-size: 0.88rem; color: var(--text-d); line-height: 1.65;
+}
+ol.nl li::before {
+  content: counter(nl, decimal-leading-zero);
+  font-family: var(--fira); font-size: 0.7rem; color: var(--cyan);
+  background: rgba(0,200,255,.08); border: 1px solid rgba(0,200,255,.2);
+  padding: 2px 7px; border-radius: 4px; flex-shrink: 0; margin-top: 1px;
+}
+
+/* ── TABLE ─────────────────────────────── */
+.tbl { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.85rem; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+.tbl th { background: rgba(0,200,255,.07); color: var(--cyan); font-family: var(--orb); font-weight: 600; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 16px; text-align: left; border-bottom: 1px solid rgba(0,200,255,.15); }
+.tbl td { padding: 9px 16px; color: var(--text-d); border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+.tbl td:first-child { color: var(--text); font-weight: 600; font-size: 0.82rem; font-family: var(--barc); white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(0,200,255,.02); }
+
+/* ── TIME CLOCK ────────────────────────── */
+.time-slot {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px;
+  background: rgba(0,200,255,.03);
+  border: 1px solid rgba(0,200,255,.1);
+  border-radius: 8px; margin: 5px 0;
+  transition: all 0.2s;
+}
+.time-slot:hover { border-color: rgba(0,200,255,.3); background: rgba(0,200,255,.06); }
+.ts-time {
+  font-family: var(--fira); font-size: 1rem; font-weight: 600;
+  color: var(--cyan); min-width: 90px; letter-spacing: 0.04em;
+}
+.ts-name {
+  font-family: var(--barc); font-size: 0.92rem; font-weight: 700;
+  color: var(--text); flex: 1;
+}
+.ts-note { font-size: 0.8rem; color: var(--text-d); }
+.ts-root {
+  font-family: var(--fira); font-size: 0.72rem;
+  background: rgba(255,179,64,.12); color: var(--amber2);
+  border: 1px solid rgba(255,179,64,.25); padding: 2px 9px; border-radius: 4px;
+}
+.ts-inner { font-family: var(--fira); font-size: 0.7rem; color: var(--text-d); }
+
+/* ── MODEL CARD ─────────────────────────── */
+.model-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 22px 24px;
+  margin: 14px 0; position: relative; overflow: hidden;
+}
+.model-card::after {
+  content: ''; position: absolute; top: 0; left: 0;
+  right: 0; height: 2px; pointer-events: none;
+}
+.model-cy::after  { background: linear-gradient(90deg, var(--cyan), transparent); }
+.model-vi::after  { background: linear-gradient(90deg, var(--violet), transparent); }
+.model-am::after  { background: linear-gradient(90deg, var(--amber), transparent); }
+.model-gr::after  { background: linear-gradient(90deg, var(--green), transparent); }
+.model-re::after  { background: linear-gradient(90deg, var(--red), transparent); }
+
+.mc-top { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.mc-bin {
+  font-family: var(--fira); font-size: 1.4rem; font-weight: 600;
+  line-height: 1; letter-spacing: 0.08em;
+}
+.mc-label { flex: 1; }
+.mc-name {
+  font-family: var(--barc); font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 2px;
+}
+.mc-dec {
+  font-family: var(--fira); font-size: 0.7rem; color: var(--text-d);
+}
+
+.mc-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 3px; margin: 10px 0;
+}
+.mc-item {
+  padding: 7px 10px; background: rgba(255,255,255,.02);
+  border-radius: 5px; border: 1px solid rgba(255,255,255,.04);
+}
+.mc-item .k { font-family: var(--orb); font-size: 0.55rem; color: var(--text-d); letter-spacing: 0.1em; margin-bottom: 3px; }
+.mc-item .v { font-family: var(--fira); font-size: 0.82rem; font-weight: 500; }
+
+/* ── SEQUENCE DIAGRAM ──────────────────── */
+.seq {
+  display: flex; align-items: center; gap: 8px;
+  margin: 14px 0; flex-wrap: wrap;
+}
+.seq-step {
+  display: flex; align-items: center; gap: 8px;
+}
+.seq-node {
+  font-family: var(--fira); font-size: 0.82rem; font-weight: 600;
+  padding: 6px 14px; border-radius: 6px; border: 1px solid;
+  white-space: nowrap;
+}
+.seq-arrow { color: var(--text-d); font-size: 1.2rem; }
+.sn-cy { background: rgba(0,200,255,.1); border-color: rgba(0,200,255,.3); color: var(--cyan); }
+.sn-vi { background: rgba(123,95,255,.1); border-color: rgba(123,95,255,.3); color: var(--violet2); }
+.sn-am { background: rgba(255,179,64,.1); border-color: rgba(255,179,64,.3); color: var(--amber2); }
+.sn-gr { background: rgba(0,232,150,.1); border-color: rgba(0,232,150,.3); color: var(--green); }
+.sn-re { background: rgba(255,77,109,.1); border-color: rgba(255,77,109,.3); color: #FF8FA3; }
+
+/* ── CHECKLIST ──────────────────────────── */
+.ck-list { display: flex; flex-direction: column; gap: 5px; margin: 14px 0; }
+.ck {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 9px 14px;
+  background: rgba(255,255,255,.016);
+  border: 1px solid var(--border);
+  border-radius: 7px; cursor: pointer;
+  transition: all 0.15s; user-select: none;
+}
+.ck:hover { border-color: rgba(0,232,150,.3); background: rgba(0,232,150,.02); }
+.ck.on { border-color: rgba(0,232,150,.25); background: rgba(0,232,150,.05); }
+.ck-box {
+  width: 16px; height: 16px;
+  border: 2px solid var(--muted); border-radius: 3px;
+  flex-shrink: 0; margin-top: 2px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.ck.on .ck-box { background: var(--green); border-color: var(--green); }
+.ck.on .ck-box::after { content: '✓'; color: #000; font-size: 0.6rem; font-weight: 700; }
+.ck span { font-size: 0.85rem; color: var(--text-d); line-height: 1.6; }
+.ck.on span { color: var(--text); }
+
+/* ── WEEKLY CALENDAR ─────────────────────── */
+.week-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 4px; margin: 16px 0;
+}
+.wday {
+  border-radius: 8px; padding: 14px 12px; text-align: center;
+  border: 1px solid; transition: transform 0.2s;
+}
+.wday:hover { transform: translateY(-2px); }
+.wday .wd-name { font-family: var(--orb); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; margin-bottom: 6px; }
+.wday .wd-model { font-family: var(--barc); font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; line-height: 1.1; }
+.wday .wd-note { font-size: 0.7rem; opacity: 0.75; line-height: 1.3; }
+.wd-isc { background: rgba(0,200,255,.06); border-color: rgba(0,200,255,.2); color: var(--cyan); }
+.wd-ari { background: rgba(123,95,255,.07); border-color: rgba(123,95,255,.25); color: var(--violet2); }
+.wd-ash { background: rgba(255,179,64,.06); border-color: rgba(255,179,64,.2); color: var(--amber2); }
+.wd-ica { background: rgba(0,232,150,.06); border-color: rgba(0,232,150,.2); color: var(--green); }
+.wd-fri { background: rgba(255,77,109,.05); border-color: rgba(255,77,109,.18); color: #FF8FA3; }
+
+/* ── YEARLY TIMELINE ─────────────────────── */
+.year-line { display: flex; gap: 4px; margin: 16px 0; }
+.yl-seg {
+  border-radius: 6px; padding: 12px 10px; text-align: center;
+  border: 1px solid; flex: 1; transition: transform 0.2s;
+}
+.yl-seg:hover { transform: translateY(-2px); }
+.yl-name { font-family: var(--barc); font-size: 0.82rem; font-weight: 700; margin-bottom: 3px; }
+.yl-fib { font-family: var(--fira); font-size: 0.65rem; opacity: 0.7; }
+.yl-0 { background: rgba(0,200,255,.06); border-color: rgba(0,200,255,.2); color: var(--cyan); }
+.yl-1 { background: rgba(123,95,255,.06); border-color: rgba(123,95,255,.2); color: var(--violet2); }
+.yl-2 { background: rgba(255,179,64,.06); border-color: rgba(255,179,64,.2); color: var(--amber2); }
+.yl-3 { background: rgba(0,232,150,.06); border-color: rgba(0,232,150,.2); color: var(--green); }
+
+/* ── QUOTE ─────────────────────────────── */
+.quote {
+  border-left: 3px solid var(--cyan);
+  padding: 24px 28px; margin: 28px 0;
+  background: rgba(0,200,255,.03);
+  border-radius: 0 8px 8px 0; position: relative;
+}
+.quote::before {
+  content: '"'; position: absolute; top: -8px; left: 14px;
+  font-family: var(--orb); font-size: 4rem; color: rgba(0,200,255,.12); line-height: 1;
+}
+.quote p {
+  font-family: var(--barc); font-size: 1.1rem; font-style: italic;
+  color: var(--text); margin: 0; line-height: 1.65; font-weight: 400;
+}
+.quote cite {
+  display: block; margin-top: 10px;
+  font-family: var(--orb); font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--cyan);
+}
+
+/* ── INGREDIENT CARD ─────────────────────── */
+.recipe {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px; margin: 16px 0;
+}
+.ing {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px 16px; transition: border-color 0.2s;
+}
+.ing:hover { border-color: rgba(0,200,255,.3); }
+.ing h4 { font-family: var(--barc); font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 6px; display: flex; align-items: center; gap: 7px; }
+.ing h4 .tag { font-family: var(--fira); font-size: 0.65rem; background: rgba(0,200,255,.1); color: var(--cyan); border: 1px solid rgba(0,200,255,.2); padding: 2px 8px; border-radius: 4px; }
+.ing p { font-size: 0.82rem; margin: 0; }
+
+/* ── STATS ROW ──────────────────────────── */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
+.stat { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 16px 16px; text-align: center; }
+.stat .v { font-family: var(--orb); font-size: 1.6rem; font-weight: 700; line-height: 1; margin-bottom: 5px; }
+.stat .l { font-family: var(--barc); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-d); }
+
+/* ── FRACTAL VISUAL ─────────────────────── */
+.fractal { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin: 14px 0; }
+.frac { background: rgba(255,255,255,.02); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; }
+.frac .f-name { font-family: var(--orb); font-size: 0.6rem; font-weight: 700; color: var(--violet2); letter-spacing: 0.1em; margin-bottom: 4px; }
+.frac .f-desc { font-size: 0.8rem; color: var(--text-d); }
+
+/* ── FOOTER ─────────────────────────────── */
+#footer { padding: 44px 60px; text-align: center; border-top: 1px solid var(--border); }
+#footer p { font-family: var(--barc); color: var(--text-d); font-size: 0.8rem; margin: 0; }
+
+/* ── ANIMATIONS ──────────────────────────── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.hero-badge, #hero h1, #hero .subtitle, .hero-metrics { animation: fadeUp 0.6s ease both; }
+.hero-badge   { animation-delay: 0.1s; }
+#hero h1      { animation-delay: 0.2s; }
+#hero .subtitle { animation-delay: 0.32s; }
+.hero-metrics { animation-delay: 0.44s; }
+
+@media (max-width: 880px) {
+  :root { --sw: 0px; }
+  #sidebar { transform: translateX(-260px); }
+  #main { margin-left: 0; }
+  .mod, #hero { padding: 36px 20px; }
+  .hero-metrics, .stats { grid-template-columns: repeat(2,1fr); }
+  .week-grid, .recipe { grid-template-columns: repeat(2,1fr); }
+  .mc-grid, .fractal { grid-template-columns: 1fr 1fr; }
+  .year-line { flex-wrap: wrap; }
+}
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+<div id="pbar"><div id="pfill"></div></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="logo-mark">9</div>
+    <h1>DIGITAL TIME<br>THEORY</h1>
+    <p>CIRCLE OF NINE — DTT</p>
+  </div>
+
+  <div class="sb-section">THÉORIE</div>
+  <a class="sb-link active" href="#hero"><span class="n">00</span>Vue d'ensemble</a>
+  <a class="sb-link" href="#m1"><span class="n">01</span>Introduction au DTT</a>
+  <a class="sb-link" href="#m2"><span class="n">02</span>Root Candles</a>
+
+  <div class="sb-section">NY SESSION</div>
+  <a class="sb-link" href="#m3"><span class="n">03</span>Judas (9:55–10:20)</a>
+  <a class="sb-link" href="#m4"><span class="n">04</span>Model 11 — 3 (10:20–11:10)</a>
+  <a class="sb-link" href="#m5"><span class="n">05</span>Model 110 — 6 (11:10–11:49)</a>
+  <a class="sb-link" href="#m6"><span class="n">06</span>Model 1001 — 9 (12:35–14:09)</a>
+  <a class="sb-link" href="#m7"><span class="n">07</span>Model 111 — 7 (14:09–Close)</a>
+
+  <div class="sb-section">WEEKLY SESSION</div>
+  <a class="sb-link" href="#m8"><span class="n">08</span>Iscariot</a>
+  <a class="sb-link" href="#m9"><span class="n">09</span>Aries</a>
+  <a class="sb-link" href="#m10"><span class="n">10</span>Ash Wednesday</a>
+  <a class="sb-link" href="#m11"><span class="n">11</span>Icarus</a>
+
+  <div class="sb-section">YEARLY SESSION</div>
+  <a class="sb-link" href="#m12"><span class="n">12</span>Hoodwink + IMP9</a>
+
+  <div class="sb-section">STRATÉGIE</div>
+  <a class="sb-link" href="#m13"><span class="n">13</span>Turtle Soup</a>
+  <a class="sb-link" href="#m14"><span class="n">14</span>SMT & DTT Root SMT</a>
+  <a class="sb-link" href="#m15"><span class="n">15</span>OHLC & Entrées Temps</a>
+  <a class="sb-link" href="#m16"><span class="n">16</span>Risk Management</a>
+  <a class="sb-link" href="#m17"><span class="n">17</span>Checklist & Protocole</a>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-circle"></div>
+  <div class="hero-circle2"></div>
+  <div class="hero-badge">⬡ CIRCLE OF NINE · BINARY TIME MODELS · DTT</div>
+  <h1>DIGITAL<br><span>TIME THEORY</span></h1>
+  <p class="subtitle">Le cours complet sur la théorie du temps algorithmique — modèles temporels binaires 3·6·9, root candles, turtle soup et confluence temps/prix pour chaque session.</p>
+  <div class="hero-metrics">
+    <div class="metric"><div class="v" style="color:var(--cyan)">3·6·9</div><div class="l">Circle of Nine</div></div>
+    <div class="metric"><div class="v" style="color:var(--violet2)">5</div><div class="l">NY Models</div></div>
+    <div class="metric"><div class="v" style="color:var(--amber2)">4</div><div class="l">Weekly Models</div></div>
+    <div class="metric"><div class="v" style="color:var(--green)">4</div><div class="l">Yearly Models</div></div>
+    <div class="metric"><div class="v" style="color:#FF8FA3">M1</div><div class="l">Exécution</div></div>
+  </div>
+</section>
+
+<!-- ══════ M1 ══════ -->
+<section class="mod" id="m1">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 01</span>
+    <h2>Introduction au Digital Time Theory</h2>
+  </div>
+
+  <div class="sec">Qu'est-ce que le Digital Time Theory ?</div>
+  <p>Le DTT est une théorie qui démontre que le marché se déplace selon des intervalles de temps <strong>précis à la minute</strong>, dérivés d'un système de numérotation binaire basé sur le chiffre 3 et le "Circle of Nine" (3, 6, 9). Ces intervalles sont identiques sur tous les marchés (Forex, Futures, Stocks, Crypto) et à toutes les échelles de temps (intraday, weekly, yearly).</p>
+
+  <div class="box box-cy">
+    <div class="box-title">⬡ PRINCIPE FONDAMENTAL</div>
+    <p><strong>Le temps précède le prix.</strong> Quand le moment temporal est arrivé, l'algorithme entre en action et déplace le prix vers la prochaine zone de liquidité. Comprendre QUAND le prix va bouger est aussi important — voire plus important — que savoir OÙ il va bouger.</p>
+  </div>
+
+  <div class="sec">Pourquoi ça fonctionne — High Frequency Trading & CDMA</div>
+  <p>Le HFT utilise des protocoles de synchronisation temporelle (Code Division Multiple Access) pour relayer les dark pool prints et ordres institutionnels entre les nœuds (NYSE, Chicago Exchange...). Cette synchronisation crée des <strong>patterns temporels répétables</strong> qui constituent la base du DTT.</p>
+  <p>Un avantage de 1 milliseconde = avantage compétitif énorme pour les trading firms. La synchronisation UTC précise est non-négociable pour le HFT. Résultat : les mêmes heures se répètent, chaque jour, chaque semaine, chaque année.</p>
+
+  <div class="sec">La Nature Fractale du Temps</div>
+  <div class="fractal">
+    <div class="frac"><div class="f-name">YEARLY</div><div class="f-desc">Hoodwink → 33 → Time Distortion → IMP9</div></div>
+    <div class="frac"><div class="f-name">WEEKLY</div><div class="f-desc">Iscariot → Aries → Ash Wed → Icarus</div></div>
+    <div class="frac"><div class="f-name">NY SESSION</div><div class="f-desc">Judas → 11 → 110 → 1001 → 111</div></div>
+  </div>
+  <p>Ce que vous voyez sur une session de New York, vous le voyez sur la session hebdomadaire. Ce que vous voyez sur la semaine, vous le voyez sur l'année. <strong>Time is fractal, price is fractal.</strong></p>
+
+  <div class="sec">Le Circle of Nine — Conversion Binaire</div>
+  <p>Les noms des modèles sont des nombres binaires. Leur conversion en décimal révèle leur position dans le cycle 3-6-9 :</p>
+  <table class="tbl">
+    <thead><tr><th>Nom Binaire</th><th>Valeur Décimale</th><th>Position dans le Cycle</th><th>Rôle</th></tr></thead>
+    <tbody>
+      <tr><td>Judas / Iscariot</td><td>— (Judas)</td><td>1 — Le Traître</td><td>Faux move, engineering liquidity</td></tr>
+      <tr><td>Model 11</td><td>3</td><td>3 — Premier pivot</td><td>Reversal ou continuation de Judas</td></tr>
+      <tr><td>Model 110</td><td>6</td><td>6 — Continuation/Consolidation</td><td>MMXM, souvent time distortion</td></tr>
+      <tr><td>Model 1001</td><td>9</td><td>9 — Distribution</td><td>Plus grand move de la session</td></tr>
+      <tr><td>Model 111</td><td>7</td><td>7 — Fin de cycle</td><td>Explosive end-of-day ou chop</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Comment Configurer les Time Fibs</div>
+  <ul class="cl">
+    <li><strong>Futures NQ/ES/Dow :</strong> Lundi 18h (CME open) → Lundi suivant 18h. Niveaux 3x : 0.125, 0.36, 0.500, 0.5625, 1.0</li>
+    <li><strong>Stocks (9:30–9:30) :</strong> Lundi 9:30 → Lundi suivant 9:30. En l'absence d'un jour de trading, commencer le mardi.</li>
+    <li><strong>Forex & Crypto :</strong> Dimanche 17h NY → Dimanche suivant 17h</li>
+    <li><strong>Vérification :</strong> Les nombres doivent multiplier par 3 — confirmer 0.125, 0.36, 0.5625</li>
+    <li><strong>Root candle de toute session hebdomadaire :</strong> au niveau 0.1125 de l'intervalle</li>
+  </ul>
+</section>
+
+<!-- ══════ M2 ══════ -->
+<section class="mod" id="m2">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 02</span>
+    <h2>Root Candles — Hidden Liquidity</h2>
+  </div>
+
+  <div class="sec">Définition des Root Candles</div>
+  <p>Les Root Candles sont des bougies à des <strong>heures spécifiques prédéfinies</strong> qui concentrent une quantité massive de liquidité. Ce ne sont pas des bougies aléatoires — elles sont automatiquement identifiées par l'indicateur DTT dès leur fermeture, créant des niveaux de support/résistance cachés utilisés tout au long de la session.</p>
+
+  <div class="box box-am">
+    <div class="box-title">🕯️ PROPRIÉTÉ CLÉ</div>
+    <p>Le prix d'<strong>ouverture</strong> de la root candle est le niveau crucial. Si le prix ferme au-dessus → premium. Si en-dessous → discount. Ces niveaux agissent comme des aimants pour le prix et servent de zones d'entrée/sortie tout au long de la journée et de la semaine.</p>
+  </div>
+
+  <div class="sec">Root Candles de la NY Session</div>
+  <div class="time-slot">
+    <span class="ts-time">09:53</span>
+    <div class="ts-label">
+      <div class="ts-name">Session Root Candle — Toute la journée NY</div>
+      <div class="ts-note">LA plus importante. Définit premium/discount pour toute la session. Se réfère à elle pour confirmer la direction.</div>
+    </div>
+    <span class="ts-root">ROOT CANDLE</span>
+  </div>
+  <div class="time-slot">
+    <span class="ts-time">10:34</span>
+    <div class="ts-label">
+      <div class="ts-name">Model 11 Root Candle</div>
+      <div class="ts-note">Root de Model 11 (binaire 3). Opening price = premium/discount du modèle.</div>
+    </div>
+    <span class="ts-root">ROOT</span>
+  </div>
+  <div class="time-slot">
+    <span class="ts-time">11:10 / 11:21</span>
+    <div class="ts-label">
+      <div class="ts-name">Model 110 Root Candles (2)</div>
+      <div class="ts-note">11:10 = zone discount éloignée. 11:21 = zone plus proche. À utiliser en tandem.</div>
+    </div>
+    <span class="ts-root">ROOT ×2</span>
+  </div>
+  <div class="time-slot">
+    <span class="ts-time">12:02 / 12:35</span>
+    <div class="ts-label">
+      <div class="ts-name">Model 1001 Root Candles</div>
+      <div class="ts-note">12:35 = début du cycle distribution. 12:02 = signal plus précoce.</div>
+    </div>
+    <span class="ts-root">ROOT ×2</span>
+  </div>
+  <div class="time-slot">
+    <span class="ts-time">13:30</span>
+    <div class="ts-label">
+      <div class="ts-name">Model 1001 / 111 Outlier Root</div>
+      <div class="ts-note">Partagé entre Model 1001 et Model 111. Surveiller les deux contextes.</div>
+    </div>
+    <span class="ts-root">OUTLIER</span>
+  </div>
+
+  <div class="sec">Comment Utiliser les Root Candles</div>
+  <ul class="cl">
+    <li><strong>Premium/Discount :</strong> au-dessus du prix d'ouverture = premium (chercher shorts). En-dessous = discount (chercher longs).</li>
+    <li><strong>Target de TP :</strong> utiliser les root candles comme cibles de prise de profit dans la direction de votre trade.</li>
+    <li><strong>Zone d'entrée :</strong> ne jamais longer au-dessus d'une root candle. Entrer en-dessous pour aller la chercher.</li>
+    <li><strong>Root Candle SMT :</strong> si ES franchit sa root candle mais pas NQ (ou vice versa) → signal SMT caché (Module 14).</li>
+    <li><strong>Extension throughout the week :</strong> la root candle d'Iscariot (0.1125) s'étend sur toute la semaine comme le 9:53 s'étend sur toute la journée.</li>
+  </ul>
+
+  <div class="box box-vi">
+    <div class="box-title">⚡ ASTUCE PRATIQUE</div>
+    <p>Les root candles proches des PD arrays sur 5min et 15min sont les plus puissantes. "Root candles near PD arrays will be the most prominent ones." Plus la confluence root candle + PD array + moment temporal est forte, plus l'entrée est haute probabilité.</p>
+  </div>
+</section>
+
+<!-- ══════ M3 ══════ -->
+<section class="mod" id="m3">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 03</span>
+    <h2>Judas — Le Faux Move (9:55–10:20)</h2>
+  </div>
+
+  <div class="model-card model-cy">
+    <div class="mc-top">
+      <div class="mc-bin" style="color:var(--cyan)">JUDAS</div>
+      <div class="mc-label">
+        <div class="mc-name">Le Traître de la Session NY</div>
+        <div class="mc-dec">Equivalent du 9:53 pour le daily — falsifie la direction initiale</div>
+      </div>
+    </div>
+    <div class="mc-grid">
+      <div class="mc-item"><div class="k">INTERVALLE</div><div class="v" style="color:var(--cyan)">09:55 – 10:20</div></div>
+      <div class="mc-item"><div class="k">ROOT CANDLE</div><div class="v" style="color:var(--amber)">09:53</div></div>
+      <div class="mc-item"><div class="k">INNER INTERVALS</div><div class="v" style="color:var(--text-d)">10:02 · 10:07 · 10:12</div></div>
+    </div>
+  </div>
+
+  <div class="sec">Comportement de Judas</div>
+  <p>Judas crée un faux move dès le début de la session NY. Il génère de la liquidité d'un côté (buy side ou sell side) pour l'injecter dans la direction opposée lors du prochain modèle (Model 11).</p>
+  <ul class="cl">
+    <li>Si Judas crée du <strong>sell side en dessous</strong> du 9:53 → attendre Model 11 à 10:20 pour un long vers le buy side</li>
+    <li>Si Judas monte en <strong>premium au-dessus</strong> du 9:53 → attendre Model 11 pour un short vers le sell side</li>
+    <li>Le reversal peut commencer à n'importe lequel des inner intervals : 10:02, 10:07, ou 10:12</li>
+    <li>Si aucun reversal à 10:20 → le move Judas peut être tiré vers Model 11 (10:34)</li>
+  </ul>
+
+  <div class="sec">Confirmation de Trade pour Judas</div>
+  <ol class="nl">
+    <li>Observer le <strong>9:53 root candle</strong> — au-dessus = premium, en-dessous = discount</li>
+    <li>Si en discount avec engineered buy side → attendre un inner interval (10:02/07/12) pour voir le reversal</li>
+    <li>Chercher un <strong>PD array 15 minutes</strong> (imbalance, SIBI, CIBI) qui bloque ou soutient le move</li>
+    <li>Chercher un <strong>SMT</strong> (NQ vs ES vs Dow) pour confirmer le reversal</li>
+    <li>Corps de bougie doit <strong>fermer au-dessus du 9:53</strong> pour confirmer continuation long (et vice versa pour short)</li>
+    <li>Stop loss : sous le low de la bougie low autour du 9:53. TP : next root candle / liquidity target</li>
+  </ol>
+
+  <div class="box box-re">
+    <div class="box-title">⚠️ PIÈGE CLASSIQUE</div>
+    <p>Juste parce qu'il y a de l'engineered liquidity ne signifie pas qu'elle sera prise. Vous avez besoin de : (1) un PD array 15 minutes au-dessus/en-dessous, ET (2) un SMT confirmant le reversal. Sans ça, le move peut simplement continuer à générer de la liquidité et dériver.</p>
+  </div>
+</section>
+
+<!-- ══════ M4 ══════ -->
+<section class="mod" id="m4">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 04</span>
+    <h2>Model 11 (Binaire 3) — 10:20 à 11:10</h2>
+  </div>
+
+  <div class="model-card model-vi">
+    <div class="mc-top">
+      <div class="mc-bin" style="color:var(--violet2)">11₂ = 3</div>
+      <div class="mc-label">
+        <div class="mc-name">Model 11 — Premier Pivot</div>
+        <div class="mc-dec">Continuation de Judas OU reversal. Déclenche le cycle 3→6→9 ou 3→9→7</div>
+      </div>
+    </div>
+    <div class="mc-grid">
+      <div class="mc-item"><div class="k">INTERVALLE</div><div class="v" style="color:var(--violet2)">10:20 – 11:10</div></div>
+      <div class="mc-item"><div class="k">ROOT CANDLE</div><div class="v" style="color:var(--amber)">10:34</div></div>
+      <div class="mc-item"><div class="k">INNER INTERVALS</div><div class="v" style="color:var(--text-d)">10:34 · 10:44 · 10:55</div></div>
+    </div>
+  </div>
+
+  <div class="sec">Scénarios du Model 11</div>
+  <div class="subsec">Scénario A — Reversal après Judas</div>
+  <p>Judas a créé du sell side en-dessous du 9:53. À 10:20, on s'attend à voir le prix commencer à monter. Le 10:34 root candle donne une opportunité d'entrée long. <strong>Cible minimum : 11:49 ou 12:35.</strong></p>
+
+  <div class="subsec">Scénario B — Continuation de Judas</div>
+  <p>Judas est allé en premium, le 9:53 n'a pas été respecté. Model 11 continue la distribution. Le 10:34 root candle est maintenant résistance. Vendre la continuation, target : 11:10 ou sell side liquidity.</p>
+
+  <div class="subsec">Confirmation des 15 Minutes</div>
+  <p>Règle clé : observer les <strong>corps des bougies 15 minutes</strong>. Si bullish, aucune bougie 15min ne doit fermer son corps sous le volume imbalance/SIBI que vous regardez. 50% du corps de la bougie 15min = niveau pivot. Fermeture au-dessus = confirmation long.</p>
+
+  <div class="sec">Que Faire Après le Model 11 ?</div>
+  <div class="seq">
+    <div class="seq-step"><div class="seq-node sn-cy">Model 11 (3)</div></div>
+    <span class="seq-arrow">→</span>
+    <div class="seq-step"><div class="seq-node sn-vi">Model 110 (6)</div><span class="seq-arrow">→</span><div class="seq-node sn-am">Model 1001 (9)</div></div>
+    <span class="seq-arrow" style="margin:0 8px;color:#555">│ ou │</span>
+    <div class="seq-step"><div class="seq-node sn-am">Model 1001 (9)</div><span class="seq-arrow">→</span><div class="seq-node sn-re">Model 111 (7)</div></div>
+  </div>
+  <ul class="cl">
+    <li>Si Model 11 crée un grand move → <strong>séquence 3-6-9</strong> : 110 = continuation, 1001 = distribution</li>
+    <li>Si Model 11 est reversal et 110 = time distortion → <strong>séquence 3-9-7</strong> : 1001 = grand move, 111 = fin</li>
+    <li>Best case pour Model 11 : continuation jusqu'à 11:49 ou <strong>12:35</strong></li>
+    <li>Terminus worst case : 11:10</li>
+  </ul>
+
+  <div class="box box-cy">
+    <div class="box-title">📊 UTILISATION DES STANDARD DEVIATIONS</div>
+    <p>Depuis le low/high de la root candle 10:34, compter 3 bougies (= 3-minute order block). Tracer les standard deviations (-1, -2, -2.5, -4). Utiliser comme targets de TP. Exemple : negative 2.5 depuis le 3-minute OB après un reversal au 10:34.</p>
+  </div>
+</section>
+
+<!-- ══════ M5 ══════ -->
+<section class="mod" id="m5">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 05</span>
+    <h2>Model 110 (Binaire 6) — 11:10 à 11:49</h2>
+  </div>
+
+  <div class="model-card model-am">
+    <div class="mc-top">
+      <div class="mc-bin" style="color:var(--amber2)">110₂ = 6</div>
+      <div class="mc-label">
+        <div class="mc-name">Model 110 — Continuation ou MMXM</div>
+        <div class="mc-dec">Market Maker Model intraday. Comme Ash Wednesday pour la semaine.</div>
+      </div>
+    </div>
+    <div class="mc-grid">
+      <div class="mc-item"><div class="k">INTERVALLE</div><div class="v" style="color:var(--amber2)">11:10 – 11:49</div></div>
+      <div class="mc-item"><div class="k">ROOT CANDLES</div><div class="v" style="color:var(--amber)">11:10 · 11:21</div></div>
+      <div class="mc-item"><div class="k">INNER INTERVALS</div><div class="v" style="color:var(--text-d)">11:21 · 11:29 · 11:37</div></div>
+    </div>
+  </div>
+
+  <div class="sec">Rôle de Model 110</div>
+  <ul class="cl">
+    <li>Si Model 11 était <strong>petit/limité</strong> → 110 peut être un grand Market Maker Model (MMXM) avec un reversal explosif</li>
+    <li>Si Model 11 était <strong>grand et volatile</strong> → 110 sera probablement <em>time distortion</em> (chop/consolidation)</li>
+    <li>Deux root candles : 11:10 (discount plus profond) et 11:21 (plus proche = draw plus fréquent)</li>
+    <li>Si le prix tombe sous 11:10 → chercher long à la fermeture au-dessus du prix d'ouverture de 11:10</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">💡 MMXM POUR 110</div>
+    <p>Model 110 est l'équivalent intraday du Market Maker Model d'ICT. Il se comporte comme Ash Wednesday pour la semaine. Il prend les deux côtés (buy side ET sell side) dans la même session avant de distribuer. Quand vous voyez ce type de structure dans l'intervalle 11:10–11:49, c'est votre opportunity de trade Model 110.</p>
+  </div>
+
+  <div class="sec">Cas de Time Distortion</div>
+  <p>Quand 110 est en time distortion : chop horizontal, prix référence les root candles (11:10 et 11:21) mais ne fait rien de significatif. À ce moment, <strong>ne pas trader</strong> — attendre Model 1001 à 12:35.</p>
+</section>
+
+<!-- ══════ M6 ══════ -->
+<section class="mod" id="m6">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 06</span>
+    <h2>Model 1001 (Binaire 9) — 12:35 à 14:09</h2>
+  </div>
+
+  <div class="model-card model-gr">
+    <div class="mc-top">
+      <div class="mc-bin" style="color:var(--green)">1001₂ = 9</div>
+      <div class="mc-label">
+        <div class="mc-name">Model 1001 — Distribution Principale</div>
+        <div class="mc-dec">Le plus grand move de la session. Équivalent d'Icarus pour la semaine.</div>
+      </div>
+    </div>
+    <div class="mc-grid">
+      <div class="mc-item"><div class="k">INTERVALLE</div><div class="v" style="color:var(--green)">12:35 – 14:09</div></div>
+      <div class="mc-item"><div class="k">ROOT CANDLES</div><div class="v" style="color:var(--amber)">12:02 · 12:35 · 13:30</div></div>
+      <div class="mc-item"><div class="k">INNER INTERVALS</div><div class="v" style="color:var(--text-d)">13:00 · 13:20 · 13:30* · 13:40</div></div>
+    </div>
+  </div>
+
+  <div class="sec">Quand Attendre Model 1001</div>
+  <ul class="cl">
+    <li>Model 1001 est <strong>haute probabilité si Model 11 s'est produit</strong> tôt dans la journée</li>
+    <li>Si Model 110 était en time distortion → 1001 arrive souvent comme le grand move</li>
+    <li>Chercher de l'<strong>engineered liquidity</strong> construite tout au long de la journée — quand elle n'est pas prise dans les modèles précédents, 1001 la prend</li>
+    <li>La non-expansion pendant Model 110 est le signal le plus fort pour anticiper Model 1001</li>
+  </ul>
+
+  <div class="sec">Structure de Model 1001</div>
+  <ol class="nl">
+    <li>12:35 root candle price d'ouverture = zone de premium/discount. En-dessous = discount (chercher long).</li>
+    <li>Entre 12:35 et 13:00 (fin du NY lunch) : chop ou slight manipulation. Ne pas entrer.</li>
+    <li>À 13:00 (fin lunch) : attendre le départ du move. Bodies des bougies ne doivent pas fermer sous 12:35 si bullish.</li>
+    <li>À 13:20–13:30 : consolidation possible. Continuation après 13:40.</li>
+    <li>13:30 root candle agit également pour Model 111 → surveiller les deux contextes.</li>
+    <li>Target : prendre profit à -2 std dev du 3-minute OB. Si fermeture au-dessus → target -4.</li>
+  </ol>
+
+  <div class="box box-gr">
+    <div class="box-title">✅ SIGNAL FORT POUR 1001</div>
+    <p>Quand vous voyez de l'engineered buy side (ou sell side) s'accumuler tout au long de la journée <strong>sans expansion</strong> pendant Judas, Model 11 et Model 110, c'est votre meilleur signal que Model 1001 va prendre toute cette liquidité en un seul grand move. C'est essentiellement une version agrandie du Judas pour la fin de journée.</p>
+  </div>
+</section>
+
+<!-- ══════ M7 ══════ -->
+<section class="mod" id="m7">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 07</span>
+    <h2>Model 111 (Binaire 7) — 14:09 à Close</h2>
+  </div>
+
+  <div class="model-card model-re">
+    <div class="mc-top">
+      <div class="mc-bin" style="color:#FF8FA3">111₂ = 7</div>
+      <div class="mc-label">
+        <div class="mc-name">Model 111 — Fin de Session Explosive</div>
+        <div class="mc-dec">Fin de cycle ou continuation. Peut être explosif ou en chop selon le contexte.</div>
+      </div>
+    </div>
+    <div class="mc-grid">
+      <div class="mc-item"><div class="k">INTERVALLE</div><div class="v" style="color:#FF8FA3">14:09 – Close</div></div>
+      <div class="mc-item"><div class="k">ROOT CANDLE</div><div class="v" style="color:var(--amber)">13:30</div></div>
+      <div class="mc-item"><div class="k">INNER INTERVALS</div><div class="v" style="color:var(--text-d)">14:47 · 15:14 · 15:45</div></div>
+    </div>
+  </div>
+
+  <div class="sec">Quand Model 111 est Explosif</div>
+  <ul class="cl">
+    <li>Si la session s'est passée <strong>sans grand move</strong> (chop sur Judas + 11 + 110 + 1001) → 111 sera très explosif</li>
+    <li>Engineered liquidity créée tout au long de la journée sans être prise → 111 la prend</li>
+    <li>Confluence avec modèles weekly session (Iscariot, Icarus) augmente la probabilité</li>
+    <li>Pour les options : cette volatilité de fin de journée peut être très profitable (attention au risk management)</li>
+  </ul>
+
+  <div class="sec">Quand Model 111 est en Time Distortion</div>
+  <p>Si Model 11 ET Model 1001 ont tous les deux créé de grands moves → 111 sera probablement du chop. Attendre 14:09 et observer si price continue à utiliser les root candles ou si tout est plat.</p>
+
+  <div class="box box-vi">
+    <div class="box-title">📈 CONFLUENCE WEEKLY SESSION</div>
+    <p>Model 111 pour un vendredi est souvent haute probabilité — notamment à <strong>9:45 le vendredi</strong> (0.5625 fib d'Icarus pour les stocks). Confluence Model 111 + Icarus = probabilité très élevée d'un move explosive de fin de semaine.</p>
+  </div>
+</section>
+
+<!-- ══════ M8 ══════ -->
+<section class="mod" id="m8">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 08</span>
+    <h2>Weekly Session — Iscariot</h2>
+  </div>
+
+  <div class="sec">Le Judas de la Semaine</div>
+  <p>Iscariot est le modèle traître de la session hebdomadaire. Son rôle est de <strong>créer de la liquidity à basse résistance</strong> (equal highs/lows) tout au long du début de semaine, que le prochain modèle (Aries) va ensuite prendre.</p>
+
+  <table class="tbl">
+    <thead><tr><th>Paramètre</th><th>Futures / Stocks</th><th>Forex / Crypto</th></tr></thead>
+    <tbody>
+      <tr><td>Intervalle</td><td>Lundi 9:30 → ~13:10 (Lundi)</td><td>Dimanche 17h → ~00:50 (Lundi)</td></tr>
+      <tr><td>Root Candle</td><td>Fib 0.1125 de l'intervalle</td><td>Même ratio</td></tr>
+      <tr><td>Extension</td><td>Tout au long de la semaine</td><td>Tout au long de la semaine</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Comportements d'Iscariot</div>
+  <ul class="cl">
+    <li><strong>Iscariot passif :</strong> juste du chop et de la liquidité construite. Aries viendra la prendre facilement. Ne pas trader sauf SMT clair.</li>
+    <li><strong>Iscariot avec SMT :</strong> si un SMT apparaît pendant l'intervalle d'Iscariot + timing du fib = trade haute probabilité.</li>
+    <li><strong>Root candle d'Iscariot</strong> s'étend toute la semaine comme le 9:53 s'étend toute la journée.</li>
+    <li>Prix peut revenir à la root candle d'Iscariot en fin de semaine (Ash Wednesday ou Icarus).</li>
+  </ul>
+
+  <div class="box box-cy">
+    <div class="box-title">⬡ CONFLUENCE NY SESSION</div>
+    <p>La fin d'Iscariot (environ 13:10 pour stocks) coïncide avec Model 1001 de la NY session. Potentiel scalp : si Iscariot crée une structure basse résistance et que 13:10 arrive → possibilité de trade avec un stop serré vers la root candle d'Iscariot.</p>
+  </div>
+</section>
+
+<!-- ══════ M9 ══════ -->
+<section class="mod" id="m9">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 09</span>
+    <h2>Weekly Session — Aries</h2>
+  </div>
+
+  <div class="sec">Le V-Shape Recovery de la Semaine</div>
+  <p>Aries est le modèle des <strong>V-shaped recoveries</strong> de la session hebdomadaire. Il prend la liquidité créée par Iscariot et la distribue. C'est souvent un setup de Mardi — prendre le low d'Iscariot et monter.</p>
+  <ul class="cl">
+    <li>Aries prend généralement la liquidité créée par Iscariot (equal highs/lows du lundi)</li>
+    <li>Le <strong>V-shaped recovery</strong> typique : run sell side, reversal rapide, push vers buy side</li>
+    <li>Inner interval 0.36 = première zone de résistance/support pendant Aries</li>
+    <li>0.5625 = inflexion possible — si le price stalle là, attendre Ash Wednesday</li>
+    <li>Pour les stocks, les V-shaped recoveries de mardi sont parmi les trades les plus faciles de la semaine</li>
+  </ul>
+
+  <div class="box box-vi">
+    <div class="box-title">📊 OPEN HIGH LOW CLOSE AVEC ARIES</div>
+    <p>Observer la bougie quotidienne (daily candle). Si Aries ferme au-dessus de 50% du corps de la bougie bearish précédente → signal bullish pour le lendemain. Attendre un retrace dans les 50% pour entrer en long. C'est l'application OHLC dans le contexte des weekly models.</p>
+  </div>
+</section>
+
+<!-- ══════ M10 ══════ -->
+<section class="mod" id="m10">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 10</span>
+    <h2>Weekly Session — Ash Wednesday (Time Distortion)</h2>
+  </div>
+
+  <div class="sec">Le Modèle de Consolidation Hebdomadaire</div>
+  <p>Ash Wednesday est le modèle de <strong>distorsion temporelle</strong> de la semaine — l'équivalent du Model 110 pour la NY session. Il présente soit une consolidation/chop, soit un Market Maker Model (MMXM) qui prend les deux côtés.</p>
+  <ul class="cl">
+    <li>Si Aries était un grand move → Ash Wednesday sera probablement time distortion (chop)</li>
+    <li>Si Ash Wednesday est en time distortion → <strong>Icarus sera explosif</strong></li>
+    <li>Ash Wednesday peut former un MMXM : take the sell side, run up, take the buy side, distribute lower</li>
+    <li>La confluence Ash Wednesday + Model 110 NY session est une des plus fiables</li>
+    <li>Identifier si Ash Wednesday est en chop = signal pour se préparer à Icarus</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">⚡ NE PAS IGNORER LA TIME DISTORTION</div>
+    <p>Beaucoup de traders abandonnent pendant Ash Wednesday en voyant le chop. <strong>C'est exactement le piège.</strong> La time distortion travaille pour vous — elle accumule la liquidité pour l'explosion d'Icarus. Savoir distinguer quand elle est en time distortion = avantage énorme pour préparer votre trade Icarus.</p>
+  </div>
+</section>
+
+<!-- ══════ M11 ══════ -->
+<section class="mod" id="m11">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 11</span>
+    <h2>Weekly Session — Icarus (0.5625 Fib)</h2>
+  </div>
+
+  <div class="sec">L'Explosion de la Semaine</div>
+  <p>Icarus est le modèle hebdomadaire le plus explosif — l'équivalent de Model 1001 pour la NY session. Il commence au <strong>fib 0.5625</strong> de l'intervalle hebdomadaire.</p>
+
+  <div class="week-grid">
+    <div class="wday wd-isc"><div class="wd-name">LUNDI</div><div class="wd-model">Iscariot</div><div class="wd-note">Engineering liquidity</div></div>
+    <div class="wday wd-ari"><div class="wd-name">MARDI</div><div class="wd-model">Aries</div><div class="wd-note">V-shape recovery</div></div>
+    <div class="wday wd-ash"><div class="wd-name">MERCREDI</div><div class="wd-model">Ash Wednesday</div><div class="wd-note">Time distortion / MMXM</div></div>
+    <div class="wday wd-ica"><div class="wd-name">JEUDI/VEND</div><div class="wd-model">Icarus</div><div class="wd-note">Explosion 0.5625</div></div>
+    <div class="wday wd-fri"><div class="wd-name">VENDREDI</div><div class="wd-model">Fin Icarus</div><div class="wd-note">Model 111 + 9:45</div></div>
+  </div>
+
+  <div class="sec">Setup Icarus</div>
+  <ol class="nl">
+    <li>Ash Wednesday a créé de la time distortion ou un MMXM → engineered liquidity visible</li>
+    <li>Le fib 0.5625 de la semaine arrive → Icarus commence</li>
+    <li>Observer le plus haut/bas timeframe PDA qui n'a pas été atteint</li>
+    <li>Chercher un SMT au bon timing ou un turtle soup contre la liquidity</li>
+    <li>Entrée : inversions, order blocks, inner intervals d'Icarus</li>
+    <li>Confluence avec Model 111 du vendredi à 9:45 → très haute probabilité</li>
+  </ol>
+
+  <div class="box box-gr">
+    <div class="box-title">✅ ICARUS EST MON MODÈLE FAVORI</div>
+    <p>Icarus et 1001 sont les modèles les plus profitables. La raison : si Ash Wednesday crée de la time distortion (comme Model 110), la distribution qui suit avec Icarus est massively explosive. Les plus grandes opportunités de la semaine viennent d'ici.</p>
+  </div>
+</section>
+
+<!-- ══════ M12 ══════ -->
+<section class="mod" id="m12">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 12</span>
+    <h2>Yearly Session — Hoodwink & IMP9</h2>
+  </div>
+
+  <div class="sec">Structure des Modèles Annuels</div>
+  <div class="year-line">
+    <div class="yl-seg yl-0"><div class="yl-name">Hoodwink</div><div class="yl-fib">0 → 0.1125</div></div>
+    <div class="yl-seg yl-1"><div class="yl-name">Model 33</div><div class="yl-fib">0.1125 → 0.36</div></div>
+    <div class="yl-seg yl-2"><div class="yl-name">Time Distortion</div><div class="yl-fib">0.36 → 0.5625</div></div>
+    <div class="yl-seg yl-3"><div class="yl-name">IMP9</div><div class="yl-fib">0.5625 → 1.0</div></div>
+  </div>
+
+  <div class="subsec">Hoodwink — Le Judas Annuel</div>
+  <p>Comme tous les Judas, Hoodwink (0 → 0.1125 du fib annuel) crée une fausse direction en début d'année. Pour les stocks, souvent une montée initiale avant un fake-out. La root candle de Hoodwink s'étend sur toute l'année.</p>
+
+  <div class="subsec">IMP9 — L'Investissement de Génération</div>
+  <p>IMP9 (0.5625 → 1.0) est le modèle des <strong>krachs et des grandes distributions</strong>. C'est l'équivalent d'Icarus pour l'année. Il tend à se produire en automne (octobre) — d'où la saisonnalité connue des marchés. C'est aussi le meilleur moment pour investir à long terme quand les autres ont peur.</p>
+
+  <div class="box box-am">
+    <div class="box-title">💰 LOGIQUE D'INVESTISSEMENT IMP9</div>
+    <p>La root candle d'IMP9 étendue sur l'année + PD arrays mensuels = zones d'achat pour un investissement long terme. Si le prix fait un sweep du low, ferme au-dessus de 50% de la bougie bearish → entrée long. Target : +40% à +180% selon la durée. "Soyez avide quand les autres ont peur."</p>
+  </div>
+
+  <div class="sec">Comment Utiliser les Yearly Models</div>
+  <ul class="cl">
+    <li>Utiliser le <strong>timeframe mensuel</strong> pour les PD arrays (SIBI, CIBI, FVG mensuels)</li>
+    <li>La root candle yearly s'étend sur toute l'année — même comportement que le 9:53 pour la journée</li>
+    <li>Confluence yearly model + weekly model = meilleure probabilité (ex: Hoodwink + Iscariot)</li>
+    <li>Pour le swing trading : utiliser les daily candles pour les entrées une fois que le yearly model vous donne la direction</li>
+    <li><strong>Patience absolue requise</strong> — ce ne sont pas des day trading models</li>
+  </ul>
+</section>
+
+<!-- ══════ M13 ══════ -->
+<section class="mod" id="m13">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 13</span>
+    <h2>Turtle Soup — Les Faux Breakouts</h2>
+  </div>
+
+  <div class="sec">Qu'est-ce que le Turtle Soup ?</div>
+  <p>Le Turtle Soup est simplement <strong>trader un faux mouvement</strong>. Les smart money ont des ordres à des niveaux de liquidité spécifiques. Pour les remplir, ils purgent la liquidité opposée avant de partir dans leur vraie direction.</p>
+  <p>Origine : livre de Linda Bradford Raschke "Street Smarts" — les breakout traders short le support cassé, les smart money le longent.</p>
+
+  <div class="sec">La Recette du Turtle Soup</div>
+  <div class="recipe">
+    <div class="ing">
+      <h4>⏰ TEMPS <span class="tag">Non-Négociable</span></h4>
+      <p>Le bon modèle temporel doit être actif. Une confluence entre NY model ET weekly model = >90% probabilité. Judas + Model 11, ou Ash Wed + Icarus, ou alignement annuel.</p>
+    </div>
+    <div class="ing">
+      <h4>📊 SMT <span class="tag">Haute Probabilité</span></h4>
+      <p>Comparaison entre paires corrélées. NQ vs ES vs Dow (futures), EUR/USD vs GBP/USD (forex), BTC vs ETH (crypto). Un prend le high/low, l'autre non = SMT = turtle soup probable.</p>
+    </div>
+    <div class="ing">
+      <h4>📈 OHLC <span class="tag">Anatomie Prix</span></h4>
+      <p>Bodies des bougies = où est la liquidité. Wicks = où les institutions placent leurs ordres. La bougie OHLC confirme le reversal : ferme sous/dessus 50% du body précédent.</p>
+    </div>
+  </div>
+
+  <div class="sec">Comment Entrer un Turtle Soup</div>
+  <ol class="nl">
+    <li>Identifier le <strong>range externe</strong> (external high ou low) à purger sur le HTF</li>
+    <li>Confirmer le <strong>bon timing</strong> — quel modèle temporel est actif ?</li>
+    <li>Observer si le <strong>SMT</strong> existe entre les deux indices/paires corrélés</li>
+    <li>Observer la <strong>bougie HTF</strong> après le sweep : ferme-t-elle au-dessus de 50% du body précédent ?</li>
+    <li>Descendre en LTF — trouver l'<strong>Institutional Order Block</strong> formé au moment du sweep</li>
+    <li>Attendre le retrace dans cet OB → <strong>entrer long/short</strong> avec stop sous le low du sweep</li>
+    <li>Target : external buy/sell side liquidity sur le HTF</li>
+  </ol>
+
+  <div class="box box-cy">
+    <div class="box-title">⬡ TURTLE SOUP = TOUT EST FRACTAL</div>
+    <p>Un turtle soup sur le daily = composé d'un turtle soup sur la 15 minutes = composé d'un turtle soup sur la 1 minute. "If you technically go to the 32-second timeframe, there will occasionally be an SMT." Price is fractal, time is fractal.</p>
+  </div>
+
+  <div class="sec">Types de PD Arrays pour Turtle Soup</div>
+  <ul class="cl">
+    <li><strong>External highs/lows (range-based) :</strong> le plus classique et répétable</li>
+    <li><strong>OHLC daily/weekly candle :</strong> sweep du high/low d'une bougie HTF → OB formé → retrace → entrée</li>
+    <li><strong>Equal highs/lows :</strong> toujours des SMT potentiels selon le timing</li>
+    <li><strong>Fair value gap HTF :</strong> price monte dans un FVG 4H/Daily → reversal depuis le haut si OB formé + SMT</li>
+  </ul>
+</section>
+
+<!-- ══════ M14 ══════ -->
+<section class="mod" id="m14">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 14</span>
+    <h2>SMT — Smart Money Divergence & DTT Root Candle SMT</h2>
+  </div>
+
+  <div class="sec">SMT Classique</div>
+  <p>Le SMT (Smart Money Technique ou Tool selon la source) est la détection de discordances entre deux actifs corrélés. L'actif qui prend la liquidité est le plus probable à être volatile dans la direction opposée.</p>
+
+  <table class="tbl">
+    <thead><tr><th>Marché</th><th>Paire Principale</th><th>Paire de Comparaison</th></tr></thead>
+    <tbody>
+      <tr><td>Index Futures</td><td>NQ (NASDAQ)</td><td>ES (S&P 500) + Dow Jones</td></tr>
+      <tr><td>Forex</td><td>EUR/USD</td><td>GBP/USD</td></tr>
+      <tr><td>Crypto</td><td>Bitcoin (BTC)</td><td>Ethereum (ETH)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Règle du SMT</div>
+  <ul class="cl">
+    <li>Si NQ prend le HIGH → ES ne prend pas le high → <strong>short NQ</strong> (celui qui a pris le high est le plus volatile)</li>
+    <li>Attendre la <strong>fermeture de bougie</strong> avant de confirmer — pas de signal avant fermeture</li>
+    <li>Placer le SMT dans un <strong>PD array HTF</strong> (15min SIBI, 1H FVG) pour la confluence</li>
+    <li>Sans PD array HTF → SMT plus risqué. Avec PD array HTF → haute probabilité</li>
+    <li>SMT + bon timing temporel = probabilité maximale</li>
+  </ul>
+
+  <div class="sec">DTT Root Candle SMT — La Divergence Cachée</div>
+  <p>Innovation spécifique au DTT : comparer non pas les highs/lows des prix, mais le <strong>respect ou non-respect des root candles au même moment</strong> entre deux actifs corrélés.</p>
+
+  <div class="box box-am">
+    <div class="box-title">🎯 ROOT CANDLE SMT — EXEMPLE</div>
+    <p>À 10:44–10:55 (inner interval de Model 11) : ES ferme une bougie au-dessus de sa root candle 10:34. NQ au même moment ferme beaucoup plus bas, ne respecte pas sa root candle. → <strong>Hidden SMT</strong> → NQ va être plus volatile dans la direction descendante. Tradez NQ short.</p>
+  </div>
+
+  <ul class="cl">
+    <li>Observer les deux indices à la <strong>même fenêtre temporelle</strong> (même inner interval)</li>
+    <li>Un respecte sa root candle (wick ou fermeture dessus) → l'autre la viole → SMT caché</li>
+    <li>Ce SMT caché est moins évident à l'œil nu → avantage pour ceux qui connaissent le DTT</li>
+    <li>Fonctionne aussi sur les sessions weekly (root candle d'Iscariot entre deux indices)</li>
+    <li>Ne pas surcharger votre analyse avec ça — si vous maîtrisez le SMT classique, ajoutez-y le root candle SMT progressivement</li>
+  </ul>
+</section>
+
+<!-- ══════ M15 ══════ -->
+<section class="mod" id="m15">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 15</span>
+    <h2>OHLC & Entrées Basées sur le Temps</h2>
+  </div>
+
+  <div class="sec">Pourquoi l'OHLC est Fondamental</div>
+  <div class="box box-vi">
+    <div class="box-title">⬡ INSIGHT CLÉ</div>
+    <p>"Open High Low Close est probablement la chose la plus importante. Tout — market maker models, buy/sell models d'ICT — revient à comment une bougie se forme." La puissance vient de l'ajout du TEMPS à l'OHLC.</p>
+  </div>
+
+  <div class="sec">Les Principes OHLC</div>
+  <ul class="cl">
+    <li><strong>Wicks = zones institutionnelles.</strong> C'est là que les institutions placent leurs ordres. Chercher à entrer dans les wicks, pas dans les bodies.</li>
+    <li><strong>Bodies = liquidité principale.</strong> La majorité de la liquidité est dans les bodies, pas dans les wicks.</li>
+    <li><strong>Power of Three :</strong> Accumulation → Manipulation (wicks) → Distribution (body move)</li>
+    <li>Pour un long sur une bougie bearish : entrer <em>sous le close</em> ou idéalement sous les 50% du body</li>
+    <li>Pour un short sur une bougie bullish : entrer <em>au-dessus du close</em> ou idéalement au-dessus des 50%</li>
+  </ul>
+
+  <div class="sec">Daily Bias avec OHLC</div>
+  <ol class="nl">
+    <li>Regarder les 2–3 dernières bougies daily pour déterminer le biais du lendemain</li>
+    <li>Si la bougie actuelle <strong>ferme sous 50% du body de la bougie précédente</strong> → biais bearish pour demain</li>
+    <li>Si la bougie actuelle <strong>ferme au-dessus de 50% du body bearish précédent</strong> → biais bullish pour demain</li>
+    <li>Pour shorting : entrer entre 50% et close du body bullish précédent (zone de premium)</li>
+    <li>Pour longing : entrer entre close et 50% du body bearish précédent (zone de discount)</li>
+    <li>Ajouter le timing DTT pour savoir <em>exactement quand</em> entrer dans cette zone</li>
+  </ol>
+
+  <div class="sec">Timeframes Importants pour OHLC</div>
+  <table class="tbl">
+    <thead><tr><th>Timeframe</th><th>Utilisation OHLC</th></tr></thead>
+    <tbody>
+      <tr><td>Weekly Candle</td><td>Targets principaux (open, close, high, low previous week)</td></tr>
+      <tr><td>Daily Candle</td><td>Daily bias, zones d'entrée premium/discount</td></tr>
+      <tr><td>4H/1H Candle</td><td>Institutional Order Blocks après sweeps</td></tr>
+      <tr><td>15min Candle</td><td>Confirmer corps au-dessus/dessous pour continuation</td></tr>
+      <tr><td>5min Candle</td><td>Entrée précise + context intraday</td></tr>
+      <tr><td>1min Candle</td><td>Exécution finale avec root candles DTT</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════ M16 ══════ -->
+<section class="mod" id="m16">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 16</span>
+    <h2>Risk Management — La Courbe des Capitaux</h2>
+  </div>
+
+  <div class="sec">Principes de Base</div>
+  <div class="stats">
+    <div class="stat"><div class="v" style="color:var(--cyan)">1:1+</div><div class="l">Risk/Reward Minimum</div></div>
+    <div class="stat"><div class="v" style="color:var(--green)">70–88%</div><div class="l">Hit Rate Cible Mensuel</div></div>
+    <div class="stat"><div class="v" style="color:var(--amber2)">$1k–1.5k</div><div class="l">Drawdown Max/Jour (150k)</div></div>
+  </div>
+
+  <div class="sec">La Règle des Deux Pertes</div>
+  <p>Si votre drawdown atteint votre limite journalière ($1 000–$1 500 sur un compte 150k funded), <strong>arrêtez de trader pour la journée</strong>. Préserver les bullets est plus important que récupérer immédiatement.</p>
+
+  <div class="box box-re">
+    <div class="box-title">⚠️ PIÈGE PSYCHOLOGIQUE</div>
+    <p>"100% confident does not mean 100% the trade will work. It means 100% you know what to do if it doesn't work." Le risque management n'est pas une option — les home runs sans gestion du risque mènent toujours à la destruction du compte, tôt ou tard.</p>
+  </div>
+
+  <div class="sec">Approche par Journée vs par Trade</div>
+  <ul class="cl">
+    <li><strong>Par trade (classique) :</strong> définir un % fixe à risquer par trade (ex: 0.5%) et s'y tenir</li>
+    <li><strong>Par journée (approche personnelle) :</strong> se donner un budget journalier de drawdown maximum ($1 000–$1 500) — arrêter si atteint</li>
+    <li>Sur les mois favorables : hit rate peut atteindre 70–88%. Sur les mois difficiles : certains jours, l'esprit n'est pas là → arrêter plus tôt</li>
+    <li>Profiter de pertes partielles pour s'arrêter si vous "n'êtes pas là" mentalement même avant d'atteindre la limite</li>
+  </ul>
+
+  <div class="sec">Comptes Funded — DTT Adapté</div>
+  <ul class="cl">
+    <li>Drawdown statique préférable au trailing drawdown (plus prévisible)</li>
+    <li>Se donner 6+ trades comme "vies" dans le drawdown autorisé</li>
+    <li>Risque constant sur chaque trade — ne pas augmenter après des gains</li>
+    <li>Utiliser les yearly session models pour les swings options = moins de stress que le day trading</li>
+    <li>Equity curve : up/down normal mais jamais de blow-up = objectif</li>
+  </ul>
+</section>
+
+<!-- ══════ M17 ══════ -->
+<section class="mod" id="m17">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 17</span>
+    <h2>Checklist Complète & Protocole de Trading</h2>
+  </div>
+
+  <div class="sec">Checklist Pré-Session</div>
+  <div class="ck-list">
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>Configurer les time fibs hebdomadaires</strong> — Lundi 9:30 → lundi suivant (stocks/futures) ou dim 17h → dim suivant (forex/crypto). Vérifier 3x multiplication.</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>Identifier le modèle hebdomadaire actif</strong> — Iscariot / Aries / Ash Wednesday / Icarus ? Qu'est-ce qui s'est passé hier ?</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>Marquer la root candle weekly session</strong> (fib 0.1125) — zone de premium/discount pour la semaine.</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>Higher Time Frame PD Arrays</strong> — marquer les SIBI/CIBI mensuels, daily FVG, weekly candle open/close/high/low.</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>Daily bias OHLC</strong> — la bougie d'hier ferme au-dessus ou en-dessous des 50% de l'avant-hier ? Bullish ou bearish ?</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>Marquer le New Week Opening Gap</strong> — niveau très important, sera souvent revisité pendant la semaine.</span></div>
+  </div>
+
+  <div class="sec">Checklist Pendant la Session NY</div>
+  <div class="ck-list">
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>9:30 CME Open</strong> — noter le prix d'ouverture CME. Activer les root candles DTT sur l'indicateur.</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>9:53 Root Candle</strong> — identifier si le prix est en premium (au-dessus) ou discount (en-dessous).</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>9:55–10:20 Judas</strong> — observer la direction du faux move. Inner intervals 10:02 / 10:07 / 10:12. PD array 15min respecté ?</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>10:20 Model 11</strong> — reversal ou continuation ? Corps de bougie 15min au-dessus/dessous du volume imbalance ? 10:34 root candle.</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>SMT Check</strong> — comparer NQ vs ES vs Dow. Un prend la liquidité, l'autre non ? SMT confirmé ?</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>11:10 Model 110</strong> — time distortion ou MMXM ? Si chop → préparer Model 1001. Root candles 11:10 et 11:21.</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>12:35 Model 1001</strong> — engineered liquidity tout au long du jour ? 12:35 root candle. Bodies fermant au-dessus ?</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>14:09 Model 111</strong> — session calme jusqu'ici ? Icarus confluence ? 9:45 vendredi = haute probabilité.</span></div>
+  </div>
+
+  <div class="sec">Les 3 Ingrédients d'un Trade Haute Probabilité</div>
+  <div class="seq" style="flex-direction:column;align-items:flex-start;gap:12px">
+    <div class="seq-step"><div class="seq-node sn-cy">⏰ TEMPS</div><span style="color:var(--text-d);font-size:0.88rem;margin-left:8px">Le bon modèle temporel est actif + inner interval atteint. Confluence weekly × daily × NY session = >90%</span></div>
+    <div class="seq-step"><div class="seq-node sn-vi">📊 SMT / ROOT SMT</div><span style="color:var(--text-d);font-size:0.88rem;margin-left:8px">Discordance entre les deux actifs corrélés. Classique OU root candle SMT. Confirme le reversal.</span></div>
+    <div class="seq-step"><div class="seq-node sn-am">📈 OHLC / HTF PDA</div><span style="color:var(--text-d);font-size:0.88rem;margin-left:8px">PD array 15min ou 5min (FVG, SIBI, CIBI, OB). Corps des bougies confirment la direction. Entrée dans l'OB formé après le sweep.</span></div>
+  </div>
+
+  <div class="quote">
+    <p>Time and price are fractals. When you combine the X-axis (time) with the Y-axis (price), you start to see price in a completely different way than other traders. Once you see it this way, there is no way back.</p>
+    <cite>DIGITAL TIME THEORY — CIRCLE OF NINE</cite>
+  </div>
+</section>
+
+<footer id="footer">
+  <p>Digital Time Theory — Circle of Nine · 17 Modules · NY Session · Weekly Session · Yearly Session · Turtle Soup · Root Candles SMT</p>
+  <p style="margin-top:7px;color:var(--border)">Ce cours est éducatif uniquement. Le trading comporte des risques importants.</p>
+</footer>
+</main>
+
+<script>
+const pf = document.getElementById('pfill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  pf.style.width = (window.scrollY / h * 100) + '%';
+}, { passive: true });
+
+const io = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.04 });
+document.querySelectorAll('.mod').forEach(m => io.observe(m));
+
+const secs = [...document.querySelectorAll('[id]')];
+const links = document.querySelectorAll('.sb-link');
+function nav() {
+  const y = window.scrollY + 100;
+  let cur = secs[0]?.id;
+  for (const s of secs) { if (s.offsetTop <= y) cur = s.id; }
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}
+window.addEventListener('scroll', nav, { passive: true });
+nav();
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>

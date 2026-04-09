@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Cycle Trading Operationnel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0C0F0A;
+  --bg2:      #111510;
+  --bg3:      #181D14;
+  --border:   #1F2A1A;
+  --em:       #3D7A3A;
+  --em2:      #56A853;
+  --em-light: #A3D9A1;
+  --em-pale:  #E8F5E8;
+  --amber:    #D4882A;
+  --amber-l:  #F5C56A;
+  --red:      #C9453A;
+  --blue:     #4A90B8;
+  --muted:    #3A4535;
+  --text:     #DDE8D8;
+  --text-dim: #7D9478;
+  --serif:    'Playfair Display', serif;
+  --sans:     'Syne', sans-serif;
+  --body:     'Source Serif 4', serif;
+  --mono:     'Roboto Mono', monospace;
+  --sw: 270px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.75; display: flex; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── SIDEBAR ─────────────────────────── */
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 100;
+}
+
+.sb-logo {
+  padding: 28px 22px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sb-logo .mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--em), var(--em2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(61,122,58,.3);
+}
+
+.sb-logo h1 {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--em-light);
+  line-height: 1.25;
+}
+
+.sb-logo p {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.sb-section {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 16px 22px 5px;
+}
+
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 22px; text-decoration: none;
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 500;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.sb-link:hover { background: rgba(86,168,83,.06); color: var(--text); }
+.sb-link.active { background: rgba(86,168,83,.1); color: var(--em-light); border-left-color: var(--em2); }
+
+.sb-link .n {
+  font-family: var(--mono);
+  font-size: 0.62rem; font-weight: 500;
+  color: var(--muted); min-width: 22px;
+}
+.sb-link.active .n { color: var(--em2); }
+
+/* ── PROGRESS ────────────────────────── */
+#pbar {
+  position: fixed; top: 0; left: var(--sw); right: 0;
+  height: 2px; background: var(--border); z-index: 200;
+}
+#pfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--em), var(--em2), var(--amber));
+  width: 0%; transition: width 0.1s linear;
+}
+
+/* ── MAIN ────────────────────────────── */
+#main { margin-left: var(--sw); flex: 1; min-height: 100vh; }
+
+/* ── HERO ────────────────────────────── */
+#hero {
+  position: relative; overflow: hidden;
+  padding: 80px 64px 72px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-noise {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-lines {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 20px,
+    rgba(61,122,58,.04) 20px, rgba(61,122,58,.04) 21px
+  );
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(86,168,83,.12);
+  border: 1px solid rgba(86,168,83,.3);
+  color: var(--em-light);
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+
+#hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 5.5vw, 5rem);
+  line-height: 1.0;
+  color: #fff;
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+#hero h1 .em {
+  display: block;
+  background: linear-gradient(90deg, var(--em2), var(--em-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+#hero .sub {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 400;
+  color: var(--text-dim); max-width: 560px; margin-bottom: 44px;
+  line-height: 1.8;
+}
+
+.hero-kpis {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 14px; max-width: 660px;
+}
+
+.kpi {
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+}
+.kpi:hover { border-color: rgba(86,168,83,.35); }
+
+.kpi-v {
+  font-family: var(--mono);
+  font-size: 1.5rem; font-weight: 500;
+  color: var(--em-light); line-height: 1;
+  margin-bottom: 5px;
+}
+.kpi-l {
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── MODULE ──────────────────────────── */
+.mod {
+  padding: 64px; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.mod.vis { opacity: 1; transform: none; }
+
+.mod-head {
+  display: flex; align-items: flex-start; gap: 18px;
+  margin-bottom: 40px;
+}
+
+.mod-tag {
+  font-family: var(--mono);
+  font-size: 0.65rem; font-weight: 500;
+  color: var(--em2);
+  background: rgba(86,168,83,.1);
+  border: 1px solid rgba(86,168,83,.22);
+  padding: 5px 12px; border-radius: 6px;
+  white-space: nowrap; margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+.mod-head h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: #fff; line-height: 1.1;
+}
+
+/* ── SECTION TITLES ─────────────────── */
+.sec {
+  font-family: var(--sans);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--em-light);
+  margin: 42px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+  display: flex; align-items: center; gap: 10px;
+}
+.sec::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 18px;
+  background: linear-gradient(var(--em), var(--em2));
+  border-radius: 2px; flex-shrink: 0;
+}
+
+.subsec {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 700;
+  color: var(--text); margin: 26px 0 10px;
+}
+
+p {
+  font-size: 0.95rem; color: var(--text-dim);
+  line-height: 1.85; margin-bottom: 12px;
+}
+p strong { color: var(--text); font-weight: 600; }
+em { color: var(--em-light); font-style: italic; }
+
+/* ── CALLOUTS ────────────────────────── */
+.box {
+  border-radius: 10px; padding: 20px 24px;
+  margin: 18px 0; border-left: 3px solid;
+  background: rgba(255,255,255,.022);
+}
+.box-em  { border-color: var(--em2);  background: rgba(86,168,83,.06); }
+.box-am  { border-color: var(--amber); background: rgba(212,136,42,.06); }
+.box-re  { border-color: var(--red);   background: rgba(201,69,58,.06); }
+.box-bl  { border-color: var(--blue);  background: rgba(74,144,184,.06); }
+
+.box-title {
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 7px;
+}
+.box-em .box-title  { color: var(--em-light); }
+.box-am .box-title  { color: var(--amber-l); }
+.box-re .box-title  { color: #FCA5A5; }
+.box-bl .box-title  { color: #93C5FD; }
+.box p { margin: 0; font-size: 0.88rem; }
+
+/* ── LISTS ───────────────────────────── */
+ul.cl { list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 8px; }
+ul.cl li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ul.cl li::before {
+  content: '›'; color: var(--em2); font-size: 1rem;
+  margin-top: 1px; flex-shrink: 0;
+}
+ul.cl li strong { color: var(--text); }
+
+ol.nl { counter-reset: nl; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 9px; }
+ol.nl li {
+  counter-increment: nl;
+  display: flex; align-items: flex-start; gap: 13px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ol.nl li::before {
+  content: counter(nl);
+  background: rgba(86,168,83,.15);
+  border: 1px solid rgba(86,168,83,.28);
+  color: var(--em-light);
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+}
+
+/* ── TABLE ───────────────────────────── */
+.tbl {
+  width: 100%; border-collapse: collapse;
+  margin: 18px 0; font-size: 0.87rem;
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.tbl th {
+  background: rgba(86,168,83,.1);
+  color: var(--em-light);
+  font-family: var(--sans); font-weight: 700;
+  font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 11px 18px; text-align: left;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+}
+.tbl td {
+  padding: 10px 18px; color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top; line-height: 1.6;
+}
+.tbl td:first-child { color: var(--text); font-weight: 600; font-size: 0.83rem; white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(255,255,255,.015); }
+
+/* ── CYCLE DIAGRAM ───────────────────── */
+.cycle {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 3px; margin: 18px 0; position: relative;
+}
+.cycle::before {
+  content: '';
+  position: absolute; top: 50%; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--em), var(--amber));
+  transform: translateY(-50%); z-index: 0;
+  pointer-events: none;
+}
+
+.cy {
+  padding: 18px 14px; border-radius: 10px;
+  text-align: center; border: 1px solid; z-index: 1;
+  transition: transform 0.2s;
+  position: relative;
+}
+.cy:hover { transform: translateY(-3px); }
+.cy .phase {
+  font-family: var(--sans); font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.cy .name { font-family: var(--serif); font-size: 1.15rem; margin-bottom: 4px; line-height: 1.1; }
+.cy .desc { font-size: 0.72rem; opacity: 0.75; line-height: 1.4; }
+.cy-b { background: rgba(86,168,83,.08); border-color: rgba(86,168,83,.3); color: var(--em-light); }
+.cy-i { background: rgba(201,69,58,.08); border-color: rgba(201,69,58,.3); color: #FCA5A5; }
+.cy-m { background: rgba(212,136,42,.08); border-color: rgba(212,136,42,.3); color: var(--amber-l); }
+.cy-c { background: rgba(74,144,184,.08); border-color: rgba(74,144,184,.3); color: #93C5FD; }
+
+/* ── SPIN PLATE ──────────────────────── */
+.plates {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin: 18px 0;
+}
+.plate {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 18px 18px;
+  transition: border-color 0.2s;
+}
+.plate:hover { border-color: rgba(86,168,83,.3); }
+.plate h4 {
+  font-family: var(--sans); font-size: 0.82rem; font-weight: 700;
+  color: var(--text); margin-bottom: 6px;
+  display: flex; align-items: center; gap: 7px;
+}
+.plate h4 .tag {
+  background: rgba(212,136,42,.15); color: var(--amber-l);
+  font-family: var(--mono); font-size: 0.64rem;
+  padding: 2px 8px; border-radius: 4px;
+}
+.plate p { font-size: 0.82rem; margin: 0; }
+
+/* ── STAT STRIP ──────────────────────── */
+.stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin: 20px 0;
+}
+.stat {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 18px 18px; text-align: center;
+}
+.stat .v {
+  font-family: var(--mono); font-size: 1.8rem; font-weight: 500;
+  line-height: 1; margin-bottom: 6px;
+}
+.stat .l {
+  font-family: var(--sans); font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-dim);
+}
+
+/* ── CHECKLIST ───────────────────────── */
+.ck-list { display: flex; flex-direction: column; gap: 5px; margin: 16px 0; }
+.ck {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 16px;
+  background: rgba(255,255,255,.018);
+  border: 1px solid var(--border);
+  border-radius: 8px; cursor: pointer;
+  transition: all 0.15s; user-select: none;
+}
+.ck:hover { border-color: rgba(86,168,83,.3); background: rgba(86,168,83,.03); }
+.ck.ticked { border-color: rgba(86,168,83,.25); background: rgba(86,168,83,.05); }
+.ck-box {
+  width: 17px; height: 17px;
+  border: 2px solid var(--muted);
+  border-radius: 4px; flex-shrink: 0; margin-top: 2px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.ck.ticked .ck-box { background: var(--em2); border-color: var(--em2); }
+.ck.ticked .ck-box::after { content: '✓'; color: #000; font-size: 0.65rem; font-weight: 700; }
+.ck span { font-size: 0.875rem; color: var(--text-dim); line-height: 1.6; }
+.ck.ticked span { color: var(--text); }
+
+/* ── QUOTE ───────────────────────────── */
+.quote {
+  position: relative; padding: 30px 36px;
+  margin: 32px 0;
+  border-left: 3px solid var(--em);
+  background: rgba(86,168,83,.04);
+  border-radius: 0 10px 10px 0;
+}
+.quote::before {
+  content: '"'; position: absolute; top: -12px; left: 14px;
+  font-family: var(--serif); font-size: 5rem;
+  color: rgba(86,168,83,.18); line-height: 1;
+}
+.quote p {
+  font-family: var(--serif); font-size: 1.2rem; font-style: italic;
+  color: var(--text); margin: 0; line-height: 1.65;
+}
+.quote cite {
+  display: block; margin-top: 12px;
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.09em; text-transform: uppercase; color: var(--em2);
+}
+
+/* ── TIMEFRAME PYRAMID ───────────────── */
+.pyramid {
+  display: flex; flex-direction: column; gap: 4px;
+  align-items: center; margin: 22px 0;
+}
+.pyr-row {
+  border-radius: 8px; padding: 12px 24px;
+  text-align: center; border: 1px solid; transition: transform 0.2s;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+}
+.pyr-row:hover { transform: scale(1.01); }
+.pyr-label {
+  font-family: var(--sans); font-size: 0.8rem; font-weight: 700;
+  white-space: nowrap;
+}
+.pyr-desc { font-size: 0.8rem; opacity: 0.75; text-align: right; }
+.pyr-1 { width: 100%; background: rgba(201,69,58,.08); border-color: rgba(201,69,58,.25); color: #FCA5A5; }
+.pyr-2 { width: 90%; background: rgba(212,136,42,.08); border-color: rgba(212,136,42,.25); color: var(--amber-l); }
+.pyr-3 { width: 80%; background: rgba(74,144,184,.08); border-color: rgba(74,144,184,.25); color: #93C5FD; }
+.pyr-4 { width: 70%; background: rgba(86,168,83,.08); border-color: rgba(86,168,83,.3); color: var(--em-light); }
+.pyr-5 { width: 58%; background: rgba(147,197,253,.08); border-color: rgba(147,197,253,.25); color: #BAE6FD; }
+
+/* ── ENTRY MODEL ─────────────────────── */
+.entry-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px 26px;
+  margin: 16px 0; position: relative; overflow: hidden;
+}
+.entry-card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--em), transparent);
+}
+.ec-label {
+  font-family: var(--sans); font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--em2); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.ec-label span {
+  background: rgba(86,168,83,.12); border: 1px solid rgba(86,168,83,.25);
+  padding: 2px 10px; border-radius: 100px; font-size: 0.65rem;
+}
+.entry-card h3 {
+  font-family: var(--serif); font-size: 1.3rem; color: #fff;
+  margin-bottom: 10px;
+}
+.entry-card p { margin: 0; font-size: 0.88rem; }
+
+.ev-grid { display: grid; gap: 3px; margin: 14px 0; }
+.ev-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 14px; background: rgba(255,255,255,.02);
+  border-radius: 6px; border: 1px solid rgba(255,255,255,.04);
+}
+.ev-row:hover { background: rgba(255,255,255,.035); }
+.ev-l { font-family: var(--sans); font-size: 0.74rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+.ev-v { font-family: var(--mono); font-size: 0.85rem; font-weight: 500; }
+.ev-v.g { color: var(--em-light); }
+.ev-v.a { color: var(--amber-l); }
+.ev-v.r { color: #FCA5A5; }
+.ev-v.b { color: #93C5FD; }
+
+/* ── SESSION TIMELINE ────────────────── */
+.timeline {
+  display: grid; grid-template-columns: auto 1fr;
+  gap: 8px 18px; margin: 18px 0; align-items: start;
+}
+.tl-time {
+  font-family: var(--mono); font-size: 0.78rem; font-weight: 500;
+  color: var(--em2); text-align: right; padding-top: 2px; white-space: nowrap;
+}
+.tl-item {
+  padding: 10px 16px;
+  border-left: 2px solid var(--border);
+  position: relative; padding-left: 20px;
+}
+.tl-item::before {
+  content: ''; position: absolute; left: -5px; top: 13px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--border);
+}
+.tl-item.hot::before { background: var(--em2); box-shadow: 0 0 6px var(--em2); }
+.tl-item.hot { border-color: rgba(86,168,83,.4); }
+.tl-title { font-family: var(--sans); font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.tl-desc { font-size: 0.8rem; color: var(--text-dim); }
+
+/* ── FOOTER ──────────────────────────── */
+#footer { padding: 48px 64px; text-align: center; border-top: 1px solid var(--border); }
+#footer p { font-family: var(--sans); color: var(--muted); font-size: 0.8rem; margin: 0; }
+
+/* ── ANIMATIONS ──────────────────────── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+.hero-tag, #hero h1, #hero .sub, .hero-kpis { animation: fadeUp 0.6s ease both; }
+.hero-tag { animation-delay: 0.1s; }
+#hero h1 { animation-delay: 0.22s; }
+#hero .sub { animation-delay: 0.34s; }
+.hero-kpis { animation-delay: 0.46s; }
+
+@media (max-width: 900px) {
+  :root { --sw: 0px; }
+  #sidebar { transform: translateX(-270px); }
+  #main { margin-left: 0; }
+  .mod, #hero { padding: 36px 22px; }
+  .hero-kpis, .stats, .plates { grid-template-columns: 1fr 1fr; }
+  .cycle { grid-template-columns: repeat(2, 1fr); }
+  .pyramid .pyr-row { width: 100%; }
+}
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+
+<div id="pbar"><div id="pfill"></div></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="mark">📈</div>
+    <h1>Cycle Trading Operationnel</h1>
+    <p>Algorithmic Academy — Cours Complet</p>
+  </div>
+
+  <div class="sb-section">Fondations</div>
+  <a class="sb-link active" href="#hero"><span class="n">00</span>Vue d'ensemble</a>
+  <a class="sb-link" href="#m1"><span class="n">01</span>Introduction & Mindset</a>
+  <a class="sb-link" href="#m2"><span class="n">02</span>Bases Forex</a>
+  <a class="sb-link" href="#m3"><span class="n">03</span>Smart Money Concepts</a>
+
+  <div class="sb-section">Structure & Liquidité</div>
+  <a class="sb-link" href="#m4"><span class="n">04</span>Market Structure</a>
+  <a class="sb-link" href="#m5"><span class="n">05</span>Structure Cycle</a>
+  <a class="sb-link" href="#m6"><span class="n">06</span>Liquidity & Inducements</a>
+  <a class="sb-link" href="#m7"><span class="n">07</span>Points of Interest</a>
+
+  <div class="sb-section">Timing & Exécution</div>
+  <a class="sb-link" href="#m8"><span class="n">08</span>Timeframe Guidance</a>
+  <a class="sb-link" href="#m9"><span class="n">09</span>Daily Cycle</a>
+  <a class="sb-link" href="#m10"><span class="n">10</span>Cycles Combinés</a>
+  <a class="sb-link" href="#m11"><span class="n">11</span>LTF Confirmations</a>
+
+  <div class="sb-section">Objectif</div>
+  <a class="sb-link" href="#m12"><span class="n">12</span>Prop Firms & Scaling</a>
+  <a class="sb-link" href="#m13"><span class="n">13</span>Power of One Setup</a>
+  <a class="sb-link" href="#m14"><span class="n">14</span>Checklist & Roadmap</a>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-tag">📈 Forex · Smart Money · Liquidity · Prop Firms</div>
+  <h1>Pathway<br><span class="em">to Profits</span></h1>
+  <p class="sub">Le système complet de Algorithmic Academy — 8 ans d'expérience condensés en une approche mécanique, objective et hautement confluente pour atteindre votre premier $1 000.</p>
+  <div class="hero-kpis">
+    <div class="kpi"><div class="kpi-v" style="color:var(--em-light)">1:10</div><div class="kpi-l">RR Cible</div></div>
+    <div class="kpi"><div class="kpi-v" style="color:var(--amber-l)">50–70%</div><div class="kpi-l">Win Rate</div></div>
+    <div class="kpi"><div class="kpi-v" style="color:#93C5FD">M1/M5</div><div class="kpi-l">Exécution LTF</div></div>
+    <div class="kpi"><div class="kpi-v" style="color:#FCA5A5">2%</div><div class="kpi-l">Gain Cible Prop</div></div>
+  </div>
+</section>
+
+<!-- ══════ M1 ══════ -->
+<section class="mod" id="m1">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 01</span>
+    <h2>Introduction, Mindset & Objectif</h2>
+  </div>
+
+  <div class="sec">Qui est Algorithmic Academy ?</div>
+  <p>Dentiste diplômé après 6 ans d'université à Madrid, Algorithmic Academy a commencé le trading en tant qu'étudiant cherchant une liberté financière. Après 8 ans à parcourir chaque school of thought, chaque mentor, chaque stratégie disponible, il a construit son propre système, déposé les outils dentaires et trade à plein temps depuis 3–4 ans.</p>
+  <p>Sa différenciation : <strong>transparence totale avec un track-record public long terme</strong> — pas de screenshots isolés, pas de Lamborghinis achetées avec l'argent des cours.</p>
+
+  <div class="sec">Le Valley of Despair — Cycle Émotionnel du Changement</div>
+  <ol class="nl">
+    <li><strong>Uninformed Optimism</strong> — Tu es excité, tu penses que c'est facile, tu as trouvé le meilleur mentor.</li>
+    <li><strong>Informed Pessimism</strong> — Tu commences à comprendre que c'est dur et long.</li>
+    <li><strong>Valley of Despair</strong> — Ça ne marche pas. Tu es prêt à tout abandonner.</li>
+    <li><strong>Informed Optimism</strong> — Si tu persistes, tu franchis le seuil d'activation et tu trouves la profitabilité.</li>
+  </ol>
+  <div class="box box-am">
+    <div class="box-title">⚡ Le Piège Fatal</div>
+    <p>La majorité des traders entrent dans la Valley of Despair et sautent vers une nouvelle stratégie, puis une autre, sans jamais franchir le seuil d'activation minimal. Chaque cycle leur prend 1 000 heures et les laisse toujours dans la vallée. La solution : <strong>choisir une approche, la maîtriser, rester discipliné jusqu'au seuil.</strong></p>
+  </div>
+
+  <div class="sec">L'Objectif de ce Cours</div>
+  <p>L'objectif <strong>n'est pas</strong> de faire de toi un trader professionnel à plein temps en quelques semaines. L'objectif est simple et précis :</p>
+  <div class="box box-em">
+    <div class="box-title">🎯 Mission Statement</div>
+    <p><strong>Faire ton premier $1 000 avec le trading.</strong> Via un plan d'action spécifique, un système mécanique testé, et les Prop Firms pour accéder à du capital sans risquer ton propre argent. Pas de 1 000% de retour — juste 2% une fois sur un compte de $100k.</p>
+  </div>
+
+  <div class="sec">Le Levier — Pourquoi le Trading ?</div>
+  <p>La plupart des voies vers la liberté sont <em>linéaires</em> : plus tu travailles, plus tu gagnes, mais tu restes plafonné à ton temps. Le trading offre un <strong>levier non-linéaire</strong> : le même skill sur un compte de $1k ou $1M produit des retours fondamentalement différents.</p>
+  <p>10% annuel sur $1 000 = $100. 10% annuel sur $1 000 000 = $100 000. La stratégie est identique — seul le capital change. C'est pourquoi les Prop Firms sont révolutionnaires : elles t'offrent ce capital sans que tu le possèdes.</p>
+
+  <div class="sec">Analyse vs Trader — Deux Rôles Distincts</div>
+  <div class="box box-bl">
+    <div class="box-title">🔵 Distinction Fondamentale</div>
+    <p><strong>Analyst :</strong> comprend le marché, forme des opinions, a une directional bias. <strong>Trader :</strong> exécute sur cette analyse avec des confirmations précises, des checklists et des critères d'invalidation. Ce cours te transforme en trader, pas seulement en analyste.</p>
+  </div>
+</section>
+
+<!-- ══════ M2 ══════ -->
+<section class="mod" id="m2">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 02</span>
+    <h2>Bases du Forex — Vocabulaire & Fondations</h2>
+  </div>
+
+  <div class="sec">Qu'est-ce que le Forex ?</div>
+  <p>Le Forex (Foreign Exchange) est le marché de change des devises — $6.6 trillions de transactions quotidiennes. Tu spécules sur la force relative d'une devise par rapport à une autre. Si tu achètes EUR/USD, tu parles que l'Euro va s'apprécier par rapport au Dollar.</p>
+
+  <table class="tbl">
+    <thead><tr><th>Terme</th><th>Définition</th></tr></thead>
+    <tbody>
+      <tr><td>Base Currency</td><td>Première devise dans la paire (ex: EUR dans EUR/USD). Ce que tu achètes.</td></tr>
+      <tr><td>Quote Currency</td><td>Deuxième devise (ex: USD). Ce contre quoi tu achètes.</td></tr>
+      <tr><td>Pip</td><td>4ème décimale pour la plupart des paires. Unité de mesure du mouvement de prix. Ex: 1.2550 → 1.2551 = +1 pip.</td></tr>
+      <tr><td>Pipette</td><td>5ème décimale = 0.1 pip. Fraction d'un pip.</td></tr>
+      <tr><td>Spread</td><td>Différence entre le prix d'achat (ask) et de vente (bid). Coût de la transaction.</td></tr>
+      <tr><td>Leverage</td><td>Multiplicateur de capital. 1:100 = $1 000 déposé = $100 000 de buying power.</td></tr>
+      <tr><td>CFD</td><td>Contract For Difference — le type de trading retail le plus courant.</td></tr>
+      <tr><td>Stop Loss</td><td>Point prédéfini de sortie en perte pour protéger le capital.</td></tr>
+      <tr><td>Take Profit</td><td>Point prédéfini de sortie en profit.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Qu'est-ce que la Liquidité ?</div>
+  <p>La liquidité est l'oxygène et le carburant du marché. Sans transactions, le prix ne bouge pas. Il y a deux types de liquidité :</p>
+  <ul class="cl">
+    <li><strong>Forceful Exit (Stop Losses) :</strong> les grandes institutions forcent des participants à sortir de leurs positions. Ces stop losses deviennent des orders à l'opposé — ils alimentent les positions institutionnelles.</li>
+    <li><strong>Enticed Entrance (Resting Orders) :</strong> les institutions entrent et convainquent d'autres de s'engager dans la direction opposée à leur vrai trade, créant la liquidité qu'elles cherchent à exécuter.</li>
+  </ul>
+  <div class="box box-em">
+    <div class="box-title">💡 Concept Clé</div>
+    <p>Quand tu hits ton stop loss, tu n'as pas "juste clôturé une position". Tu as changé de côté : de buyer tu es devenu seller pour sortir. Ces sellers involontaires sont exactement ce dont les institutions ont besoin pour remplir leurs buy orders. <strong>Le prix est engineered, pas aléatoire.</strong></p>
+  </div>
+
+  <div class="sec">Bougies Japonaises (Candlesticks)</div>
+  <p>Une bougie = une période de temps packagée (1 min, 5 min, 1h...). Les informations qu'elle contient :</p>
+  <ul class="cl">
+    <li><strong>Corps (Body) :</strong> différence entre prix d'ouverture et de clôture. Vert = bullish (close > open). Rouge = bearish (close < open).</li>
+    <li><strong>Mèches (Wicks) :</strong> le plus haut et le plus bas atteints durant la période.</li>
+    <li><strong>Engulfing Candle :</strong> bougie qui consume le corps de la précédente. Signal d'intention forte — devient un élément clé du Refined IFC.</li>
+    <li><strong>Imbalance :</strong> les wicks de la bougie précédente et suivante ne se chevauchent pas. Gap dans le marché = mouvement agressif institutionnel.</li>
+  </ul>
+
+  <div class="sec">Les Sessions de Trading</div>
+  <table class="tbl">
+    <thead><tr><th>Session</th><th>Heure UK</th><th>Heure NY</th><th>Caractère</th></tr></thead>
+    <tbody>
+      <tr><td>Asie (Tokyo/Sydney)</td><td>22h – 06h</td><td>17h – 01h</td><td>Faible volatilité → Consolidation → Asia Range</td></tr>
+      <tr><td>Frankfurt Open</td><td>07h</td><td>02h</td><td>Pré-London → manipulation possible</td></tr>
+      <tr><td>London Open ★</td><td>08h – 09h</td><td>03h – 04h</td><td>Haute volatilité → Inducement du jour</td></tr>
+      <tr><td>New York Open ★</td><td>14h – 15h</td><td>09h – 10h</td><td>2ème période haute volatilité → continuation ou reversal</td></tr>
+      <tr><td>London Close</td><td>17h</td><td>12h</td><td>Clôture session européenne → possible manipulation</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════ M3 ══════ -->
+<section class="mod" id="m3">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 03</span>
+    <h2>Smart Money Concepts — Les Outils Raffinés</h2>
+  </div>
+
+  <div class="sec">Contexte — Pourquoi le SMC Classique Devient une Liquidité</div>
+  <p>Il y a 5 ans, le SMC était niche et profitable. Aujourd'hui, avec des millions de traders qui l'utilisent, les grandes institutions ciblent les zones SMC classiques pour y placer leurs inducements. Ce n'est pas que la théorie est fausse — c'est qu'elle est devenue une forme de liquidité en elle-même.</p>
+  <div class="box box-re">
+    <div class="box-title">🔴 Avertissement</div>
+    <p>Ne pas trader les Order Blocks et Fair Value Gaps standards de manière aveugle. Ce sont désormais des cibles d'inducement. Utiliser les éléments sélectionnés par Algorithmic Academy, combinés différemment, pour rester du côté des vrais movers.</p>
+  </div>
+
+  <div class="sec">Les 5 Concepts Clés Retenus</div>
+
+  <div class="subsec">1. Composite Operator (CO)</div>
+  <p>Terme de Wyckoff Theory : désigne l'ensemble des participants d'un côté du marché (acheteurs ou vendeurs) traités comme un seul acteur unifié. Quand le marché monte, le CO bullish est en contrôle. Ce sont les plus grandes institutions qui peuvent mouvoir les prix.</p>
+
+  <div class="subsec">2. Change of Character (ChoCH)</div>
+  <p>Changement de structure de marché visible — un break of structure. Si le marché faisait higher highs + higher lows et qu'on forme soudain un lower low, il y a un ChoCH. C'est la frontière entre une tendance et une autre.</p>
+
+  <div class="subsec">3. IFC — Institutionally Funded Candle</div>
+  <p>La dernière bougie dans une direction avant un mouvement contraire significatif. Pour qu'une institution execute ses ventes massives, elle doit d'abord acheter (pour créer les conditions de liquidité). La bougie d'achat avant la chute = IFC. Elle nécessitera une mitigation future.</p>
+  <div class="box box-am">
+    <div class="box-title">💡 Règle</div>
+    <p>Un IFC valide a <strong>causé un break of structure</strong> (pas juste un petit mouvement) OU a <strong>run de la liquidité</strong>. Ces deux conditions créent une zone qui nécessitera une mitigation — c'est votre opportunité de trade.</p>
+  </div>
+
+  <div class="subsec">4. L'Imbalance (Fair Value Gap)</div>
+  <p>Prix qui bouge si agressivement dans une direction que les wicks de la bougie précédente et suivante ne se chevauchent pas, laissant un "trou" dans le marché. Cela signifie une <strong>présence institutionnelle massive et urgente</strong>. Ce gap doit être comblé ultérieurement.</p>
+  <ul class="cl">
+    <li><strong>Healthy price action :</strong> wicks des bougies 1 et 3 se chevauchent → équilibre normal</li>
+    <li><strong>Imbalance :</strong> gap visible entre wicks bougie 1 et bougie 3 → mouvement agressif, unilatéral</li>
+    <li>Ne pas trader les imbalances seules comme points d'entrée (risque:rendement faible)</li>
+    <li>Utiliser l'imbalance comme <em>confirmation d'intention</em> combinée à un IFC</li>
+  </ul>
+
+  <div class="subsec">5. ⭐ Le Refined IFC — La Combinaison Unique</div>
+  <p>La vraie innovation de Algorithmic Academy : combiner 4 éléments en un seul signal haute probabilité.</p>
+  <div class="entry-card">
+    <div class="ec-label">Refined IFC = Zone d'Entrée Principale <span>Non-négociable</span></div>
+    <h3>IFC + Imbalance + Engulfing + Break of Structure</h3>
+    <div class="ev-grid">
+      <div class="ev-row"><span class="ev-l">IFC</span><span class="ev-v g">Dernière bougie avant le mouvement (buy before sell)</span></div>
+      <div class="ev-row"><span class="ev-l">Imbalance</span><span class="ev-v a">Gap agressif → présence institutionnelle confirmée</span></div>
+      <div class="ev-row"><span class="ev-l">Engulfing</span><span class="ev-v b">Consomme la bougie précédente → intention forte avec agressivité</span></div>
+      <div class="ev-row"><span class="ev-l">Break of Structure</span><span class="ev-v g">Confirm le changement de direction — validation externe</span></div>
+    </div>
+    <p>Ces 4 éléments ensemble = zone qui nécessite une mitigation = votre point d'entrée.</p>
+  </div>
+
+  <div class="sec">Qui Contrôle Vraiment le Marché ?</div>
+  <p>3 catégories de participants :</p>
+  <ul class="cl">
+    <li><strong>Central Banks + Interbanks :</strong> les plus gros. Capital quasi-illimité. Causent les vrais mouvements.</li>
+    <li><strong>Hedge Funds + Smaller Banks :</strong> contribution significative, mais utilisent souvent support/résistance, trendlines, Fibonacci classiques.</li>
+    <li><strong>Retail Traders (toi et moi) :</strong> ~2–3% du volume total. La "crossfire" des batailles institutionnelles.</li>
+  </ul>
+  <div class="box box-bl">
+    <div class="box-title">🔵 Insight Important</div>
+    <p>Les institutions ne nous ciblent pas spécifiquement — elles se battent entre elles. Mais nous sommes pris en sandwich. En comprenant leurs patterns, on peut se positionner à leurs côtés au lieu d'être leur liquidité.</p>
+  </div>
+</section>
+
+<!-- ══════ M4 ══════ -->
+<section class="mod" id="m4">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 04</span>
+    <h2>Market Structure — Bases & Concepts Avancés</h2>
+  </div>
+
+  <div class="sec">Les 3 Phases de Marché</div>
+  <div class="cycle">
+    <div class="cy cy-b"><div class="phase">Phase 1</div><div class="name">Bullish</div><div class="desc">Higher Highs + Higher Lows</div></div>
+    <div class="cy cy-i"><div class="phase">Phase 2</div><div class="name">Bearish</div><div class="desc">Lower Highs + Lower Lows</div></div>
+    <div class="cy cy-m"><div class="phase">Phase 3</div><div class="name">Consolidation</div><div class="desc">Range-bound, accumulation</div></div>
+    <div class="cy cy-c"><div class="phase">Fractal</div><div class="name">Partout</div><div class="desc">Toutes les règles s'appliquent sur tout timeframe</div></div>
+  </div>
+
+  <div class="sec">Structure Externe vs Interne</div>
+  <p>Une des distinctions les plus importantes — et la plus mal comprise de la majorité des traders :</p>
+  <ul class="cl">
+    <li><strong>External Structure (Main Push) :</strong> le grand mouvement qui crée un nouveau high ou low. Définit la vraie tendance. Range de A (origin) à B (destination).</li>
+    <li><strong>Internal Structure :</strong> les mouvements à l'intérieur du range A→B. Temporairement contre-tendance. Lower highs/lows dans un bull market.</li>
+    <li><strong>Erreur classique :</strong> confondre une structure interne bearish avec un reversal et vendre dans un bull market.</li>
+  </ul>
+
+  <div class="sec">L'Efficiency of the Pullback — Concept Original</div>
+  <p>Concept créé par Algorithmic Academy, introuvable en ligne. Il résout la question : "Quand est-ce qu'un pullback est terminé ?"</p>
+
+  <div class="box box-em">
+    <div class="box-title">💡 Règle Fondamentale</div>
+    <p>Dans un marché bullish externe, si le pullback <strong>touche le point A (demand externe)</strong> avant d'atteindre un supply zone → les zones de supply sont invalidées. On ne vend plus. Le pullback est "efficient" — il a atteint sa destination.</p>
+  </div>
+
+  <p>Inversement : si on est bearish externe et qu'un pullback monte jusqu'au point A (supply externe) avant d'atteindre un demand → les zones de demand sont invalidées.</p>
+
+  <ul class="cl">
+    <li>Vendre uniquement dans les supply zones qui <strong>n'ont pas encore été atteintes par le point A externe</strong></li>
+    <li>Si le prix arrive à l'extreme demand en premier → annuler tous les plans de vente</li>
+    <li>C'est l'outil d'invalidation le plus puissant contre les faux setups</li>
+  </ul>
+
+  <div class="sec">Break of Structure (BOS)</div>
+  <p>Le break of structure est la charnière entre les tendances. Il définit quand l'internal structure confirme un ChoCH.</p>
+  <ul class="cl">
+    <li>BOS externe → nouveau main push → redéfinit la tendance macro</li>
+    <li>BOS interne → signal d'alignement avec la tendance externe → opportunité pro-trend</li>
+    <li>Un BOS valide nécessite une <strong>fermeture de bougie</strong> au-delà du niveau précédent — pas juste un wick</li>
+    <li>Un BOS est le point de départ pour identifier les zones d'intérêt (supply/demand) associées</li>
+  </ul>
+
+  <div class="sec">Pro-Trend vs Counter-Trend</div>
+  <div class="box box-am">
+    <div class="box-title">⭐ Priorité Absolue</div>
+    <p><strong>Pro-trend = externe + interne alignés.</strong> C'est quand la structure externe est bullish ET la structure interne forme une opportunité bullish (BOS interne haussier). Ce sont les setups les plus haute probabilité. Tout le reste est contre-tendance — possible mais risqué pour un débutant.</p>
+  </div>
+
+  <div class="sec">Le Marché est Fractal</div>
+  <p>La loi la plus fondamentale du cours : les mêmes lois s'appliquent sur tous les timeframes. Un daily BOS contient un H4 BOS, qui contient un M15 BOS, qui contient un M1 BOS. Tout part du M1 — et remonte jusqu'au daily. Si le M1 ne break pas, rien d'autre ne break.</p>
+</section>
+
+<!-- ══════ M5 ══════ -->
+<section class="mod" id="m5">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 05</span>
+    <h2>Le Structure Cycle — Framework en 4 Étapes</h2>
+  </div>
+
+  <div class="sec">Les 4 Étapes du Structure Cycle</div>
+  <p>Ce framework te permet de toujours savoir où tu en es dans la structure de marché :</p>
+
+  <div class="cycle">
+    <div class="cy cy-b"><div class="phase">Étape 1</div><div class="name">Main Push</div><div class="desc">Identifier le grand mouvement A→B créant un nouveau high/low</div></div>
+    <div class="cy cy-i"><div class="phase">Étape 2</div><div class="name">Internal Structure</div><div class="desc">Identifier le fractal interne et son BOS interne</div></div>
+    <div class="cy cy-m"><div class="phase">Étape 3</div><div class="name">Complex Pullback</div><div class="desc">Attendre le retrace en direction de l'extreme demand/supply</div></div>
+    <div class="cy cy-c"><div class="phase">Étape 4</div><div class="name">Efficiency of Pullback</div><div class="desc">Confirmer que le pullback est complet → pro-trend trade</div></div>
+  </div>
+
+  <div class="sec">Application Pratique du Structure Cycle</div>
+  <ol class="nl">
+    <li><strong>Identifier le Main Push :</strong> chercher un mouvement qui brise un previous high/low et crée une nouvelle territory. Ex: un higher low qui fait un higher high dans un bull market.</li>
+    <li><strong>Internal Structure :</strong> zoomer dans ce main push — identifier les lower highs/lows (si bull). Trouver le BOS interne haussier pour confirmer l'alignement.</li>
+    <li><strong>Complex Pullback :</strong> attendre un break of the internal bullish trend. Chercher la demand area la plus proche — soit la decisional, soit l'extreme.</li>
+    <li><strong>Efficiency Test :</strong> si le prix touche l'extreme demand AVANT de monter vers le supply, les zones de supply sont invalides. Chercher seulement des buys depuis la demand area.</li>
+  </ol>
+
+  <div class="box box-em">
+    <div class="box-title">🔄 Cycle qui se Répète</div>
+    <p>Le Structure Cycle est <strong>infini et fractal</strong>. Une fois qu'un cycle est complété (main push → complex pullback → retour à l'extreme → nouveau main push), le prochain cycle recommence immédiatement depuis la nouvelle base. Identifier où tu es dans le cycle à chaque moment.</p>
+  </div>
+
+  <div class="sec">Multi-Timeframe : Structure Externe = 1H/4H, Interne = M15/M5</div>
+  <p>Le Structure Cycle s'applique simultanément sur plusieurs timeframes :</p>
+  <ul class="cl">
+    <li>1H/4H défini la tendance externe macro + les POIs principaux (extreme et decisional)</li>
+    <li>M15 affine la structure interne + les zones d'entrée plus précises</li>
+    <li>M1/M5 révèle l'execution : les lower time frame confirmations</li>
+  </ul>
+</section>
+
+<!-- ══════ M6 ══════ -->
+<section class="mod" id="m6">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 06</span>
+    <h2>Liquidity & Inducements — Le Carburant du Marché</h2>
+  </div>
+
+  <div class="sec">Le Liquidity Cycle — 3 Phases Fondamentales</div>
+  <div class="cycle">
+    <div class="cy cy-b"><div class="phase">Phase 1</div><div class="name">Buildup</div><div class="desc">Zones de consolidation, trendlines, equal highs/lows. Accumulation d'ordres.</div></div>
+    <div class="cy cy-i"><div class="phase">Phase 2</div><div class="name">Inducement</div><div class="desc">Run de liquidité — sweep des stop losses + entrée de la liquidity.</div></div>
+    <div class="cy cy-m"><div class="phase">Phase 3</div><div class="name">Mitigation</div><div class="desc">Retour à l'IFC pour clôturer les ordres en drawdown → votre entrée.</div></div>
+    <div class="cy cy-c"><div class="phase">Phase 4</div><div class="name">Continuation</div><div class="desc">Le vrai move directional commence → TP dans la liquidité opposée.</div></div>
+  </div>
+
+  <div class="sec">Les Types de Buildups</div>
+  <table class="tbl">
+    <thead><tr><th>Type de Buildup</th><th>Mécanisme</th><th>Probabilité</th></tr></thead>
+    <tbody>
+      <tr><td>Equal Highs / Equal Lows</td><td>Support/résistance multiple touches → stop losses au-dessus/en-dessous</td><td>⭐⭐⭐ Très haute</td></tr>
+      <tr><td>Trendline</td><td>Ascending/descending trendline → traders suivent la tendance</td><td>⭐⭐⭐ Très haute</td></tr>
+      <tr><td>Asia Range</td><td>Consolidation d'Asie → first liquidity pool of the day</td><td>⭐⭐⭐ Favorite de Algorithmic Academy</td></tr>
+      <tr><td>Structural Point</td><td>Swing highs/lows significatifs sur HTF → inducement majeur</td><td>⭐⭐⭐ Major inducement</td></tr>
+      <tr><td>Smart Money Trap</td><td>Zones SMC classiques devenues des pièges → advanced</td><td>⭐⭐ Avancé</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Les 3 Types d'Inducements par Timeframe</div>
+  <ul class="cl">
+    <li><strong>Major Inducement (>H1) :</strong> inducement d'un swing high/low de timeframe supérieur. Réaction la plus forte. Exemple : run du previous week high.</li>
+    <li><strong>Medium Inducement (M15–H1) :</strong> inducement intraday. Previous day's high/low, trendlines intraday. Bon suivi des major inducements.</li>
+    <li><strong>Minor Inducement (M1–M15) :</strong> Asia range, consolidations de quelques minutes. Entrées de précision après major/medium.</li>
+  </ul>
+  <div class="box box-em">
+    <div class="box-title">💡 Stacker les Inducements</div>
+    <p>Le setup idéal : <strong>major → medium → minor</strong> dans la même direction. Un inducement d'un swing HTF suivi d'un inducement intraday suivi d'un inducement M1 = triple confirmation. C'est à la fois la direction ET le timing.</p>
+  </div>
+
+  <div class="sec">Les 3Ms de l'Inducement</div>
+  <div class="plates">
+    <div class="plate">
+      <h4>💰 Means <span>Qui peut le faire ?</span></h4>
+      <p>Seules les plus grandes institutions ont le capital pour bouger le marché contre la majorité et créer ces manipulations. Pas les retail traders à 2–3% du volume. Si tu identifies un inducement, tu sais qu'une institution est derrière.</p>
+    </div>
+    <div class="plate">
+      <h4>🎯 Motive <span>Pourquoi le font-ils ?</span></h4>
+      <p>Ils ont besoin de liquidité pour exécuter leurs positions. Acheter $1B dans une direction nécessite des vendeurs. L'inducement les crée. Ce n'est pas malveillant — c'est structurellement nécessaire pour remplir leurs ordres.</p>
+    </div>
+    <div class="plate">
+      <h4>🧠 Mindset <span>Comment pensent les masses ?</span></h4>
+      <p>Les masses utilisent support/résistance, Fibonacci, trendlines, SMC classique. Ces patterns créent des zones prévisibles de liquidité. Les institutions connaissent ces zones et les ciblent systématiquement.</p>
+    </div>
+  </div>
+
+  <div class="sec">La Mitigation — Ton Point d'Entrée</div>
+  <p>Après un inducement, les institutions ont des ordres en drawdown (elles ont dû acheter pour vendre). Elles doivent revenir à ces ordres pour les fermer à break-even = <strong>mitigation</strong>. Ce moment de retour au Refined IFC est ton entrée.</p>
+  <div class="box box-am">
+    <div class="box-title">⚡ Règle d'Entrée</div>
+    <p>Jamais entrer pendant l'inducement lui-même (attraper un couteau qui tombe). Attendre que le marché <strong>revienne au Refined IFC</strong> après l'inducement. La lower time frame confirmation t'indiquera exactement quand entrer dans cette zone.</p>
+  </div>
+</section>
+
+<!-- ══════ M7 ══════ -->
+<section class="mod" id="m7">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 07</span>
+    <h2>Points of Interest — Extreme vs Decisional</h2>
+  </div>
+
+  <div class="sec">Pourquoi les POIs Classiques Sont Insuffisants</div>
+  <p>La plupart des traders marquent chaque supply/demand zone et essaient de toutes les trader. Résultat : pertes constantes. La solution de Algorithmic Academy : ne retenir que les 2 types de zones les plus haute probabilité, validés par la structure de marché.</p>
+
+  <div class="sec">Les 2 Types de POIs Retenus</div>
+
+  <div class="entry-card">
+    <div class="ec-label">Type 1 — Extreme Supply/Demand <span>Priorité Absolue</span></div>
+    <h3>L'origination point du main push</h3>
+    <p>C'est le point A du main push — là où le mouvement a commencé. La zone la plus discountée dans un bull market (pour acheter) ou la plus premium dans un bear market (pour vendre). C'est ici que les ordres institutionnels initiaux ont été placés. Le marché doit revenir pour mitigation.</p>
+  </div>
+
+  <div class="entry-card" style="border-color:rgba(212,136,42,.2)">
+    <div class="ec-label" style="color:var(--amber-l)">Type 2 — Decisional Supply/Demand <span>Secondaire</span></div>
+    <h3>Le point directement responsable du break of structure</h3>
+    <p>Dans l'internal structure, c'est le point qui a causé le vrai break of structure. Plus proche du price action actuel que l'extreme. Souvent visible sur M15 ou H1. Prix peut y revenir avant d'atteindre l'extreme pour une entrée intermédiaire.</p>
+  </div>
+
+  <div class="sec">Comment Valider un POI</div>
+  <ol class="nl">
+    <li><strong>Market structure validation :</strong> le POI doit correspondre à un extreme ou decisional de la structure. Pas juste une zone "qui ressemble à du supply".</li>
+    <li><strong>Liquidity validation :</strong> le POI doit avoir un inducement associé (run of liquidity) ou être en position de capter un inducement future.</li>
+    <li><strong>Refined IFC :</strong> identifier dans le POI le Refined IFC (engulfing + imbalance + BOS) — c'est là que ton ordre sera placé, pas sur toute la zone.</li>
+    <li><strong>Efficiency test :</strong> vérifier que l'efficiency of the pullback n'invalide pas ce POI.</li>
+  </ol>
+
+  <div class="sec">Extreme vs Decisional — Comment les Utiliser</div>
+  <table class="tbl">
+    <thead><tr><th>Critère</th><th>Extreme POI</th><th>Decisional POI</th></tr></thead>
+    <tbody>
+      <tr><td>Position</td><td>Le plus loin du prix actuel</td><td>Plus proche du prix actuel</td></tr>
+      <tr><td>Timeframe</td><td>D1, H4</td><td>H1, M15</td></tr>
+      <tr><td>Probabilité</td><td>⭐⭐⭐ Plus haute</td><td>⭐⭐ Haute</td></tr>
+      <tr><td>Stop Loss</td><td>Plus large (plus de "room")</td><td>Plus petit (meilleur RR potentiel)</td></tr>
+      <tr><td>Trade type</td><td>Continuation (pro-trend ultimate)</td><td>Retracement or continuation</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══════ M8 ══════ -->
+<section class="mod" id="m8">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 08</span>
+    <h2>Timeframe Guidance — Top-Down Analysis</h2>
+  </div>
+
+  <div class="sec">La Pyramide des Timeframes (Russian Doll Model)</div>
+  <p>Le marché est un emboîtement de timeframes. Comme des poupées russes, chaque timeframe contient les autres. Ne pas choisir "le meilleur timeframe" — utiliser chacun pour son rôle spécifique.</p>
+
+  <div class="pyramid">
+    <div class="pyr-row pyr-1"><span class="pyr-label">Daily / Weekly</span><span class="pyr-desc">Directional bias macro + POIs extrêmes</span></div>
+    <div class="pyr-row pyr-2"><span class="pyr-label">H4 / H1</span><span class="pyr-desc">External structure + intraday trend + principaux POIs</span></div>
+    <div class="pyr-row pyr-3"><span class="pyr-label">M30 / M15</span><span class="pyr-desc">Refinement des POIs + internal structure</span></div>
+    <div class="pyr-row pyr-4"><span class="pyr-label">M5</span><span class="pyr-desc">Intra-session price action + LTF view</span></div>
+    <div class="pyr-row pyr-5"><span class="pyr-label">M1 ★</span><span class="pyr-desc">Exécution précise + LTF confirmations (non-négociable)</span></div>
+  </div>
+
+  <div class="sec">Le Rôle de Chaque Timeframe</div>
+  <table class="tbl">
+    <thead><tr><th>Timeframe</th><th>Rôle Principal</th><th>Ce qu'on y cherche</th></tr></thead>
+    <tbody>
+      <tr><td>Daily / Weekly</td><td>Macro bias</td><td>Bullish ou bearish ? Extreme POIs globaux</td></tr>
+      <tr><td>H4 / H1</td><td>Intraday structure</td><td>External structure intraday, supply/demand macro</td></tr>
+      <tr><td>M15</td><td>Refinement</td><td>Internal structure plus précise, POIs tradables</td></tr>
+      <tr><td>M5</td><td>Intra-session</td><td>Cycles journaliers, zones affinées</td></tr>
+      <tr><td>M1</td><td>Exécution</td><td>LTF Confirmations, entrée précise, stop loss</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">La Séquence Top-Down de Algorithmic Academy</div>
+  <p>Séquence personnelle : <strong>Daily → H1 → M15 → M1</strong>. Descendre étape par étape, ne pas sauter de niveaux.</p>
+  <ol class="nl">
+    <li><strong>Daily :</strong> est-ce bullish ou bearish ? Où sont les extreme demand/supply ?</li>
+    <li><strong>H1 :</strong> confirmer le biais, trouver la structure interne. Où sont les POIs H1 les plus proches ?</li>
+    <li><strong>M15 :</strong> affiner les zones. Trouver le point d'entrée le plus précis possible. Valider l'alignment.</li>
+    <li><strong>M1 :</strong> attendre les LTF confirmations. Exécuter. Placer le stop loss à l'invalidation M1.</li>
+  </ol>
+
+  <div class="box box-re">
+    <div class="box-title">🔴 Erreur Courante</div>
+    <p>Être "marié à un biais" et prédire. Notre rôle est de <strong>réagir</strong>, pas de prédire. Si le M1 montre que le marché n'est pas prêt malgré un beau setup M15, on n'entre pas. Le M1 révèle la réalité — les autres timeframes révèlent le cadre.</p>
+  </div>
+
+  <div class="sec">Film en 360p vs 4K — Pourquoi le M1 est Obligatoire</div>
+  <div class="box box-em">
+    <div class="box-title">💡 Analogie Clé</div>
+    <p>Regarder le marché sur H1 seulement = film en 360p. Tu comprends l'histoire mais tu manques de détails. Regarder sur M1 = 4K Ultra HD. La même histoire avec tous les détails. Plus difficile au début, mais tellement plus de clarté, de précision, de meilleur RR. Avec de la pratique, c'est <strong>obligatoire</strong>.</p>
+  </div>
+</section>
+
+<!-- ══════ M9 ══════ -->
+<section class="mod" id="m9">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 09</span>
+    <h2>Le Daily Cycle — Roadmap du Jour</h2>
+  </div>
+
+  <div class="sec">Concept du Daily Cycle</div>
+  <p>Concept développé par Algorithmic Academy sur des années d'observation : chaque journée a un roadmap. Pas un roadmap aléatoire — des frameworks répétables qui permettent de prévoir quel type de jour va se dérouler et quand trader.</p>
+
+  <div class="sec">Les Sessions et Leur Rôle</div>
+  <div class="timeline">
+    <div class="tl-time">22h–06h UK</div>
+    <div class="tl-item">
+      <div class="tl-title">🌏 Asia Range</div>
+      <div class="tl-desc">Consolidation. Marquer le High et Low de la session → First Liquidity Pool du jour. Les 2 côtés = Buy Side & Sell Side Liquidity.</div>
+    </div>
+    <div class="tl-time">07h UK</div>
+    <div class="tl-item">
+      <div class="tl-title">🇩🇪 Frankfurt Open</div>
+      <div class="tl-desc">Pré-London. Possible manipulation ou buildup. Observer, ne pas nécessairement trader.</div>
+    </div>
+    <div class="tl-time">08h–09h UK ★</div>
+    <div class="tl-item hot">
+      <div class="tl-title">🇬🇧 London Open — Fenêtre Principale</div>
+      <div class="tl-desc">Inducement probable de l'Asia Range. Chercher le setup pro-trend avec LTF confirmations. ±30 min autour de l'heure.</div>
+    </div>
+    <div class="tl-time">14h–15h UK ★</div>
+    <div class="tl-item hot">
+      <div class="tl-title">🇺🇸 New York Open — Fenêtre Secondaire</div>
+      <div class="tl-desc">2ème–3ème heure après l'open NY. Continuation ou reversal de Londres. Forte volatilité.</div>
+    </div>
+    <div class="tl-time">17h UK</div>
+    <div class="tl-item">
+      <div class="tl-title">🔔 London Close</div>
+      <div class="tl-desc">Fin session européenne. Possible manipulation sur les positions londoniennes.</div>
+    </div>
+  </div>
+
+  <div class="sec">L'Asia Range — Premier Setup du Jour</div>
+  <p>L'Asia Range est le premier liquidity pool de la journée. Sa valeur : créer un contexte prédictif pour London.</p>
+  <ul class="cl">
+    <li>Marquer le high et le low de l'Asia session comme des lignes horizontales</li>
+    <li>Au-dessus du high = Buy Side Liquidity (stop losses des vendeurs)</li>
+    <li>En-dessous du low = Sell Side Liquidity (stop losses des acheteurs)</li>
+    <li>London Open induira généralement l'un des deux côtés avant de distribuer</li>
+    <li>Idéal : Asia Range positionné juste sous une supply zone → London induit le high → vendre depuis la supply</li>
+  </ul>
+
+  <div class="sec">Les Variantes du Daily Cycle</div>
+  <table class="tbl">
+    <thead><tr><th>Variante</th><th>Pattern</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td>Classic Bull Day</td><td>Asia accumule → London induit le low → distribution bullish</td><td>Acheter l'inducement du low, TP au high</td></tr>
+      <tr><td>Classic Bear Day</td><td>Asia accumule → London induit le high → distribution bearish</td><td>Vendre l'inducement du high, TP au low</td></tr>
+      <tr><td>London → NY Continuation</td><td>London fait le move → NY continue dans même direction</td><td>Trader avec London, pas contre</td></tr>
+      <tr><td>London → NY Reversal</td><td>London fait le move → NY reverse</td><td>Ne pas tenir les positions London en NY</td></tr>
+      <tr><td>Seek & Destroy</td><td>Choppy dans les deux sens → pas de direction claire</td><td>Ne pas trader ce jour. Walk away.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Lire le Marché Moment par Moment sur M1</div>
+  <p>Pendant la journée, surveiller les micro-inducements sur M1 pour savoir qui est en contrôle :</p>
+  <ul class="cl">
+    <li>Inducements M1 dans la direction bullish (buildup + inducement low + push bullish) → acheteurs en contrôle → ne pas vendre</li>
+    <li>Inducements M1 dans la direction bearish → vendeurs en contrôle → ne pas acheter</li>
+    <li>Exchange visible : les acheteurs perdent le contrôle et les vendeurs prennent → moment d'entrée</li>
+    <li>LTF confirmations (prochain module) révèlent exactement ce changement</li>
+  </ul>
+</section>
+
+<!-- ══════ M10 ══════ -->
+<section class="mod" id="m10">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 10</span>
+    <h2>Les 3 Cycles Combinés — Comment Connecter Tout</h2>
+  </div>
+
+  <div class="sec">Pourquoi Combiner les 3 Cycles</div>
+  <p>Chaque cycle isolé donne des informations utiles mais insuffisantes. La vraie puissance vient de leur alignement :</p>
+  <ul class="cl">
+    <li><strong>Structure Cycle :</strong> où en est le marché ? Main push, pullback, ou continuation ?</li>
+    <li><strong>Liquidity Cycle :</strong> le carburant est-il là ? Y a-t-il eu un inducement ? La mitigation est-elle prête ?</li>
+    <li><strong>Daily Cycle :</strong> est-ce le bon moment de la journée ? Sommes-nous dans la bonne fenêtre ?</li>
+  </ul>
+  <div class="box box-em">
+    <div class="box-title">⭐ Le Setup Idéal</div>
+    <p>Structure Cycle à l'étape 4 (efficiency of pullback) <strong>+</strong> Liquidity Cycle en mitigation <strong>+</strong> Daily Cycle dans la fenêtre London/NY <strong>+</strong> POI validé = <strong>setup A+, highest confluence</strong>. Tous les cycles alignés = plus haute probabilité.</p>
+  </div>
+
+  <div class="sec">Exemple de Lecture Combinée</div>
+  <ol class="nl">
+    <li>Daily : marché bullish. External demand identifiée à 1.2000. Internal structure bearish en cours (complex pullback).</li>
+    <li>H1 : external structure bullish confirmée. Internal supply zone à 1.2250. Efficiency of pullback active.</li>
+    <li>M15 : POI decisional identifié à 1.2100. Refined IFC visible. Liquidity cycle : buildup en cours sur M15.</li>
+    <li>Daily Cycle : on est 08h UK (London Open). Asia Range a consolidé entre 1.2050 et 1.2150. High de l'Asia = 1.2150 = potential inducement target.</li>
+    <li>Exécution : attendre que London induise l'Asia High à 1.2150. Observer le M1 pour la mitigation du Refined IFC M15. LTF confirmation → entrer.</li>
+  </ol>
+
+  <div class="sec">Les Invalidations Clés</div>
+  <div class="box box-re">
+    <div class="box-title">🔴 Ne Jamais Trader Si :</div>
+    <p>
+      1. La structure interne est alignée mais pas la structure externe (non pro-trend)<br>
+      2. L'efficiency of the pullback invalide la zone visée (point A atteint en premier)<br>
+      3. On est en dehors des fenêtres London/NY<br>
+      4. Il n'y a pas eu d'inducement (pas de liquidity cycle déclenché)<br>
+      5. Le M1 montre encore le CO opposé en contrôle
+    </p>
+  </div>
+</section>
+
+<!-- ══════ M11 ══════ -->
+<section class="mod" id="m11">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 11</span>
+    <h2>Lower Time Frame Confirmations — Les 2 Modèles d'Entrée</h2>
+  </div>
+
+  <div class="sec">Pourquoi le LTF est Non-Négociable</div>
+  <p>Le LTF est le dernier "non-négociable" de Algorithmic Academy. Même avec le trend, le POI et le daily cycle alignés, sans LTF confirmation, <strong>pas d'entrée</strong>. Le LTF dit quand le marché est <em>prêt maintenant</em>.</p>
+  <div class="box box-em">
+    <div class="box-title">💡 Avantages du LTF</div>
+    <p>Break-even plus rapide (entrée précise = moins de drawdown) · Meilleur stop loss (3–10 pips seulement) · Win rate plus élevé (marché confirmé prêt) · RR optimal (1:10 plus facilement atteint).</p>
+  </div>
+
+  <div class="sec">Modèle 1 — Liquidity Trap Model (LTM) ⭐ Grade A+</div>
+  <div class="entry-card">
+    <div class="ec-label">LTM — Meilleure Confirmation LTF <span>A+ Setup</span></div>
+    <h3>Buildup → Inducement M1 → Break of Structure</h3>
+    <div class="ev-grid">
+      <div class="ev-row"><span class="ev-l">Étape 1</span><span class="ev-v g">Être dans une zone HTF valide (supply/demand + liquidity)</span></div>
+      <div class="ev-row"><span class="ev-l">Étape 2</span><span class="ev-v a">Observer un Buildup M1 (consolidation de quelques minutes)</span></div>
+      <div class="ev-row"><span class="ev-l">Étape 3</span><span class="ev-v b">L'inducement prend la liquidité du buildup (run de stop losses M1)</span></div>
+      <div class="ev-row"><span class="ev-l">Étape 4</span><span class="ev-v g">Break of Structure M1 confirme le changement de direction</span></div>
+      <div class="ev-row"><span class="ev-l">Étape 5</span><span class="ev-v a">Trouver le Refined IFC (imbalance close) → placer le Sell/Buy Limit</span></div>
+      <div class="ev-row"><span class="ev-l">Stop Loss</span><span class="ev-v r">Au High/Low du M1 inducement (3–10 pips max)</span></div>
+    </div>
+    <p style="margin-top:12px;">Plus tu stacks d'inducements (Asia high + previous day high + structural), plus le LTM qui suit est haute probabilité.</p>
+  </div>
+
+  <div class="sec">Modèle 2 — Change of Momentum (COM) — Grade A</div>
+  <div class="entry-card" style="border-color: rgba(212,136,42,.2)">
+    <div class="ec-label" style="color:var(--amber-l)">3 Sous-Variations du Change of Momentum <span>Grade A</span></div>
+    <h3>Confirmation par Break of Structure</h3>
+
+    <div class="subsec" style="margin-top:16px">Variation 1 — Normal BOS (Préféré)</div>
+    <p>Le prix monte dans la zone supply (internal bullish structure). Le dernier higher low qui faisait un higher high crée un lower low → BOS confirmé → chercher Refined IFC + imbalance pour l'entrée.</p>
+
+    <div class="subsec">Variation 2 — Internal BOS</div>
+    <p>Quand le marché bouge trop vite pour un BOS complet. Une small internal retracement est taken out — pas un vrai structural point, juste 10% de retracement. Encore valide mais moins préféré. <strong>Attention</strong> : invalidé si le prix retourne au previous demand M1 (efficiency of pullback).</p>
+
+    <div class="subsec">Variation 3 — Two Leg Protocol</div>
+    <p>Concept créé par Algorithmic Academy. Quand le marché ne donne pas de BOS direct — deux legs dans la même direction avant l'entrée. Valide dans les zones de haute confluence.</p>
+  </div>
+
+  <div class="sec">Règles d'Exécution Communes aux 2 Modèles</div>
+  <ul class="cl">
+    <li><strong>Stop Loss :</strong> toujours entre 3 et 10 pips. Si < 3 pips → monter d'un timeframe. Si > 10 pips → chercher un meilleur IFC.</li>
+    <li><strong>Entrée :</strong> toujours sur le <em>close de l'imbalance</em> du Refined IFC — pas au random.</li>
+    <li><strong>Break Even :</strong> dès que le marché fait un nouveau lower low (pour les shorts) sur M1, mettre SL à break even.</li>
+    <li><strong>Timeframe :</strong> M1 préféré, M5 acceptable. Jamais au-dessus.</li>
+    <li><strong>Fenêtre temporelle :</strong> ces confirmations doivent arriver dans London ou NY window.</li>
+  </ul>
+</section>
+
+<!-- ══════ M12 ══════ -->
+<section class="mod" id="m12">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 12</span>
+    <h2>Prop Firms & Scaling — Accéder au Capital</h2>
+  </div>
+
+  <div class="sec">Pourquoi les Prop Firms sont la Meilleure Opportunité</div>
+  <p>Trading traditionnel : déposer son propre capital, risquer ses économies, avoir besoin de $100k+ pour des retours significatifs. Prop Firms : payer une évaluation de $50–200, prouver une profitabilité minimale, accéder à $100k–$400k de capital sans risque personnel.</p>
+
+  <div class="stats">
+    <div class="stat"><div class="v" style="color:var(--em-light)">80–90%</div><div class="l">Part du profit que tu gardes</div></div>
+    <div class="stat"><div class="v" style="color:var(--amber-l)">$35–200</div><div class="l">Coût de l'évaluation</div></div>
+    <div class="stat"><div class="v" style="color:#93C5FD">$400k</div><div class="l">Capital max par prop firm</div></div>
+  </div>
+
+  <div class="sec">Le Processus d'Évaluation</div>
+  <table class="tbl">
+    <thead><tr><th>Phase</th><th>Objectif</th><th>Contrainte</th></tr></thead>
+    <tbody>
+      <tr><td>Phase 1</td><td>+6% de profit</td><td>Drawdown max 10%, pas de time limit</td></tr>
+      <tr><td>Phase 2</td><td>+5% de profit</td><td>Mêmes règles, confirmer ce n'est pas un fluke</td></tr>
+      <tr><td>Live Account</td><td>Trade normal → payout à 2%</td><td>Perds le compte = recommencer l'éval</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box box-am">
+    <div class="box-title">⭐ Le Reset Button</div>
+    <p>Si l'évaluation se passe mal → reset. Recommencer. Sans avoir perdu de l'argent personnel. C'est le pouvoir fondamental des Prop Firms : <strong>limiter l'upside sur le downside</strong>. Tu peux perdre le compte — ce n'est pas ton argent. Tu peux prendre un deuxième essai.</p>
+  </div>
+
+  <div class="sec">Stratégie de Scaling</div>
+  <ol class="nl">
+    <li>Commencer par un compte gratuit (trial) ou le plus petit disponible pour pratiquer.</li>
+    <li>Passer à un compte $50k ou $100k une fois prêt.</li>
+    <li>Après le premier payout : utiliser une partie pour acheter de nouvelles évaluations.</li>
+    <li>Max allocation : monter jusqu'à $400k avec une seule prop firm.</li>
+    <li>Multi-prop firms : additionner 2-3 prop firms → $800k–$1.2M sous gestion.</li>
+    <li>À ce niveau, 1% de gain = $8 000–$12 000 par mois — sans risquer d'argent personnel.</li>
+  </ol>
+
+  <div class="sec">Stratégie pour les Évaluations (vs Live)</div>
+  <div class="box box-re">
+    <div class="box-title">⚠️ Différence Importante</div>
+    <p>En évaluation, tu peux risquer jusqu'à la limite journalière autorisée (souvent 2–5%) car c'est du capital "simulé" avec reset possible. Sur un <strong>live account</strong>, revenir à 0.5–1% de risque et une gestion conservatrice. L'objectif live est juste de toucher 2% et partir.</p>
+  </div>
+</section>
+
+<!-- ══════ M13 ══════ -->
+<section class="mod" id="m13">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 13</span>
+    <h2>Power of One Setup — Les 5 Plates à Faire Tourner</h2>
+  </div>
+
+  <div class="sec">La Philosophie des Spinning Plates</div>
+  <p>Un système de trading profitable n'est pas une seule variable maximisée. C'est 5 plates qui tournent simultanément à leur point d'équilibre optimal. Casser l'une d'elles pour maximiser les autres crée un déséquilibre.</p>
+
+  <div class="plates">
+    <div class="plate">
+      <h4>📊 Risk/Reward <span>Cible : 1:10</span></h4>
+      <p>Pas de négatif, pas de 1:1. Minimun 1:10. Cela permet d'avoir un break-even à seulement 10% de win rate. Une seule victoire couvre 9 pertes — liberté totale sur le win rate.</p>
+    </div>
+    <div class="plate">
+      <h4>🎯 Win Rate <span>Cible : 50–70%</span></h4>
+      <p>Pas une performance — un <em>choix</em>. Être très sélectif = 80% WR mais trade rare. Être équilibré = 50% WR mais régulier. Le win rate est dicté par ta sélectivité, pas tes talents.</p>
+    </div>
+    <div class="plate">
+      <h4>📅 Trade Frequency <span>Cible : 1–2x/semaine</span></h4>
+      <p>Pas tous les jours. Ne prendre que les prime setups avec tous les cycles alignés. Qualité > Quantité. 1–2 setups par semaine sur EUR/USD et GBP/USD.</p>
+    </div>
+    <div class="plate">
+      <h4>⏱️ Trade Duration <span>Cible : Intra-session</span></h4>
+      <p>Entrer en London/NY, sortir avant la fin de la session. Pas de swing trading pour commencer. Optimiser pour la volatilité de session — c'est rapide, précis, psychologiquement gérable.</p>
+    </div>
+    <div class="plate">
+      <h4>🏦 Asset Selection <span>EUR/USD + GBP/USD</span></h4>
+      <p>Ne pas trader tout. Devenir spécialiste sur 2 paires. Moins de commissions, plus de liquidité, plus de prévisibilité. Quand très expérimenté, élargir à d'autres majors.</p>
+    </div>
+  </div>
+
+  <div class="sec">Objectif Final : 2% sur un Compte de $100k</div>
+  <div class="stats">
+    <div class="stat"><div class="v" style="color:var(--em-light)">2%</div><div class="l">Gain Cible sur $100k</div></div>
+    <div class="stat"><div class="v" style="color:var(--amber-l)">$2 000</div><div class="l">Profit brut</div></div>
+    <div class="stat"><div class="v" style="color:#93C5FD">$1 000+</div><div class="l">Net après profit split (80%)</div></div>
+  </div>
+
+  <div class="quote">
+    <p>Un trader profitable est un trader restreint. La magie que tu cherches est dans le travail que tu essaies d'éviter.</p>
+    <cite>Algorithmic Academy — Cycle Trading Operationnel</cite>
+  </div>
+</section>
+
+<!-- ══════ M14 ══════ -->
+<section class="mod" id="m14">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 14</span>
+    <h2>Checklist Complète & Roadmap vers le Premier $1k</h2>
+  </div>
+
+  <div class="sec">Checklist Pré-Session</div>
+  <div class="ck-list">
+    <div class="ck" onclick="this.classList.toggle('ticked')"><div class="ck-box"></div><span><strong>Bias HTF :</strong> identifier la direction globale sur H1/H4. Bullish ou bearish ? Marquer les extreme et decisional POIs.</span></div>
+    <div class="ck" onclick="this.classList.toggle('ticked')"><div class="ck-box"></div><span><strong>Asia Range :</strong> marquer le High et le Low de la session asiatique. Identifier les 2 liquidity pools.</span></div>
+    <div class="ck" onclick="this.classList.toggle('ticked')"><div class="ck-box"></div><span><strong>Structure Cycle :</strong> où en est-on ? Main push / complex pullback / efficiency of pullback ?</span></div>
+    <div class="ck" onclick="this.classList.toggle('ticked')"><div class="ck-box"></div><span><strong>Daily Cycle Variant :</strong> quel type de journée semble probable ? Inducement d'Asia High ou Low aujourd'hui ?</span></div>
+    <div class="ck" onclick="this.classList.toggle('ticked')"><div class="ck-box"></div><span><strong>POI sélectionné :</strong> extreme ou decisional ? Le Refined IFC est-il visible dans cette zone ?</span></div>
+    <div class="ck" onclick="this.classList.toggle('ticked')"><div class="ck-box"></div><span><strong>Liquidity Cycle :</strong> y a-t-il eu un buildup ? Un inducement récent ou attendu dans ma fenêtre ?</span></div>
+  </div>
+
+  <div class="sec">Checklist Pendant la Session (London/NY Window)</div>
+  <div class="ck-list">
+    <div class="ck" onclick="this.classList.toggle('ticked')"><div class="ck-box"></div><span><strong>Dans la fenêtre temporelle</strong> (08h–09h UK pour London, 14h–15h UK pour NY) ?</span></div>
+    <div class="ck" onclick="this.classList.toggle('ticked')"><div class="ck-box"></div><span><strong>Price dans le POI ciblé</strong> — extreme ou decisional identifié en pré-session ?</span></div>
+    <div class="ck" onclick="this.classList.toggle('ticked')"><div class="ck-box"></div><span><strong>Inducement confirmé</strong> — Asia Range ou structural point sweepé dans la bonne direction ?</span></div>
+    <div class="ck" onclick="this.classList.toggle('ticked')"><div class="ck-box"></div><span><strong>M1 : Buildup visible</strong> — price consolide dans la zone, liquidity s'accumule ?</span></div>
+    <div class="ck" onclick="this.classList.toggle('ticked')"><div class="ck-box"></div><span><strong>LTF Confirmation</strong> — LTM (buildup + inducement M1 + BOS) OU Change of Momentum (BOS) confirmé ?</span></div>
+    <div class="ck" onclick="this.classList.toggle('ticked')"><div class="ck-box"></div><span><strong>Refined IFC identifié</strong> — IFC + imbalance + engulfing dans la zone. Imbalance close = prix d'entrée.</span></div>
+    <div class="ck" onclick="this.classList.toggle('ticked')"><div class="ck-box"></div><span><strong>Stop Loss validé</strong> — entre 3 et 10 pips. Si >10 pips → chercher un meilleur timeframe ou IFC.</span></div>
+    <div class="ck" onclick="this.classList.toggle('ticked')"><div class="ck-box"></div><span><strong>Efficiency test</strong> — le prix n'est pas allé à l'extreme demand avant la supply visée ?</span></div>
+    <div class="ck" onclick="this.classList.toggle('ticked')"><div class="ck-box"></div><span><strong>Entrer</strong> avec un Sell/Buy Limit sur le close de l'imbalance. Pas de market order.</span></div>
+  </div>
+
+  <div class="sec">Roadmap vers le Premier $1 000</div>
+  <ol class="nl">
+    <li><strong>Étudier ce cours complet</strong> — maîtriser chaque cycle et leur combinaison.</li>
+    <li><strong>Backtesting :</strong> étudier les charts historiques d'EUR/USD et GBP/USD. Identifier les cycles, les POIs, les inducements. Construire un playbook de setups propres.</li>
+    <li><strong>Demo Account :</strong> pratiquer les LTF confirmations en temps réel. Maîtriser l'exécution M1 sans pression financière.</li>
+    <li><strong>Free Trial Prop Firm :</strong> tester en conditions réelles sans payer. Se familiariser avec les émotions, la plateforme, les règles.</li>
+    <li><strong>Évaluation $50k–$100k :</strong> quand prêt (tu le sauras). Viser +6% phase 1, +5% phase 2. Pas de rush — pas de time limit.</li>
+    <li><strong>Live Account :</strong> risque 0.5–1% par trade. Viser 2% gain. Fermer les charts après le payout.</li>
+    <li><strong>Premier Payout :</strong> recevoir profit split (80%), récupérer les frais d'évaluation remboursés. Poche le premier $1 000.</li>
+  </ol>
+
+  <div class="box box-em">
+    <div class="box-title">🎯 La Vérité sur le Succès</div>
+    <p>Pour faire $1 000 une fois, les gens <em>surestiment</em> la difficulté. C'est très accessible avec le bon plan. Pour être profitable à long terme sur des années — les gens <em>sous-estiment</em> la difficulté. C'est une mastery profonde. Ce cours t'emmène au premier objectif, et te pose les fondations du second.</p>
+  </div>
+
+  <div class="quote">
+    <p>Cycle Trading Operationnel n'est pas un cours de trading. C'est un plan d'action spécifique pour atteindre votre premier $1 000. La stratégie est mécanique. Le plan est objectif. Il ne reste qu'à executer.</p>
+    <cite>Algorithmic Academy — Cycle Trading Operationnel</cite>
+  </div>
+</section>
+
+<footer id="footer">
+  <p>Cycle Trading Operationnel · Cours basé sur le contenu de Algorithmic Academy · 14 Modules · Structure Cycle · Liquidity Cycle · Daily Cycle · LTF Confirmations</p>
+  <p style="margin-top:8px;color:var(--border)">Le trading comporte des risques. Ce cours est éducatif uniquement.</p>
+</footer>
+
+</main>
+
+<script>
+// Progress bar
+const pf = document.getElementById('pfill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  pf.style.width = (window.scrollY / h * 100) + '%';
+}, { passive: true });
+
+// Fade in modules
+const io = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.05 });
+document.querySelectorAll('.mod').forEach(m => io.observe(m));
+
+// Active nav
+const secs = [...document.querySelectorAll('[id]')];
+const links = document.querySelectorAll('.sb-link');
+function updateNav() {
+  const y = window.scrollY + 110;
+  let cur = secs[0]?.id;
+  for (const s of secs) { if (s.offsetTop <= y) cur = s.id; }
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>
