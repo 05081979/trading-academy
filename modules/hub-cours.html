@@ -1883,7 +1883,8 @@ const countNum    = document.getElementById('countNum');
 let activeFilter  = 'all';
 
 // Auto-add tier badges + lock Premium cards for Starter users
-const userTier = sessionStorage.getItem('aa_tier') || 'starter';
+const userTier = window.AA_TIER || sessionStorage.getItem('aa_tier') || 'starter';
+console.log('[AA] User tier:', userTier);
 cards.forEach((card, idx) => {
   const tier = card.dataset.tier || 'premium';
   const header = card.querySelector('.card-header > div');
