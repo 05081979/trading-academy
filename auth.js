@@ -1,10 +1,11 @@
-/* ── ALGORITHMIC ACADEMY — Authentication Gate (Starter / Premium) ── */
+/* ── ALGORITHMIC ACADEMY — Authentication Gate (Unique per user) ── */
 (function() {
-  const HASH_STARTER = '6b64024fbc826d7d0e658aea20266a65bcf2a1f9a44f322674856692db4d9656'; // Algorithmic
-  const HASH_PREMIUM = '3b38fdddc696def68a4cadfa18d9c5470995d47495fd09371d5787e08ec04f49'; // ton ancien mdp
+  // Admin password (toi) - ton ancien mot de passe
+  const HASH_ADMIN = '3b38fdddc696def68a4cadfa18d9c5470995d47495fd09371d5787e08ec04f49';
 
   const SESSION_KEY = 'aa_auth';
   const TIER_KEY = 'aa_tier';
+  const USER_KEY = 'aa_user';
 
   async function sha256(text) {
     const data = new TextEncoder().encode(text);
@@ -12,15 +13,33 @@
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
-  // Check if already logged in
-  var savedHash = sessionStorage.getItem(SESSION_KEY);
-  var savedTier = sessionStorage.getItem(TIER_KEY);
+  // Decode unique token: AA-TIER-base64(username)
+  function decodeToken(pwd) {
+    try {
+      if (!pwd.startsWith('AA-')) return null;
+      var parts = pwd.split('-');
+      if (parts.length < 3) return null;
+      var tier = parts[1].toLowerCase(); // S or P
+      var encoded = parts.slice(2).join('-');
+      var username = atob(encoded);
+      if (!username || username.length < 2) return null;
+      var t = tier === 'p' ? 'premium' : 'starter';
+      return { username: username, tier: t };
+    } catch(e) { return null; }
+  }
 
-  if (savedHash === HASH_PREMIUM || savedHash === HASH_STARTER) {
-    window.AA_TIER = savedTier || 'starter';
+  // Already logged in?
+  var savedAuth = sessionStorage.getItem(SESSION_KEY);
+  var savedTier = sessionStorage.getItem(TIER_KEY);
+  var savedUser = sessionStorage.getItem(USER_KEY);
+
+  if (savedAuth === 'valid' && savedTier && savedUser) {
+    window.AA_TIER = savedTier;
+    window.AA_USER = savedUser;
+
     // Block starter from premium pages
     var pageTier = document.documentElement.getAttribute('data-tier');
-    if (pageTier === 'premium' && window.AA_TIER === 'starter') {
+    if (pageTier === 'premium' && savedTier === 'starter') {
       document.documentElement.style.display = 'none';
       window.addEventListener('DOMContentLoaded', function() {
         document.documentElement.style.display = '';
@@ -33,10 +52,13 @@
       });
       return;
     }
+
+    // Add watermark + anti-screenshot after DOM loads
+    window.addEventListener('DOMContentLoaded', function() { addProtection(savedUser); });
     return;
   }
 
-  // Not logged in - show login screen
+  // ── NOT LOGGED IN ──
   document.documentElement.style.display = 'none';
 
   window.addEventListener('DOMContentLoaded', function() {
@@ -62,28 +84,94 @@
 
     var box = document.createElement('div');
     box.style.cssText = 'position:relative;z-index:1;text-align:center;max-width:420px;padding:40px;';
-    box.innerHTML = '<div style="margin-bottom:32px;"><svg viewBox="0 0 400 320" width="180" height="144" xmlns="http://www.w3.org/2000/svg"><circle cx="200" cy="160" r="155" fill="#0a0e1a"/><circle cx="200" cy="160" r="155" fill="none" stroke="#141e35" stroke-width="1"/><polygon points="200,105 235,125 235,160 200,180 165,160 165,125" fill="rgba(15,25,50,0.9)" stroke="#3455a8" stroke-width="2"/><text x="200" y="158" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="42" font-weight="800" opacity="0.9">A</text><text x="200" y="226" text-anchor="middle" fill="#e4e8f2" font-family="Inter,sans-serif" font-size="28" font-weight="800" letter-spacing="3">ALGORITHMIC</text><text x="200" y="250" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="14" font-weight="600" letter-spacing="8">ACADEMY</text></svg></div><p style="color:#6c7a9c;font-size:13px;margin-bottom:28px;">Entrez votre mot de passe pour acceder a la formation.</p><form id="authForm" style="display:flex;flex-direction:column;gap:12px;max-width:300px;margin:0 auto;"><input type="password" id="authPwd" placeholder="Mot de passe" autocomplete="off" style="width:100%;padding:14px 18px;background:rgba(74,124,255,0.04);border:1px solid #162040;border-radius:10px;color:#e4e8f2;font-size:15px;font-family:Inter,sans-serif;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor=\'#4a7cff\'" onblur="this.style.borderColor=\'#162040\'"><button type="submit" style="padding:14px;background:#4a7cff;border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;font-family:Inter,sans-serif;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 20px rgba(74,124,255,0.25);" onmouseover="this.style.background=\'#6b9aff\'" onmouseout="this.style.background=\'#4a7cff\'">Acceder</button><p id="authErr" style="color:#e05030;font-size:12px;min-height:18px;"></p><p id="authTier" style="color:#2ec974;font-size:12px;min-height:18px;"></p></form>';
+    box.innerHTML = '<div style="margin-bottom:32px;"><svg viewBox="0 0 400 320" width="180" height="144" xmlns="http://www.w3.org/2000/svg"><circle cx="200" cy="160" r="155" fill="#0a0e1a"/><polygon points="200,105 235,125 235,160 200,180 165,160 165,125" fill="rgba(15,25,50,0.9)" stroke="#3455a8" stroke-width="2"/><text x="200" y="158" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="42" font-weight="800" opacity="0.9">A</text><text x="200" y="226" text-anchor="middle" fill="#e4e8f2" font-family="Inter,sans-serif" font-size="28" font-weight="800" letter-spacing="3">ALGORITHMIC</text><text x="200" y="250" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="14" font-weight="600" letter-spacing="8">ACADEMY</text></svg></div><p style="color:#6c7a9c;font-size:13px;margin-bottom:28px;">Entrez votre code d\'acces personnel.</p><form id="authForm" style="display:flex;flex-direction:column;gap:12px;max-width:300px;margin:0 auto;"><input type="password" id="authPwd" placeholder="Code personnel" autocomplete="off" style="width:100%;padding:14px 18px;background:rgba(74,124,255,0.04);border:1px solid #162040;border-radius:10px;color:#e4e8f2;font-size:15px;font-family:Inter,sans-serif;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor=\'#4a7cff\'" onblur="this.style.borderColor=\'#162040\'"><button type="submit" style="padding:14px;background:#4a7cff;border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;font-family:Inter,sans-serif;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 20px rgba(74,124,255,0.25);" onmouseover="this.style.background=\'#6b9aff\'" onmouseout="this.style.background=\'#4a7cff\'">Acceder</button><p id="authErr" style="color:#e05030;font-size:12px;min-height:18px;"></p></form>';
     document.body.appendChild(box);
 
     document.getElementById('authPwd').focus();
     document.getElementById('authForm').addEventListener('submit', async function(e) {
       e.preventDefault();
-      var pwd = document.getElementById('authPwd').value;
+      var pwd = document.getElementById('authPwd').value.trim();
       var hash = await sha256(pwd);
 
-      if (hash === HASH_PREMIUM) {
-        sessionStorage.setItem(SESSION_KEY, hash);
+      // Admin (toi)
+      if (hash === HASH_ADMIN) {
+        sessionStorage.setItem(SESSION_KEY, 'valid');
         sessionStorage.setItem(TIER_KEY, 'premium');
+        sessionStorage.setItem(USER_KEY, 'Admin');
         location.reload();
-      } else if (hash === HASH_STARTER) {
-        sessionStorage.setItem(SESSION_KEY, hash);
-        sessionStorage.setItem(TIER_KEY, 'starter');
-        location.reload();
-      } else {
-        document.getElementById('authErr').textContent = 'Mot de passe incorrect.';
-        document.getElementById('authPwd').value = '';
-        document.getElementById('authPwd').focus();
+        return;
       }
+
+      // Unique token (AA-S-base64 or AA-P-base64)
+      var decoded = decodeToken(pwd);
+      if (decoded) {
+        sessionStorage.setItem(SESSION_KEY, 'valid');
+        sessionStorage.setItem(TIER_KEY, decoded.tier);
+        sessionStorage.setItem(USER_KEY, decoded.username);
+        location.reload();
+        return;
+      }
+
+      document.getElementById('authErr').textContent = 'Code incorrect.';
+      document.getElementById('authPwd').value = '';
+      document.getElementById('authPwd').focus();
     });
   });
+
+  // ── PROTECTION: Watermark + Anti-screenshot ──
+  function addProtection(username) {
+    // 1. WATERMARK - diagonal text across the page
+    var wm = document.createElement('div');
+    wm.id = 'aa-watermark';
+    wm.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;overflow:hidden;';
+    var wmText = '';
+    for (var i = 0; i < 30; i++) {
+      wmText += '<div style="white-space:nowrap;transform:rotate(-25deg);color:rgba(255,255,255,0.03);font-size:14px;font-family:monospace;letter-spacing:4px;line-height:60px;margin-left:' + ((i%3)*-100) + 'px;">';
+      for (var j = 0; j < 8; j++) {
+        wmText += username + ' &nbsp;&nbsp;&nbsp; ';
+      }
+      wmText += '</div>';
+    }
+    wm.innerHTML = wmText;
+    document.body.appendChild(wm);
+
+    // 2. ANTI-SCREENSHOT - blur when window loses focus
+    var shield = document.createElement('div');
+    shield.id = 'aa-shield';
+    shield.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(6,10,18,0.97);display:none;align-items:center;justify-content:center;';
+    shield.innerHTML = '<div style="text-align:center;color:#4a5568;font-family:Inter,sans-serif;"><div style="font-size:48px;margin-bottom:16px;">🛡️</div><div style="font-size:16px;">Contenu protege</div><div style="font-size:12px;margin-top:8px;">Revenez sur cette fenetre pour continuer</div></div>';
+    document.body.appendChild(shield);
+
+    window.addEventListener('blur', function() {
+      shield.style.display = 'flex';
+    });
+    window.addEventListener('focus', function() {
+      shield.style.display = 'none';
+    });
+
+    // 3. DISABLE right-click
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+
+    // 4. DISABLE text selection on content
+    document.body.style.userSelect = 'none';
+    document.body.style.webkitUserSelect = 'none';
+
+    // 5. DISABLE common screenshot shortcuts
+    document.addEventListener('keydown', function(e) {
+      // PrintScreen
+      if (e.key === 'PrintScreen') { e.preventDefault(); shield.style.display = 'flex'; }
+      // Ctrl+Shift+S (Windows screenshot)
+      if (e.ctrlKey && e.shiftKey && e.key === 'S') { e.preventDefault(); }
+      // Ctrl+P (print)
+      if (e.ctrlKey && e.key === 'p') { e.preventDefault(); }
+      // Ctrl+S (save)
+      if (e.ctrlKey && e.key === 's') { e.preventDefault(); }
+      // F12 (dev tools)
+      if (e.key === 'F12') { e.preventDefault(); }
+      // Ctrl+Shift+I (dev tools)
+      if (e.ctrlKey && e.shiftKey && e.key === 'I') { e.preventDefault(); }
+      // Ctrl+U (view source)
+      if (e.ctrlKey && e.key === 'u') { e.preventDefault(); }
+    });
+  }
 })();
