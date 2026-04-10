@@ -1884,7 +1884,7 @@ let activeFilter  = 'all';
 
 // Auto-add tier badges + lock Premium cards for Starter users
 const userTier = window.AA_TIER || sessionStorage.getItem('aa_tier') || 'starter';
-console.log('[AA] User tier:', userTier);
+
 cards.forEach((card, idx) => {
   const tier = card.dataset.tier || 'premium';
   const header = card.querySelector('.card-header > div');
@@ -1896,17 +1896,18 @@ cards.forEach((card, idx) => {
     const tag = header.querySelector('.card-tag');
     if (tag) tag.insertAdjacentElement('afterend', badge);
   }
-  // Lock premium cards for starter users
+  // Starter users: Premium cards = black, no content visible
   if (userTier === 'starter' && tier === 'premium') {
-    card.style.opacity = '0.4';
-    card.style.pointerEvents = 'none';
-    card.style.position = 'relative';
-    const lock = document.createElement('div');
-    lock.style.cssText = 'position:absolute;top:12px;right:12px;font-size:18px;z-index:2;';
-    lock.textContent = '🔒';
-    card.appendChild(lock);
+    card.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:180px;gap:8px;"><div style="font-size:32px;">🔒</div><div style="color:#3d4a65;font-size:12px;font-family:DM Mono,monospace;letter-spacing:0.1em;text-transform:uppercase;">Premium</div></div>';
+    card.style.cssText = 'background:#0a0a0f !important;border-color:#1a1a25 !important;cursor:not-allowed;pointer-events:none;';
   }
 });
+
+// Starter: hide ticker (contains Premium concept names)
+if (userTier === 'starter') {
+  const ticker = document.querySelector('.ticker-bar');
+  if (ticker) ticker.style.display = 'none';
+}
 
 function filterCards() {
   const query = searchInput.value.toLowerCase().trim();
@@ -1970,12 +1971,8 @@ const modalClose = document.getElementById('modalClose');
 
 cards.forEach((card, i) => {
   card.addEventListener('click', () => {
-    // Block starter from opening premium courses
     const cardTier = card.dataset.tier || 'premium';
-    if (userTier === 'starter' && cardTier === 'premium') {
-      alert('🔒 Ce cours est réservé aux membres Premium.\nContacte l\'admin pour upgrader ton accès.');
-      return;
-    }
+    if (userTier === 'starter' && cardTier === 'premium') return;
     var d = courseData[i];
     if (d && d.isTrainer) { openTrainer(); return; }
     openModal(i);
