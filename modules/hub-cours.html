@@ -1883,7 +1883,7 @@ const countNum    = document.getElementById('countNum');
 let activeFilter  = 'all';
 
 // Auto-add tier badges + lock Premium cards for Starter users
-const userTier = sessionStorage.getItem('aa_tier') || 'premium';
+const userTier = sessionStorage.getItem('aa_tier') || 'starter';
 cards.forEach((card, idx) => {
   const tier = card.dataset.tier || 'premium';
   const header = card.querySelector('.card-header > div');
@@ -1969,6 +1969,12 @@ const modalClose = document.getElementById('modalClose');
 
 cards.forEach((card, i) => {
   card.addEventListener('click', () => {
+    // Block starter from opening premium courses
+    const cardTier = card.dataset.tier || 'premium';
+    if (userTier === 'starter' && cardTier === 'premium') {
+      alert('🔒 Ce cours est réservé aux membres Premium.\nContacte l\'admin pour upgrader ton accès.');
+      return;
+    }
     var d = courseData[i];
     if (d && d.isTrainer) { openTrainer(); return; }
     openModal(i);
