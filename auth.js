@@ -1,7 +1,12 @@
-/* ── ALGORITHMIC ACADEMY — Authentication Gate ── */
+/* ── ALGORITHMIC ACADEMY — Authentication Gate (Starter / Premium) ── */
 (function() {
-  const HASH = '3b38fdddc696def68a4cadfa18d9c5470995d47495fd09371d5787e08ec04f49';
+  // Starter password hash (change le mot de passe starter ici)
+  const HASH_STARTER = '6b64024fbc826d7d0e658aea20266a65bcf2a1f9a44f322674856692db4d9656';
+  // Premium password hash (ton ancien mot de passe)
+  const HASH_PREMIUM = '3b38fdddc696def68a4cadfa18d9c5470995d47495fd09371d5787e08ec04f49';
+
   const SESSION_KEY = 'aa_auth';
+  const TIER_KEY = 'aa_tier';
 
   async function sha256(text) {
     const data = new TextEncoder().encode(text);
@@ -9,7 +14,34 @@
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
-  if (sessionStorage.getItem(SESSION_KEY) === HASH) return;
+  // Already authenticated?
+  const savedTier = sessionStorage.getItem(TIER_KEY);
+  if (savedTier === 'premium' || savedTier === 'starter') {
+    // Check if current page requires premium
+    const pageTier = document.documentElement.dataset.tier;
+    if (pageTier === 'premium' && savedTier === 'starter') {
+      // Block starter from premium pages
+      window.addEventListener('DOMContentLoaded', function() {
+        document.body.innerHTML = '';
+        document.body.style.cssText = 'margin:0;min-height:100vh;background:#060a12;display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,sans-serif;';
+        const box = document.createElement('div');
+        box.style.cssText = 'text-align:center;padding:60px 40px;max-width:500px;';
+        box.innerHTML = `
+          <div style="font-size:64px;margin-bottom:20px;">🔒</div>
+          <h2 style="color:#e4e8f2;font-size:24px;margin-bottom:12px;">Contenu Premium</h2>
+          <p style="color:#6c7a9c;font-size:14px;line-height:1.7;margin-bottom:24px;">
+            Ce cours est reserve aux membres <span style="color:#c9a84c;font-weight:700;">Premium</span>.<br>
+            Ton abonnement actuel est <span style="color:#2ec974;font-weight:700;">Starter</span>.
+          </p>
+          <p style="color:#4a5568;font-size:12px;margin-bottom:24px;">Contacte l'admin pour passer en Premium et debloquer tous les cours.</p>
+          <a href="modules/hub-cours.html" style="display:inline-block;padding:12px 28px;background:#4a7cff;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:14px;">Retour au Hub</a>
+        `;
+        document.body.appendChild(box);
+      });
+      return;
+    }
+    return; // Authenticated, correct tier
+  }
 
   document.documentElement.style.display = 'none';
 
@@ -60,28 +92,10 @@
         <svg viewBox="0 0 400 400" width="180" height="180" xmlns="http://www.w3.org/2000/svg">
           <circle cx="200" cy="200" r="195" fill="#0a0e1a"/>
           <circle cx="200" cy="200" r="195" fill="none" stroke="#141e35" stroke-width="1"/>
-          <text x="80" y="145" fill="#2a3a5c" font-family="monospace" font-size="10" opacity="0.6">10110</text>
-          <text x="300" y="140" fill="#2a3a5c" font-family="monospace" font-size="10" opacity="0.6">01001</text>
-          <text x="70" y="260" fill="#2a3a5c" font-family="monospace" font-size="10" opacity="0.6">0101</text>
-          <text x="100" y="340" fill="#2a3a5c" font-family="monospace" font-size="10" opacity="0.6">11010</text>
-          <text x="290" y="345" fill="#2a3a5c" font-family="monospace" font-size="10" opacity="0.6">10111</text>
-          <ellipse cx="200" cy="185" rx="145" ry="65" fill="none" stroke="#3455a8" stroke-width="1.2" transform="rotate(-30 200 185)" opacity="0.7"/>
-          <ellipse cx="200" cy="185" rx="120" ry="55" fill="none" stroke="#d04830" stroke-width="1" stroke-dasharray="6 4" transform="rotate(35 200 185)" opacity="0.6"/>
-          <ellipse cx="200" cy="185" rx="130" ry="50" fill="none" stroke="#1e3060" stroke-width="1" stroke-dasharray="8 5" transform="rotate(-60 200 185)" opacity="0.5"/>
-          <circle cx="120" cy="155" r="5" fill="#4a7cff"/>
-          <circle cx="185" cy="135" r="4" fill="#4a7cff"/>
-          <circle cx="165" cy="310" r="4.5" fill="#4a7cff"/>
-          <circle cx="265" cy="155" r="5" fill="#e05030"/>
-          <circle cx="230" cy="215" r="3.5" fill="#e05030"/>
-          <circle cx="290" cy="305" r="5" fill="#e05030"/>
-          <circle cx="255" cy="175" r="2.5" fill="#8892a8"/>
-          <circle cx="145" cy="195" r="2.5" fill="#8892a8"/>
           <polygon points="200,145 235,165 235,200 200,220 165,200 165,165" fill="rgba(15,25,50,0.9)" stroke="#3455a8" stroke-width="2"/>
-          <polygon points="200,152 229,169 229,197 200,214 171,197 171,169" fill="none" stroke="#253a6a" stroke-width="0.8" opacity="0.5"/>
           <text x="200" y="198" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="42" font-weight="800" opacity="0.9">A</text>
           <text x="200" y="266" text-anchor="middle" fill="#e4e8f2" font-family="Inter,sans-serif" font-size="28" font-weight="800" letter-spacing="3">ALGORITHMIC</text>
           <text x="200" y="290" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="14" font-weight="600" letter-spacing="8">ACADEMY</text>
-          <text x="200" y="320" text-anchor="middle" fill="#2a3a5c" font-family="monospace" font-size="10" opacity="0.5">v2.0 :: build_2026</text>
         </svg>
       </div>
       <p style="color:#6c7a9c;font-size:13px;margin-bottom:28px;">Entrez votre mot de passe pour acceder a la formation.</p>
@@ -105,8 +119,13 @@
       e.preventDefault();
       const pwd = document.getElementById('authPwd').value;
       const hash = await sha256(pwd);
-      if (hash === HASH) {
-        sessionStorage.setItem(SESSION_KEY, HASH);
+      if (hash === HASH_PREMIUM) {
+        sessionStorage.setItem(SESSION_KEY, hash);
+        sessionStorage.setItem(TIER_KEY, 'premium');
+        location.reload();
+      } else if (hash === HASH_STARTER) {
+        sessionStorage.setItem(SESSION_KEY, hash);
+        sessionStorage.setItem(TIER_KEY, 'starter');
         location.reload();
       } else {
         document.getElementById('authErr').textContent = 'Mot de passe incorrect.';

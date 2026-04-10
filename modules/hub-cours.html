@@ -294,6 +294,24 @@
   .cat-strategies  { --card-accent:#38c9b0; --card-glow:rgba(56,201,176,0.1); }
   .cat-fiches      { --card-accent:#e05a6a; --card-glow:rgba(224,90,106,0.1); }
 
+  /* Tier badges */
+  .tier-badge {
+    display:inline-flex; align-items:center; gap:4px;
+    font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.1em;
+    text-transform:uppercase; padding:3px 10px; border-radius:3px;
+    margin-left:8px; font-weight:600;
+  }
+  .tier-starter {
+    background:rgba(46,201,116,0.12); border:1px solid rgba(46,201,116,0.35);
+    color:#2ec974;
+  }
+  .tier-premium {
+    background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.35);
+    color:#c9a84c;
+  }
+  .tier-starter::before { content:'💛'; font-size:8px; }
+  .tier-premium::before { content:'💎'; font-size:8px; }
+
   .tag-foundations { color:#c9a84c; border-color:rgba(201,168,76,0.4); background:rgba(201,168,76,0.07); }
   .tag-smc         { color:#4f8ef7; border-color:rgba(79,142,247,0.4); background:rgba(79,142,247,0.07); }
   .tag-advanced    { color:#9b7fe8; border-color:rgba(155,127,232,0.4); background:rgba(155,127,232,0.07); }
@@ -745,6 +763,8 @@
   </div>
   <div class="filters">
     <button class="filter-btn active" data-filter="all">Tout</button>
+    <button class="filter-btn" data-filter="starter" style="color:#2ec974;border-color:rgba(46,201,116,0.4)">💛 Starter</button>
+    <button class="filter-btn" data-filter="premium" style="color:#c9a84c;border-color:rgba(201,168,76,0.4)">💎 Premium</button>
     <button class="filter-btn" data-filter="foundations">Fondations</button>
     <button class="filter-btn" data-filter="smc">SMC / ICT</button>
     <button class="filter-btn" data-filter="advanced">Avancé</button>
@@ -759,10 +779,10 @@
   <div class="grid" id="courseGrid">
 
     <!-- CARD 1: Fondations -->
-    <div class="card cat-foundations" data-category="foundations" data-keywords="quarterly theory quarterly theory gb time smt csd aoi fractals cycles">
+    <div class="card cat-foundations" data-category="foundations" data-tier="starter" data-keywords="quarterly theory quarterly theory gb time smt csd aoi fractals cycles">
       <div class="card-header">
         <div>
-          <div class="card-tag tag-foundations">Fondations</div>
+          <div class="card-tag tag-foundations">Fondations</div><span class="tier-badge tier-starter">Starter</span>
           <div class="card-level">Intermédiaire → Avancé</div>
         </div>
       </div>
@@ -784,7 +804,7 @@
     </div>
 
     <!-- CARD 2: SMC/ICT -->
-    <div class="card cat-smc" data-category="smc" data-keywords="SMC-ICT smc ict ipda drt fvg order blocks breaker smt structure iofed bpr">
+    <div class="card cat-smc" data-category="smc" data-tier="premium" data-keywords="SMC-ICT smc ict ipda drt fvg order blocks breaker smt structure iofed bpr">
       <div class="card-header">
         <div>
           <div class="card-tag tag-smc">SMC / ICT</div>
@@ -810,7 +830,7 @@
     </div>
 
     <!-- CARD 3: ICT Concepts &amp; DRT -->
-    <div class="card cat-smc" data-category="smc" data-keywords="ict dealing range theory drt pd arrays liquidity smt intermarket killzones">
+    <div class="card cat-smc" data-category="smc" data-tier="premium" data-keywords="ict dealing range theory drt pd arrays liquidity smt intermarket killzones">
       <div class="card-header">
         <div>
           <div class="card-tag tag-smc">SMC / ICT</div>
@@ -836,7 +856,7 @@
     </div>
 
     <!-- CARD 4: NQ Institutionnel -->
-    <div class="card cat-advanced" data-category="advanced" data-keywords="nq nasdaq fix price imp nodes PO3 PO3 lit timing protocole PO3 Time Cycles zine">
+    <div class="card cat-advanced" data-category="advanced" data-tier="premium" data-keywords="nq nasdaq fix price imp nodes PO3 PO3 lit timing protocole PO3 Time Cycles zine">
       <div class="card-header">
         <div>
           <div class="card-tag tag-advanced">Avancé</div>
@@ -862,7 +882,7 @@
     </div>
 
     <!-- CARD 5: Protocole Haute Probabilité -->
-    <div class="card cat-strategies" data-category="strategies" data-keywords="smc ict protocol haute probabilite orderflow smt csd bpr sessions macro">
+    <div class="card cat-strategies" data-category="strategies" data-tier="premium" data-keywords="smc ict protocol haute probabilite orderflow smt csd bpr sessions macro">
       <div class="card-header">
         <div>
           <div class="card-tag tag-strategies">Stratégies</div>
@@ -888,7 +908,7 @@
     </div>
 
     <!-- CARD 6: Fiches Révision SMC -->
-    <div class="card cat-fiches" data-category="fiches" data-keywords="fiches revision smc ict market structure fvg order block liquidity premium discount mmt psychologie">
+    <div class="card cat-fiches" data-category="fiches" data-tier="premium" data-keywords="fiches revision smc ict market structure fvg order block liquidity premium discount mmt psychologie">
       <div class="card-header">
         <div>
           <div class="card-tag tag-fiches">Fiches</div>
@@ -914,7 +934,7 @@
     </div>
 
     <!-- CARD 7: PO3 -->
-    <div class="card cat-advanced" data-category="advanced" data-keywords="PO3 po3 power of three dealing range fix cme circuit breaker hippo pd array indicator">
+    <div class="card cat-advanced" data-category="advanced" data-tier="premium" data-keywords="PO3 po3 power of three dealing range fix cme circuit breaker hippo pd array indicator">
       <div class="card-header">
         <div>
           <div class="card-tag tag-advanced">Avancé</div>
@@ -940,7 +960,7 @@
     </div>
 
     <!-- CARD 8: HIPPO -->
-    <div class="card cat-advanced" data-category="advanced" data-keywords="hippo pd array fix price imp nodes blue zone red zone green zone PO3 fvg ob force">
+    <div class="card cat-advanced" data-category="advanced" data-tier="premium" data-keywords="hippo pd array fix price imp nodes blue zone red zone green zone PO3 fvg ob force">
       <div class="card-header">
         <div>
           <div class="card-tag tag-advanced">Avancé</div>
@@ -965,7 +985,7 @@
     </div>
 
     <!-- CARD 9: Système Time & Prices -->
-    <div class="card cat-strategies" data-category="strategies" data-keywords="systeme trading institutionnel time prices fix price cycles orderflow execution fvg liquidity algo">
+    <div class="card cat-strategies" data-category="strategies" data-tier="premium" data-keywords="systeme trading institutionnel time prices fix price cycles orderflow execution fvg liquidity algo">
       <div class="card-header">
         <div>
           <div class="card-tag tag-strategies">Stratégies</div>
@@ -989,7 +1009,7 @@
     </div>
 
     <!-- CARD 10: Inducement -->
-    <div class="card cat-smc" data-category="smc" data-keywords="inducement smc ict liquidity structure htf bias entry 1 entry 2 sessions asia london ny risk management">
+    <div class="card cat-smc" data-category="smc" data-tier="premium" data-keywords="inducement smc ict liquidity structure htf bias entry 1 entry 2 sessions asia london ny risk management">
       <div class="card-header">
         <div>
           <div class="card-tag tag-smc">SMC / ICT</div>
@@ -1014,7 +1034,7 @@
     </div>
 
     <!-- CARD 11: Liquidité Algorithmique -->
-    <div class="card cat-foundations" data-category="foundations" data-keywords="Liquidité Algorithmique inducement liquidite algorithmique cycle algo breaker block orderblock fvg plan marche">
+    <div class="card cat-foundations" data-category="foundations" data-tier="premium" data-keywords="Liquidité Algorithmique inducement liquidite algorithmique cycle algo breaker block orderblock fvg plan marche">
       <div class="card-header">
         <div>
           <div class="card-tag tag-foundations">Fondations</div>
@@ -1038,7 +1058,7 @@
     </div>
 
     <!-- CARD 12: Analyse Avancée -->
-    <div class="card cat-advanced" data-category="advanced" data-keywords="unicorn model breaker sibi bisi bpr csd msb buy program purge liquidite">
+    <div class="card cat-advanced" data-category="advanced" data-tier="premium" data-keywords="unicorn model breaker sibi bisi bpr csd msb buy program purge liquidite">
       <div class="card-header">
         <div>
           <div class="card-tag tag-advanced">Avancé</div>
@@ -1063,10 +1083,10 @@
     </div>
 
     <!-- CARD 13: QT -->
-    <div class="card cat-foundations" data-category="foundations" data-keywords="quarterly theory QT ssmt true opens precision swing points smt fill daily bias narrative building freedom model tcisd">
+    <div class="card cat-foundations" data-category="foundations" data-tier="starter" data-keywords="quarterly theory QT ssmt true opens precision swing points smt fill daily bias narrative building freedom model tcisd">
       <div class="card-header">
         <div>
-          <div class="card-tag tag-foundations">Fondations</div>
+          <div class="card-tag tag-foundations">Fondations</div><span class="tier-badge tier-starter">Starter</span>
           <div class="card-level">Intermédiaire → Expert</div>
         </div>
       </div>
@@ -1089,7 +1109,7 @@
     </div>
 
     <!-- CARD 14: QUADS MMXM -->
-    <div class="card cat-strategies" data-category="strategies" data-keywords="quads mmxm ipda poi amd smt csd tapda three candle model nq es indices algorithmique gestion trade">
+    <div class="card cat-strategies" data-category="strategies" data-tier="premium" data-keywords="quads mmxm ipda poi amd smt csd tapda three candle model nq es indices algorithmique gestion trade">
       <div class="card-header">
         <div>
           <div class="card-tag tag-strategies">Stratégies</div>
@@ -1115,10 +1135,10 @@
     </div>
 
     <!-- CARD 15: TradingTime Cycles -->
-    <div class="card cat-strategies" data-category="strategies" data-keywords="Time Cycles trading institutionnel smc ict market maker buy sell model mmsm mmbm fvg dealing ranges smt orderflow psychology money management">
+    <div class="card cat-strategies" data-category="strategies" data-tier="starter" data-keywords="Time Cycles trading institutionnel smc ict market maker buy sell model mmsm mmbm fvg dealing ranges smt orderflow psychology money management">
       <div class="card-header">
         <div>
-          <div class="card-tag tag-strategies">Stratégies</div>
+          <div class="card-tag tag-strategies">Stratégies</div><span class="tier-badge tier-starter">Starter</span>
           <div class="card-level">Intermédiaire → Expert</div>
         </div>
       </div>
@@ -1142,10 +1162,10 @@
 
 
     <!-- CARD 16: Time Cycles IPDA Time Cycles -->
-    <div class="card cat-advanced" data-category="advanced" data-keywords="ipda time cycles ipda Time Cycles pxh pxl price cycles liquidite bsl ssl pd arrays iof htf draw on liquidity smt csd entry patterns trade management risk management flashcards quiz">
+    <div class="card cat-advanced" data-category="advanced" data-tier="starter" data-keywords="ipda time cycles ipda Time Cycles pxh pxl price cycles liquidite bsl ssl pd arrays iof htf draw on liquidity smt csd entry patterns trade management risk management flashcards quiz">
       <div class="card-header">
         <div>
-          <div class="card-tag tag-advanced">Avancé</div>
+          <div class="card-tag tag-advanced">Avancé</div><span class="tier-badge tier-starter">Starter</span>
           <div class="card-level">Expert · Trainer Interactif</div>
         </div>
       </div>
@@ -1862,14 +1882,40 @@ const filterBtns  = document.querySelectorAll('.filter-btn');
 const countNum    = document.getElementById('countNum');
 let activeFilter  = 'all';
 
+// Auto-add tier badges + lock Premium cards for Starter users
+const userTier = sessionStorage.getItem('aa_tier') || 'premium';
+cards.forEach((card, idx) => {
+  const tier = card.dataset.tier || 'premium';
+  const header = card.querySelector('.card-header > div');
+  // Add badge
+  if (header && !header.querySelector('.tier-badge')) {
+    const badge = document.createElement('span');
+    badge.className = 'tier-badge ' + (tier === 'starter' ? 'tier-starter' : 'tier-premium');
+    badge.textContent = tier === 'starter' ? 'Starter' : 'Premium';
+    const tag = header.querySelector('.card-tag');
+    if (tag) tag.insertAdjacentElement('afterend', badge);
+  }
+  // Lock premium cards for starter users
+  if (userTier === 'starter' && tier === 'premium') {
+    card.style.opacity = '0.4';
+    card.style.pointerEvents = 'none';
+    card.style.position = 'relative';
+    const lock = document.createElement('div');
+    lock.style.cssText = 'position:absolute;top:12px;right:12px;font-size:18px;z-index:2;';
+    lock.textContent = '🔒';
+    card.appendChild(lock);
+  }
+});
+
 function filterCards() {
   const query = searchInput.value.toLowerCase().trim();
   let visibleCount = 0;
   cards.forEach(card => {
     const cat = (card.dataset.category || '').toLowerCase();
+    const tier = (card.dataset.tier || '').toLowerCase();
     const titleEl = card.querySelector('.card-title');
     const kw = ((card.dataset.keywords || '') + ' ' + (titleEl ? titleEl.textContent : '')).toLowerCase();
-    const matchFilter = activeFilter === 'all' || cat === activeFilter;
+    const matchFilter = activeFilter === 'all' || cat === activeFilter || tier === activeFilter;
     const matchSearch = !query || kw.includes(query);
     const show = matchFilter && matchSearch;
     card.classList.toggle('hidden', !show);
