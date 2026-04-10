@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="starter">
+<head>
+<meta charset="UTF-8">
+<script src="../auth.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Execution Live Series — Trading en Temps Reel</title>
+<link rel="stylesheet" href="../readability.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060a12;
+  --bg2: #0b1120;
+  --bg3: #101828;
+  --bg4: #162040;
+  --border: #1a2440;
+  --border2: #243055;
+  --blue: #4a7cff;
+  --blue2: #6b9aff;
+  --blue-dim: rgba(74,124,255,0.08);
+  --gold: #e9b84c;
+  --green: #2dd67a;
+  --red: #f04545;
+  --orange: #f08044;
+  --purple: #9b6cf0;
+  --teal: #38c9b0;
+  --text: #e4e8f2;
+  --text2: #8892a8;
+  --text3: #4a5568;
+  --sans: 'Inter', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+}
+
+/* ── LAYOUT ── */
+.app { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: 52px;
+  bottom: 0;
+  overflow-y: auto;
+  z-index: 50;
+}
+
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+.sidebar-header {
+  padding: 20px 18px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-header h2 {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+.sidebar-header p {
+  font-size: 11px;
+  color: var(--text3);
+  font-family: var(--mono);
+}
+
+.sidebar-search {
+  margin: 12px 14px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 12px;
+  font-family: var(--sans);
+  width: calc(100% - 28px);
+  outline: none;
+}
+.sidebar-search:focus { border-color: var(--blue); }
+.sidebar-search::placeholder { color: var(--text3); }
+
+.nav-group { padding: 8px 0; }
+
+.nav-group-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 8px 18px 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 18px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text2);
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text); }
+.nav-item.active { background: var(--blue-dim); color: var(--blue); border-left-color: var(--blue); font-weight: 600; }
+
+.nav-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.nav-num {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--text3);
+  min-width: 18px;
+}
+
+.nav-item.active .nav-num { color: var(--blue); }
+
+/* ── MAIN ── */
+.main {
+  flex: 1;
+  margin-left: 280px;
+  padding: 32px 40px 60px;
+  max-width: 960px;
+}
+
+.page-title {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 6px;
+  background: linear-gradient(135deg, var(--gold), var(--orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: var(--text3);
+  font-family: var(--mono);
+  margin-bottom: 40px;
+}
+
+.section { margin-bottom: 56px; }
+
+.section-id { scroll-margin-top: 70px; }
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.badge-exec { background: rgba(45,214,122,0.1); color: var(--green); }
+.badge-timing { background: rgba(74,124,255,0.1); color: var(--blue); }
+.badge-manage { background: rgba(155,108,240,0.1); color: var(--purple); }
+.badge-news { background: rgba(240,128,68,0.1); color: var(--orange); }
+.badge-synth { background: rgba(233,184,76,0.1); color: var(--gold); }
+
+.section h2 {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  color: #f0f2f8;
+}
+
+.section-desc {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 20px;
+  max-width: 700px;
+}
+
+/* ── BANNER ── */
+.banner {
+  background: linear-gradient(135deg, rgba(45,214,122,0.08), rgba(74,124,255,0.06));
+  border: 1px solid rgba(45,214,122,0.15);
+  border-radius: 16px;
+  padding: 36px 32px;
+  margin-bottom: 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.banner::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(45,214,122,0.08), transparent 70%);
+  border-radius: 50%;
+}
+
+.banner-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 10px;
+}
+
+.banner-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #f0f2f8;
+  margin-bottom: 6px;
+}
+
+.banner-sub {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.6;
+  max-width: 600px;
+  margin-bottom: 14px;
+}
+
+.banner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 6px;
+  background: rgba(45,214,122,0.12);
+  color: var(--green);
+  border: 1px solid rgba(45,214,122,0.2);
+}
+
+/* ── CONCEPTS GRID ── */
+.concepts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 48px;
+}
+
+.concept-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  transition: border-color 0.2s;
+}
+
+.concept-card:hover { border-color: var(--border2); }
+
+.concept-card-icon {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.concept-card h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.concept-card p {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.5;
+}
+
+/* ── PROGRAMME TABLE ── */
+.programme-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 48px;
+}
+
+.programme-table th {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.programme-table td {
+  font-size: 13px;
+  color: var(--text2);
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(26,36,64,0.5);
+  vertical-align: top;
+}
+
+.programme-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.programme-table .mod-num {
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--green);
+  font-size: 12px;
+  min-width: 36px;
+}
+
+.programme-table .mod-title {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.programme-table .mod-date {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  white-space: nowrap;
+}
+
+/* ── PRINCIPES ── */
+.principes-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 48px;
+}
+
+.principes-box h3 {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+
+.principes-box ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.principes-box li {
+  font-size: 13px;
+  color: var(--text2);
+  padding-left: 18px;
+  position: relative;
+  line-height: 1.6;
+}
+
+.principes-box li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  opacity: 0.6;
+}
+
+/* ── KEY CONCEPTS (per module) ── */
+.concepts-list {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 24px;
+}
+
+.concepts-list h3 {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 12px;
+}
+
+.concepts-list ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.concepts-list li {
+  font-size: 13px;
+  color: var(--text2);
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.concepts-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--blue);
+  opacity: 0.5;
+}
+
+/* ── NAV BACK ── */
+.nav-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--blue);
+  text-decoration: none;
+  padding: 10px 20px;
+  border: 1px solid rgba(74,124,255,0.2);
+  border-radius: 8px;
+  transition: all 0.2s;
+  margin-top: 20px;
+}
+
+.nav-back:hover {
+  background: rgba(74,124,255,0.08);
+  border-color: var(--blue);
+}
+
+/* ── DIVIDER ── */
+.group-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 32px 0;
+}
+
+/* hidden by search */
+.section.hidden { display: none; }
+.nav-item.hidden { display: none; }
+.nav-group.hidden { display: none; }
+
+.nav-count {
+  margin-left: auto;
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--text3);
+}
+
+.nav-separator {
+  height: 1px;
+  background: var(--border);
+  margin: 12px 14px;
+}
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: -300px;
+    width: 280px;
+    top: 52px;
+    transition: left 0.3s;
+    z-index: 100;
+  }
+  .sidebar.open { left: 0; }
+  .main { margin-left: 0; padding: 20px 16px 60px; }
+  .page-title { font-size: 24px; }
+  .banner { padding: 24px 20px; }
+  .banner-title { font-size: 22px; }
+  .concepts-grid { grid-template-columns: 1fr; }
+  .programme-table { font-size: 12px; }
+  .mobile-toggle { display: flex !important; }
+}
+
+.mobile-toggle {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  border: none;
+  cursor: pointer;
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 4px 20px rgba(74,124,255,0.4);
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 90;
+}
+.overlay.show { display: block; }
+</style>
+</head>
+<body>
+
+<button class="mobile-toggle" id="mobileToggle">&#9776;</button>
+<div class="overlay" id="overlay"></div>
+
+<div class="app">
+
+<!-- ─── SIDEBAR ─── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h2>Execution Live Series</h2>
+    <p>12 Modules &mdash; Trading en Temps Reel</p>
+  </div>
+  <input type="text" class="sidebar-search" id="searchInput" placeholder="Rechercher un module...">
+
+  <div class="nav-group" data-group="execution">
+    <div class="nav-group-title">Fondamentaux</div>
+    <div class="nav-item active" data-section="s1">
+      <span class="nav-num">01</span> Patience & Position
+    </div>
+    <div class="nav-item" data-section="s2">
+      <span class="nav-num">02</span> Consolidation > Expansion
+    </div>
+    <div class="nav-item" data-section="s3">
+      <span class="nav-num">03</span> Gestion Impeccable
+    </div>
+    <div class="nav-item" data-section="s4">
+      <span class="nav-num">04</span> Environnement Low Prob.
+    </div>
+  </div>
+
+  <div class="nav-group" data-group="timing">
+    <div class="nav-group-title">Timing & Signatures</div>
+    <div class="nav-item" data-section="s5">
+      <span class="nav-num">05</span> Niveau Fixe comme POI
+    </div>
+    <div class="nav-item" data-section="s6">
+      <span class="nav-num">06</span> Signatures Algorithmiques
+    </div>
+    <div class="nav-item" data-section="s7">
+      <span class="nav-num">07</span> Timing LRLR
+    </div>
+  </div>
+
+  <div class="nav-group" data-group="management">
+    <div class="nav-group-title">Gestion de Position</div>
+    <div class="nav-item" data-section="s8">
+      <span class="nav-num">08</span> Immediate Rebalance
+    </div>
+    <div class="nav-item" data-section="s9">
+      <span class="nav-num">09</span> Trading Post-CPI
+    </div>
+  </div>
+
+  <div class="nav-group" data-group="confluence">
+    <div class="nav-group-title">Confluence & Synthese</div>
+    <div class="nav-item" data-section="s10">
+      <span class="nav-num">10</span> Alignement Parfait
+    </div>
+    <div class="nav-item" data-section="s11">
+      <span class="nav-num">11</span> Manipulation CPI
+    </div>
+    <div class="nav-item" data-section="s12">
+      <span class="nav-num">12</span> Resume & Principes
+    </div>
+  </div>
+</aside>
+
+<!-- ─── MAIN CONTENT ─── -->
+<main class="main">
+  <h1 class="page-title">Execution Live Series</h1>
+  <p class="page-subtitle">12 Modules &mdash; Trading en Temps Reel</p>
+
+  <!-- ── BANNER ── -->
+  <div class="banner">
+    <div class="banner-eyebrow">Algorithmic Academy &mdash; Execution</div>
+    <div class="banner-title">Execution Live Series — Trading en Temps Reel</div>
+    <p class="banner-sub">
+      Cette serie couvre l'execution en conditions reelles de marche : patience, signatures algorithmiques, timing des mouvements, gestion de position et reaction aux news. Chaque module est une session live commentee avec analyse et trades en direct.
+    </p>
+    <span class="banner-badge">Starter</span>
+  </div>
+
+  <!-- ── CONCEPTS CLES ── -->
+  <div style="margin-bottom:48px;">
+    <h2 style="font-size:20px;font-weight:800;color:#f0f2f8;margin-bottom:18px;">Concepts Cles</h2>
+    <div class="concepts-grid">
+      <div class="concept-card">
+        <div class="concept-card-icon">&#9201;</div>
+        <h4>Patience & Discipline</h4>
+        <p>Savoir attendre le setup parfait. Ne pas forcer un trade quand les conditions ne sont pas reunies. La patience est le premier facteur de rentabilite.</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-icon">&#9881;</div>
+        <h4>Signatures Algorithmiques</h4>
+        <p>Identifier les BC (Bullish/Bearish Candle imbalances) et les formations de l'IPDA (Interbank Price Delivery Algorithm) pour anticiper les mouvements.</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-icon">&#8634;</div>
+        <h4>Cycles de 90 Minutes</h4>
+        <p>Les mouvements se deployent en cycles de 90 minutes. Savoir reconnaitre ou l'on se situe dans le cycle est essentiel pour le timing d'entree.</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-icon">&#9888;</div>
+        <h4>Environnement Low Probability</h4>
+        <p>Reconnaitre les jours et conditions ou le trading n'est pas recommande. Rester flat est une position valide et souvent la plus rentable.</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-icon">&#128200;</div>
+        <h4>Gestion de Position</h4>
+        <p>Du placement du stop a la prise de profit partielle, en passant par le trailing et la gestion agressive lors des rebalances immediats.</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-icon">&#128240;</div>
+        <h4>Reaction aux News (CPI)</h4>
+        <p>Comment trader autour des releases economiques majeures : manipulation pre-news, distribution post-news, et identification des Liquidity Sweeps.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PROGRAMME ── -->
+  <div style="margin-bottom:48px;">
+    <h2 style="font-size:20px;font-weight:800;color:#f0f2f8;margin-bottom:18px;">Programme Complet</h2>
+    <table class="programme-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Module</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="mod-num">01</td><td class="mod-title">Patience & Gestion de Position</td><td class="mod-date">15 Mai 2024</td></tr>
+        <tr><td class="mod-num">02</td><td class="mod-title">Les Consolidations Deviennent des Expansions</td><td class="mod-date">16 Mai 2024</td></tr>
+        <tr><td class="mod-num">03</td><td class="mod-title">Patience et Gestion de Trade Impeccable</td><td class="mod-date">17 Mai 2024</td></tr>
+        <tr><td class="mod-num">04</td><td class="mod-title">Reconnaissance d'Environnement Low Probability</td><td class="mod-date">28 Mai 2024</td></tr>
+        <tr><td class="mod-num">05</td><td class="mod-title">Utiliser un Niveau Fixe comme POI</td><td class="mod-date">11 Juin 2024</td></tr>
+        <tr><td class="mod-num">06</td><td class="mod-title">Timing des Mouvements par Signatures Algorithmiques</td><td class="mod-date">17 Juil 2024</td></tr>
+        <tr><td class="mod-num">07</td><td class="mod-title">Timing des Low Resistance Liquidity Runs</td><td class="mod-date">22 Juil 2024</td></tr>
+        <tr><td class="mod-num">08</td><td class="mod-title">Immediate Rebalance & Gestion de Position</td><td class="mod-date">26 Juil 2024</td></tr>
+        <tr><td class="mod-num">09</td><td class="mod-title">Trading Apres le CPI</td><td class="mod-date">14 Aout 2024</td></tr>
+        <tr><td class="mod-num">10</td><td class="mod-title">Quand Tout est Aligne, la Magie Opere</td><td class="mod-date">27 Aout 2024</td></tr>
+        <tr><td class="mod-num">11</td><td class="mod-title">Manipulation 08h30 CPI, Distribution 09h30</td><td class="mod-date">11 Sept 2024</td></tr>
+        <tr><td class="mod-num">12</td><td class="mod-title">Resume & Principes Fondamentaux</td><td class="mod-date">&mdash;</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════════ MODULES ═══════════ -->
+
+  <!-- 1 -->
+  <div class="section" id="s1">
+    <div class="section-id"></div>
+    <div class="section-badge badge-exec">Module 01 &mdash; Fondamentaux</div>
+    <h2>Patience & Gestion de Position</h2>
+    <p class="section-desc">
+      Ce premier module pose les bases essentielles : la patience est la competence numero un du trader professionnel. On y etudie un setup MMBM (Market Maker Buy Model) en conditions reelles, avec identification d'une divergence SMT (Smart Money Technique) sur les plus bas. La reaction au CPI est analysee en detail, montrant comment le prix effectue un Liquidity Sweep avant de se retourner. L'accent est mis sur l'importance de ne pas anticiper et d'attendre la confirmation avant d'engager une position.
+    </p>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>La patience comme avantage competitif fondamental</li>
+        <li>Setup MMBM avec confirmation SMT sur les plus bas</li>
+        <li>Reaction du prix au CPI : Liquidity Sweep puis retournement</li>
+        <li>Ne jamais anticiper — attendre la confirmation algorithmique</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="group-divider"></div>
+
+  <!-- 2 -->
+  <div class="section" id="s2">
+    <div class="section-id"></div>
+    <div class="section-badge badge-exec">Module 02 &mdash; Fondamentaux</div>
+    <h2>Les Consolidations Deviennent des Expansions</h2>
+    <p class="section-desc">
+      Ce module explore la dynamique entre les phases de consolidation et les expansions qui en resultent. Le Midnight Open est presente comme un niveau de reference cle pour le biais directionnel de la session. On analyse comment les evenements economiques (news) agissent comme catalyseurs pour transformer une consolidation en expansion. Le module detaille le processus complet : identification de la range de consolidation, positionnement du POI (Point of Interest), et timing de l'expansion via les cycles de session.
+    </p>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Transition consolidation vers expansion — le catalyseur</li>
+        <li>Midnight Open comme niveau de reference directionnelle</li>
+        <li>Les news comme declencheurs d'expansion algorithmique</li>
+        <li>Identification des ranges et timing de la cassure</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="group-divider"></div>
+
+  <!-- 3 -->
+  <div class="section" id="s3">
+    <div class="section-id"></div>
+    <div class="section-badge badge-exec">Module 03 &mdash; Fondamentaux</div>
+    <h2>Patience et Gestion de Trade Impeccable</h2>
+    <p class="section-desc">
+      Ce module aborde specifiquement le trading du vendredi et les jours a faible probabilite. Lorsque le flux d'ordres HTF (Higher Time Frame) n'est pas clair, la meilleure decision est de ne pas trader. On apprend a identifier les signaux qui indiquent un environnement defavorable : absence de draw on liquidity clair, manque de confluence multi-timeframe, et structure de prix ambigue. La gestion impeccable implique aussi de savoir couper ses pertes tot et de ne pas moyenner a la baisse.
+    </p>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Vendredi = jour a probabilite reduite — prudence maximale</li>
+        <li>Quand le flux HTF est ambigu, rester flat</li>
+        <li>Savoir identifier l'absence de conditions favorables</li>
+        <li>Couper tot, ne jamais moyenner une position perdante</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="group-divider"></div>
+
+  <!-- 4 -->
+  <div class="section" id="s4">
+    <div class="section-id"></div>
+    <div class="section-badge badge-exec">Module 04 &mdash; Fondamentaux</div>
+    <h2>Reconnaissance d'Environnement Low Probability</h2>
+    <p class="section-desc">
+      Ce module approfondit l'analyse des cycles de 90 minutes et leur role dans l'identification des setups a faible probabilite. On apprend a reconnaitre les signatures qui indiquent que le marche ne presente pas de configuration exploitable. Les cycles AM1, AM2, PM1, PM2, PM3 sont detailles avec leurs caracteristiques propres. Le module insiste sur le fait que savoir quand ne pas trader est aussi important que savoir quand entrer : rester flat pendant les periodes low probability preserve le capital et la discipline.
+    </p>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Cycles de 90 minutes : AM1, AM2, PM1, PM2, PM3</li>
+        <li>Reconnaitre les signatures de marche non exploitable</li>
+        <li>Rester flat = preserver capital et discipline mentale</li>
+        <li>Ne pas confondre volatilite et opportunite</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="group-divider"></div>
+
+  <!-- 5 -->
+  <div class="section" id="s5">
+    <div class="section-id"></div>
+    <div class="section-badge badge-timing">Module 05 &mdash; Timing & Signatures</div>
+    <h2>Utiliser un Niveau Fixe comme POI</h2>
+    <p class="section-desc">
+      Ce module presente une methode d'execution pas-a-pas basee sur un niveau fixe utilise comme POI (Point of Interest). On suit le processus complet depuis l'identification du niveau jusqu'a la sortie du trade. Le POI peut etre un Order Block, un Fair Value Gap, ou un Breaker — l'essentiel est qu'il soit valide dans le contexte HTF. La gestion du trade est detaillee : placement du stop loss, prise de profit partielle, et trailing vers la target finale.
+    </p>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>POI fixe : Order Block, FVG ou Breaker valide en HTF</li>
+        <li>Processus complet : identification, entree, gestion, sortie</li>
+        <li>Placement du stop loss et invalidation du setup</li>
+        <li>Prise de profit partielle et trailing vers la target</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="group-divider"></div>
+
+  <!-- 6 -->
+  <div class="section" id="s6">
+    <div class="section-id"></div>
+    <div class="section-badge badge-timing">Module 06 &mdash; Timing & Signatures</div>
+    <h2>Timing des Mouvements par Signatures Algorithmiques</h2>
+    <p class="section-desc">
+      Ce module est au coeur de la methode : identifier les signatures de l'IPDA (Interbank Price Delivery Algorithm) pour anticiper les mouvements avec precision. Les formations BC (Bullish/Bearish Candle imbalance) sont etudiees en detail comme signaux d'entree. Le timing IPDA permet de determiner quand l'algorithme est susceptible de livrer le prix vers sa prochaine cible. L'execution se fait sur le graphique 15 secondes pour un positionnement optimal, avec des confirmations sur le M1 et M5.
+    </p>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>IPDA — Interbank Price Delivery Algorithm et son timing</li>
+        <li>Formations BC comme signaux d'entree haute precision</li>
+        <li>Execution sur graphique 15 secondes avec confirmation M1/M5</li>
+        <li>Anticiper la livraison de prix vers la prochaine cible</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="group-divider"></div>
+
+  <!-- 7 -->
+  <div class="section" id="s7">
+    <div class="section-id"></div>
+    <div class="section-badge badge-timing">Module 07 &mdash; Timing & Signatures</div>
+    <h2>Timing des Low Resistance Liquidity Runs</h2>
+    <p class="section-desc">
+      Les LRLR (Low Resistance Liquidity Runs) sont des phases ou le prix se deplace rapidement dans une direction avec peu d'obstacles. Ce module enseigne comment identifier et exploiter ces mouvements. Le Consolidation Block agit comme support/resistance pendant le LRLR. La bougie de 10h00 (heure de New York) est presentee comme un point de reference temporel important. Le timing macro — savoir a quel moment du cycle de 90 minutes le LRLR est le plus probable — est la cle de ce module.
+    </p>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>LRLR — mouvement rapide avec faible resistance</li>
+        <li>Consolidation Block comme support/resistance en cours de run</li>
+        <li>Bougie de 10h00 NY comme reference temporelle</li>
+        <li>Timing macro dans le cycle de 90 minutes</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="group-divider"></div>
+
+  <!-- 8 -->
+  <div class="section" id="s8">
+    <div class="section-id"></div>
+    <div class="section-badge badge-manage">Module 08 &mdash; Gestion de Position</div>
+    <h2>Immediate Rebalance & Gestion de Position</h2>
+    <p class="section-desc">
+      L'Immediate Rebalance est un concept ou le prix revient quasi instantanement combler un desequilibre qu'il vient de creer. Ce module analyse un setup base sur un Liquidity Sweep du plus bas de la session de Londres, suivi d'un Immediate Rebalance. La gestion de position agressive est detaillee : entree sur le rebalance, stop serre sous le sweep, et target vers la Buy Side Liquidity. On apprend quand etre agressif dans la taille de position et quand rester conservateur.
+    </p>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Immediate Rebalance — retour rapide combler le desequilibre</li>
+        <li>Liquidity Sweep du low de Londres comme signal</li>
+        <li>Gestion agressive : stop serre, target Buy Side Liquidity</li>
+        <li>Quand etre agressif vs conservateur sur la taille</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="group-divider"></div>
+
+  <!-- 9 -->
+  <div class="section" id="s9">
+    <div class="section-id"></div>
+    <div class="section-badge badge-news">Module 09 &mdash; News & Catalyseurs</div>
+    <h2>Trading Apres le CPI</h2>
+    <p class="section-desc">
+      Le CPI (Consumer Price Index) est l'un des evenements les plus volatils du calendrier economique. Ce module detaille comment trader apres la publication du CPI en utilisant un setup bearish breaker. On analyse la reaction initiale du marche (souvent un fakeout), puis la mise en place de la veritable direction. Le Bearish Breaker qui se forme apres le spike initial du CPI devient le POI principal pour l'entree short. La gestion du risque est adaptee a la volatilite accrue post-news.
+    </p>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>CPI — reaction initiale souvent un fakeout (Liquidity Sweep)</li>
+        <li>Bearish Breaker post-spike comme POI d'entree</li>
+        <li>Identifier la veritable direction apres la manipulation</li>
+        <li>Gestion du risque adaptee a la volatilite post-news</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="group-divider"></div>
+
+  <!-- 10 -->
+  <div class="section" id="s10">
+    <div class="section-id"></div>
+    <div class="section-badge badge-synth">Module 10 &mdash; Confluence & Synthese</div>
+    <h2>Quand Tout est Aligne, la Magie Opere</h2>
+    <p class="section-desc">
+      Ce module illustre le scenario ideal : quand tous les elements confluent — daily BC rejection, confluence multi-timeframe, timing de session, et draw on liquidity clair. On analyse un setup ou le daily montre un rejet sur un BC, le H4 confirme la direction, le M15 donne l'entree, et le M1 affine le timing. La recovery vers la Buy Side Liquidity est suivie du debut a la fin. Ce module demontre que la patience d'attendre l'alignement parfait produit les meilleurs ratios risque/recompense.
+    </p>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Confluence multi-timeframe : Daily, H4, M15, M1</li>
+        <li>Daily BC rejection comme signal directionnel</li>
+        <li>Recovery vers la Buy Side Liquidity en detail</li>
+        <li>L'alignement parfait = meilleur ratio risque/recompense</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="group-divider"></div>
+
+  <!-- 11 -->
+  <div class="section" id="s11">
+    <div class="section-id"></div>
+    <div class="section-badge badge-synth">Module 11 &mdash; Confluence & Synthese</div>
+    <h2>Manipulation 08h30 CPI, Distribution 09h30</h2>
+    <p class="section-desc">
+      Ce module decrypte le pattern recurrent autour du CPI : manipulation a 08h30 (heure de New York) lors de la publication, puis distribution a 09h30 a l'ouverture du marche actions. On etudie la formation d'un BC sur le M15 pendant la phase de manipulation, le Liquidity Sweep du Previous Day High (PDH), et l'opportunite de vente qui en decoule. Le module montre comment les Market Makers utilisent les news pour accumuler des positions avant de distribuer dans la direction opposee.
+    </p>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Pattern CPI : manipulation 08h30 puis distribution 09h30</li>
+        <li>BC sur M15 pendant la phase de manipulation</li>
+        <li>Liquidity Sweep du PDH (Previous Day High)</li>
+        <li>Accumulation Market Maker puis distribution inversee</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="group-divider"></div>
+
+  <!-- 12 -->
+  <div class="section" id="s12">
+    <div class="section-id"></div>
+    <div class="section-badge badge-synth">Module 12 &mdash; Confluence & Synthese</div>
+    <h2>Resume & Principes Fondamentaux</h2>
+    <p class="section-desc">
+      Ce dernier module synthetise l'ensemble des principes abordes dans la serie. Il recapitule les piliers fondamentaux : la patience comme premier outil, les signatures algorithmiques de l'IPDA comme guide, le timing des cycles de 90 minutes comme horloge, et la gestion de position comme filet de securite. Chaque concept est relie aux modules precedents pour creer une vision unifiee de l'execution en temps reel. Ce resume sert de reference rapide pour la pratique quotidienne.
+    </p>
+    <div class="concepts-list">
+      <h3>Points Cles</h3>
+      <ul>
+        <li>Patience — ne trader que les setups valides et confirmes</li>
+        <li>Signatures IPDA — BC, CSD, SMT comme confirmations</li>
+        <li>Timing — cycles de 90 minutes et macro timing</li>
+        <li>Gestion — stop, partiel, trailing, taille de position</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── PRINCIPES FONDAMENTAUX ── -->
+  <div class="principes-box">
+    <h3>Principes Fondamentaux de l'Execution</h3>
+    <ul>
+      <li><strong>Patience absolue :</strong> Ne jamais forcer un trade. Attendre que toutes les conditions soient reunies avant d'engager une position.</li>
+      <li><strong>Signatures algorithmiques :</strong> Les formations BC (Bullish/Bearish Candle imbalance) et les CSD (Change in State of Delivery) sont les signaux primaires de l'IPDA.</li>
+      <li><strong>Timing des cycles :</strong> Chaque mouvement s'inscrit dans un cycle de 90 minutes. Connaitre sa position dans le cycle determine la probabilite du setup.</li>
+      <li><strong>Gestion de position rigoureuse :</strong> Stop loss place au-dela de l'invalidation structurelle. Prises de profit partielles aux niveaux intermediaires. Trailing sur le reste.</li>
+      <li><strong>Environnement avant tout :</strong> Identifier si le jour et la session sont favorables. Vendredi, jours feries, et sessions sans draw on liquidity clair = rester flat.</li>
+      <li><strong>News comme catalyseurs :</strong> Le CPI et autres releases majeurs creent des Liquidity Sweeps previsibles. Manipulation puis distribution — toujours dans cet ordre.</li>
+      <li><strong>Multi-timeframe obligatoire :</strong> L'execution sans confirmation HTF est du gambling. Daily donne le biais, H4 la structure, M15 l'entree, M1/15s l'affinage.</li>
+      <li><strong>Savoir ne pas trader :</strong> Les jours low probability (vendredi, HTF ambigu, absence de POI clair) exigent de rester flat. Preserver le capital est un trade en soi.</li>
+    </ul>
+  </div>
+
+  <!-- ── NAVIGATION ── -->
+  <a href="../index.html" class="nav-back">&#8592; Retour au Hub Principal</a>
+
+</main>
+</div>
+
+<script>
+(function() {
+  const navItems = document.querySelectorAll('.nav-item');
+  const sections = document.querySelectorAll('.section');
+  const searchInput = document.getElementById('searchInput');
+  const sidebar = document.getElementById('sidebar');
+  const mobileToggle = document.getElementById('mobileToggle');
+  const overlay = document.getElementById('overlay');
+
+  // ── Click nav → scroll ──
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const sectionId = item.dataset.section;
+      const section = document.getElementById(sectionId);
+      if (!section) return;
+
+      // Scroll
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Activate nav
+      setActive(item);
+
+      // Close mobile sidebar
+      sidebar.classList.remove('open');
+      overlay.classList.remove('show');
+    });
+  });
+
+  function setActive(activeItem) {
+    navItems.forEach(n => n.classList.remove('active'));
+    activeItem.classList.add('active');
+  }
+
+  // ── Scroll spy ──
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        updateScrollSpy();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  function updateScrollSpy() {
+    let current = null;
+    sections.forEach(sec => {
+      const rect = sec.getBoundingClientRect();
+      if (rect.top <= 120) current = sec.id;
+    });
+    if (current) {
+      navItems.forEach(item => {
+        item.classList.toggle('active', item.dataset.section === current);
+      });
+    }
+  }
+
+  // ── Search ──
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.toLowerCase().trim();
+    const navGroups = document.querySelectorAll('.nav-group');
+
+    navItems.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      const match = !q || text.includes(q);
+      item.classList.toggle('hidden', !match);
+    });
+
+    // Hide empty groups
+    navGroups.forEach(group => {
+      const visibleItems = group.querySelectorAll('.nav-item:not(.hidden)');
+      group.classList.toggle('hidden', visibleItems.length === 0);
+    });
+
+    // Hide/show sections
+    sections.forEach(sec => {
+      const h2 = sec.querySelector('h2');
+      const desc = sec.querySelector('.section-desc');
+      const text = ((h2 ? h2.textContent : '') + ' ' + (desc ? desc.textContent : '')).toLowerCase();
+      sec.classList.toggle('hidden', q && !text.includes(q));
+    });
+  });
+
+  // ── Mobile toggle ──
+  mobileToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+  });
+
+  // Init first item active
+  if (navItems.length > 0) navItems[0].classList.add('active');
+})();
+</script>
+<script src="../nav.js"></script>
+</body>
+</html>
