@@ -15,9 +15,9 @@
     --gold: #b8860b;
     --gold2: #d4a017;
     --gold-dim: rgba(184,134,11,0.08);
-    --text: #1a1a2e;
-    --text-dim: #5a5f72;
-    --text-muted: #9ca3af;
+    --text: #111827;
+    --text-dim: #374151;
+    --text-muted: #6b7280;
     --accent-blue: #2563eb;
     --accent-teal: #0d9488;
     --accent-red: #dc2626;
@@ -68,7 +68,7 @@
     font-weight:800;
     line-height:1;
     letter-spacing:-0.02em;
-    color:#1a1a2e;
+    color:#111827;
   }
   h1 span { color:var(--gold); font-style:italic; font-family:'Instrument Serif', serif; font-weight:400; }
 
@@ -81,7 +81,7 @@
     display:flex; gap:32px; flex-wrap:wrap;
   }
   .stat { text-align:right; }
-  .stat-num { font-family:'Syne',sans-serif; font-size:32px; font-weight:700; color:var(--gold); line-height:1; }
+  .stat-num { font-family:'Syne',sans-serif; font-size:32px; font-weight:700; color:#b8860b; line-height:1; }
   .stat-label { font-size:10px; letter-spacing:0.1em; color:var(--text-dim); text-transform:uppercase; margin-top:4px; }
 
   /* ───── SEARCH & FILTERS ───── */
@@ -110,7 +110,7 @@
     border:1px solid var(--border);
     border-radius:4px;
     padding:10px 14px 10px 40px;
-    color:#1a1a2e;
+    color:#111827;
     font-family:'DM Mono',monospace;
     font-size:13px;
     outline:none;
@@ -128,7 +128,7 @@
     font-family:'DM Mono',monospace;
     font-size:11px;
     letter-spacing:0.06em;
-    color:var(--text-dim);
+    color:#4b5563;
     cursor:pointer;
     transition:all .18s;
     text-transform:uppercase;
@@ -139,7 +139,7 @@
   .count-display {
     margin-left:auto;
     font-size:11px;
-    color:var(--text-muted);
+    color:#6b7280;
     letter-spacing:0.05em;
     white-space:nowrap;
   }
@@ -213,7 +213,7 @@
   .card-level {
     font-size:9px;
     letter-spacing:0.1em;
-    color:var(--text-muted);
+    color:#6b7280;
     text-transform:uppercase;
     margin-top:2px;
   }
@@ -222,7 +222,7 @@
     font-family:'Syne',sans-serif;
     font-size:17px;
     font-weight:700;
-    color:#1a1a2e;
+    color:#111827;
     line-height:1.25;
     margin-bottom:6px;
     letter-spacing:-0.01em;
@@ -231,7 +231,7 @@
   .card-author {
     font-size:10px;
     letter-spacing:0.08em;
-    color:var(--text-dim);
+    color:#4b5563;
     text-transform:uppercase;
     margin-bottom:14px;
   }
@@ -239,7 +239,7 @@
 
   .card-desc {
     font-size:12px;
-    color:var(--text-dim);
+    color:#374151;
     line-height:1.7;
     flex:1;
     margin-bottom:16px;
@@ -255,11 +255,11 @@
     font-size:9px;
     letter-spacing:0.05em;
     text-transform:uppercase;
-    background:var(--surface2);
-    border:1px solid var(--border);
+    background:#f3f4f6;
+    border:1px solid #d1d5db;
     padding:3px 7px;
     border-radius:2px;
-    color:var(--text-dim);
+    color:#4b5563;
   }
 
   .card-footer {
@@ -269,12 +269,12 @@
     padding-top:14px;
     border-top:1px solid var(--border);
   }
-  .card-meta { font-size:10px; color:var(--text-muted); letter-spacing:0.06em; }
-  .card-meta strong { color:var(--text-dim); }
+  .card-meta { font-size:10px; color:#6b7280; letter-spacing:0.06em; }
+  .card-meta strong { color:#374151; }
 
   .card-arrow {
     font-size:16px;
-    color:var(--text-muted);
+    color:#6b7280;
     transition:color .18s, transform .18s;
   }
   .card:hover .card-arrow { color:var(--card-accent,var(--gold)); transform:translateX(4px); }
@@ -314,7 +314,7 @@
     grid-column:1/-1;
     text-align:center;
     padding:80px 20px;
-    color:var(--text-muted);
+    color:#6b7280;
   }
   .empty-icon { font-size:40px; margin-bottom:16px; opacity:0.4; }
   .empty-text { font-size:14px; }
@@ -368,7 +368,7 @@
     font-family:'Syne',sans-serif;
     font-size:26px; font-weight:800;
     letter-spacing:-0.02em;
-    color:#1a1a2e;
+    color:#111827;
     line-height:1.2;
     margin-bottom:6px;
   }
@@ -399,7 +399,7 @@
     border:1px solid var(--border);
     border-radius:3px;
     padding:8px 12px;
-    font-size:11px; color:var(--text-dim);
+    font-size:11px; color:#4b5563;
     line-height:1.4;
   }
   .modal-module-item strong {
@@ -416,7 +416,7 @@
     font-size:10px; letter-spacing:0.06em;
     background:var(--surface2); border:1px solid var(--border);
     padding:4px 10px; border-radius:2px;
-    color:var(--text-dim);
+    color:#4b5563;
     text-transform:uppercase;
     transition:all .15s;
   }
@@ -448,7 +448,7 @@
     background:var(--surface2); border:1px solid var(--border);
     border-radius:10px; padding:1px 6px;
     font-size:9px; margin-left:6px;
-    color:var(--text-muted);
+    color:#6b7280;
   }
   .modal-tab-btn.active .tab-count { border-color:var(--modal-accent,var(--gold)); color:var(--modal-accent,var(--gold)); }
 
@@ -507,7 +507,7 @@
   .ticker-item {
     white-space:nowrap;
     font-size:10px; letter-spacing:0.1em;
-    color:var(--text-muted);
+    color:#6b7280;
     text-transform:uppercase;
     padding:0 20px;
   }
@@ -775,8 +775,8 @@
 
     <div style="grid-column:1/-1;padding:32px 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;">
       <div style="color:var(--gold);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:6px;">Niveau 1</div>
-      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#1a1a2e;">Fondations & Bases</div>
-      <div style="color:var(--text-dim);font-size:12px;margin-top:4px;">Structure de marche, liquidite, PD Arrays, AMD — le socle indispensable</div>
+      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#111827;">Fondations & Bases</div>
+      <div style="color:#4b5563;font-size:12px;margin-top:4px;">Structure de marche, liquidite, PD Arrays, AMD — le socle indispensable</div>
     </div>
 
     <div class="card cat-smc" data-category="smc" data-tier="starter" data-keywords="SMC smc ipda drt fvg order blocks breaker smt structure iofed bpr amd liquidite">
@@ -853,8 +853,8 @@
 
     <div style="grid-column:1/-1;padding:32px 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;">
       <div style="color:var(--accent-blue);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:6px;">Niveau 2</div>
-      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#1a1a2e;">Structure du Prix & Dealing Ranges</div>
-      <div style="color:var(--text-dim);font-size:12px;margin-top:4px;">Zones de prix, types de Dealing Range, PD Arrays, IRL/ERL — lire le prix</div>
+      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#111827;">Structure du Prix & Dealing Ranges</div>
+      <div style="color:#4b5563;font-size:12px;margin-top:4px;">Zones de prix, types de Dealing Range, PD Arrays, IRL/ERL — lire le prix</div>
     </div>
 
     <div class="card cat-smc" data-category="smc" data-tier="starter" data-keywords="dealing range theory drt pd arrays liquidity smt intermarket killzones algorithme">
@@ -897,8 +897,8 @@
 
     <div style="grid-column:1/-1;padding:32px 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;">
       <div style="color:var(--accent-teal);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:6px;">Niveau 3</div>
-      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#1a1a2e;">Quarterly Theory & Temps Fractal</div>
-      <div style="color:var(--text-dim);font-size:12px;margin-top:4px;">True Opens, SSMT, AMDX/XAMD, profils, GB Time — le temps est fractal</div>
+      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#111827;">Quarterly Theory & Temps Fractal</div>
+      <div style="color:#4b5563;font-size:12px;margin-top:4px;">True Opens, SSMT, AMDX/XAMD, profils, GB Time — le temps est fractal</div>
     </div>
 
     <div class="card cat-foundations" data-category="foundations" data-tier="starter" data-keywords="quarterly theory QT ssmt true opens precision swing points smt fill daily bias freedom model tcisd amdx xamd">
@@ -958,8 +958,8 @@
 
     <div data-section-tier="premium" style="grid-column:1/-1;padding:32px 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;">
       <div style="color:var(--accent-purple);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:6px;">Niveau 4</div>
-      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#1a1a2e;">Architecture Mathematique</div>
-      <div style="color:var(--text-dim);font-size:12px;margin-top:4px;">PO3, Fix CME, IMP Nodes, HIPPO, niveaux institutionnels — la structure cachee des prix</div>
+      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#111827;">Architecture Mathematique</div>
+      <div style="color:#4b5563;font-size:12px;margin-top:4px;">PO3, Fix CME, IMP Nodes, HIPPO, niveaux institutionnels — la structure cachee des prix</div>
     </div>
 
     <div class="card cat-advanced" data-category="advanced" data-tier="premium" data-keywords="po3 fix cme hippo imp nodes dealing range institutionnel niveaux architecture mathematique">
@@ -1002,8 +1002,8 @@
 
     <div data-section-tier="premium" style="grid-column:1/-1;padding:32px 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;">
       <div style="color:var(--accent-red);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:6px;">Niveau 5</div>
-      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#1a1a2e;">Modeles de Marche & Execution</div>
-      <div style="color:var(--text-dim);font-size:12px;margin-top:4px;">Market Maker Models, SMT, Unicorn, entries, protocoles — passer a l'action</div>
+      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#111827;">Modeles de Marche & Execution</div>
+      <div style="color:#4b5563;font-size:12px;margin-top:4px;">Market Maker Models, SMT, Unicorn, entries, protocoles — passer a l'action</div>
     </div>
 
     <div class="card cat-strategies" data-category="strategies" data-tier="premium" data-keywords="modeles marche market maker quads ipda smt unicorn three candle poi execution gestion mmbm mmsm">
@@ -1080,8 +1080,8 @@
 
     <div style="grid-column:1/-1;padding:32px 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;">
       <div style="color:var(--gold);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:6px;">Transversal</div>
-      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#1a1a2e;">Psychologie & Outils</div>
-      <div style="color:var(--text-dim);font-size:12px;margin-top:4px;">Mindset, journal, calculatrice, trainer — les outils du trader complet</div>
+      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#111827;">Psychologie & Outils</div>
+      <div style="color:#4b5563;font-size:12px;margin-top:4px;">Mindset, journal, calculatrice, trainer — les outils du trader complet</div>
     </div>
 
     <div class="card cat-fondations" data-category="fondations" data-tier="starter" data-keywords="psychologie discipline emotions journal mental trading fomo revenge freeze routine">
