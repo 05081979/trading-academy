@@ -50,11 +50,11 @@
   const filename = window.location.pathname.split('/').pop().replace('.html', '');
 
   const ICON = `<svg viewBox="0 0 40 40" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="20,4 36,13 36,27 20,36 4,27 4,13" fill="rgba(10,14,26,0.95)" stroke="#4a7cff" stroke-width="1.5"/>
-    <text x="20" y="24" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="16" font-weight="800">A</text>
-    <ellipse cx="20" cy="18" rx="18" ry="7" fill="none" stroke="#3455a8" stroke-width="0.6" transform="rotate(-25 20 18)" opacity="0.5"/>
-    <circle cx="8" cy="14" r="1.5" fill="#4a7cff" opacity="0.7"/>
-    <circle cx="32" cy="16" r="1.5" fill="#e05030" opacity="0.7"/>
+    <polygon points="20,4 36,13 36,27 20,36 4,27 4,13" fill="rgba(245,247,250,0.95)" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="20" y="24" text-anchor="middle" fill="#2563eb" font-family="Inter,sans-serif" font-size="16" font-weight="800">A</text>
+    <ellipse cx="20" cy="18" rx="18" ry="7" fill="none" stroke="#93b4f0" stroke-width="0.6" transform="rotate(-25 20 18)" opacity="0.4"/>
+    <circle cx="8" cy="14" r="1.5" fill="#2563eb" opacity="0.6"/>
+    <circle cx="32" cy="16" r="1.5" fill="#d97706" opacity="0.6"/>
   </svg>`;
 
   const ARROW = `<svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-left:4px;"><path d="M1 1l4 4 4-4"/></svg>`;
@@ -96,32 +96,32 @@
 
   const style = document.createElement('style');
   style.textContent = `
-    #aa-nav{position:fixed;top:0;left:0;right:0;z-index:99999;background:rgba(6,10,18,0.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(74,124,255,0.1);font-family:Inter,system-ui,sans-serif;}
+    #aa-nav{position:fixed;top:0;left:0;right:0;z-index:99999;background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);border-bottom:1px solid #e5e7eb;font-family:Inter,system-ui,sans-serif;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
     .aa-inner{display:flex;align-items:center;height:48px;padding:0 16px;gap:6px;}
     .aa-brand{display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0;}
-    .aa-brand span{font-size:13px;color:#e4e8f2;font-weight:400;}
-    .aa-brand b{color:#4a7cff;font-weight:700;}
+    .aa-brand span{font-size:13px;color:#1a1a2e;font-weight:400;}
+    .aa-brand b{color:#2563eb;font-weight:700;}
     .aa-links{display:flex;align-items:center;gap:2px;flex:1;padding:0 8px;}
     .aa-dropdown{position:relative;}
-    .aa-cat{font-size:12px;font-weight:600;color:#8892ab;background:none;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;display:flex;align-items:center;white-space:nowrap;transition:all 0.15s;}
-    .aa-cat:hover{background:rgba(255,255,255,0.06);color:#e4e8f2;}
-    .aa-cat-on{color:#4a7cff;}
-    .aa-drop-menu{display:none;position:absolute;top:100%;left:0;min-width:220px;background:rgba(12,16,28,0.96);backdrop-filter:blur(20px);border:1px solid rgba(74,124,255,0.15);border-radius:8px;padding:6px;margin-top:4px;box-shadow:0 8px 32px rgba(0,0,0,0.4);z-index:100000;}
+    .aa-cat{font-size:12px;font-weight:600;color:#6b7280;background:none;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;display:flex;align-items:center;white-space:nowrap;transition:all 0.15s;}
+    .aa-cat:hover{background:rgba(37,99,235,0.06);color:#1a1a2e;}
+    .aa-cat-on{color:#2563eb;}
+    .aa-drop-menu{display:none;position:absolute;top:100%;left:0;min-width:220px;background:rgba(255,255,255,0.98);backdrop-filter:blur(20px);border:1px solid #e5e7eb;border-radius:8px;padding:6px;margin-top:4px;box-shadow:0 8px 32px rgba(0,0,0,0.1);z-index:100000;}
     .aa-dropdown:hover .aa-drop-menu{display:block;}
-    .aa-drop-item{display:block;font-size:12px;font-weight:500;color:#8892ab;text-decoration:none;padding:8px 14px;border-radius:6px;transition:all 0.15s;white-space:nowrap;}
-    .aa-drop-item:hover{background:rgba(74,124,255,0.1);color:#e4e8f2;}
-    .aa-drop-item.aa-on{background:rgba(74,124,255,0.12);color:#4a7cff;font-weight:600;}
-    .aa-home{font-size:11px;font-weight:600;color:#4a7cff;text-decoration:none;padding:6px 14px;border:1px solid rgba(74,124,255,0.3);border-radius:6px;flex-shrink:0;transition:all 0.15s;}
-    .aa-home:hover{background:rgba(74,124,255,0.1);}
-    .aa-menu{display:none;background:none;border:none;color:#6c7a9c;cursor:pointer;padding:4px;margin-left:auto;}
+    .aa-drop-item{display:block;font-size:12px;font-weight:500;color:#6b7280;text-decoration:none;padding:8px 14px;border-radius:6px;transition:all 0.15s;white-space:nowrap;}
+    .aa-drop-item:hover{background:rgba(37,99,235,0.06);color:#1a1a2e;}
+    .aa-drop-item.aa-on{background:rgba(37,99,235,0.08);color:#2563eb;font-weight:600;}
+    .aa-home{font-size:11px;font-weight:600;color:#2563eb;text-decoration:none;padding:6px 14px;border:1px solid rgba(37,99,235,0.3);border-radius:6px;flex-shrink:0;transition:all 0.15s;}
+    .aa-home:hover{background:rgba(37,99,235,0.06);}
+    .aa-menu{display:none;background:none;border:none;color:#6b7280;cursor:pointer;padding:4px;margin-left:auto;}
     body{padding-top:52px!important;}
     @media(max-width:900px){
       .aa-menu{display:block;}
-      .aa-links{display:none;position:absolute;top:48px;left:0;right:0;background:rgba(6,10,18,0.96);border-bottom:1px solid rgba(74,124,255,0.1);flex-direction:column;padding:8px;max-height:80vh;overflow-y:auto;}
+      .aa-links{display:none;position:absolute;top:48px;left:0;right:0;background:rgba(255,255,255,0.98);border-bottom:1px solid #e5e7eb;flex-direction:column;padding:8px;max-height:80vh;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.08);}
       #aa-nav.open .aa-links{display:flex;}
       .aa-dropdown{width:100%;}
       .aa-cat{width:100%;justify-content:space-between;padding:10px 14px;}
-      .aa-drop-menu{display:none;position:static;background:rgba(20,24,38,0.8);border:none;box-shadow:none;margin:0 0 4px 12px;padding:4px;}
+      .aa-drop-menu{display:none;position:static;background:rgba(245,247,250,0.95);border:none;box-shadow:none;margin:0 0 4px 12px;padding:4px;}
       .aa-dropdown.mob-open .aa-drop-menu{display:block;}
       .aa-drop-item{padding:8px 14px;}
     }
