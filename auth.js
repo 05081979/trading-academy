@@ -44,10 +44,10 @@
       window.addEventListener('DOMContentLoaded', function() {
         document.documentElement.style.display = '';
         document.body.innerHTML = '';
-        document.body.style.cssText = 'margin:0;min-height:100vh;background:#060a12;display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,sans-serif;';
+        document.body.style.cssText = 'margin:0;min-height:100vh;background:#f5f7fa;display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,sans-serif;';
         var box = document.createElement('div');
         box.style.cssText = 'text-align:center;padding:60px 40px;max-width:500px;';
-        box.innerHTML = '<div style="font-size:64px;margin-bottom:20px;">🔒</div><h2 style="color:#e4e8f2;font-size:24px;margin-bottom:12px;">Contenu Premium</h2><p style="color:#6c7a9c;font-size:14px;line-height:1.7;margin-bottom:24px;">Ce cours est reserve aux membres <span style="color:#c9a84c;font-weight:700;">Premium</span>.<br>Ton abonnement actuel est <span style="color:#2ec974;font-weight:700;">Starter</span>.</p><a href="hub-cours.html" style="display:inline-block;padding:12px 28px;background:#4a7cff;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:14px;">Retour au Hub</a>';
+        box.innerHTML = '<div style="font-size:48px;margin-bottom:20px;">&#x1F512;</div><h2 style="color:#111;font-size:24px;margin-bottom:12px;">Contenu Premium</h2><p style="color:#555;font-size:14px;line-height:1.7;margin-bottom:24px;">Ce cours est reserve aux membres <span style="color:#b8860b;font-weight:700;">Premium</span>.<br>Ton abonnement actuel est <span style="color:#059669;font-weight:700;">Starter</span>.</p><a href="hub-cours.html" style="display:inline-block;padding:12px 28px;background:#2563eb;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:14px;">Retour au Hub</a>';
         document.body.appendChild(box);
       });
       return;
@@ -64,7 +64,7 @@
   window.addEventListener('DOMContentLoaded', function() {
     document.documentElement.style.display = '';
     document.body.innerHTML = '';
-    document.body.style.cssText = 'margin:0;min-height:100vh;background:#060a12;display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,sans-serif;overflow:hidden;';
+    document.body.style.cssText = 'margin:0;min-height:100vh;background:#f5f7fa;display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,sans-serif;overflow:hidden;';
 
     var canvas = document.createElement('canvas');
     canvas.style.cssText = 'position:fixed;inset:0;z-index:0;pointer-events:none;';
@@ -73,7 +73,7 @@
     var particles = [];
     function initP() {
       canvas.width = window.innerWidth; canvas.height = window.innerHeight; particles = [];
-      for (var i = 0; i < 80; i++) particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.2+0.3,dx:(Math.random()-0.5)*0.12,dy:(Math.random()-0.5)*0.08,o:Math.random()*0.4+0.1});
+      for (var i = 0; i < 40; i++) particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.2+0.3,dx:(Math.random()-0.5)*0.12,dy:(Math.random()-0.5)*0.08,o:Math.random()*0.15+0.05});
     }
     function drawP() {
       ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -84,7 +84,7 @@
 
     var box = document.createElement('div');
     box.style.cssText = 'position:relative;z-index:1;text-align:center;max-width:420px;padding:40px;';
-    box.innerHTML = '<div style="margin-bottom:32px;"><svg viewBox="0 0 400 320" width="180" height="144" xmlns="http://www.w3.org/2000/svg"><circle cx="200" cy="160" r="155" fill="#0a0e1a"/><polygon points="200,105 235,125 235,160 200,180 165,160 165,125" fill="rgba(15,25,50,0.9)" stroke="#3455a8" stroke-width="2"/><text x="200" y="158" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="42" font-weight="800" opacity="0.9">A</text><text x="200" y="226" text-anchor="middle" fill="#e4e8f2" font-family="Inter,sans-serif" font-size="28" font-weight="800" letter-spacing="3">ALGORITHMIC</text><text x="200" y="250" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="14" font-weight="600" letter-spacing="8">ACADEMY</text></svg></div><p style="color:#6c7a9c;font-size:13px;margin-bottom:28px;">Entrez votre code d\'acces personnel.</p><form id="authForm" style="display:flex;flex-direction:column;gap:12px;max-width:300px;margin:0 auto;"><input type="password" id="authPwd" placeholder="Code personnel" autocomplete="off" style="width:100%;padding:14px 18px;background:rgba(74,124,255,0.04);border:1px solid #162040;border-radius:10px;color:#e4e8f2;font-size:15px;font-family:Inter,sans-serif;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor=\'#4a7cff\'" onblur="this.style.borderColor=\'#162040\'"><button type="submit" style="padding:14px;background:#4a7cff;border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;font-family:Inter,sans-serif;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 20px rgba(74,124,255,0.25);" onmouseover="this.style.background=\'#6b9aff\'" onmouseout="this.style.background=\'#4a7cff\'">Acceder</button><p id="authErr" style="color:#e05030;font-size:12px;min-height:18px;"></p></form>';
+    box.innerHTML = '<div style="margin-bottom:32px;"><svg viewBox="0 0 400 320" width="180" height="144" xmlns="http://www.w3.org/2000/svg"><circle cx="200" cy="160" r="155" fill="#eef1f6"/><polygon points="200,105 235,125 235,160 200,180 165,160 165,125" fill="#fff" stroke="#2563eb" stroke-width="2"/><text x="200" y="158" text-anchor="middle" fill="#2563eb" font-family="Inter,sans-serif" font-size="42" font-weight="800">A</text><text x="200" y="226" text-anchor="middle" fill="#111" font-family="Inter,sans-serif" font-size="28" font-weight="800" letter-spacing="3">ALGORITHMIC</text><text x="200" y="250" text-anchor="middle" fill="#2563eb" font-family="Inter,sans-serif" font-size="14" font-weight="600" letter-spacing="8">ACADEMY</text></svg></div><p style="color:#555;font-size:13px;margin-bottom:28px;">Entrez votre code d\'acces personnel.</p><form id="authForm" style="display:flex;flex-direction:column;gap:12px;max-width:300px;margin:0 auto;"><input type="password" id="authPwd" placeholder="Code personnel" autocomplete="off" style="width:100%;padding:14px 18px;background:#fff;border:1px solid #d1d5db;border-radius:10px;color:#000;font-size:15px;font-family:Inter,sans-serif;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor=\'#2563eb\'" onblur="this.style.borderColor=\'#d1d5db\'"><button type="submit" style="padding:14px;background:#2563eb;border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;font-family:Inter,sans-serif;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 20px rgba(37,99,235,0.25);" onmouseover="this.style.background=\'#3b82f6\'" onmouseout="this.style.background=\'#2563eb\'">Acceder</button><p id="authErr" style="color:#dc2626;font-size:12px;min-height:18px;"></p></form>';
     document.body.appendChild(box);
 
     document.getElementById('authPwd').focus();
@@ -118,60 +118,48 @@
     });
   });
 
-  // ── PROTECTION: Watermark + Anti-screenshot ──
+  // ── PROTECTION: Anti-screenshot (pas de watermark pour Admin) ──
   function addProtection(username) {
-    // 1. WATERMARK - diagonal text across the page
+    // Admin = pas de watermark, pas de restrictions
+    if (username === 'Admin') return;
+
+    // 1. WATERMARK ultra-discret (uniquement pour les eleves)
     var wm = document.createElement('div');
     wm.id = 'aa-watermark';
-    wm.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;overflow:hidden;';
+    wm.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;overflow:hidden;opacity:0.02;';
     var wmText = '';
-    for (var i = 0; i < 30; i++) {
-      wmText += '<div style="white-space:nowrap;transform:rotate(-25deg);color:rgba(255,255,255,0.03);font-size:14px;font-family:monospace;letter-spacing:4px;line-height:60px;margin-left:' + ((i%3)*-100) + 'px;">';
-      for (var j = 0; j < 8; j++) {
-        wmText += username + ' &nbsp;&nbsp;&nbsp; ';
+    for (var i = 0; i < 15; i++) {
+      wmText += '<div style="white-space:nowrap;transform:rotate(-25deg);color:#000;font-size:11px;font-family:monospace;letter-spacing:6px;line-height:100px;margin-left:' + ((i%3)*-100) + 'px;">';
+      for (var j = 0; j < 5; j++) {
+        wmText += username + ' &nbsp;&nbsp;&nbsp;&nbsp; ';
       }
       wmText += '</div>';
     }
     wm.innerHTML = wmText;
     document.body.appendChild(wm);
 
-    // 2. ANTI-SCREENSHOT - blur when window loses focus
+    // 2. ANTI-SCREENSHOT
     var shield = document.createElement('div');
     shield.id = 'aa-shield';
-    shield.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(6,10,18,0.97);display:none;align-items:center;justify-content:center;';
-    shield.innerHTML = '<div style="text-align:center;color:#4a5568;font-family:Inter,sans-serif;"><div style="font-size:48px;margin-bottom:16px;">🛡️</div><div style="font-size:16px;">Contenu protege</div><div style="font-size:12px;margin-top:8px;">Revenez sur cette fenetre pour continuer</div></div>';
+    shield.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(245,247,250,0.97);display:none;align-items:center;justify-content:center;';
+    shield.innerHTML = '<div style="text-align:center;color:#6b7280;font-family:Inter,sans-serif;"><div style="font-size:36px;margin-bottom:16px;">&#x1F6E1;</div><div style="font-size:16px;color:#111;">Contenu protege</div><div style="font-size:12px;margin-top:8px;color:#6b7280;">Revenez sur cette fenetre pour continuer</div></div>';
     document.body.appendChild(shield);
 
-    window.addEventListener('blur', function() {
-      shield.style.display = 'flex';
-    });
-    window.addEventListener('focus', function() {
-      shield.style.display = 'none';
-    });
+    window.addEventListener('blur', function() { shield.style.display = 'flex'; });
+    window.addEventListener('focus', function() { shield.style.display = 'none'; });
 
-    // 3. DISABLE right-click
+    // 3. Protections clavier
     document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
-
-    // 4. DISABLE text selection on content
     document.body.style.userSelect = 'none';
     document.body.style.webkitUserSelect = 'none';
-
-    // 5. DISABLE common screenshot shortcuts
     document.addEventListener('keydown', function(e) {
-      // PrintScreen
       if (e.key === 'PrintScreen') { e.preventDefault(); shield.style.display = 'flex'; }
-      // Ctrl+Shift+S (Windows screenshot)
-      if (e.ctrlKey && e.shiftKey && e.key === 'S') { e.preventDefault(); }
-      // Ctrl+P (print)
-      if (e.ctrlKey && e.key === 'p') { e.preventDefault(); }
-      // Ctrl+S (save)
-      if (e.ctrlKey && e.key === 's') { e.preventDefault(); }
-      // F12 (dev tools)
-      if (e.key === 'F12') { e.preventDefault(); }
-      // Ctrl+Shift+I (dev tools)
-      if (e.ctrlKey && e.shiftKey && e.key === 'I') { e.preventDefault(); }
-      // Ctrl+U (view source)
-      if (e.ctrlKey && e.key === 'u') { e.preventDefault(); }
+      if (e.ctrlKey && e.shiftKey && e.key === 'S') e.preventDefault();
+      if (e.ctrlKey && e.key === 'p') e.preventDefault();
+      if (e.ctrlKey && e.key === 's') e.preventDefault();
+      if (e.key === 'F12') e.preventDefault();
+      if (e.ctrlKey && e.shiftKey && e.key === 'I') e.preventDefault();
+      if (e.ctrlKey && e.key === 'u') e.preventDefault();
     });
   }
 })();
