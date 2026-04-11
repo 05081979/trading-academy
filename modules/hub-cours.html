@@ -8,21 +8,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --surface2: #16161f;
-    --border: #222230;
-    --gold: #c9a84c;
-    --gold2: #f0d080;
-    --gold-dim: rgba(201,168,76,0.12);
-    --text: #e8e6f0;
-    --text-dim: #7a7890;
-    --text-muted: #3e3d52;
-    --accent-blue: #4f8ef7;
-    --accent-teal: #38c9b0;
-    --accent-red: #e05a6a;
-    --accent-purple: #9b7fe8;
-    --glow: 0 0 40px rgba(201,168,76,0.08);
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --surface2: #f0f2f5;
+    --border: #e2e5ea;
+    --gold: #b8860b;
+    --gold2: #d4a017;
+    --gold-dim: rgba(184,134,11,0.08);
+    --text: #1a1a2e;
+    --text-dim: #5a5f72;
+    --text-muted: #9ca3af;
+    --accent-blue: #2563eb;
+    --accent-teal: #0d9488;
+    --accent-red: #dc2626;
+    --accent-purple: #7c3aed;
+    --glow: 0 4px 24px rgba(0,0,0,0.06);
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -35,31 +35,20 @@
     overflow-x: hidden;
   }
 
-  /* Noise overlay */
-  body::before {
-    content:'';
-    position:fixed;
-    inset:0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events:none;
-    z-index:0;
-    opacity:0.5;
-  }
-
   /* ───── HEADER ───── */
   header {
     position: relative;
     padding: 56px 48px 40px;
     border-bottom: 1px solid var(--border);
-    background: linear-gradient(180deg, rgba(201,168,76,0.04) 0%, transparent 100%);
+    background: linear-gradient(180deg, rgba(37,99,235,0.03) 0%, transparent 100%);
     overflow: hidden;
   }
   header::after {
     content:'';
     position:absolute;
     top:0; left:0; right:0;
-    height:1px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    height:2px;
+    background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
   }
 
   .header-grid { max-width:1280px; margin:0 auto; display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; }
@@ -192,10 +181,13 @@
     opacity:0;
     transition:opacity .22s;
   }
+  .card {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
   .card:hover {
     transform:translateY(-3px);
-    border-color:var(--card-accent, var(--gold));
-    box-shadow:0 8px 32px rgba(0,0,0,0.4), 0 0 24px var(--card-glow, rgba(201,168,76,0.08));
+    border-color:var(--card-accent, var(--accent-blue));
+    box-shadow:0 8px 24px rgba(0,0,0,0.1), 0 0 0 1px var(--card-accent, rgba(37,99,235,0.15));
   }
   .card:hover::before { opacity:1; }
 
@@ -288,11 +280,12 @@
   .card:hover .card-arrow { color:var(--card-accent,var(--gold)); transform:translateX(4px); }
 
   /* Category colors */
-  .cat-foundations { --card-accent:#c9a84c; --card-glow:rgba(201,168,76,0.1); }
-  .cat-smc         { --card-accent:#4f8ef7; --card-glow:rgba(79,142,247,0.1); }
-  .cat-advanced    { --card-accent:#9b7fe8; --card-glow:rgba(155,127,232,0.1); }
-  .cat-strategies  { --card-accent:#38c9b0; --card-glow:rgba(56,201,176,0.1); }
-  .cat-fiches      { --card-accent:#e05a6a; --card-glow:rgba(224,90,106,0.1); }
+  .cat-foundations { --card-accent:#b8860b; --card-glow:rgba(184,134,11,0.08); }
+  .cat-fondations  { --card-accent:#10b981; --card-glow:rgba(16,185,129,0.08); }
+  .cat-smc         { --card-accent:#2563eb; --card-glow:rgba(37,99,235,0.08); }
+  .cat-advanced    { --card-accent:#7c3aed; --card-glow:rgba(124,58,237,0.08); }
+  .cat-strategies  { --card-accent:#0d9488; --card-glow:rgba(13,148,136,0.08); }
+  .cat-fiches      { --card-accent:#dc2626; --card-glow:rgba(220,38,38,0.08); }
 
   /* Tier badges */
   .tier-badge {
@@ -302,21 +295,19 @@
     margin-left:8px; font-weight:600;
   }
   .tier-starter {
-    background:rgba(46,201,116,0.12); border:1px solid rgba(46,201,116,0.35);
-    color:#2ec974;
+    background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3);
+    color:#059669;
   }
   .tier-premium {
-    background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.35);
-    color:#c9a84c;
+    background:rgba(184,134,11,0.1); border:1px solid rgba(184,134,11,0.3);
+    color:#b8860b;
   }
-  .tier-starter::before { content:'💛'; font-size:8px; }
-  .tier-premium::before { content:'💎'; font-size:8px; }
 
-  .tag-foundations { color:#c9a84c; border-color:rgba(201,168,76,0.4); background:rgba(201,168,76,0.07); }
-  .tag-smc         { color:#4f8ef7; border-color:rgba(79,142,247,0.4); background:rgba(79,142,247,0.07); }
-  .tag-advanced    { color:#9b7fe8; border-color:rgba(155,127,232,0.4); background:rgba(155,127,232,0.07); }
-  .tag-strategies  { color:#38c9b0; border-color:rgba(56,201,176,0.4); background:rgba(56,201,176,0.07); }
-  .tag-fiches      { color:#e05a6a; border-color:rgba(224,90,106,0.4); background:rgba(224,90,106,0.07); }
+  .tag-foundations { color:#b8860b; border-color:rgba(184,134,11,0.3); background:rgba(184,134,11,0.06); }
+  .tag-smc         { color:#2563eb; border-color:rgba(37,99,235,0.3); background:rgba(37,99,235,0.06); }
+  .tag-advanced    { color:#7c3aed; border-color:rgba(124,58,237,0.3); background:rgba(124,58,237,0.06); }
+  .tag-strategies  { color:#0d9488; border-color:rgba(13,148,136,0.3); background:rgba(13,148,136,0.06); }
+  .tag-fiches      { color:#dc2626; border-color:rgba(220,38,38,0.3); background:rgba(220,38,38,0.06); }
 
   /* ───── EMPTY STATE ───── */
   .empty {
@@ -331,8 +322,8 @@
   /* ───── MODAL ───── */
   .modal-overlay {
     position:fixed; inset:0;
-    background:rgba(0,0,0,0.82);
-    backdrop-filter:blur(6px);
+    background:rgba(0,0,0,0.45);
+    backdrop-filter:blur(8px);
     z-index:100;
     display:flex; align-items:center; justify-content:center;
     padding:24px;
@@ -1976,8 +1967,8 @@ cards.forEach((card, idx) => {
   }
   // Starter users: Premium cards = completely hidden content, no interaction
   if (userTier === 'starter' && tier === 'premium') {
-    card.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:180px;gap:8px;opacity:0.35;"><div style="font-size:28px;">&#x1F512;</div><div style="color:#3d4a65;font-size:11px;font-family:DM Mono,monospace;letter-spacing:0.1em;text-transform:uppercase;">Contenu Premium</div></div>';
-    card.style.cssText = 'background:#0a0a0f !important;border-color:#1a1a25 !important;cursor:default !important;pointer-events:none !important;user-select:none !important;';
+    card.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:180px;gap:10px;opacity:0.5;"><div style="font-size:28px;">&#x1F512;</div><div style="color:#9ca3af;font-size:11px;font-family:DM Mono,monospace;letter-spacing:0.1em;text-transform:uppercase;">Contenu Premium</div></div>';
+    card.style.cssText = 'background:#e8eaed !important;border-color:#d1d5db !important;cursor:default !important;pointer-events:none !important;user-select:none !important;box-shadow:none !important;';
     card.removeAttribute('data-keywords');
     card.removeAttribute('data-category');
     card.classList.add('locked-premium');
@@ -2163,10 +2154,10 @@ filterCards();
 </div>
 
 <!-- Trainer Overlay -->
-<div id="trainerOverlay" style="display:none;position:fixed;inset:0;z-index:300;flex-direction:column;background:#0D1117;">
-  <div style="display:flex;align-items:center;gap:16px;background:#161B22;border-bottom:2px solid #F5A623;padding:10px 20px;flex-shrink:0;">
-    <button onclick="closeTrainer()" style="background:#1C2128;border:1px solid #30363D;color:#F5A623;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding:8px 16px;border-radius:4px;cursor:pointer;transition:all .2s;">&#8592; Retour au hub</button>
-    <span style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#F5A623;letter-spacing:0.05em;">TIME CYCLES — IPDA Time Cycles</span>
+<div id="trainerOverlay" style="display:none;position:fixed;inset:0;z-index:300;flex-direction:column;background:#f5f7fa;">
+  <div style="display:flex;align-items:center;gap:16px;background:#ffffff;border-bottom:2px solid #2563eb;padding:10px 20px;flex-shrink:0;">
+    <button onclick="closeTrainer()" style="background:#e5e7eb;border:1px solid #d1d5db;color:#2563eb;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding:8px 16px;border-radius:4px;cursor:pointer;transition:all .2s;">&#8592; Retour au hub</button>
+    <span style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#2563eb;letter-spacing:0.05em;">TIME CYCLES — IPDA Time Cycles</span>
   </div>
   <iframe id="trainerFrame" style="flex:1;border:none;width:100%;height:100%;"></iframe>
 </div>
