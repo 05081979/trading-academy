@@ -1,120 +1,104 @@
-/* ── ALGORITHMIC ACADEMY — Readability Boost ── */
-/* Eclairage du texte et des fonds sans toucher aux couleurs d'accent */
+/* ── ALGORITHMIC ACADEMY — Readability (Theme Clair) ── */
 
-/* Texte principal plus lumineux */
+/* Texte principal noir */
 body {
-  color: #e8ecf4 !important;
+  color: #000 !important;
 }
 
-/* Tous les paragraphes, listes, descriptions */
-p, li, dd, td, th, span, div, label, blockquote {
-  color: inherit;
-}
-
-/* Texte principal de contenu */
-p, li, dd, .card-desc, .card-body, .desc, .content, .module-desc,
+/* Paragraphes, listes, descriptions — noir */
+p, li, dd, td, span, div, label, blockquote,
+.card-desc, .card-body, .desc, .content, .module-desc,
 [class*="desc"], [class*="body"], [class*="content"] {
-  color: #d0d8e8 !important;
-  line-height: 1.75 !important;
+  color: #000 !important;
+  line-height: 1.75;
 }
 
-/* Titres plus blancs */
+/* Titres — noir gras */
 h1, h2, h3, h4, h5, h6,
-[class*="title"], [class*="heading"], [class*="header"] {
-  color: #f0f2f8 !important;
+[class*="title"], [class*="heading"] {
+  color: #000 !important;
 }
 
-/* Texte dans les tableaux */
+/* Tableaux */
 table td, table th {
-  color: #d0d8e8 !important;
+  color: #000 !important;
 }
 
-table th {
-  color: #e8ecf4 !important;
-}
-
-/* Listes - mieux lire */
+/* Listes */
 ul li, ol li {
-  color: #d0d8e8 !important;
+  color: #000 !important;
   margin-bottom: 4px;
 }
 
-/* Fonds de section/cartes legerement plus clairs */
-[class*="card"], [class*="panel"], [class*="section"],
-[class*="block"], [class*="box"], [class*="module"] {
-  background-color: rgba(255,255,255,0.03) !important;
-  border-color: rgba(255,255,255,0.08) !important;
+/* Fonds blancs */
+[class*="card"], [class*="panel"] {
+  background-color: #fff !important;
+  border-color: #ddd !important;
 }
 
-/* Les vrais blocs de contenu - fond un peu plus clair pour la lecture */
-main, .main, .content-area, .course-content, .lesson,
-[class*="viewer"], [class*="reader"], [class*="detail"],
-article, section > div {
-  background-color: rgba(255,255,255,0.02);
-}
-
-/* Texte muted/dim plus lisible */
+/* Texte secondaire — gris fonce */
 [class*="muted"], [class*="dim"], [class*="sub"],
 [class*="meta"], [class*="info"], [class*="note"],
 [class*="secondary"], [class*="caption"] {
-  color: #9aa4b8 !important;
+  color: #555 !important;
 }
 
-/* Code et pre */
-pre, code, [class*="code"], [class*="schema"], [class*="ascii"] {
-  color: #c8d0e0 !important;
-  background: rgba(255,255,255,0.04) !important;
-  border-color: rgba(255,255,255,0.08) !important;
+/* Code */
+pre, code, [class*="code"] {
+  color: #000 !important;
+  background: #f5f5f5 !important;
+  border-color: #ddd !important;
 }
 
-/* Strong / Bold plus visible */
+/* Strong */
 strong, b {
-  color: #f0f2f8 !important;
+  color: #000 !important;
 }
 
 /* Liens */
 a:not([class*="nav"]):not([class*="brand"]):not([class*="btn"]):not([class*="cta"]) {
-  color: #6b9aff !important;
+  color: #2563eb !important;
 }
 
-/* Badges et pills */
-[class*="badge"], [class*="pill"], [class*="tag"], [class*="chip"] {
-  color: #c0c8d8 !important;
-  border-color: rgba(255,255,255,0.12) !important;
+/* Badges et pills — texte fonce */
+[class*="pill"], [class*="chip"] {
+  color: #333 !important;
+  border-color: #ccc !important;
 }
 
-/* Inputs plus lisibles */
+/* Inputs */
 input, textarea, select {
-  color: #e0e4f0 !important;
+  color: #000 !important;
+  background: #fff !important;
 }
 
-/* Scrollbar un peu plus visible */
-::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.12) !important;
-}
-
-/* Separateurs plus visibles */
+/* Separateurs */
 hr, [class*="divider"], [class*="separator"] {
-  border-color: rgba(255,255,255,0.1) !important;
+  border-color: #ddd !important;
 }
 
-/* Glossaire / definitions */
+/* Definitions */
 dt {
-  color: #e8ecf4 !important;
+  color: #000 !important;
   font-weight: 700;
 }
 
 dd {
-  color: #b8c0d4 !important;
+  color: #333 !important;
 }
 
-/* Warning, info, key boxes - garder les couleurs mais texte plus clair */
+/* Warning, info boxes */
 [class*="warning"], [class*="alert"], [class*="info"],
 [class*="key"], [class*="tip"], [class*="important"] {
-  color: #d8dce8 !important;
+  color: #000 !important;
 }
 
-/* Flowchart / steps */
+/* Steps */
 [class*="flow"], [class*="step"], [class*="phase"] {
-  color: #d0d8e8 !important;
+  color: #000 !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar-thumb {
+  background: #ccc !important;
 }
