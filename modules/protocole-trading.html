@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="premium">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Protocole Complet de Trading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0C0F0A;
+  --bg2:      #111510;
+  --bg3:      #181D14;
+  --border:   #1F2A1A;
+  --em:       #3D7A3A;
+  --em2:      #56A853;
+  --em-light: #A3D9A1;
+  --em-pale:  #E8F5E8;
+  --amber:    #D4882A;
+  --amber-l:  #F5C56A;
+  --red:      #C9453A;
+  --blue:     #4A90B8;
+  --muted:    #3A4535;
+  --text:     #DDE8D8;
+  --text-dim: #7D9478;
+  --serif:    'Playfair Display', serif;
+  --sans:     'Syne', sans-serif;
+  --body:     'Source Serif 4', serif;
+  --mono:     'Roboto Mono', monospace;
+  --sw: 270px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.75; display: flex; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* -- SIDEBAR -------------------------------- */
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 100;
+}
+
+.sb-logo {
+  padding: 28px 22px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sb-logo .mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--em), var(--em2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(61,122,58,.3);
+}
+
+.sb-logo h1 {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--em-light);
+  line-height: 1.25;
+}
+
+.sb-logo p {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.sb-section {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 16px 22px 5px;
+}
+
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 22px; text-decoration: none;
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 500;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.sb-link:hover { background: rgba(86,168,83,.06); color: var(--text); }
+.sb-link.active { background: rgba(86,168,83,.1); color: var(--em-light); border-left-color: var(--em2); }
+
+.sb-link .n {
+  font-family: var(--mono);
+  font-size: 0.62rem; font-weight: 500;
+  color: var(--muted); min-width: 22px;
+}
+.sb-link.active .n { color: var(--em2); }
+
+/* -- PROGRESS -------------------------------- */
+#pbar {
+  position: fixed; top: 0; left: var(--sw); right: 0;
+  height: 2px; background: var(--border); z-index: 200;
+}
+#pfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--em), var(--em2), var(--amber));
+  width: 0%; transition: width 0.1s linear;
+}
+
+/* -- MAIN ------------------------------------ */
+#main { margin-left: var(--sw); flex: 1; min-height: 100vh; }
+
+/* -- HERO ------------------------------------ */
+#hero {
+  position: relative; overflow: hidden;
+  padding: 80px 64px 72px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-noise {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-lines {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 20px,
+    rgba(61,122,58,.04) 20px, rgba(61,122,58,.04) 21px
+  );
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(86,168,83,.12);
+  border: 1px solid rgba(86,168,83,.3);
+  color: var(--em-light);
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+
+#hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(2.6rem, 5vw, 4.5rem);
+  line-height: 1.05;
+  color: #fff;
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+#hero h1 .em {
+  display: block;
+  background: linear-gradient(90deg, var(--em2), var(--em-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+#hero .sub {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 400;
+  color: var(--text-dim); max-width: 620px; margin-bottom: 44px;
+  line-height: 1.8;
+}
+
+.hero-kpis {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 14px; max-width: 800px;
+}
+
+.kpi {
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+}
+.kpi:hover { border-color: rgba(86,168,83,.35); }
+
+.kpi-v {
+  font-family: var(--mono);
+  font-size: 1.3rem; font-weight: 500;
+  color: var(--em-light); line-height: 1;
+  margin-bottom: 5px;
+}
+.kpi-l {
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* -- MODULE ---------------------------------- */
+.mod {
+  padding: 64px; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.mod.vis { opacity: 1; transform: none; }
+
+.mod-head {
+  display: flex; align-items: flex-start; gap: 18px;
+  margin-bottom: 40px;
+}
+
+.mod-tag {
+  font-family: var(--mono);
+  font-size: 0.65rem; font-weight: 500;
+  color: var(--em2);
+  background: rgba(86,168,83,.1);
+  border: 1px solid rgba(86,168,83,.22);
+  padding: 5px 12px; border-radius: 6px;
+  white-space: nowrap; margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+.mod-head h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: #fff; line-height: 1.1;
+}
+
+/* -- SECTION TITLES -------------------------- */
+.sec {
+  font-family: var(--sans);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--em-light);
+  margin: 42px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+  display: flex; align-items: center; gap: 10px;
+}
+.sec::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 18px;
+  background: linear-gradient(var(--em), var(--em2));
+  border-radius: 2px; flex-shrink: 0;
+}
+
+.subsec {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 700;
+  color: var(--text); margin: 26px 0 10px;
+}
+
+p {
+  font-size: 0.95rem; color: var(--text-dim);
+  line-height: 1.85; margin-bottom: 12px;
+}
+p strong { color: var(--text); font-weight: 600; }
+em { color: var(--em-light); font-style: italic; }
+
+/* -- CALLOUTS -------------------------------- */
+.box {
+  border-radius: 10px; padding: 20px 24px;
+  margin: 18px 0; border-left: 3px solid;
+  background: rgba(255,255,255,.022);
+}
+.box-em  { border-color: var(--em2);  background: rgba(86,168,83,.06); }
+.box-am  { border-color: var(--amber); background: rgba(212,136,42,.06); }
+.box-re  { border-color: var(--red);   background: rgba(201,69,58,.06); }
+.box-bl  { border-color: var(--blue);  background: rgba(74,144,184,.06); }
+
+.box-title {
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 7px;
+}
+.box-em .box-title  { color: var(--em-light); }
+.box-am .box-title  { color: var(--amber-l); }
+.box-re .box-title  { color: #FCA5A5; }
+.box-bl .box-title  { color: #93C5FD; }
+.box p { margin: 0; font-size: 0.88rem; }
+
+/* -- LISTS ----------------------------------- */
+ul.cl { list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 8px; }
+ul.cl li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ul.cl li::before {
+  content: '>'; color: var(--em2); font-size: 1rem;
+  margin-top: 1px; flex-shrink: 0;
+}
+ul.cl li strong { color: var(--text); }
+
+ol.nl { counter-reset: nl; list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 9px; }
+ol.nl li {
+  counter-increment: nl;
+  display: flex; align-items: flex-start; gap: 13px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ol.nl li::before {
+  content: counter(nl);
+  background: rgba(86,168,83,.15);
+  border: 1px solid rgba(86,168,83,.28);
+  color: var(--em-light);
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+}
+
+/* -- TABLES ---------------------------------- */
+.tbl-wrap {
+  overflow-x: auto;
+  margin: 18px 0;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+table.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  font-family: var(--body);
+}
+
+table.tbl thead th {
+  background: var(--bg3);
+  color: var(--em-light);
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 14px 18px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+table.tbl tbody td {
+  padding: 12px 18px;
+  border-bottom: 1px solid rgba(31,42,26,.6);
+  color: var(--text-dim);
+  vertical-align: top;
+}
+
+table.tbl tbody tr:last-child td { border-bottom: none; }
+table.tbl tbody tr:hover { background: rgba(86,168,83,.04); }
+
+table.tbl .yes { color: var(--em-light); font-weight: 600; }
+table.tbl .no { color: var(--red); font-weight: 600; }
+table.tbl .warn { color: var(--amber-l); font-weight: 600; }
+
+/* -- CHECKLISTS ------------------------------ */
+.checklist {
+  list-style: none;
+  margin: 14px 0 20px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+
+.checklist li {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 0.88rem; color: var(--text-dim);
+  padding: 8px 14px;
+  background: rgba(255,255,255,.018);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.checklist li:hover {
+  background: rgba(86,168,83,.06);
+  border-color: rgba(86,168,83,.25);
+}
+
+.checklist li .cb {
+  width: 18px; height: 18px;
+  border: 2px solid var(--muted);
+  border-radius: 4px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+
+.checklist li.checked .cb {
+  background: var(--em2);
+  border-color: var(--em2);
+}
+
+.checklist li.checked .cb::after {
+  content: '';
+  width: 6px; height: 10px;
+  border: solid #fff; border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-top: -2px;
+}
+
+.checklist li.checked { color: var(--text); }
+
+/* -- FLOWCHART ------------------------------- */
+.flowchart {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 0;
+  margin: 24px 0;
+}
+
+.flow-node {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 22px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-family: var(--sans);
+  font-weight: 500;
+  width: 100%;
+  max-width: 580px;
+}
+
+.flow-decision {
+  background: rgba(74,144,184,.08);
+  border: 1px solid rgba(74,144,184,.25);
+  color: var(--text);
+}
+
+.flow-action {
+  background: rgba(86,168,83,.08);
+  border: 1px solid rgba(86,168,83,.25);
+  color: var(--em-light);
+}
+
+.flow-stop {
+  background: rgba(201,69,58,.08);
+  border: 1px solid rgba(201,69,58,.25);
+  color: #FCA5A5;
+}
+
+.flow-execute {
+  background: rgba(212,136,42,.08);
+  border: 1px solid rgba(212,136,42,.3);
+  color: var(--amber-l);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.flow-num {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  min-width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.flow-decision .flow-num { background: rgba(74,144,184,.2); color: #93C5FD; }
+.flow-action .flow-num   { background: rgba(86,168,83,.2); color: var(--em-light); }
+.flow-stop .flow-num     { background: rgba(201,69,58,.2); color: #FCA5A5; }
+.flow-execute .flow-num  { background: rgba(212,136,42,.2); color: var(--amber-l); }
+
+.flow-arrow {
+  width: 2px; height: 18px;
+  background: var(--border);
+  position: relative;
+}
+
+.flow-arrow::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; left: -3px;
+  width: 8px; height: 8px;
+  border: 2px solid var(--muted);
+  border-top: none; border-left: none;
+  transform: rotate(45deg);
+}
+
+.flow-branch {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--red);
+  padding: 2px 10px;
+  background: rgba(201,69,58,.08);
+  border-radius: 4px;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.flow-pass {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--em2);
+  padding: 2px 10px;
+  background: rgba(86,168,83,.08);
+  border-radius: 4px;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* -- STEP BLOCKS ----------------------------- */
+.step-grid {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 0;
+  margin: 18px 0;
+}
+
+.step-num {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--em2);
+  background: rgba(86,168,83,.1);
+  border: 1px solid rgba(86,168,83,.2);
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  margin-top: 2px;
+}
+
+.step-line {
+  display: flex; flex-direction: column;
+  padding-bottom: 18px;
+  border-left: 1px solid var(--border);
+  margin-left: 15px;
+  padding-left: 22px;
+}
+
+.step-line:last-child { border-left-color: transparent; }
+
+.step-title {
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.step-desc {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+
+/* -- PLAN CARDS ------------------------------ */
+.plan-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin: 18px 0;
+}
+
+.plan-card .plan-title {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--em-light);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* -- FOOTER ---------------------------------- */
+footer {
+  padding: 40px 64px;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem; color: var(--text-dim);
+  text-align: center;
+}
+
+/* -- RESPONSIVE ------------------------------ */
+@media (max-width: 900px) {
+  :root { --sw: 0px; }
+  #sidebar { display: none; }
+  #main { margin-left: 0; }
+  .mod { padding: 36px 20px; }
+  #hero { padding: 50px 20px 40px; }
+  .hero-kpis { grid-template-columns: repeat(2, 1fr); }
+  .flow-node { max-width: 100%; }
+}
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+
+<!-- ============================================ -->
+<!-- SIDEBAR                                      -->
+<!-- ============================================ -->
+<aside id="sidebar">
+  <div class="sb-logo">
+    <div class="mark">P</div>
+    <h1>Protocole Complet</h1>
+    <p>De la Preparation a l'Execution</p>
+  </div>
+
+  <div class="sb-section">Preparation</div>
+  <a class="sb-link" href="#m1"><span class="n">01</span> Routine Pre-Session</a>
+  <a class="sb-link" href="#m2"><span class="n">02</span> Calendrier</a>
+  <a class="sb-link" href="#m3"><span class="n">03</span> Biais HTF</a>
+
+  <div class="sb-section">Analyse</div>
+  <a class="sb-link" href="#m4"><span class="n">04</span> Environment Selection</a>
+  <a class="sb-link" href="#m5"><span class="n">05</span> HTF Protocol</a>
+  <a class="sb-link" href="#m6"><span class="n">06</span> LTF Protocol</a>
+
+  <div class="sb-section">Execution</div>
+  <a class="sb-link" href="#m7"><span class="n">07</span> Entree</a>
+  <a class="sb-link" href="#m8"><span class="n">08</span> Gestion du Trade</a>
+
+  <div class="sb-section">Post-Trade</div>
+  <a class="sb-link" href="#m9"><span class="n">09</span> Journal &amp; Review</a>
+
+  <div class="sb-section">Plans de Trading</div>
+  <a class="sb-link" href="#m10"><span class="n">10</span> Plan Intraday</a>
+  <a class="sb-link" href="#m11"><span class="n">11</span> Plan Swing</a>
+  <a class="sb-link" href="#m12"><span class="n">12</span> Turtle Soup</a>
+
+  <div class="sb-section">Flowcharts</div>
+  <a class="sb-link" href="#m13"><span class="n">13</span> Decision Tree</a>
+  <a class="sb-link" href="#m14"><span class="n">14</span> Validation Chain</a>
+
+  <div class="sb-section">Checklists</div>
+  <a class="sb-link" href="#m15"><span class="n">15</span> Avant Session</a>
+  <a class="sb-link" href="#m16"><span class="n">16</span> Avant Trade</a>
+  <a class="sb-link" href="#m17"><span class="n">17</span> Apres Trade</a>
+</aside>
+
+<div id="pbar"><div id="pfill"></div></div>
+
+<!-- ============================================ -->
+<!-- MAIN CONTENT                                 -->
+<!-- ============================================ -->
+<main id="main">
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-tag">Protocole Premium</div>
+  <h1>Protocole Complet<span class="em">De la Preparation a l'Execution</span></h1>
+  <p class="sub">
+    Protocole -- Checklist -- Routine -- Sessions -- Plan -- Execution -- Journal. Le guide complet qui reunit toutes les etapes necessaires pour trader de maniere systematique et disciplinee, de la preparation pre-session jusqu'au journal post-trade.
+  </p>
+  <div class="hero-kpis">
+    <div class="kpi"><div class="kpi-v">17</div><div class="kpi-l">Sections</div></div>
+    <div class="kpi"><div class="kpi-v">9</div><div class="kpi-l">Etapes Flow</div></div>
+    <div class="kpi"><div class="kpi-v">3:1+</div><div class="kpi-l">R:R Cible</div></div>
+    <div class="kpi"><div class="kpi-v">3</div><div class="kpi-l">Checklists</div></div>
+    <div class="kpi"><div class="kpi-v">5</div><div class="kpi-l">Methodes Biais</div></div>
+    <div class="kpi"><div class="kpi-v">3</div><div class="kpi-l">Plans Trading</div></div>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- MODULE 1 -- ROUTINE PRE-SESSION              -->
+<!-- ============================================ -->
+<section class="mod" id="m1">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 01</span>
+    <h2>Routine Pre-Session</h2>
+  </div>
+
+  <p>
+    La routine pre-session est le <strong>fondement de toute journee de trading reussie</strong>. Elle permet de commencer avec un esprit clair, un graphique propre, et un biais determine avant meme que la session ne commence. Sans cette etape, vous tradez a l'aveugle.
+  </p>
+
+  <div class="box box-am">
+    <div class="box-title">Regle absolue</div>
+    <p>Si vous ne faites pas votre routine pre-session, vous ne tradez pas. C'est non negociable. Un trader sans preparation est un joueur de casino.</p>
+  </div>
+
+  <div class="sec">Les 6 etapes obligatoires</div>
+
+  <div class="step-grid">
+    <div class="step-num">1</div>
+    <div class="step-line">
+      <div class="step-title">Effacer TOUT le graphique (page blanche)</div>
+      <div class="step-desc">Retirez tous les dessins, lignes de tendance, annotations de la veille. Chaque jour est un jour nouveau. Un graphique encombre vous empeche de voir clairement ce que le marche vous montre aujourd'hui. Partez de zero, toujours.</div>
+    </div>
+  </div>
+  <div class="step-grid">
+    <div class="step-num">2</div>
+    <div class="step-line">
+      <div class="step-title">Marquer les Asia Highs et Asia Lows</div>
+      <div class="step-desc">Identifiez le range forme pendant la session asiatique (00:00 - 08:00 heure locale selon votre fuseau). Ces niveaux servent de references de liquidite pour les sessions de Londres et New York. Le prix reviendra souvent chercher ces niveaux avant de se deplacer.</div>
+    </div>
+  </div>
+  <div class="step-grid">
+    <div class="step-num">3</div>
+    <div class="step-line">
+      <div class="step-title">Analyser ce qui s'est passe pendant la nuit</div>
+      <div class="step-desc">Regardez comment le prix a evolue depuis la cloture de la veille. Y a-t-il eu un gap ? Un deplacement significatif ? Le prix a-t-il respecte ou viole des niveaux cles ? Cette analyse contextualise les mouvements a venir.</div>
+    </div>
+  </div>
+  <div class="step-grid">
+    <div class="step-num">4</div>
+    <div class="step-line">
+      <div class="step-title">Verifier le HTF (4H/1H) pour contexte directionnel</div>
+      <div class="step-desc">Remontez sur le 4H et le 1H pour comprendre la direction dominante. Ou se situe le prix par rapport aux structures de marche ? Sommes-nous en premium ou en discount ? Quel est le PD Array le plus proche ? Le HTF dicte, le LTF execute.</div>
+    </div>
+  </div>
+  <div class="step-grid">
+    <div class="step-num">5</div>
+    <div class="step-line">
+      <div class="step-title">Identifier si un modele est en cours</div>
+      <div class="step-desc">Le marche est-il deja en phase de distribution ? Accumulation ? Est-ce que nous attendons un sweep ? Un deplacement est-il en cours ? Positionnez-vous dans le cycle actuel. Si un modele est deja avance, il peut etre trop tard pour entrer.</div>
+    </div>
+  </div>
+  <div class="step-grid">
+    <div class="step-num">6</div>
+    <div class="step-line">
+      <div class="step-title">Si biais unclear -- RESTER EN DEHORS</div>
+      <div class="step-desc">C'est la regle la plus importante et la plus difficile a respecter. Si apres les 5 premieres etapes vous n'avez pas une direction claire, ne forcez pas. Le marche sera la demain. Votre capital ne le sera pas si vous le gaspillez sur des trades sans conviction.</div>
+    </div>
+  </div>
+
+  <div class="box box-re">
+    <div class="box-title">Erreur fatale</div>
+    <p>Sauter cette routine parce que vous voyez un "setup evident" sur le graphique. Les meilleurs trades sont ceux qui sont confirmes par la preparation, pas ceux qui semblent urgents. L'urgence est l'ennemi du trader.</p>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- MODULE 2 -- CALENDRIER ECONOMIQUE            -->
+<!-- ============================================ -->
+<section class="mod" id="m2">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 02</span>
+    <h2>Verification du Calendrier Economique</h2>
+  </div>
+
+  <p>
+    Le calendrier economique est votre premier filtre de decision. <strong>Avant meme de regarder un graphique</strong>, vous devez savoir si la journee est propice au trading. Certaines conditions de marche rendent toute analyse technique obsolete.
+  </p>
+
+  <div class="sec">Regles du calendrier</div>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Evenement</th>
+          <th>Action</th>
+          <th>Raison</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Bank Holiday (USA/UK)</td>
+          <td class="no">PAS DE TRADE</td>
+          <td>Liquidite quasi inexistante, spreads elargis, mouvements erratiques</td>
+        </tr>
+        <tr>
+          <td>Semaine NFP</td>
+          <td class="warn">PRUDENCE EXTREME</td>
+          <td>Le marche se positionne toute la semaine, fausses cassures frequentes</td>
+        </tr>
+        <tr>
+          <td>Jour CPI</td>
+          <td class="warn">PRUDENCE EXTREME</td>
+          <td>Volatilite explosive, slippage possible, deplacements massifs</td>
+        </tr>
+        <tr>
+          <td>FOMC / Decision de taux</td>
+          <td class="no">PAS DE TRADE LE JOUR MEME</td>
+          <td>Reactions imprevisibles, whipsaw garanti, manipulation institutionnelle</td>
+        </tr>
+        <tr>
+          <td>News haute importance (rouge)</td>
+          <td class="warn">ABSTENTION 30 MIN AVANT/APRES</td>
+          <td>Zone de volatilite non technique, stops chasses des deux cotes</td>
+        </tr>
+        <tr>
+          <td>Aucune news</td>
+          <td class="yes">CONDITIONS NORMALES</td>
+          <td>Le marche suit les flux algorithmiques, analyse technique valide</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box box-em">
+    <div class="box-title">Regle d'or du calendrier</div>
+    <p>Verifiez le calendrier <strong>la veille au soir</strong>, jamais le matin meme. Cela vous evite de vous retrouver devant les ecrans le matin avec un biais deja forme, pour decouvrir trop tard qu'une news majeure va tout invalider. La preparation commence la veille.</p>
+  </div>
+
+  <div class="sec">Jours speciaux et conditions etendues</div>
+
+  <ul class="cl">
+    <li><strong>Vendredi :</strong> Prudence accrue apres 15h UTC. Les institutions debouclent leurs positions pour le week-end, creant des mouvements contre-tendance</li>
+    <li><strong>Lundi :</strong> Souvent utilise pour l'accumulation. Le prix peut tromper avec de faux mouvements avant de reveler la direction de la semaine</li>
+    <li><strong>Premier jour du mois :</strong> Roulements de contrats possibles, re-positionnement institutionnel majeur</li>
+    <li><strong>Triple witching :</strong> Expiration simultanee d'options et de futures -- eviter completement</li>
+    <li><strong>Veille de vacances :</strong> Liquidite reduite des le milieu de journee, spreads qui s'elargissent progressivement</li>
+  </ul>
+
+  <div class="box box-re">
+    <div class="box-title">Jamais trader autour des news</div>
+    <p>Les 30 minutes avant et les 30 minutes apres une news de haute importance sont des zones d'exclusion totale. Pas d'ouverture de position, pas de modification de stop. Si vous etes en position, avoir defini votre plan AVANT l'evenement. Ne reagissez pas en direct.</p>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- MODULE 3 -- BIAIS HTF                        -->
+<!-- ============================================ -->
+<section class="mod" id="m3">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 03</span>
+    <h2>Determination du Biais HTF</h2>
+  </div>
+
+  <p>
+    Le biais HTF (Higher Timeframe) est votre boussole. Il determine dans <strong>quelle direction</strong> vous allez chercher des setups. Trader contre le HTF, c'est nager a contre-courant -- possible mais extremement risque et reserve aux traders tres experimentes.
+  </p>
+
+  <p>
+    Il existe 5 methodes principales pour determiner le biais. Vous n'avez pas besoin de toutes les utiliser simultanement -- choisissez celles qui fonctionnent le mieux pour vous et soyez coherent.
+  </p>
+
+  <div class="sec">Methode 1 -- Structure et Liquidite</div>
+
+  <p>Analysez les pools de liquidite visibles sur le 4H et le Daily. Ou se trouvent les clusters de stops ? Le prix se deplace toujours vers la liquidite. Si la majorite de la liquidite visible se trouve au-dessus du prix actuel, le biais est haussier (le prix ira chercher cette liquidite). Inversement pour le biais baissier.</p>
+
+  <ul class="cl">
+    <li>Identifiez les <strong>Equal Highs/Lows</strong> -- ce sont des reservoirs de liquidite majeurs</li>
+    <li>Reperez les <strong>Previous Day/Week/Month Highs et Lows</strong> -- niveaux ou la liquidite s'accumule</li>
+    <li>Le prix se dirige vers le <strong>pool de liquidite le plus proche non encore balaye</strong></li>
+  </ul>
+
+  <div class="sec">Methode 2 -- Inducement Model</div>
+
+  <p>La methode la plus systematique. Elle se base sur le concept que le marche <strong>induit</strong> les participants dans une direction avant de se deplacer dans l'autre. Cherchez les faux signaux qui piegeraient les traders retail et positionnez-vous pour le mouvement reel qui suivra.</p>
+
+  <ul class="cl">
+    <li>Identifiez le dernier <strong>swing significatif</strong> sur le 4H</li>
+    <li>Observez si le prix cree un <strong>faux break</strong> (inducement) dans une direction</li>
+    <li>Le biais reel est dans la <strong>direction opposee</strong> a l'inducement</li>
+    <li>Confirmez avec la structure de marche (BOS/MSS)</li>
+  </ul>
+
+  <div class="sec">Methode 3 -- Asia Highs/Lows (Whipsaw)</div>
+
+  <p>Le classique du whipsaw asiatique. Le prix sweep un extremite du range asiatique pendant London, puis se retourne pour aller chercher l'autre extremite. Cette methode est particulierement efficace sur les paires majeures (EUR/USD, GBP/USD).</p>
+
+  <ul class="cl">
+    <li>Si London <strong>sweep le Asia High</strong> -- biais baissier pour le reste de la journee</li>
+    <li>Si London <strong>sweep le Asia Low</strong> -- biais haussier pour le reste de la journee</li>
+    <li>Si les deux sont sweeps -- <strong>pas de biais clair</strong>, rester en dehors</li>
+  </ul>
+
+  <div class="sec">Methode 4 -- True Opens</div>
+
+  <p>Les True Opens (ouvertures de reference) fournissent un niveau autour duquel le prix gravite. Le principe est simple mais puissant :</p>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Position du prix</th>
+          <th>Zone</th>
+          <th>Biais</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Au-dessus du True Open</td>
+          <td class="warn">Premium</td>
+          <td>Biais vendeur (short) -- le prix est au-dessus de la juste valeur</td>
+        </tr>
+        <tr>
+          <td>En dessous du True Open</td>
+          <td class="yes">Discount</td>
+          <td>Biais acheteur (long) -- le prix est en dessous de la juste valeur</td>
+        </tr>
+        <tr>
+          <td>Sur le True Open</td>
+          <td>Equilibre</td>
+          <td>Pas de biais -- attendre un deplacement clair</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec">Methode 5 -- Fix Price / Equilibrium</div>
+
+  <p>Le prix tend naturellement a revenir vers son point d'equilibre apres un mouvement directionnel. Utilisez le <strong>50% du Dealing Range actif</strong> comme reference. Si le prix est significativement eloigne de l'equilibre, il y a une forte probabilite de retour.</p>
+
+  <ul class="cl">
+    <li><strong>Fix Price au-dessus</strong> du prix actuel -- potentiel de mouvement haussier vers l'equilibre</li>
+    <li><strong>Fix Price en dessous</strong> du prix actuel -- potentiel de mouvement baissier vers l'equilibre</li>
+    <li>Combinez avec les autres methodes pour confirmation</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Convergence des methodes</div>
+    <p>Un biais est d'autant plus fiable que plusieurs methodes convergent vers la meme direction. Si la structure, les True Opens ET les Asia Highs/Lows pointent tous dans la meme direction, la probabilite est nettement plus elevee. En cas de divergence, restez en dehors ou reduisez votre exposition.</p>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- MODULE 4 -- ENVIRONMENT SELECTION            -->
+<!-- ============================================ -->
+<section class="mod" id="m4">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 04</span>
+    <h2>Environment Selection</h2>
+  </div>
+
+  <p>
+    L'environment selection est l'art de choisir <strong>quand trader et quand s'abstenir</strong>. La majorite des pertes viennent de trades pris dans un environnement non favorable. Apprenez a dire non au marche -- c'est votre arme la plus puissante.
+  </p>
+
+  <div class="sec">Matrice de decision</div>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Condition</th>
+          <th>Trade ?</th>
+          <th>Raison</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>News haute importance</td>
+          <td class="no">NON</td>
+          <td>Volatilite imprevisible, slippage, manipulation</td>
+        </tr>
+        <tr>
+          <td>Bank Holiday</td>
+          <td class="no">NON</td>
+          <td>Liquidite insuffisante, mouvements erratiques</td>
+        </tr>
+        <tr>
+          <td>Pas de biais HTF clair</td>
+          <td class="no">NON</td>
+          <td>Probabilite trop faible, gambling deguise</td>
+        </tr>
+        <tr>
+          <td>Consolidation Type 3</td>
+          <td class="warn">EXTREMES SEULEMENT</td>
+          <td>Range piege -- seuls les sweeps des extremites sont valides</td>
+        </tr>
+        <tr>
+          <td>London gros mouvement deja fait</td>
+          <td class="warn">PRUDENCE NY</td>
+          <td>Potentiel epuise pour la journee, New York peut consolider</td>
+        </tr>
+        <tr>
+          <td>Structure HTF claire + Killzone active</td>
+          <td class="yes">OUI</td>
+          <td>Conditions optimales pour un setup de haute probabilite</td>
+        </tr>
+        <tr>
+          <td>Multiple confluences alignees</td>
+          <td class="yes">OUI -- TAILLE NORMALE</td>
+          <td>Setup A+, toutes les conditions reunies</td>
+        </tr>
+        <tr>
+          <td>Debut de semaine sans direction</td>
+          <td class="warn">OBSERVATION</td>
+          <td>Lundi est souvent une journee d'accumulation, pas de tendance claire</td>
+        </tr>
+        <tr>
+          <td>Fin de semaine (vendredi PM)</td>
+          <td class="no">NON</td>
+          <td>Debouclage institutionnel, mouvements contre-tendance</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec">Les Killzones</div>
+
+  <p>Les killzones sont les fenetres temporelles ou la liquidite est la plus elevee et les mouvements directionnels les plus probables. <strong>Trader en dehors des killzones revient a trader dans le desert.</strong></p>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Killzone</th>
+          <th>Heure (UTC)</th>
+          <th>Caracteristique</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>London Open</strong></td>
+          <td>07:00 - 10:00</td>
+          <td>Manipulation de l'Asia range, sweep + deplacement</td>
+        </tr>
+        <tr>
+          <td><strong>New York Open</strong></td>
+          <td>12:00 - 15:00</td>
+          <td>Continuation ou reversal de London, gros volume</td>
+        </tr>
+        <tr>
+          <td><strong>London Close</strong></td>
+          <td>15:00 - 17:00</td>
+          <td>Prise de profit, possible reversal du mouvement de la journee</td>
+        </tr>
+        <tr>
+          <td><strong>Asia</strong></td>
+          <td>00:00 - 07:00</td>
+          <td>Consolidation, creation du range de reference (pas pour executer)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box box-am">
+    <div class="box-title">Macro Timing</div>
+    <p>A l'interieur des killzones, les macros de 90 minutes et les cycles de 20 minutes offrent des fenetres encore plus precises. Les mouvements les plus significatifs se produisent souvent aux changements de macro (xx:00, xx:30, etc.). Apprenez a lire l'horloge autant que le graphique.</p>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- MODULE 5 -- PROTOCOLE HTF                    -->
+<!-- ============================================ -->
+<section class="mod" id="m5">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 05</span>
+    <h2>Protocole HTF (Higher Timeframe)</h2>
+  </div>
+
+  <p>
+    Le protocole HTF definit le <strong>cadre de reference</strong> dans lequel vous allez operer. C'est l'equivalent d'une carte routiere -- sans elle, vous ne savez pas ou vous allez. Chaque trade doit s'inscrire dans un contexte HTF clair.
+  </p>
+
+  <div class="sec">Etape 1 -- Identifier le Dealing Range actif</div>
+
+  <p>Le Dealing Range est la structure dominante qui encadre l'action du prix. Sur le Daily ou le 4H, identifiez le dernier swing haut et le dernier swing bas significatifs. Tout le mouvement de prix se fait <strong>a l'interieur de ce range</strong> jusqu'a ce qu'il soit casse.</p>
+
+  <ul class="cl">
+    <li>Le Dealing Range Daily est votre reference principale pour le swing trading</li>
+    <li>Le Dealing Range 4H est votre reference pour l'intraday</li>
+    <li>Le prix va toujours d'un extremite a l'autre -- c'est la <strong>loi fondamentale</strong> des marches</li>
+  </ul>
+
+  <div class="sec">Etape 2 -- Determiner Premium vs Discount</div>
+
+  <p>Divisez le Dealing Range en deux moities au niveau du 50% (Equilibrium). Le prix au-dessus du 50% est en <strong>Premium</strong> (zone de vente), le prix en dessous est en <strong>Discount</strong> (zone d'achat). Ne jamais acheter en premium, ne jamais vendre en discount.</p>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Zone</th>
+          <th>Position</th>
+          <th>Action</th>
+          <th>PD Arrays a chercher</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="no">Premium</td>
+          <td>Au-dessus du 50%</td>
+          <td>Chercher des ventes uniquement</td>
+          <td>Order Block baissier, FVG baissier, Breaker baissier</td>
+        </tr>
+        <tr>
+          <td class="yes">Discount</td>
+          <td>En dessous du 50%</td>
+          <td>Chercher des achats uniquement</td>
+          <td>Order Block haussier, FVG haussier, Breaker haussier</td>
+        </tr>
+        <tr>
+          <td>Equilibrium</td>
+          <td>Zone des 50%</td>
+          <td>Pas de trade</td>
+          <td>Zone d'indecision -- attendre un deplacement</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec">Etape 3 -- Localiser la DOL (Draw on Liquidity)</div>
+
+  <p>La DOL est la <strong>destination du prix</strong>. C'est le pool de liquidite ou le niveau que le prix va probablement atteindre. Votre trade doit avoir une DOL clairement identifiee -- c'est votre target principal.</p>
+
+  <ul class="cl">
+    <li><strong>Previous Day High/Low</strong> -- cibles de liquidite intraday les plus courantes</li>
+    <li><strong>Previous Week High/Low</strong> -- cibles de liquidite swing</li>
+    <li><strong>Equal Highs/Lows</strong> -- accumulation de stops qui sera balayee</li>
+    <li><strong>FVG non comble</strong> sur HTF -- le prix tend a combler les desequilibres</li>
+  </ul>
+
+  <div class="sec">Etape 4 -- Identifier les PD Arrays</div>
+
+  <p>Les PD Arrays (Price Delivery Arrays) sont les zones ou le prix est susceptible de reagir. Dans la zone identifiee (Premium ou Discount), localisez :</p>
+
+  <ul class="cl">
+    <li><strong>Fair Value Gap (FVG) :</strong> Desequilibre cree par un mouvement impulsif -- zone de retour probable</li>
+    <li><strong>Order Block (OB) :</strong> Derniere bougie contraire avant un deplacement -- zone d'interet institutionnel</li>
+    <li><strong>Breaker Block :</strong> Ancien OB qui a ete viole et qui sert maintenant de support/resistance inverse</li>
+    <li><strong>Mitigation Block :</strong> Zone ou les ordres non remplis seront completes lors du retour du prix</li>
+  </ul>
+
+  <div class="sec">Etape 5 -- Verification SMT (Divergence inter-actifs)</div>
+
+  <p>La verification SMT consiste a comparer le comportement du prix entre deux actifs correles. Si un actif fait un nouveau haut tandis que l'autre ne confirme pas, c'est un signal de divergence puissant qui confirme (ou infirme) votre biais.</p>
+
+  <div class="box box-em">
+    <div class="box-title">Paires SMT classiques</div>
+    <p>EUR/USD vs GBP/USD (correlation positive), EUR/USD vs DXY (correlation negative), NQ vs ES (correlation positive). Une divergence sur ces paires augmente significativement la probabilite du setup.</p>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- MODULE 6 -- PROTOCOLE LTF                    -->
+<!-- ============================================ -->
+<section class="mod" id="m6">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 06</span>
+    <h2>Protocole LTF (Lower Timeframe)</h2>
+  </div>
+
+  <p>
+    Le LTF est ou l'execution se produit. Le HTF donne la direction, le LTF donne le <strong>point d'entree precis</strong>. C'est ici que la patience est testee -- vous devez attendre que TOUTES les confirmations soient presentes avant d'appuyer sur le bouton.
+  </p>
+
+  <div class="sec">Etape 1 -- Attendre la manipulation</div>
+
+  <p>La manipulation est le <strong>sweep de liquidite</strong> qui precede le mouvement reel. Le marche va chercher les stops des traders positionnes dans la bonne direction avant de se deplacer. Si vous n'avez pas vu la manipulation, vous etes probablement trop tot.</p>
+
+  <ul class="cl">
+    <li>Sweep du dernier swing low (pour un setup long)</li>
+    <li>Sweep du dernier swing high (pour un setup short)</li>
+    <li>Sweep des Equal Highs/Lows proches</li>
+    <li>Sweep de l'Asia High ou Asia Low</li>
+  </ul>
+
+  <div class="sec">Etape 2 -- Confirmer le CSD / MSS</div>
+
+  <p>Le <strong>CSD (Change of State of Delivery)</strong> ou <strong>MSS (Market Structure Shift)</strong> est la confirmation que le prix change de direction. C'est le signal que le mouvement reel commence. Sans CSD/MSS, il n'y a pas de trade.</p>
+
+  <ul class="cl">
+    <li>Sur le M5 ou M1, le prix casse un swing structure contraire a la manipulation</li>
+    <li>La cassure doit etre <strong>impulsive</strong> (displacement) -- pas une lente derive</li>
+    <li>Un displacement cree generalement un FVG -- c'est votre zone d'entree</li>
+  </ul>
+
+  <div class="sec">Etape 3 -- Identifier le POI d'entree</div>
+
+  <p>Le POI (Point of Interest) est le niveau precis ou vous placez votre ordre limite. Il se trouve dans la zone creee par le displacement :</p>
+
+  <ul class="cl">
+    <li><strong>FVG du displacement :</strong> Le plus courant -- entree au milieu ou au bord du FVG</li>
+    <li><strong>Order Block du displacement :</strong> La bougie contraire juste avant le mouvement impulsif</li>
+    <li><strong>Overlap FVG + OB :</strong> Convergence des deux -- zone la plus precise pour l'entree</li>
+  </ul>
+
+  <div class="sec">Etape 4 -- Verification SMT sur LTF</div>
+
+  <p>Verifiez la divergence SMT sur le timeframe d'entree pour une confirmation supplementaire. Si l'actif correle confirme le mouvement, la probabilite augmente. Si l'actif correle diverge au moment du sweep, c'est un signal extremement puissant.</p>
+
+  <div class="sec">Etape 5 -- Confirmation par le timing</div>
+
+  <p>Le dernier filtre est le timing. Meme si tout est aligne techniquement, le mouvement doit se produire dans une fenetre temporelle favorable :</p>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Critere temporel</th>
+          <th>Valide ?</th>
+          <th>Remarque</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>En killzone</td>
+          <td class="yes">OUI</td>
+          <td>Condition requise pour un setup de haute probabilite</td>
+        </tr>
+        <tr>
+          <td>Sur une macro (xx:00, xx:30)</td>
+          <td class="yes">BONUS</td>
+          <td>Les algorithmes operent sur ces intervalles</td>
+        </tr>
+        <tr>
+          <td>Dans un cycle de 90 minutes</td>
+          <td class="yes">BONUS</td>
+          <td>Confirme l'alignement avec les cycles temporels</td>
+        </tr>
+        <tr>
+          <td>En dehors des killzones</td>
+          <td class="no">NON</td>
+          <td>Pas de trade, meme si le setup semble parfait</td>
+        </tr>
+        <tr>
+          <td>Avant une news haute importance</td>
+          <td class="no">NON</td>
+          <td>Le setup sera potentiellement invalide par la news</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box box-am">
+    <div class="box-title">Patience = Profit</div>
+    <p>Si une seule de ces 5 etapes n'est pas validee, vous ne prenez pas le trade. Il y aura toujours un autre setup. Il n'y aura pas toujours un autre capital a deployer. La patience n'est pas une vertu en trading -- c'est une competence de survie.</p>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- MODULE 7 -- EXECUTION                        -->
+<!-- ============================================ -->
+<section class="mod" id="m7">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 07</span>
+    <h2>Execution -- Entree, Stop, Targets</h2>
+  </div>
+
+  <p>
+    L'execution est l'aboutissement de toute votre preparation. A ce stade, <strong>tout doit etre mecanique</strong>. Pas de reflexion, pas d'hesitation. Vous avez fait votre analyse, vous avez vos niveaux, vous executez le plan tel quel.
+  </p>
+
+  <div class="sec">Placement de l'entree</div>
+
+  <ul class="cl">
+    <li><strong>Type d'ordre :</strong> Limite sur le POI identifie -- jamais d'entree au marche</li>
+    <li><strong>Precision :</strong> L'entree se place sur le FVG ou l'OB identifie, pas "a peu pres"</li>
+    <li><strong>Confirmation :</strong> L'ordre est place APRES que la manipulation et le CSD/MSS soient confirmes</li>
+  </ul>
+
+  <div class="sec">Placement du Stop Loss</div>
+
+  <ul class="cl">
+    <li>Le SL se place <strong>au-dela du dernier swing point</strong> qui a ete swepe</li>
+    <li>Ou <strong>au-dela du POI</strong> (sous l'OB pour un long, au-dessus pour un short)</li>
+    <li>Ajoutez un petit buffer (quelques pips/ticks) pour eviter les meches exactes</li>
+    <li><strong>Jamais de SL mental</strong> -- toujours un SL physique dans la plateforme</li>
+  </ul>
+
+  <div class="sec">Targets et R:R</div>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Target</th>
+          <th>Niveau</th>
+          <th>Action</th>
+          <th>% de la position</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Target 1 (minimum)</strong></td>
+          <td>Prochain pool de liquidite LTF</td>
+          <td>Prise de profit partielle</td>
+          <td>50%</td>
+        </tr>
+        <tr>
+          <td><strong>Target 2</strong></td>
+          <td>DOL HTF identifie</td>
+          <td>Runner avec trail</td>
+          <td>30%</td>
+        </tr>
+        <tr>
+          <td><strong>Target 3</strong></td>
+          <td>Extension (conditions exceptionnelles)</td>
+          <td>Laisser courir</td>
+          <td>20%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec">Regles de risque</div>
+
+  <div class="plan-card">
+    <div class="plan-title">Parametres de risque obligatoires</div>
+    <ul class="cl">
+      <li><strong>R:R minimum :</strong> 2:1 (ideal 3:1 ou plus). En dessous de 2:1, le trade n'est pas pris.</li>
+      <li><strong>Risque par trade :</strong> 0.5% a 1% du capital. Jamais au-dela, quel que soit le niveau de conviction.</li>
+      <li><strong>Risque quotidien maximum :</strong> 2% du capital. Apres 2 pertes consecutives, la journee est terminee.</li>
+      <li><strong>Drawdown maximum :</strong> 5% par semaine. Au-dela, pause obligatoire jusqu'a la semaine suivante.</li>
+      <li><strong>Nombre de trades :</strong> Maximum 2-3 par jour. La qualite prime sur la quantite.</li>
+    </ul>
+  </div>
+
+  <div class="box box-re">
+    <div class="box-title">Regles de fer</div>
+    <p>Si le R:R est inferieur a 2:1, ne prenez pas le trade. Si vous avez deja perdu 2% aujourd'hui, fermez les ecrans. Si vous etes emotionnellement perturbe (colere, euphorie, frustration), ne tradez pas. Ces regles ne sont pas des suggestions -- ce sont des lois.</p>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- MODULE 8 -- GESTION DU TRADE                 -->
+<!-- ============================================ -->
+<section class="mod" id="m8">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 08</span>
+    <h2>Gestion du Trade</h2>
+  </div>
+
+  <p>
+    La gestion du trade est ce qui transforme un bon setup en un trade rentable. <strong>La majorite des traders perdent non pas parce qu'ils entrent mal, mais parce qu'ils gerent mal leurs positions.</strong>
+  </p>
+
+  <div class="sec">Regles de gestion mecanique</div>
+
+  <ol class="nl">
+    <li><strong>Pas de deplacement du SL</strong> avant que Target 1 soit atteint. Le SL reste a sa position initiale tant que le prix n'a pas atteint votre premier objectif. Deplacer le SL trop tot = se faire sortir sur du bruit.</li>
+    <li><strong>Partiel a Target 1 (50%)</strong> : Quand Target 1 est touche, prenez 50% de profit. Cela securise le trade et reduit le stress psychologique.</li>
+    <li><strong>Runner pour Target 2</strong> : Les 50% restants (ou 30% + 20% selon votre plan) continuent avec un trail mecanique.</li>
+    <li><strong>Trail mecanique apres T1</strong> : Deplacez le SL au breakeven apres T1. Puis trailez sous/sur chaque nouveau swing structure cree par le prix.</li>
+    <li><strong>Si le prix revient dans la zone d'entree</strong> sans avoir touche T1 -- laissez le trade vivre. Votre SL est la pour ca. Ne fermez pas par peur.</li>
+    <li><strong>Pas de fermeture emotionnelle</strong> : Jamais fermer un trade "parce que ca ne bouge pas" ou "parce que j'ai peur". Le plan est le plan.</li>
+  </ol>
+
+  <div class="sec">Scenarios de gestion</div>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Scenario</th>
+          <th>Action</th>
+          <th>Justification</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Prix atteint T1</td>
+          <td class="yes">Partiel 50%, SL au BE</td>
+          <td>Securisation du profit, trade sans risque</td>
+        </tr>
+        <tr>
+          <td>Prix revient apres T1</td>
+          <td>Trail sous/sur le dernier swing</td>
+          <td>Le BE protege, le trail capture le mouvement</td>
+        </tr>
+        <tr>
+          <td>Prix stagne apres entree</td>
+          <td>Ne rien faire</td>
+          <td>La consolidation precede souvent le mouvement</td>
+        </tr>
+        <tr>
+          <td>Prix revient vers le SL</td>
+          <td>Ne rien faire (SL physique en place)</td>
+          <td>Le SL est la pour une raison -- faites-lui confiance</td>
+        </tr>
+        <tr>
+          <td>News inattendue pendant le trade</td>
+          <td class="warn">Evaluer mais ne pas paniquer</td>
+          <td>Le SL gere le risque, le trail gere le profit</td>
+        </tr>
+        <tr>
+          <td>T1 touche puis reversal violent</td>
+          <td class="yes">Le BE protege -- aucune perte</td>
+          <td>C'est exactement pourquoi on fait un partiel a T1</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box box-em">
+    <div class="box-title">Mentalite de gestion</div>
+    <p>Pensez a chaque trade comme un investissement a duree determinee. Vous avez defini vos parametres (entree, SL, targets) et maintenant vous laissez le marche faire son travail. Votre role n'est plus de decider mais d'executer votre plan mecanique. Toute deviation du plan est une faute professionnelle.</p>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- MODULE 9 -- JOURNAL & REVIEW                 -->
+<!-- ============================================ -->
+<section class="mod" id="m9">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 09</span>
+    <h2>Journal, Review et Ajustement</h2>
+  </div>
+
+  <p>
+    Le journal est votre <strong>outil d'amelioration numero un</strong>. Un trader sans journal est comme un scientifique sans carnet de laboratoire -- il repete les memes erreurs indefiniment sans jamais comprendre pourquoi.
+  </p>
+
+  <div class="sec">Contenu obligatoire du journal</div>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Element</th>
+          <th>Quoi noter</th>
+          <th>Pourquoi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Date et heure</strong></td>
+          <td>Date, killzone, macro</td>
+          <td>Identifier les periodes les plus rentables</td>
+        </tr>
+        <tr>
+          <td><strong>Instrument</strong></td>
+          <td>Paire ou indice trade</td>
+          <td>Analyser la performance par actif</td>
+        </tr>
+        <tr>
+          <td><strong>Biais HTF</strong></td>
+          <td>Direction et methode utilisee</td>
+          <td>Verifier la fiabilite de votre methode de biais</td>
+        </tr>
+        <tr>
+          <td><strong>Setup</strong></td>
+          <td>Type de modele (sweep, OB, FVG...)</td>
+          <td>Identifier vos setups les plus rentables</td>
+        </tr>
+        <tr>
+          <td><strong>Entree / SL / TP</strong></td>
+          <td>Niveaux exacts</td>
+          <td>Revoir la precision de vos entrees</td>
+        </tr>
+        <tr>
+          <td><strong>R:R obtenu</strong></td>
+          <td>Resultat en R</td>
+          <td>Suivre la performance reelle vs theorique</td>
+        </tr>
+        <tr>
+          <td><strong>Screenshot</strong></td>
+          <td>Avant et apres le trade</td>
+          <td>Preuve visuelle pour la review</td>
+        </tr>
+        <tr>
+          <td><strong>Etat emotionnel</strong></td>
+          <td>Confiant / Neutre / Stresse / Euphorique</td>
+          <td>Correler les emotions avec les resultats</td>
+        </tr>
+        <tr>
+          <td><strong>Regles respectees</strong></td>
+          <td>OUI / NON (independamment du resultat)</td>
+          <td>Un trade perdant dans les regles &gt; un trade gagnant hors regles</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec">Review hebdomadaire</div>
+
+  <p>Chaque dimanche (ou le jour de votre choix), prenez 30-60 minutes pour revoir vos trades de la semaine :</p>
+
+  <ol class="nl">
+    <li>Relisez chaque entree du journal</li>
+    <li>Identifiez les <strong>patterns recurrents</strong> dans vos gains et vos pertes</li>
+    <li>Calculez votre <strong>winrate</strong> et votre <strong>R:R moyen</strong></li>
+    <li>Notez les <strong>erreurs repetees</strong> et formulez une action corrective</li>
+    <li>Ajustez votre plan de trading si necessaire (mais rarement -- les changements frequents sont un probleme)</li>
+  </ol>
+
+  <div class="box box-bl">
+    <div class="box-title">Regle des 20 trades</div>
+    <p>Ne jugez jamais votre strategie sur moins de 20 trades. Les marches sont probabilistes -- un echantillon de 5 ou 10 trades ne signifie rien statistiquement. Donnez-vous 20 trades dans les regles avant de modifier quoi que ce soit.</p>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- MODULE 10 -- PLAN INTRADAY                   -->
+<!-- ============================================ -->
+<section class="mod" id="m10">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 10</span>
+    <h2>Plan de Trading Intraday</h2>
+  </div>
+
+  <p>
+    Le plan intraday est votre feuille de route quotidienne. Il definit exactement ce que vous cherchez, quand, et dans quelles conditions. <strong>Aucun trade ne doit etre pris en dehors de ce plan.</strong>
+  </p>
+
+  <div class="plan-card">
+    <div class="plan-title">Structure du plan intraday</div>
+    <ul class="cl">
+      <li><strong>Timeframe d'analyse :</strong> 4H et 1H pour le biais, 15M pour le contexte</li>
+      <li><strong>Timeframe d'entree :</strong> M5 ou M1 pour le point d'entree precis</li>
+      <li><strong>Sessions ciblees :</strong> London Open (07-10 UTC) et/ou New York Open (12-15 UTC)</li>
+      <li><strong>Nombre maximum de trades :</strong> 2 par jour, 1 par killzone</li>
+      <li><strong>Risque par trade :</strong> 0.5% - 1%</li>
+      <li><strong>R:R minimum :</strong> 3:1</li>
+    </ul>
+  </div>
+
+  <div class="sec">Deroulement type d'une journee intraday</div>
+
+  <div class="step-grid">
+    <div class="step-num">1</div>
+    <div class="step-line">
+      <div class="step-title">06:30 UTC -- Preparation</div>
+      <div class="step-desc">Routine pre-session complete. Graphique efface, Asia range marque, HTF analyse, biais determine. Calendrier verifie la veille.</div>
+    </div>
+  </div>
+  <div class="step-grid">
+    <div class="step-num">2</div>
+    <div class="step-line">
+      <div class="step-title">07:00 UTC -- London Open</div>
+      <div class="step-desc">Observation de la manipulation. Le prix va-t-il sweep l'Asia High ou Low ? Pas de trade avant d'avoir vu la manipulation.</div>
+    </div>
+  </div>
+  <div class="step-grid">
+    <div class="step-num">3</div>
+    <div class="step-line">
+      <div class="step-title">07:30 - 09:30 UTC -- Fenetre d'execution London</div>
+      <div class="step-desc">Si manipulation vue + CSD/MSS confirme + POI identifie : execution. Sinon : attente de New York.</div>
+    </div>
+  </div>
+  <div class="step-grid">
+    <div class="step-num">4</div>
+    <div class="step-line">
+      <div class="step-title">12:00 - 14:30 UTC -- Fenetre d'execution New York</div>
+      <div class="step-desc">Deuxieme opportunite de la journee. Si London a deja fait un gros mouvement, prudence accrue.</div>
+    </div>
+  </div>
+  <div class="step-grid">
+    <div class="step-num">5</div>
+    <div class="step-line">
+      <div class="step-title">15:00 UTC -- Fin de journee</div>
+      <div class="step-desc">Pas de nouvelles positions apres 15h UTC. Gestion des positions existantes uniquement. Journal.</div>
+    </div>
+  </div>
+
+  <div class="box box-am">
+    <div class="box-title">Apres un trade gagnant</div>
+    <p>Si votre premier trade de la journee est gagnant avec un bon R:R (3:1+), envisagez serieusement de ne pas prendre de second trade. Terminer la journee sur un gain preserve votre capital psychologique et votre discipline. La cupidite est le plus grand ennemi du trader intraday.</p>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- MODULE 11 -- PLAN SWING                      -->
+<!-- ============================================ -->
+<section class="mod" id="m11">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 11</span>
+    <h2>Plan de Trading Swing</h2>
+  </div>
+
+  <p>
+    Le plan swing est concu pour les mouvements qui se deploient sur <strong>plusieurs jours a plusieurs semaines</strong>. Il demande moins de temps d'ecran mais plus de patience et une analyse HTF approfondie.
+  </p>
+
+  <div class="plan-card">
+    <div class="plan-title">Structure du plan swing</div>
+    <ul class="cl">
+      <li><strong>Timeframe d'analyse :</strong> Weekly et Daily pour le biais</li>
+      <li><strong>Timeframe d'entree :</strong> 4H ou 1H pour la precision</li>
+      <li><strong>Frequence :</strong> 1 a 3 trades par semaine maximum</li>
+      <li><strong>Duree du trade :</strong> 2 a 10 jours</li>
+      <li><strong>Risque par trade :</strong> 0.5% - 1%</li>
+      <li><strong>R:R minimum :</strong> 3:1 (souvent 5:1+ en swing)</li>
+    </ul>
+  </div>
+
+  <div class="sec">Avantages du swing</div>
+
+  <ul class="cl">
+    <li>Moins de bruit, moins de faux signaux -- les structures HTF sont plus fiables</li>
+    <li>Moins de temps d'ecran -- analyse 1-2 fois par jour suffit</li>
+    <li>R:R plus eleves -- les mouvements multi-jours offrent des targets plus ambitieux</li>
+    <li>Moins de stress psychologique -- pas besoin de reagir a chaque bougie</li>
+  </ul>
+
+  <div class="sec">Processus swing</div>
+
+  <ol class="nl">
+    <li><strong>Dimanche soir :</strong> Analyse Weekly -- determiner la direction de la semaine</li>
+    <li><strong>Lundi-Mardi :</strong> Observer l'accumulation et la manipulation de debut de semaine</li>
+    <li><strong>Mercredi-Jeudi :</strong> Fenetre d'execution principale -- les mouvements directionnels majeurs se produisent souvent en milieu de semaine</li>
+    <li><strong>Vendredi :</strong> Gestion uniquement, pas de nouvelles positions (debouclage institutionnel)</li>
+  </ol>
+
+  <div class="box box-em">
+    <div class="box-title">Weekly Profiles</div>
+    <p>Etudiez les profils hebdomadaires historiques. Certaines semaines ont des structures previsibles : le prix accumule lundi, manipule mardi/mercredi, distribue jeudi/vendredi. Comprendre ces cycles ameliore significativement votre timing swing.</p>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- MODULE 12 -- TURTLE SOUP                     -->
+<!-- ============================================ -->
+<section class="mod" id="m12">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 12</span>
+    <h2>Plan Turtle Soup</h2>
+  </div>
+
+  <p>
+    Le Turtle Soup est un <strong>modele de reversal base sur le sweep de range</strong>. Il tire son nom de la strategie originale des "Turtles" (traders de tendance) en la retournant : au lieu de trader les cassures, on trade les fausses cassures.
+  </p>
+
+  <div class="sec">Structure du modele</div>
+
+  <ol class="nl">
+    <li><strong>Identifier le range HTF</strong> : Sur le 4H ou le Daily, reperez un range bien defini avec des hauts et des bas clairs. Plus le range est ancien, plus la liquidite accumulee aux extremites est importante.</li>
+    <li><strong>Attendre le sweep d'une extremite</strong> : Le prix doit casser une extremite du range (le high ou le low) en allant chercher la liquidite accumulee. Ce sweep doit etre rapide et decisif.</li>
+    <li><strong>Confirmer la rejection</strong> : Apres le sweep, le prix doit montrer une rejection claire : displacement en sens inverse, creation d'un FVG, ou fermeture de bougie a l'interieur du range.</li>
+    <li><strong>Entrer sur le retour</strong> : Placez votre entree sur le FVG ou l'OB cree par le displacement de rejection. Le SL va au-dela du sweep (au-dela du point le plus extreme atteint).</li>
+    <li><strong>Target : extremite opposee du range</strong> : Le prix tend a traverser le range entier apres un sweep. Le target naturel est l'extremite opposee du range, ou il y a egalement de la liquidite a collecter.</li>
+  </ol>
+
+  <div class="sec">Conditions de validite</div>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Condition</th>
+          <th>Requis ?</th>
+          <th>Detail</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Range clairement defini</td>
+          <td class="yes">OUI</td>
+          <td>Minimum 2 touches de chaque extremite</td>
+        </tr>
+        <tr>
+          <td>Sweep net de l'extremite</td>
+          <td class="yes">OUI</td>
+          <td>Le prix doit depasser clairement le niveau</td>
+        </tr>
+        <tr>
+          <td>Displacement apres le sweep</td>
+          <td class="yes">OUI</td>
+          <td>Mouvement impulsif en sens inverse</td>
+        </tr>
+        <tr>
+          <td>FVG cree</td>
+          <td class="yes">IDEAL</td>
+          <td>Le displacement doit creer un desequilibre visible</td>
+        </tr>
+        <tr>
+          <td>En killzone</td>
+          <td class="warn">PREFERABLE</td>
+          <td>Augmente la probabilite mais pas strictement requis en swing</td>
+        </tr>
+        <tr>
+          <td>SMT confirme</td>
+          <td class="warn">BONUS</td>
+          <td>Divergence inter-actifs au moment du sweep</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box box-bl">
+    <div class="box-title">Turtle Soup -- Pourquoi ca fonctionne</div>
+    <p>Les institutions ont besoin de liquidite pour remplir leurs ordres. Les stops accumules aux extremites des ranges sont cette liquidite. Le sweep declenche les stops (ventes forcees au low, achats forces au high), ce qui permet aux institutions de prendre la contrepartie. Une fois la liquidite absorbee, le prix n'a plus de raison de rester a cet extreme et se dirige vers la liquidite opposee.</p>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- MODULE 13 -- DECISION TREE                   -->
+<!-- ============================================ -->
+<section class="mod" id="m13">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 13</span>
+    <h2>Flowchart de Decision</h2>
+  </div>
+
+  <p>
+    Ce flowchart represente votre processus de decision complet, de la verification du calendrier jusqu'a l'execution. <strong>Chaque etape est un filtre</strong> -- si la reponse est negative, vous ne passez pas a l'etape suivante.
+  </p>
+
+  <div class="sec">Arbre de decision</div>
+
+  <div class="flowchart">
+    <div class="flow-node flow-decision">
+      <span class="flow-num">1</span>
+      <span>Calendrier economique OK ?</span>
+      <span class="flow-branch">NON = Pas de trade</span>
+    </div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node flow-decision">
+      <span class="flow-num">2</span>
+      <span>Biais HTF clairement determine ?</span>
+      <span class="flow-branch">NON = Pas de trade</span>
+    </div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node flow-decision">
+      <span class="flow-num">3</span>
+      <span>En killzone active ?</span>
+      <span class="flow-branch">NON = Attendre</span>
+    </div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node flow-decision">
+      <span class="flow-num">4</span>
+      <span>Manipulation (sweep) observee ?</span>
+      <span class="flow-branch">NON = Attendre</span>
+    </div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node flow-decision">
+      <span class="flow-num">5</span>
+      <span>CSD / MSS confirme ?</span>
+      <span class="flow-branch">NON = Attendre</span>
+    </div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node flow-decision">
+      <span class="flow-num">6</span>
+      <span>POI d'entree identifie (FVG/OB) ?</span>
+      <span class="flow-branch">NON = Attendre</span>
+    </div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node flow-action">
+      <span class="flow-num">7</span>
+      <span>SMT confirme (divergence inter-actifs) ?</span>
+      <span class="flow-pass">NON = Risque reduit</span>
+    </div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node flow-decision">
+      <span class="flow-num">8</span>
+      <span>R:R calcule >= 2:1 ?</span>
+      <span class="flow-branch">NON = Pas de trade</span>
+    </div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node flow-execute">
+      <span class="flow-num">9</span>
+      <span>EXECUTE -- Ordre limite sur le POI</span>
+    </div>
+  </div>
+
+  <div class="box box-em">
+    <div class="box-title">9 etapes, 9 filtres</div>
+    <p>Si vous suivez ce flowchart rigoureusement, la majorite des trades que vous prendrez seront des setups de haute probabilite. Les etapes 1-6 sont des filtres eliminatoires (NON = stop). L'etape 7 est un modificateur de taille (pas eliminatoire mais reduit le risque). L'etape 8 est le dernier verrou de securite.</p>
+  </div>
+
+  <div class="sec">Notes sur le flowchart</div>
+
+  <ul class="cl">
+    <li>Les etapes 1 et 2 se font la veille au soir (preparation)</li>
+    <li>Les etapes 3 a 6 se font en temps reel pendant la session</li>
+    <li>L'etape 7 (SMT) est un bonus -- elle ne bloque pas le trade mais modifie la taille</li>
+    <li>L'etape 8 est calculee mecaniquement -- pas de "a peu pres"</li>
+    <li>L'etape 9 est purement mecanique -- pas de reflexion supplementaire</li>
+  </ul>
+</section>
+
+
+<!-- ============================================ -->
+<!-- MODULE 14 -- VALIDATION CHAIN                -->
+<!-- ============================================ -->
+<section class="mod" id="m14">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 14</span>
+    <h2>Chaine de Validation</h2>
+  </div>
+
+  <p>
+    La chaine de validation est une representation <strong>sequentielle</strong> de tous les elements qui doivent etre alignes pour qu'un trade soit considere comme valide. Chaque maillon de la chaine doit etre intact.
+  </p>
+
+  <div class="sec">Les 7 maillons de la chaine</div>
+
+  <div class="plan-card">
+    <div class="plan-title">Maillon 1 -- Contexte macro</div>
+    <ul class="cl">
+      <li>Calendrier economique verifie</li>
+      <li>Pas de bank holiday</li>
+      <li>Pas de news haute importance dans les 30 minutes</li>
+      <li>Jour de la semaine favorable (pas vendredi PM)</li>
+    </ul>
+  </div>
+
+  <div class="plan-card">
+    <div class="plan-title">Maillon 2 -- Biais directionnel</div>
+    <ul class="cl">
+      <li>Au moins 2 methodes de biais convergent</li>
+      <li>Structure HTF claire (pas de consolidation ambigue)</li>
+      <li>DOL identifiee et atteignable</li>
+    </ul>
+  </div>
+
+  <div class="plan-card">
+    <div class="plan-title">Maillon 3 -- Zone de valeur</div>
+    <ul class="cl">
+      <li>Prix dans la bonne zone (premium pour short, discount pour long)</li>
+      <li>PD Array HTF identifie dans la zone</li>
+      <li>Pas de structure intermediaire qui bloquerait le mouvement</li>
+    </ul>
+  </div>
+
+  <div class="plan-card">
+    <div class="plan-title">Maillon 4 -- Timing</div>
+    <ul class="cl">
+      <li>En killzone (London ou New York)</li>
+      <li>Alignement avec les macros (90min, 20min)</li>
+      <li>Pas en fin de killzone</li>
+    </ul>
+  </div>
+
+  <div class="plan-card">
+    <div class="plan-title">Maillon 5 -- Declencheur</div>
+    <ul class="cl">
+      <li>Manipulation / sweep observe</li>
+      <li>CSD/MSS confirme</li>
+      <li>Displacement visible avec FVG</li>
+    </ul>
+  </div>
+
+  <div class="plan-card">
+    <div class="plan-title">Maillon 6 -- Entree</div>
+    <ul class="cl">
+      <li>POI precis identifie</li>
+      <li>SL defini et place</li>
+      <li>Taille de position calculee (0.5-1% de risque)</li>
+    </ul>
+  </div>
+
+  <div class="plan-card">
+    <div class="plan-title">Maillon 7 -- Confirmation (bonus)</div>
+    <ul class="cl">
+      <li>SMT sur actif correle</li>
+      <li>Alignement avec le cycle temporel</li>
+      <li>Volume/momentum en accord</li>
+    </ul>
+  </div>
+
+  <div class="box box-re">
+    <div class="box-title">Chaine brisee = Pas de trade</div>
+    <p>Si un seul des maillons 1 a 6 est manquant, le trade n'est pas pris. Le maillon 7 est un bonus qui renforce la conviction mais n'est pas eliminatoire. La force de votre trading depend du maillon le plus faible de votre chaine de validation.</p>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- MODULE 15 -- CHECKLIST AVANT SESSION          -->
+<!-- ============================================ -->
+<section class="mod" id="m15">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 15</span>
+    <h2>Checklist Avant Session</h2>
+  </div>
+
+  <p>
+    Cette checklist se complete <strong>la veille au soir</strong>, apres la cloture de la session New York. Elle vous prepare pour la journee suivante et vous permet de commencer avec un plan clair.
+  </p>
+
+  <div class="sec">Checklist pre-session (la veille)</div>
+
+  <ul class="checklist" data-group="pre-session">
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Calendrier economique de demain verifie</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>News haute importance identifiees et notees</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Bank holidays verifies (USA, UK, EU)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Biais HTF determine (4H / Daily)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Methode de biais notee (Structure / Inducement / Asia / True Open / Fix)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Niveaux cles marques (PDH/PDL, PWH/PWL, Equal H/L)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>DOL identifiee et marquee</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>PD Arrays HTF identifies (FVG, OB, Breaker)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Scenario A et scenario B definis</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Etat mental OK (pas fatigue, stresse, emotionnel)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Objectif de la journee defini (max 2 trades, risque max 2%)</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Pas de coche = Pas de trade demain</div>
+    <p>Si vous ne pouvez pas cocher tous les elements de cette liste, vous ne devriez pas trader le lendemain. Mieux vaut manquer une journee de trading que de perdre du capital par manque de preparation. Le marche sera toujours la demain.</p>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- MODULE 16 -- CHECKLIST AVANT TRADE            -->
+<!-- ============================================ -->
+<section class="mod" id="m16">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 16</span>
+    <h2>Checklist Avant Trade</h2>
+  </div>
+
+  <p>
+    Cette checklist se complete <strong>juste avant de placer un ordre</strong>. C'est votre derniere verification de securite. Prenez 30 secondes pour la parcourir avant chaque trade.
+  </p>
+
+  <div class="sec">Verification d'execution</div>
+
+  <ul class="checklist" data-group="pre-trade">
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Killzone active (London 07-10 UTC ou New York 12-15 UTC)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Pas de news haute importance dans les 30 prochaines minutes</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Manipulation completee (sweep observe)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>CSD / MSS confirme sur LTF</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>POI d'entree identifie (FVG / OB)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Entree dans la bonne zone (Premium pour short, Discount pour long)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>SMT verifie (divergence inter-actifs)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Stop Loss defini et place physiquement</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Taille de position calculee (0.5% - 1% de risque max)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>R:R calcule >= 2:1 (ideal 3:1+)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Targets definis (T1, T2, T3)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Plan de gestion defini (partiel a T1, trail apres)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Etat emotionnel neutre (pas de revenge, FOMO, euphorie)</li>
+  </ul>
+
+  <div class="box box-re">
+    <div class="box-title">Les 3 tueurs de compte</div>
+    <p><strong>Revenge trading :</strong> Prendre un trade pour "recuperer" une perte. <strong>FOMO :</strong> Entrer parce que "ca part sans moi". <strong>Overtrading :</strong> Multiplier les positions parce que "le marche est bon aujourd'hui". Si vous detectez un de ces etats, fermez les ecrans immediatement.</p>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- MODULE 17 -- CHECKLIST APRES TRADE            -->
+<!-- ============================================ -->
+<section class="mod" id="m17">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 17</span>
+    <h2>Checklist Apres Trade</h2>
+  </div>
+
+  <p>
+    Cette checklist se complete <strong>immediatement apres la cloture de chaque trade</strong>, qu'il soit gagnant ou perdant. Le resultat financier est secondaire -- ce qui compte, c'est le respect du processus.
+  </p>
+
+  <div class="sec">Review post-trade</div>
+
+  <ul class="checklist" data-group="post-trade">
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Screenshot pris (avant et apres le trade)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Journal rempli -- partie technique (setup, niveaux, R:R)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Journal rempli -- partie emotionnelle (etat mental pendant le trade)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Regles de la checklist pre-trade respectees ? (oui/non)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Gestion du trade conforme au plan ? (oui/non)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Si perte : cause identifiee (mauvaise analyse, mauvaise execution, ou conditions de marche)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Si gain : doit-on continuer a trader ou arreter la journee ?</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Lecon apprise notee (meme si tout etait parfait)</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Risque quotidien restant calcule</li>
+    <li onclick="this.classList.toggle('checked')"><span class="cb"></span>Etat emotionnel apres trade evalue (suis-je en etat de trader a nouveau ?)</li>
+  </ul>
+
+  <div class="sec">Evaluation du trade</div>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Resultat</th>
+          <th>Regles respectees ?</th>
+          <th>Evaluation</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="yes">Gagnant</td>
+          <td class="yes">OUI</td>
+          <td><strong>Trade parfait</strong></td>
+          <td>Continuer le processus, noter ce qui a fonctionne</td>
+        </tr>
+        <tr>
+          <td class="yes">Gagnant</td>
+          <td class="no">NON</td>
+          <td><strong>Chance, pas competence</strong></td>
+          <td>Danger -- corriger les deviations avant le prochain trade</td>
+        </tr>
+        <tr>
+          <td class="no">Perdant</td>
+          <td class="yes">OUI</td>
+          <td><strong>Perte acceptable</strong></td>
+          <td>Fait partie du trading -- continuer le processus</td>
+        </tr>
+        <tr>
+          <td class="no">Perdant</td>
+          <td class="no">NON</td>
+          <td><strong>Erreur de discipline</strong></td>
+          <td>Pause obligatoire, analyser pourquoi les regles ont ete violees</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box box-em">
+    <div class="box-title">Le paradoxe du trader</div>
+    <p>Un trade perdant dans les regles est meilleur qu'un trade gagnant hors regles. Le premier construit une habitude de discipline qui vous rendra rentable a long terme. Le second renforce de mauvaises habitudes qui finiront par detruire votre compte. Evaluez-vous sur le processus, jamais sur le resultat individuel.</p>
+  </div>
+
+  <div class="sec">Synthese finale -- Les 10 commandements</div>
+
+  <ol class="nl">
+    <li><strong>Tu prepareras ta journee la veille.</strong> Pas d'improvisation le matin.</li>
+    <li><strong>Tu verifieras le calendrier avant tout.</strong> Les news tuent les analyses.</li>
+    <li><strong>Tu determineras ton biais HTF avant de chercher des setups.</strong> Le HTF dicte, le LTF execute.</li>
+    <li><strong>Tu ne traderas que dans les killzones.</strong> Le reste n'est que bruit.</li>
+    <li><strong>Tu attendras la manipulation avant d'entrer.</strong> Le sweep est le signal.</li>
+    <li><strong>Tu exigeras un CSD/MSS avant d'executer.</strong> Pas de confirmation, pas de trade.</li>
+    <li><strong>Tu placeras toujours un stop loss physique.</strong> Pas de SL mental, jamais.</li>
+    <li><strong>Tu ne risqueras jamais plus de 1% par trade.</strong> La survie prime sur le profit.</li>
+    <li><strong>Tu tiendras un journal rigoureux.</strong> Ce qui ne se mesure pas ne s'ameliore pas.</li>
+    <li><strong>Tu suivras ton plan sans deviation.</strong> Le plan est la loi. Toujours.</li>
+  </ol>
+
+  <div class="box box-am">
+    <div class="box-title">Mot de la fin</div>
+    <p>Ce protocole est votre systeme d'exploitation pour le trading. Il ne garantit pas que chaque trade sera gagnant -- rien ne le peut. Mais il garantit que chaque trade sera pris avec methode, discipline et gestion du risque. Sur un echantillon de 100+ trades, c'est ce qui separe les 5% de traders rentables des 95% qui echouent. Soyez du bon cote de la statistique.</p>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- FOOTER                                       -->
+<!-- ============================================ -->
+<footer id="footer">
+  <p>Protocole Complet -- Algorithmic Academy -- 17 Sections -- Preparation -- Analyse -- Execution -- Journal -- Plans -- Flowcharts -- Checklists</p>
+  <p style="margin-top:8px;color:var(--border)">Le trading comporte des risques. Ce contenu est educatif uniquement.</p>
+</footer>
+
+</main>
+
+<!-- ============================================ -->
+<!-- SCRIPTS                                      -->
+<!-- ============================================ -->
+<script>
+// Progress bar
+const pf = document.getElementById('pfill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  if (h > 0) pf.style.width = (window.scrollY / h * 100) + '%';
+}, { passive: true });
+
+// Fade in modules on scroll
+const io = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('vis');
+  });
+}, { threshold: 0.05 });
+document.querySelectorAll('.mod').forEach(m => io.observe(m));
+
+// Active sidebar nav tracking
+const secs = [...document.querySelectorAll('[id]')];
+const links = document.querySelectorAll('.sb-link');
+function updateNav() {
+  const y = window.scrollY + 110;
+  let cur = secs[0]?.id;
+  for (const s of secs) {
+    if (s.offsetTop <= y) cur = s.id;
+  }
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+
+// Checklist persistence (localStorage)
+document.querySelectorAll('.checklist li').forEach((li, i) => {
+  const group = li.closest('.checklist').dataset.group;
+  const key = 'proto-check-' + group + '-' + i;
+  if (localStorage.getItem(key) === '1') li.classList.add('checked');
+  li.addEventListener('click', () => {
+    localStorage.setItem(key, li.classList.contains('checked') ? '1' : '0');
+  });
+});
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>

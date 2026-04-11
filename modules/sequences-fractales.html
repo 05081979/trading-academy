@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="premium">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Sequences & Fractales de Temps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0C0F0A;
+  --bg2:      #111510;
+  --bg3:      #181D14;
+  --border:   #1F2A1A;
+  --em:       #3D7A3A;
+  --em2:      #56A853;
+  --em-light: #A3D9A1;
+  --em-pale:  #E8F5E8;
+  --amber:    #D4882A;
+  --amber-l:  #F5C56A;
+  --red:      #C9453A;
+  --blue:     #4A90B8;
+  --muted:    #3A4535;
+  --text:     #DDE8D8;
+  --text-dim: #7D9478;
+  --serif:    'Playfair Display', serif;
+  --sans:     'Syne', sans-serif;
+  --body:     'Source Serif 4', serif;
+  --mono:     'Roboto Mono', monospace;
+  --sw: 270px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.75; display: flex; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── SIDEBAR ─────────────────────────── */
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 100;
+}
+
+.sb-logo {
+  padding: 28px 22px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sb-logo .mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--em), var(--em2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 0.7rem; font-weight: 700;
+  color: #fff; margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(61,122,58,.3);
+}
+
+.sb-logo h1 {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--em-light);
+  line-height: 1.25;
+}
+
+.sb-logo p {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.sb-section {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 16px 22px 5px;
+}
+
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 22px; text-decoration: none;
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 500;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.sb-link:hover { background: rgba(86,168,83,.06); color: var(--text); }
+.sb-link.active { background: rgba(86,168,83,.1); color: var(--em-light); border-left-color: var(--em2); }
+
+.sb-link .n {
+  font-family: var(--mono);
+  font-size: 0.62rem; font-weight: 500;
+  color: var(--muted); min-width: 22px;
+}
+.sb-link.active .n { color: var(--em2); }
+
+/* ── PROGRESS ────────────────────────── */
+#pbar {
+  position: fixed; top: 0; left: var(--sw); right: 0;
+  height: 2px; background: var(--border); z-index: 200;
+}
+#pfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--em), var(--em2), var(--amber));
+  width: 0%; transition: width 0.1s linear;
+}
+
+/* ── MAIN ────────────────────────────── */
+#main { margin-left: var(--sw); flex: 1; min-height: 100vh; }
+
+/* ── HERO ────────────────────────────── */
+#hero {
+  position: relative; overflow: hidden;
+  padding: 80px 64px 72px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-noise {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-lines {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 20px,
+    rgba(61,122,58,.04) 20px, rgba(61,122,58,.04) 21px
+  );
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(86,168,83,.12);
+  border: 1px solid rgba(86,168,83,.3);
+  color: var(--em-light);
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+
+#hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(2.6rem, 5vw, 4.5rem);
+  line-height: 1.05;
+  color: #fff;
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+#hero h1 .em {
+  display: block;
+  background: linear-gradient(90deg, var(--em2), var(--em-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+#hero .sub {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 400;
+  color: var(--text-dim); max-width: 600px; margin-bottom: 44px;
+  line-height: 1.8;
+}
+
+.hero-kpis {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 14px; max-width: 720px;
+}
+
+.kpi {
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+}
+.kpi:hover { border-color: rgba(86,168,83,.35); }
+
+.kpi-v {
+  font-family: var(--mono);
+  font-size: 1.3rem; font-weight: 500;
+  color: var(--em-light); line-height: 1;
+  margin-bottom: 5px;
+}
+.kpi-l {
+  font-family: var(--sans);
+  font-size: 0.66rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── MODULE ──────────────────────────── */
+.mod {
+  padding: 64px; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.mod.vis { opacity: 1; transform: none; }
+
+.mod-head {
+  display: flex; align-items: flex-start; gap: 18px;
+  margin-bottom: 40px;
+}
+
+.mod-tag {
+  font-family: var(--mono);
+  font-size: 0.65rem; font-weight: 500;
+  color: var(--em2);
+  background: rgba(86,168,83,.1);
+  border: 1px solid rgba(86,168,83,.22);
+  padding: 5px 12px; border-radius: 6px;
+  white-space: nowrap; margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+.mod-head h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: #fff; line-height: 1.1;
+}
+
+/* ── SECTION TITLES ─────────────────── */
+.sec {
+  font-family: var(--sans);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--em-light);
+  margin: 42px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+  display: flex; align-items: center; gap: 10px;
+}
+.sec::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 18px;
+  background: linear-gradient(var(--em), var(--em2));
+  border-radius: 2px; flex-shrink: 0;
+}
+
+.subsec {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 700;
+  color: var(--text); margin: 26px 0 10px;
+}
+
+p {
+  font-size: 0.95rem; color: var(--text-dim);
+  line-height: 1.85; margin-bottom: 12px;
+}
+p strong { color: var(--text); font-weight: 600; }
+em { color: var(--em-light); font-style: italic; }
+
+/* ── CALLOUTS ────────────────────────── */
+.box {
+  border-radius: 10px; padding: 20px 24px;
+  margin: 18px 0; border-left: 3px solid;
+  background: rgba(255,255,255,.022);
+}
+.box-em  { border-color: var(--em2);  background: rgba(86,168,83,.06); }
+.box-am  { border-color: var(--amber); background: rgba(212,136,42,.06); }
+.box-re  { border-color: var(--red);   background: rgba(201,69,58,.06); }
+.box-bl  { border-color: var(--blue);  background: rgba(74,144,184,.06); }
+
+.box-title {
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 7px;
+}
+.box-em .box-title  { color: var(--em-light); }
+.box-am .box-title  { color: var(--amber-l); }
+.box-re .box-title  { color: #FCA5A5; }
+.box-bl .box-title  { color: #93C5FD; }
+.box p { margin: 0; font-size: 0.88rem; }
+
+/* ── LISTS ───────────────────────────── */
+ul.cl { list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 8px; }
+ul.cl li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ul.cl li::before {
+  content: '>'; color: var(--em2); font-size: 1rem;
+  margin-top: 1px; flex-shrink: 0;
+}
+ul.cl li strong { color: var(--text); }
+
+ol.nl { counter-reset: nl; list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 9px; }
+ol.nl li {
+  counter-increment: nl;
+  display: flex; align-items: flex-start; gap: 13px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ol.nl li::before {
+  content: counter(nl);
+  background: rgba(86,168,83,.15);
+  border: 1px solid rgba(86,168,83,.28);
+  color: var(--em-light);
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+}
+
+/* ── TABLE ───────────────────────────── */
+.tbl {
+  width: 100%; border-collapse: collapse;
+  margin: 18px 0; font-size: 0.87rem;
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.tbl th {
+  background: rgba(86,168,83,.1);
+  color: var(--em-light);
+  font-family: var(--sans); font-weight: 700;
+  font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 11px 18px; text-align: left;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+}
+.tbl td {
+  padding: 10px 18px; color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top; line-height: 1.6;
+}
+.tbl td:first-child { color: var(--text); font-weight: 600; font-size: 0.83rem; white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(255,255,255,.015); }
+
+/* ── PLATES ──────────────────────────── */
+.plates {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin: 18px 0;
+}
+.plate {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 18px 18px;
+  transition: border-color 0.2s;
+}
+.plate:hover { border-color: rgba(86,168,83,.3); }
+.plate h4 {
+  font-family: var(--sans); font-size: 0.82rem; font-weight: 700;
+  color: var(--text); margin-bottom: 6px;
+  display: flex; align-items: center; gap: 7px;
+}
+.plate h4 .tag {
+  background: rgba(212,136,42,.15); color: var(--amber-l);
+  font-family: var(--mono); font-size: 0.64rem;
+  padding: 2px 8px; border-radius: 4px;
+}
+.plate p { font-size: 0.82rem; margin: 0; }
+
+/* ── CYCLE DIAGRAM ───────────────────── */
+.cycle {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 3px; margin: 18px 0; position: relative;
+}
+.cycle::before {
+  content: '';
+  position: absolute; top: 50%; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--em), var(--amber));
+  transform: translateY(-50%); z-index: 0;
+  pointer-events: none;
+}
+
+.cy {
+  padding: 18px 14px; border-radius: 10px;
+  text-align: center; border: 1px solid; z-index: 1;
+  transition: transform 0.2s;
+  position: relative;
+}
+.cy:hover { transform: translateY(-3px); }
+.cy .phase {
+  font-family: var(--sans); font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.cy .name { font-family: var(--serif); font-size: 1.15rem; margin-bottom: 4px; line-height: 1.1; }
+.cy .desc { font-size: 0.72rem; opacity: 0.75; line-height: 1.4; }
+.cy-b { background: rgba(86,168,83,.08); border-color: rgba(86,168,83,.3); color: var(--em-light); }
+.cy-i { background: rgba(201,69,58,.08); border-color: rgba(201,69,58,.3); color: #FCA5A5; }
+.cy-m { background: rgba(212,136,42,.08); border-color: rgba(212,136,42,.3); color: var(--amber-l); }
+
+/* ── TIMELINE ────────────────────────── */
+.timeline {
+  display: grid; grid-template-columns: auto 1fr;
+  gap: 8px 18px; margin: 18px 0; align-items: start;
+}
+.tl-time {
+  font-family: var(--mono); font-size: 0.78rem; font-weight: 500;
+  color: var(--em2); text-align: right; padding-top: 2px; white-space: nowrap;
+}
+.tl-item {
+  padding: 10px 16px;
+  border-left: 2px solid var(--border);
+  position: relative; padding-left: 20px;
+}
+.tl-item::before {
+  content: ''; position: absolute; left: -5px; top: 13px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--border);
+}
+.tl-item.hot::before { background: var(--em2); box-shadow: 0 0 6px var(--em2); }
+.tl-item.hot { border-color: rgba(86,168,83,.4); }
+.tl-title { font-family: var(--sans); font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.tl-desc { font-size: 0.8rem; color: var(--text-dim); }
+
+/* ── STATS ───────────────────────────── */
+.stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin: 20px 0;
+}
+.stat {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 18px 18px; text-align: center;
+}
+.stat .v {
+  font-family: var(--mono); font-size: 1.8rem; font-weight: 500;
+  line-height: 1; margin-bottom: 6px;
+}
+.stat .l {
+  font-family: var(--sans); font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-dim);
+}
+
+/* ── NODE GRID ───────────────────────── */
+.node-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 12px; margin: 18px 0;
+}
+.node-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 20px 22px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.2s;
+}
+.node-card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--em), transparent);
+}
+.node-card:hover { border-color: rgba(86,168,83,.3); }
+.node-card h4 {
+  font-family: var(--sans); font-size: 0.85rem; font-weight: 700;
+  color: var(--em-light); margin-bottom: 8px;
+}
+.node-card p { font-size: 0.82rem; margin: 0; }
+
+/* ── FOOTER ──────────────────────────── */
+#footer { padding: 48px 64px; text-align: center; border-top: 1px solid var(--border); }
+#footer p { font-family: var(--sans); color: var(--muted); font-size: 0.8rem; margin: 0; }
+
+/* ── ANIMATIONS ──────────────────────── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+.hero-tag, #hero h1, #hero .sub, .hero-kpis { animation: fadeUp 0.6s ease both; }
+.hero-tag { animation-delay: 0.1s; }
+#hero h1 { animation-delay: 0.22s; }
+#hero .sub { animation-delay: 0.34s; }
+.hero-kpis { animation-delay: 0.46s; }
+
+@media (max-width: 900px) {
+  :root { --sw: 0px; }
+  #sidebar { transform: translateX(-270px); }
+  #main { margin-left: 0; }
+  .mod, #hero { padding: 36px 22px; }
+  .hero-kpis, .stats, .plates, .node-grid { grid-template-columns: 1fr 1fr; }
+  .cycle { grid-template-columns: 1fr; }
+}
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+
+<div id="pbar"><div id="pfill"></div></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="mark">EN</div>
+    <h1>Sequences Fractales</h1>
+    <p>Algorithmic Academy</p>
+  </div>
+
+  <div class="sb-section">Fondations</div>
+  <a class="sb-link active" href="#hero"><span class="n">00</span>Vue d'ensemble</a>
+  <a class="sb-link" href="#m1"><span class="n">01</span>Introduction</a>
+  <a class="sb-link" href="#m1-fib"><span class="n">02</span>Fibonacci Fractals</a>
+  <a class="sb-link" href="#m1-def"><span class="n">03</span>Definition</a>
+
+  <div class="sb-section">Sequences</div>
+  <a class="sb-link" href="#m2"><span class="n">04</span>Sequence 2-1-2</a>
+  <a class="sb-link" href="#m2-535"><span class="n">05</span>Sequence 5-3-5</a>
+  <a class="sb-link" href="#m2-858"><span class="n">06</span>Sequence 8-5-8</a>
+  <a class="sb-link" href="#m2-frac"><span class="n">07</span>Fractalite</a>
+
+  <div class="sb-section">Nodes</div>
+  <a class="sb-link" href="#m3"><span class="n">08</span>Nodes de Prix</a>
+  <a class="sb-link" href="#m3-temps"><span class="n">09</span>Nodes de Temps</a>
+  <a class="sb-link" href="#m3-harm"><span class="n">10</span>Nodes Harmoniques</a>
+  <a class="sb-link" href="#m3-mat"><span class="n">11</span>Matrice</a>
+
+  <div class="sb-section">Protocole</div>
+  <a class="sb-link" href="#m4"><span class="n">12</span>Identification</a>
+  <a class="sb-link" href="#m4-entry"><span class="n">13</span>Entree</a>
+  <a class="sb-link" href="#m4-targets"><span class="n">14</span>Targets</a>
+  <a class="sb-link" href="#m4-rules"><span class="n">15</span>Regles</a>
+
+  <div class="sb-section">Architecture</div>
+  <a class="sb-link" href="#m5"><span class="n">16</span>Ghost in the Machine</a>
+  <a class="sb-link" href="#m5-cls"><span class="n">17</span>Algorithme CLS</a>
+  <a class="sb-link" href="#m5-bis"><span class="n">18</span>Algorithme BIS</a>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+<!-- HERO -->
+<header id="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-tag">Module Premium -- Algorithmic Academy</div>
+  <h1>Sequences Fractales<span class="em">Modele Fractal Fibonacci & Sequences Algorithmiques</span></h1>
+  <p class="sub">Fibonacci -- Sequences -- Nodes -- Temps & Prix -- Algorithmes HFT. Le modele complet pour decoder les mouvements fractals des marches et aligner temps et prix avec precision algorithmique.</p>
+  <div class="hero-kpis">
+    <div class="kpi">
+      <div class="kpi-v">3</div>
+      <div class="kpi-l">Sequences</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-v">23</div>
+      <div class="kpi-l">Niveaux Fibo</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-v">5+</div>
+      <div class="kpi-l">Types Nodes</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-v">0.618</div>
+      <div class="kpi-l">Ratio Cle</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-v">90m</div>
+      <div class="kpi-l">Cycle Base</div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- M1 : INTRODUCTION AU MODELE                           -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="mod" id="m1">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 01</span>
+    <h2>Introduction au Modele Sequences Fractales</h2>
+  </div>
+
+  <p>Le modele Sequences Fractales est un framework d'analyse des marches financiers base sur l'application des <strong>cercles fractals de Fibonacci</strong> en temps et en prix. Son objectif principal est de <em>tracker les algorithmes HFT</em> (High Frequency Trading) utilises par les acteurs institutionnels -- communement appeles Smart Money.</p>
+
+  <p>Contrairement aux approches conventionnelles ou les structures sont selectionnees de maniere aleatoire sur les graphiques, le modele possede des <strong>regles specifiques</strong> qui dictent quelles structures sont valides et comment elles doivent etre interpretees dans le contexte du marche.</p>
+
+  <div class="box box-em">
+    <div class="box-title">Principe Fondamental</div>
+    <p>Le ratio fondamental du modele est <strong>0.618 : 0.382</strong>. Toute la structure fractale decoule de cette proportion doree. Chaque mouvement de prix, chaque fenetre temporelle, chaque correction respecte cette harmonie mathematique.</p>
+  </div>
+
+  <h3 class="sec" id="m1-fib">Framework Expansion-Protraction-Continuation</h3>
+
+  <p>Le modele repose sur un cycle en trois phases qui se repete a travers tous les timeframes :</p>
+
+  <div class="cycle">
+    <div class="cy cy-b">
+      <div class="phase">Phase 1</div>
+      <div class="name">Expansion</div>
+      <div class="desc">Impulsion directionnelle initiale. Le prix se deplace avec conviction.</div>
+    </div>
+    <div class="cy cy-m">
+      <div class="phase">Phase 2</div>
+      <div class="name">Protraction</div>
+      <div class="desc">Correction/consolidation. Manipulation avant la continuation.</div>
+    </div>
+    <div class="cy cy-b">
+      <div class="phase">Phase 3</div>
+      <div class="name">Continuation</div>
+      <div class="desc">Reprise de la direction initiale. Livraison vers la cible.</div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="m1-def">Definition et Objectifs</h3>
+
+  <ul class="cl">
+    <li><strong>Decoder les algorithmes :</strong> identifier les empreintes des algorithmes HFT dans les mouvements de prix</li>
+    <li><strong>Aligner temps et prix :</strong> trouver les confluences ou le temps et le prix convergent pour une execution optimale</li>
+    <li><strong>Utiliser la fractalite :</strong> les memes sequences se repetent a tous les niveaux -- du M1 au Monthly</li>
+    <li><strong>Anticiper la livraison :</strong> projeter les cibles de prix basees sur les extensions Fibonacci et les pools de liquidite</li>
+    <li><strong>Filtrer le bruit :</strong> eliminer les setups non conformes aux regles du modele</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Attention</div>
+    <p>Le modele ne fonctionne pas dans toutes les conditions de marche. Les regles doivent etre respectees strictement. <strong>Aucune selection aleatoire de structures</strong> -- chaque pattern doit correspondre a une sequence definie avec des parametres precis.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- M2 : LES 3 SEQUENCES PRIMAIRES                        -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="mod" id="m2">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 02</span>
+    <h2>Les 3 Sequences Primaires</h2>
+  </div>
+
+  <p>Le modele definit trois sequences fondamentales, chacune portant le nom de ses proportions numeriques derivees de la suite de Fibonacci. Ces sequences dictent le comportement attendu du prix dans des fenetres temporelles specifiques.</p>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Sequence</th>
+        <th>Structure</th>
+        <th>Timeframe</th>
+        <th>Application</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2-1-2</td>
+        <td>Impulse 2 → Correction 1 → Reprise 2</td>
+        <td>M1 / M5</td>
+        <td>Micro fractals, reactions aux news</td>
+      </tr>
+      <tr>
+        <td>5-3-5</td>
+        <td>Impulse 5 → Correction 3 → Continuation 5</td>
+        <td>Intraday (10h50-11h10 NY)</td>
+        <td>Zig-zag correctif, retournement</td>
+      </tr>
+      <tr>
+        <td>8-5-8</td>
+        <td>Expansion 8 → Protraction 5 → Continuation 8</td>
+        <td>NY Open (9:30)</td>
+        <td>Framework principal d'execution</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="sec">Sequence 2-1-2 : Micro-Fractale</h3>
+
+  <p>La sequence la plus petite et la plus rapide. Elle se manifeste principalement sur les timeframes M1 et M5, souvent en reaction aux annonces economiques ou aux micro-ajustements algorithmiques.</p>
+
+  <ul class="cl">
+    <li><strong>Jambe 1 (Impulse 2) :</strong> mouvement rapide de 2 unites dans la direction du biais</li>
+    <li><strong>Jambe 2 (Correction 1) :</strong> retracement de 1 unite -- typiquement vers le 0.618 ou 0.5 de la jambe 1</li>
+    <li><strong>Jambe 3 (Reprise 2) :</strong> continuation de 2 unites au-dela du sommet/creux de la jambe 1</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Utilisation Pratique</div>
+    <p>La 2-1-2 est ideale pour confirmer une entree dans le contexte d'une sequence plus large (5-3-5 ou 8-5-8). Elle sert de <em>trigger d'execution</em> sur LTF apres identification du setup sur HTF.</p>
+  </div>
+
+  <h3 class="sec" id="m2-535">Sequence 5-3-5 : Zig-Zag Correctif</h3>
+
+  <p>La sequence intermediaire. Elle apparait typiquement dans les fenetres intraday, notamment entre <strong>10h50 et 11h10 heure de New York</strong>. C'est la sequence qui capture les mouvements correctifs avant une continuation.</p>
+
+  <ul class="cl">
+    <li><strong>Jambe 1 (Impulse 5) :</strong> expansion de 5 unites dans la direction primaire</li>
+    <li><strong>Jambe 2 (Correction 3) :</strong> retracement de 3 unites -- souvent un zig-zag en forme de W ou M</li>
+    <li><strong>Jambe 3 (Continuation 5) :</strong> reprise de 5 unites completant la livraison</li>
+  </ul>
+
+  <p>La 5-3-5 est particulierement fiable dans les contextes ou le marche est en phase de distribution apres l'accumulation de la session asiatique.</p>
+
+  <h3 class="sec" id="m2-858">Sequence 8-5-8 : Framework Principal</h3>
+
+  <p>La sequence majeure du modele. C'est le framework d'execution principal, centre sur le <strong>NY Open a 9:30</strong>. Elle represente le cycle complet d'une journee de trading algorithmique.</p>
+
+  <ul class="cl">
+    <li><strong>Phase 1 (Expansion 8) :</strong> l'ouverture de New York genere une expansion de 8 unites -- souvent un stop run suivi d'un mouvement directionnel</li>
+    <li><strong>Phase 2 (Protraction 5) :</strong> la correction mid-session de 5 unites -- manipulation, fausse cassure, piege de liquidite</li>
+    <li><strong>Phase 3 (Continuation 8) :</strong> la reprise PM qui livre le prix vers les cibles -- PDH, PDL, pools de liquidite</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Regle Critique</div>
+    <p>La 8-5-8 est la sequence <em>dominante</em>. Toutes les autres sequences (2-1-2, 5-3-5) doivent etre lues dans le contexte de la 8-5-8 du jour. Si la 8-5-8 dit haussier, une 5-3-5 baissiere est une correction, pas un retournement.</p>
+  </div>
+
+  <h3 class="sec" id="m2-frac">Fractalite des Sequences</h3>
+
+  <p>Le principe fondamental du modele : <strong>les sequences sont fractales</strong>. Une sequence 2-1-2 peut s'imbriquer dans une jambe d'une 5-3-5, qui elle-meme fait partie d'une jambe d'une 8-5-8.</p>
+
+  <div class="plates">
+    <div class="plate">
+      <h4>Niveau Macro <span class="tag">8-5-8</span></h4>
+      <p>Visible sur H1/H4. Definit la direction et les cibles de la journee. Englobe toutes les sequences inferieures.</p>
+    </div>
+    <div class="plate">
+      <h4>Niveau Meso <span class="tag">5-3-5</span></h4>
+      <p>Visible sur M15/M30. Represente les swings intraday. Chaque jambe de la 8-5-8 contient une ou plusieurs 5-3-5.</p>
+    </div>
+    <div class="plate">
+      <h4>Niveau Micro <span class="tag">2-1-2</span></h4>
+      <p>Visible sur M1/M5. Trigger d'execution. Chaque jambe de la 5-3-5 contient des 2-1-2 qui confirment le mouvement.</p>
+    </div>
+  </div>
+
+  <div class="box box-am">
+    <div class="box-title">Emboitement Fractal</div>
+    <p>Lire les sequences de maniere isolee est une erreur. Le pouvoir du modele reside dans la lecture <em>fractale</em> : identifier la sequence macro, puis descendre dans les sous-sequences pour trouver le point d'entree optimal avec la confirmation LTF.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- M3 : NIVEAUX FIBONACCI Sequences Fractales                         -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="mod" id="m2b">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 03</span>
+    <h2>Niveaux Fibonacci Sequences Fractales</h2>
+  </div>
+
+  <p>Le modele utilise deux ensembles de niveaux Fibonacci : les <strong>niveaux standards</strong> connus de tous, et les <strong>niveaux specifiques Sequences Fractales</strong> qui ajoutent une granularite supplementaire pour identifier les zones de manipulation, de support et de retournement.</p>
+
+  <h3 class="sec">Niveaux Standards</h3>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Niveau</th>
+        <th>Signification</th>
+        <th>Zone</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>0.236</td><td>Premier retracement superficiel</td><td>Premium faible</td></tr>
+      <tr><td>0.382</td><td>Retracement moderement profond</td><td>Premium</td></tr>
+      <tr><td>0.500</td><td>Equilibrium -- point d'equilibre</td><td>Neutre</td></tr>
+      <tr><td>0.618</td><td>Golden ratio -- retracement optimal</td><td>Discount</td></tr>
+      <tr><td>0.786</td><td>Retracement profond</td><td>Discount profond</td></tr>
+      <tr><td>1.000</td><td>Retracement complet</td><td>Origin</td></tr>
+      <tr><td>1.272</td><td>Extension de niveau 1</td><td>Target 1</td></tr>
+      <tr><td>1.414</td><td>Extension racine de 2</td><td>Target intermediaire</td></tr>
+      <tr><td>1.618</td><td>Extension doree</td><td>Target 2</td></tr>
+      <tr><td>2.000</td><td>Double extension</td><td>Target 3</td></tr>
+      <tr><td>2.618</td><td>Extension majeure</td><td>Target 4</td></tr>
+      <tr><td>4.236</td><td>Extension extreme</td><td>Target max</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sec">Niveaux Specifiques Sequences Fractales</h3>
+
+  <p>Ces niveaux proprietaires ajoutent une precision supplementaire entre les niveaux standards. Ils correspondent aux zones ou les algorithmes executent des operations specifiques.</p>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Niveau</th>
+        <th>Signification</th>
+        <th>Role Algorithmique</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>0.29</td><td>Support premium leger</td><td>Zone de re-accumulation rapide</td></tr>
+      <tr><td>0.35</td><td>Support premium</td><td>Premiere zone de defense institutionnelle</td></tr>
+      <tr><td>0.41</td><td>Transition premium/neutre</td><td>Zone de manipulation pre-equilibrium</td></tr>
+      <tr><td>0.47</td><td>Pre-equilibrium</td><td>Zone d'absorption des ordres retail</td></tr>
+      <tr><td>0.53</td><td>Post-equilibrium</td><td>Zone de confirmation directionnelle</td></tr>
+      <tr><td>0.59</td><td>Pre-golden ratio</td><td>Zone d'accumulation avant le 0.618</td></tr>
+      <tr><td>0.65</td><td>Post-golden ratio</td><td>Confirmation du discount, entree optimale</td></tr>
+      <tr><td>0.71</td><td>Discount confirme</td><td>Zone d'execution institutionnelle</td></tr>
+      <tr><td>0.83</td><td>Discount profond</td><td>Stop run zone, derniere zone de defense</td></tr>
+      <tr><td>0.89</td><td>Retracement quasi-complet</td><td>Zone de piegeage maximal</td></tr>
+      <tr><td>0.97</td><td>Near-origin</td><td>Invalidation imminente, reversal potentiel</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box box-em">
+    <div class="box-title">Zones Cles</div>
+    <p>Les niveaux 0.59 et 0.65 forment le <strong>sweet spot Sequences Fractales</strong> -- la zone ou la majorite des entrees optimales se situent. C'est entre le pre-golden ratio et le post-golden ratio que les algorithmes chargent les positions avant la continuation.</p>
+  </div>
+
+  <div class="box box-re">
+    <div class="box-title">Zone de Danger</div>
+    <p>Les niveaux au-dela de 0.83 sont des <strong>zones de danger</strong>. Un retracement qui atteint 0.89 ou 0.97 signale un affaiblissement de la structure et une invalidation probable de la sequence en cours. A ces niveaux, la probabilite de continuation chute drastiquement.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- M4 : LES NODES                                        -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="mod" id="m3">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 04</span>
+    <h2>Les Nodes -- Ou Prix et Temps se Rencontrent</h2>
+  </div>
+
+  <p>Les <strong>nodes</strong> sont les points d'intersection ou le prix et le temps convergent pour creer des opportunities de trading a haute probabilite. Le modele distingue trois types de nodes : les nodes de prix, les nodes temporels et les nodes harmoniques.</p>
+
+  <div class="box box-em">
+    <div class="box-title">Principe Cle</div>
+    <p><strong>Le node de prix definit OU.</strong> Le node temporel definit <strong>QUAND.</strong> La confluence des deux definit le <em>point d'execution optimal</em>.</p>
+  </div>
+
+  <h3 class="sec">Nodes de Prix</h3>
+
+  <p>Les nodes de prix sont les niveaux horizontaux ou le prix a une forte probabilite de reagir. Ils representent des zones de liquidite, d'equilibre ou de reference structurelle.</p>
+
+  <div class="node-grid">
+    <div class="node-card">
+      <h4>PDH / PDL</h4>
+      <p>Previous Day High / Low. Les cibles primaires de la journee. Le prix est magnetiquement attire vers ces niveaux pour capturer la liquidite laissee par les traders de la veille.</p>
+    </div>
+    <div class="node-card">
+      <h4>Weekly H/L</h4>
+      <p>Previous Week High / Low. Cibles HTF de la semaine. Definissent le biais directionnel pour les 5 jours a venir.</p>
+    </div>
+    <div class="node-card">
+      <h4>Session H/L</h4>
+      <p>Highs et Lows des sessions Asian, London, NY. Chaque session cree ses propres niveaux de reference.</p>
+    </div>
+    <div class="node-card">
+      <h4>Equilibrium 50%</h4>
+      <p>Le point d'equilibre exact entre le high et le low d'une range. Zone de decision ou le marche choisit sa direction.</p>
+    </div>
+    <div class="node-card">
+      <h4>Premium Zone</h4>
+      <p>Au-dessus de l'equilibrium. Zone ou les vendeurs sont avantages. Les ordres de vente institutionnels se concentrent ici.</p>
+    </div>
+    <div class="node-card">
+      <h4>Discount Zone</h4>
+      <p>En-dessous de l'equilibrium. Zone ou les acheteurs sont avantages. Accumulation institutionnelle dans cette region.</p>
+    </div>
+  </div>
+
+  <h3 class="sec" id="m3-temps">Nodes Temporels</h3>
+
+  <p>Les nodes temporels definissent les fenetres pendant lesquelles les algorithmes sont actifs et ou les mouvements directionnels ont la plus haute probabilite de se produire.</p>
+
+  <div class="timeline">
+    <div class="tl-time">00:00 - 03:00</div>
+    <div class="tl-item">
+      <div class="tl-title">Asian Range</div>
+      <div class="tl-desc">Formation de la range de reference. Accumulation silencieuse. Les extremes de cette session deviennent des cibles pour London.</div>
+    </div>
+
+    <div class="tl-time">02:00 - 05:00</div>
+    <div class="tl-item hot">
+      <div class="tl-title">London Killzone</div>
+      <div class="tl-desc">Fenetre d'execution primaire pour les paires EUR/GBP. Stop run de l'Asian range suivi d'un mouvement directionnel. Premiere opportunite haute probabilite.</div>
+    </div>
+
+    <div class="tl-time">09:30 - 10:00</div>
+    <div class="tl-item hot">
+      <div class="tl-title">NY Judas Swing</div>
+      <div class="tl-desc">Ouverture de New York. Mouvement de manipulation initial (Judas) suivi du vrai mouvement directionnel. Point de depart de la sequence 8-5-8.</div>
+    </div>
+
+    <div class="tl-time">10:00 - 12:00</div>
+    <div class="tl-item hot">
+      <div class="tl-title">NY AM Session</div>
+      <div class="tl-desc">Session du matin. Expansion principale. C'est ici que la majorite des mouvements directionnels se produisent.</div>
+    </div>
+
+    <div class="tl-time">13:30 - 16:00</div>
+    <div class="tl-item">
+      <div class="tl-title">NY PM Session</div>
+      <div class="tl-desc">Session de l'apres-midi. Continuation ou reversal. Livraison vers les cibles finales de la journee.</div>
+    </div>
+
+    <div class="tl-time">16:00 - 17:00</div>
+    <div class="tl-item">
+      <div class="tl-title">EOD (End of Day)</div>
+      <div class="tl-desc">Cloture des positions. Le prix se stabilise. Pas de nouvelles executions recommandees.</div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="m3-harm">Niveaux Harmoniques</h3>
+
+  <p>Les niveaux harmoniques sont des proportions specifiques derivees de la geometrie des cercles Fibonacci. Ils servent de <em>marqueurs de precision</em> pour affiner les zones de reaction.</p>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Niveau Harmonique</th>
+        <th>Signification</th>
+        <th>Application</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>27.7%</td><td>Premier tiers fractal</td><td>Zone de premiere reaction, confirmation de direction</td></tr>
+      <tr><td>33.3%</td><td>Un tiers exact</td><td>Division symetrique, zone de decision</td></tr>
+      <tr><td>38.2%</td><td>Fibonacci standard</td><td>Retracement premium, zone de defense</td></tr>
+      <tr><td>50.0%</td><td>Equilibrium</td><td>Point de decision, separation premium/discount</td></tr>
+      <tr><td>61.29%</td><td>Golden ratio harmonique</td><td>Zone d'entree optimale, OTE</td></tr>
+      <tr><td>66.6%</td><td>Deux tiers exact</td><td>Zone de discount confirme, entree agressive</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sec" id="m3-mat">Matrice des Nodes</h3>
+
+  <p>L'importance d'un node est determinee par sa <strong>valeur Fibonacci</strong>. Plus le nombre est eleve dans la suite, plus le node est significatif.</p>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Node</th>
+        <th>Valeur</th>
+        <th>Signification</th>
+        <th>Fiabilite</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Node 1</td><td>Fibonacci 1</td><td>Micro-node, reaction mineure</td><td>Faible -- confirmation necessaire</td></tr>
+      <tr><td>Node 2</td><td>Fibonacci 2</td><td>Node secondaire, swing mineur</td><td>Moderee -- acceptable avec confluence</td></tr>
+      <tr><td>Node 3</td><td>Fibonacci 3</td><td>Node tertiaire, point de decision</td><td>Bonne -- setup valide</td></tr>
+      <tr><td>Node 5</td><td>Fibonacci 5</td><td>Node majeur, swing significatif</td><td>Haute -- setup prioritaire</td></tr>
+      <tr><td>Node 8</td><td>Fibonacci 8</td><td>Node primaire, point de retournement</td><td>Tres haute -- execution recommandee</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box box-bl">
+    <div class="box-title">Confluence de Nodes</div>
+    <p>La puissance d'un setup est directement proportionnelle au nombre de nodes qui convergent au meme point. Un <strong>Node 5 de prix</strong> aligne avec un <strong>Node 5 temporel</strong> dans une <strong>killzone</strong> active est un setup de tres haute probabilite.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- M5 : PROTOCOLE DE TRADING                             -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="mod" id="m4">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 05</span>
+    <h2>Protocole de Trading Sequences Fractales</h2>
+  </div>
+
+  <p>Le protocole de trading suit une sequence stricte en 5 etapes. Chaque etape doit etre validee avant de passer a la suivante. <strong>Aucun raccourci n'est acceptable.</strong></p>
+
+  <h3 class="sec" id="m4-id">Procedure d'Identification et d'Execution</h3>
+
+  <ol class="nl">
+    <li><strong>Identifier le timing (killzone active) :</strong> verifier que le marche se trouve dans une fenetre temporelle favorable -- London Killzone (02:00-05:00 NY), NY Open (09:30-10:00), ou AM Session (10:00-12:00). En dehors de ces fenetres, aucune execution.</li>
+    <li><strong>Lire la premiere jambe (Expansion) :</strong> observer le mouvement initial d'expansion. Identifier sa direction, son amplitude, et sa relation avec les nodes de prix. Cette jambe doit etre impulsive, pas corrective.</li>
+    <li><strong>Attendre la correction (Manipulation/Protraction) :</strong> patienter pour le retracement. Le prix doit corriger vers la zone 0.59-0.71 (sweet spot Sequences Fractales) de la jambe d'expansion. Confirmer avec les niveaux harmoniques.</li>
+    <li><strong>Entrer sur la reprise (Continuation) :</strong> executer l'entree lorsque le prix montre des signes de reprise apres la correction. Utiliser une 2-1-2 sur LTF comme trigger de confirmation. Placer le stop sous/au-dessus du dernier swing.</li>
+    <li><strong>Cibler la livraison :</strong> les cibles sont les extensions Fibonacci (1.272, 1.618, 2.0), les PDH/PDL, les Session H/L et les pools de liquidite identifies. Gerer les partiels aux niveaux intermediaires.</li>
+  </ol>
+
+  <h3 class="sec" id="m4-entry">Criteres d'Entree</h3>
+
+  <div class="plates">
+    <div class="plate">
+      <h4>Biais Directionnel</h4>
+      <p>Le biais doit etre defini avant l'ouverture de la session. Utiliser la structure HTF (H4/Daily) et la position par rapport aux PDH/PDL pour determiner la direction.</p>
+    </div>
+    <div class="plate">
+      <h4>Sequence Active</h4>
+      <p>Identifier quelle sequence est en cours (8-5-8, 5-3-5, ou 2-1-2) et dans quelle phase elle se trouve. L'entree se fait toujours au debut de la Phase 3 (Continuation).</p>
+    </div>
+    <div class="plate">
+      <h4>Confirmation LTF</h4>
+      <p>Descendre sur M1/M5 pour trouver une 2-1-2 de confirmation dans la zone de correction. Cette micro-sequence valide l'entree et optimise le placement du stop.</p>
+    </div>
+  </div>
+
+  <h3 class="sec" id="m4-targets">Gestion des Targets</h3>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Niveau</th>
+        <th>Target</th>
+        <th>Action</th>
+        <th>Gestion</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>T1</td><td>Extension 1.272</td><td>Partiel 1 (30-40%)</td><td>Deplacer le stop au breakeven</td></tr>
+      <tr><td>T2</td><td>PDH / PDL</td><td>Partiel 2 (30%)</td><td>Trailer le stop sous le dernier swing</td></tr>
+      <tr><td>T3</td><td>Extension 1.618</td><td>Partiel 3 (20%)</td><td>Serrer le trailing stop</td></tr>
+      <tr><td>T4</td><td>Extension 2.0 / Liq Pool</td><td>Sortie finale</td><td>Fermer la totalite de la position</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sec" id="m4-rules">Regles Strictes du Modele</h3>
+
+  <div class="box box-re">
+    <div class="box-title">Regle #1 -- Timing Obligatoire</div>
+    <p>Aucune execution en dehors des killzones definies. Les mouvements hors killzone sont du bruit et ne font pas partie du modele. Asian session = observation uniquement.</p>
+  </div>
+
+  <div class="box box-re">
+    <div class="box-title">Regle #2 -- Pas de Selection Aleatoire</div>
+    <p>Chaque structure doit correspondre exactement a une sequence definie (2-1-2, 5-3-5, ou 8-5-8). Si le mouvement ne correspond pas a une sequence, il est invalide. Pas de trades "ca ressemble a...".</p>
+  </div>
+
+  <div class="box box-re">
+    <div class="box-title">Regle #3 -- Fractalite Obligatoire</div>
+    <p>L'entree LTF doit etre coherente avec la direction de la sequence HTF. Une 2-1-2 haussiere dans une 8-5-8 baissiere est un <em>piege</em>, pas un signal.</p>
+  </div>
+
+  <div class="box box-am">
+    <div class="box-title">Regle #4 -- Invalidation</div>
+    <p>Si le retracement depasse le niveau <strong>0.83</strong>, la sequence est consideree comme affaiblie. Au-dela de <strong>0.97</strong>, la sequence est <em>invalidee</em>. Ne jamais moyenner a la baisse dans une sequence invalidee.</p>
+  </div>
+
+  <div class="box box-am">
+    <div class="box-title">Regle #5 -- Un Trade par Killzone</div>
+    <p>Maximum un trade par killzone. Si le premier setup echoue, ne pas chercher un second dans la meme fenetre. Attendre la prochaine killzone ou la prochaine session.</p>
+  </div>
+
+  <div class="box box-em">
+    <div class="box-title">Regle #6 -- Risk Management</div>
+    <p>Risque maximum de <strong>1% du capital</strong> par trade. Pas d'exception. Le ratio risque/recompense minimum est de <strong>1:3</strong>. Si le setup n'offre pas ce ratio, il est invalide meme si la structure est presente.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- M6 : ARCHITECTURE CACHEE                              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="mod" id="m5">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 06</span>
+    <h2>Architecture Cachee -- Ghost in the Machine</h2>
+  </div>
+
+  <p>Derriere les mouvements apparemment chaotiques du marche se cache une <strong>architecture algorithmique precise</strong>. Le modele revele cette architecture a travers le concept du "Ghost in the Machine" -- la structure invisible qui gouverne l'execution des algorithmes HFT.</p>
+
+  <h3 class="sec">Structure Circulaire Fibonacci</h3>
+
+  <p>La structure fondamentale du modele est le <strong>cercle Fibonacci</strong> -- une representation geometrique ou chaque arc du cercle correspond a un ratio de la suite de Fibonacci. Les prix et le temps evoluent le long de ces arcs.</p>
+
+  <ul class="cl">
+    <li><strong>Cercles concentriques :</strong> chaque timeframe est represente par un cercle. Les cercles plus grands (HTF) contiennent les plus petits (LTF)</li>
+    <li><strong>Intersections :</strong> les points ou les cercles se croisent sont les <em>nodes</em> -- les moments precis ou l'execution algorithmique se produit</li>
+    <li><strong>Arcs directionnels :</strong> la direction du mouvement suit l'arc du cercle actif. La courbure indique l'acceleration ou la deceleration</li>
+    <li><strong>Support/resistance circulaire :</strong> les cercles agissent comme des niveaux de support et de resistance dynamiques, contrairement aux niveaux horizontaux statiques</li>
+  </ul>
+
+  <h3 class="sec">Mapping Temporel par Sequence</h3>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Timeframe</th>
+        <th>Sequence Associee</th>
+        <th>Cycle (minutes)</th>
+        <th>Cercle</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>M1</td><td>2-1-2 micro</td><td>5-8 minutes</td><td>Cercle interieur</td></tr>
+      <tr><td>M5</td><td>2-1-2 standard</td><td>15-25 minutes</td><td>Cercle secondaire</td></tr>
+      <tr><td>M15</td><td>5-3-5 micro</td><td>45-65 minutes</td><td>Cercle intermediaire</td></tr>
+      <tr><td>M30</td><td>5-3-5 standard</td><td>90 minutes</td><td>Cercle de reference</td></tr>
+      <tr><td>H1</td><td>8-5-8 micro</td><td>180 minutes</td><td>Cercle majeur</td></tr>
+      <tr><td>H4</td><td>8-5-8 standard</td><td>720 minutes (12h)</td><td>Cercle primaire</td></tr>
+      <tr><td>Daily</td><td>8-5-8 macro</td><td>1440 minutes (24h)</td><td>Cercle englobant</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box box-bl">
+    <div class="box-title">Le Cycle de 90 Minutes</div>
+    <p>Le cycle de <strong>90 minutes</strong> est la unite de base du modele. Il correspond au cercle de reference (M30) et a la sequence 5-3-5 standard. La journee de trading se decompose en une serie de cycles de 90 minutes, chacun contenant une sequence complete d'expansion-protraction-continuation.</p>
+  </div>
+
+  <h3 class="sec">Zones Premium et Discount Circulaires</h3>
+
+  <p>Dans le modele circulaire, les zones premium et discount ne sont pas simplement "au-dessus" ou "en-dessous" de l'equilibrium. Elles suivent la <strong>courbure du cercle</strong> :</p>
+
+  <ul class="cl">
+    <li><strong>Arc superieur :</strong> zone premium -- le prix est au-dessus de l'equilibrium circulaire. Vente institutionnelle</li>
+    <li><strong>Arc inferieur :</strong> zone discount -- le prix est en-dessous. Achat institutionnel</li>
+    <li><strong>Points de tangence :</strong> les extremes du cercle ou le prix atteint le maximum de deviation avant le retour</li>
+    <li><strong>Centre du cercle :</strong> l'equilibrium parfait -- le prix revient toujours vers ce point</li>
+  </ul>
+
+  <h3 class="sec">Nature Fractale et Doublement Fibonacci</h3>
+
+  <p>Chaque cercle respecte le <strong>doublement Fibonacci</strong> en se decomposant. Un cycle de 90 minutes se divise en sous-cycles de 55, 34, 21, 13, 8, 5, 3, 2 et 1 minute -- chacun gouverne par sa propre micro-sequence.</p>
+
+  <p>Les marqueurs temporels pour l'execution macro sont les <em>intersections des cercles</em>. Quand le cercle de 90 minutes et le cercle de 21 minutes se croisent simultanement a un node de prix, c'est un <strong>moment d'execution algorithmique</strong>.</p>
+
+  <div class="box box-em">
+    <div class="box-title">Implication Pratique</div>
+    <p>Ne pas chercher a voir les cercles visuellement sur le graphique. L'architecture cachee se manifeste par les <em>reactions du prix aux nodes temporels et de prix</em>. La structure circulaire est le "pourquoi" -- les sequences et les nodes sont le "comment" operationnel.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- M7 : ALGORITHME CLS                                   -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="mod" id="m5-cls">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 07</span>
+    <h2>L'Algorithme CLS -- Continuous Linked Settlement</h2>
+  </div>
+
+  <p>Le systeme CLS (Continuous Linked Settlement) est le mecanisme de reglement utilise par les grandes banques pour leurs transactions FX. Comprendre son fonctionnement est essentiel car il <strong>drive directement l'execution algorithmique</strong> que le modele cherche a tracker.</p>
+
+  <h3 class="sec">Fenetres de Reglement par Session</h3>
+
+  <p>Le CLS fonctionne sur des fenetres de reglement specifiques pour chaque zone geographique. Ces fenetres correspondent directement aux killzones du modele.</p>
+
+  <div class="timeline">
+    <div class="tl-time">01:00 - 03:00 NY</div>
+    <div class="tl-item hot">
+      <div class="tl-title">Session Asian CLS</div>
+      <div class="tl-desc">Reglement des devises asiatiques (JPY, AUD, NZD). Les banques asiatiques ont des obligations de reglement qui creent les premiers mouvements directionnels. Formation de la range asiatique.</div>
+    </div>
+
+    <div class="tl-time">04:00 - 06:00 NY</div>
+    <div class="tl-item hot">
+      <div class="tl-title">Session Europeenne CLS</div>
+      <div class="tl-desc">Reglement des devises europeennes (EUR, GBP, CHF). Volume maximal. Les obligations de reglement europeennes coincident avec le London Open, creant les mouvements les plus importants de la journee.</div>
+    </div>
+
+    <div class="tl-time">07:00 - 09:00 NY</div>
+    <div class="tl-item hot">
+      <div class="tl-title">Session US CLS</div>
+      <div class="tl-desc">Reglement USD. Chevauchement avec les obligations europeennes. C'est la fenetre de liquidite maximale ou les positions institutionnelles majeures sont executees.</div>
+    </div>
+  </div>
+
+  <h3 class="sec">Sessions AM et PM de 12 Heures</h3>
+
+  <p>Le cycle CLS se decoupe en deux macro-sessions de 12 heures chacune :</p>
+
+  <div class="node-grid">
+    <div class="node-card">
+      <h4>Session AM (00:00 - 12:00 NY)</h4>
+      <p>Session d'expansion. C'est ici que les obligations de reglement creent les mouvements directionnels. Les banques <strong>doivent</strong> executer -- ce n'est pas optionnel. Cette contrainte genere les impulsions que le modele capture.</p>
+    </div>
+    <div class="node-card">
+      <h4>Session PM (12:00 - 00:00 NY)</h4>
+      <p>Session de continuation/reversal. Les obligations de reglement sont largement completes. Les mouvements PM sont souvent des continuations de la direction AM ou des corrections vers l'equilibrium.</p>
+    </div>
+  </div>
+
+  <h3 class="sec">Obligations de Reglement et Liquidite</h3>
+
+  <p>L'insight fondamental du CLS dans le contexte du modele :</p>
+
+  <ul class="cl">
+    <li><strong>Les banques ont des obligations :</strong> elles doivent regler des transactions FX specifiques chaque jour. Ce n'est pas du trading speculatif -- ce sont des obligations contractuelles</li>
+    <li><strong>La liquidite est necessaire :</strong> pour executer ces reglements, les banques ont besoin de liquidite. Les stop runs (raids de liquidite) servent a generer cette liquidite</li>
+    <li><strong>Les algorithmes executent :</strong> les algorithmes HFT sont programmes pour trouver et capturer la liquidite necessaire aux reglements dans les fenetres temporelles definies</li>
+    <li><strong>Open Interest comme indicateur :</strong> le volume d'Open Interest dans les contrats futures donne un indice de l'ampleur des obligations de reglement a venir</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Stop Runs et Reglement</div>
+    <p>Les stop runs ne sont pas "les market makers qui chassent vos stops". Ce sont des operations de <em>capture de liquidite</em> necessaires pour satisfaire les obligations de reglement CLS. Comprendre cette mecanique change fondamentalement la lecture des mouvements de prix.</p>
+  </div>
+
+  <h3 class="sec">Lien CLS et Sequences Sequences Fractales</h3>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Phase CLS</th>
+        <th>Sequence Correspondante</th>
+        <th>Action du Marche</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Pre-reglement</td><td>Expansion (Phase 1)</td><td>Raid de liquidite, stop run pour accumuler les ordres necessaires</td></tr>
+      <tr><td>Reglement actif</td><td>Protraction (Phase 2)</td><td>Execution des ordres de reglement, absorption de la liquidite</td></tr>
+      <tr><td>Post-reglement</td><td>Continuation (Phase 3)</td><td>Livraison du prix vers les cibles, mouvement directionnel libre</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- M8 : ALGORITHME BIS                                   -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="mod" id="m5-bis">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 08</span>
+    <h2>L'Algorithme BIS -- Buy/Sell Integration System</h2>
+  </div>
+
+  <p>Le systeme BIS represente le mecanisme d'integration des ordres d'achat et de vente dans le cadre du reglement interbancaire. Il fonctionne en tandem avec le CLS pour executer les operations de settlement a grande echelle.</p>
+
+  <h3 class="sec">Mecanisme d'Integration</h3>
+
+  <ul class="cl">
+    <li><strong>Netting des ordres :</strong> le systeme BIS aggrege les ordres d'achat et de vente entre les contreparties pour minimiser le volume brut de transactions a regler</li>
+    <li><strong>Equilibrage dynamique :</strong> l'algorithme ajuste en temps reel l'equilibre entre offre et demande pour maintenir la stabilite du prix pendant le reglement</li>
+    <li><strong>Fenetres d'execution :</strong> les fenetres BIS coincident avec les fenetres CLS mais sont decalees de quelques minutes pour permettre le processing des ordres</li>
+    <li><strong>Impact sur la volatilite :</strong> les periodes de netting intense generent des micro-consolidations visibles sur M1/M5 -- les "pauses" avant les mouvements impulsifs</li>
+  </ul>
+
+  <h3 class="sec">BIS et Sequences Sequences Fractales</h3>
+
+  <p>Le processus BIS se manifeste de maniere specifique dans chaque phase des sequences :</p>
+
+  <div class="plates">
+    <div class="plate">
+      <h4>Phase Expansion</h4>
+      <p>Le BIS genere un desequilibre directionnel en liberant les ordres nets d'un cote. Le prix se deplace rapidement car la majorite du netting est d'un seul cote.</p>
+    </div>
+    <div class="plate">
+      <h4>Phase Protraction</h4>
+      <p>Le BIS equilibre les ordres restants. La correction correspond au processus de netting des ordres dans la direction opposee. Volume reduit, mouvement plus lent.</p>
+    </div>
+    <div class="plate">
+      <h4>Phase Continuation</h4>
+      <p>Un nouveau lot d'ordres nets est libere dans la direction initiale. Le BIS a termine l'equilibrage et le prix reprend sa trajectoire vers la cible de livraison.</p>
+    </div>
+  </div>
+
+  <div class="box box-bl">
+    <div class="box-title">Convergence CLS + BIS</div>
+    <p>Les moments ou les fenetres CLS et BIS sont simultanement actives sont les periodes de <strong>volatilite maximale</strong> et de <strong>plus haute probabilite</strong>. C'est precisement dans ces fenetres que les sequences Sequences Fractales se deploient avec la plus grande clarte.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- M9 : REGLES D'APPLICATION                             -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section class="mod" id="m6">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 09</span>
+    <h2>Regles d'Application et Reference Operationnelle</h2>
+  </div>
+
+  <h3 class="sec">Tableau de Reference des Timeframes</h3>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Role</th>
+        <th>Timeframe</th>
+        <th>Sequence</th>
+        <th>Utilisation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Biais</td><td>Daily / H4</td><td>8-5-8 macro</td><td>Direction de la journee, position PDH/PDL</td></tr>
+      <tr><td>Structure</td><td>H1 / M30</td><td>8-5-8 standard</td><td>Identification de la phase en cours</td></tr>
+      <tr><td>Setup</td><td>M15 / M5</td><td>5-3-5</td><td>Zone d'entree, confluence des nodes</td></tr>
+      <tr><td>Trigger</td><td>M5 / M1</td><td>2-1-2</td><td>Confirmation finale, execution du trade</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sec">Checklist Pre-Trade</h3>
+
+  <div class="box box-em">
+    <div class="box-title">Avant Chaque Trade</div>
+    <p>1. Verifier que le marche est dans une killzone active<br>
+    2. Confirmer le biais directionnel sur Daily/H4<br>
+    3. Identifier la sequence 8-5-8 en cours et sa phase<br>
+    4. Localiser la zone de correction (0.59-0.71)<br>
+    5. Attendre la micro-sequence 2-1-2 de confirmation sur LTF<br>
+    6. Verifier le ratio R:R minimum de 1:3<br>
+    7. Confirmer que le risk est inferieur ou egal a 1% du capital<br>
+    8. Placer le stop et les targets AVANT d'entrer</p>
+  </div>
+
+  <h3 class="sec">Situations a Eviter</h3>
+
+  <div class="box box-re">
+    <div class="box-title">Ne Pas Trader Quand</div>
+    <p>- Le marche est en range sans direction claire sur HTF<br>
+    - C'est lundi avant 10:00 NY (pas assez de donnees de la semaine)<br>
+    - C'est vendredi apres 14:00 NY (cloture, liquidite reduite)<br>
+    - Un evenement economique majeur est imminent (NFP, FOMC, CPI)<br>
+    - La sequence HTF est dans la zone 0.83-0.97 (structure affaiblie)<br>
+    - Deux trades perdants consecutifs dans la journee (arret)</p>
+  </div>
+
+  <h3 class="sec">Paires et Instruments Recommandes</h3>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Paire</th>
+        <th>Session Optimale</th>
+        <th>Sequence Privilegiee</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>EUR/USD</td><td>London + NY AM</td><td>8-5-8</td><td>Paire de reference. Sequences les plus lisibles.</td></tr>
+      <tr><td>GBP/USD</td><td>London KZ</td><td>5-3-5 / 8-5-8</td><td>Plus volatile. Mouvements amples.</td></tr>
+      <tr><td>USD/JPY</td><td>Asian + NY</td><td>8-5-8</td><td>Bonne reactivite aux nodes temporels.</td></tr>
+      <tr><td>NAS100</td><td>NY AM</td><td>8-5-8</td><td>Indices. Sequences claires au NY Open.</td></tr>
+      <tr><td>ES / SPX</td><td>NY AM</td><td>8-5-8</td><td>Meme logique que NAS100 avec moins de volatilite.</td></tr>
+      <tr><td>Gold (XAU/USD)</td><td>London + NY</td><td>5-3-5 / 8-5-8</td><td>Tres reactif aux niveaux harmoniques.</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sec">Synthese du Modele</h3>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="v" style="color:var(--em-light)">3</div>
+      <div class="l">Sequences Primaires</div>
+    </div>
+    <div class="stat">
+      <div class="v" style="color:var(--amber-l)">23</div>
+      <div class="l">Niveaux Fibonacci</div>
+    </div>
+    <div class="stat">
+      <div class="v" style="color:#93C5FD">5</div>
+      <div class="l">Etapes du Protocole</div>
+    </div>
+  </div>
+
+  <div class="box box-em">
+    <div class="box-title">Resume Operationnel</div>
+    <p>Le modele Sequences Fractales est un systeme complet d'analyse et d'execution base sur les proportions Fibonacci appliquees au temps et au prix. Les sequences (2-1-2, 5-3-5, 8-5-8) definissent la <em>structure</em>. Les nodes definissent le <em>ou</em> et le <em>quand</em>. Le protocole en 5 etapes definit le <em>comment</em>. L'architecture cachee (CLS/BIS) explique le <em>pourquoi</em>. Maitrisez les regles. Respectez le timing. Executez avec precision.</p>
+  </div>
+
+  <div class="quote" style="position:relative;padding:30px 36px;margin:32px 0;border-left:3px solid var(--em);background:rgba(86,168,83,.04);border-radius:0 10px 10px 0;">
+    <p style="font-family:var(--serif);font-size:1.2rem;font-style:italic;color:var(--text);margin:0;line-height:1.65;">Le marche n'est pas aleatoire. Il est algorithmique. Une fois que vous comprenez l'architecture, vous ne voyez plus jamais le prix de la meme maniere.</p>
+    <cite style="display:block;margin-top:12px;font-family:var(--sans);font-size:0.72rem;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--em2);">Algorithmic Academy -- Modele Sequences Fractales</cite>
+  </div>
+</section>
+
+<footer id="footer">
+  <p>Sequences Fractales -- Modele Fractal Fibonacci & Sequences Algorithmiques -- Algorithmic Academy</p>
+  <p style="margin-top:8px;color:var(--border)">Le trading comporte des risques. Ce module est educatif uniquement.</p>
+</footer>
+
+</main>
+
+<script>
+// Progress bar
+const pf = document.getElementById('pfill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  pf.style.width = (window.scrollY / h * 100) + '%';
+}, { passive: true });
+
+// Fade in modules
+const io = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.05 });
+document.querySelectorAll('.mod').forEach(m => io.observe(m));
+
+// Active nav
+const secs = [...document.querySelectorAll('[id]')];
+const links = document.querySelectorAll('.sb-link');
+function updateNav() {
+  const y = window.scrollY + 110;
+  let cur = secs[0]?.id;
+  for (const s of secs) { if (s.offsetTop <= y) cur = s.id; }
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>

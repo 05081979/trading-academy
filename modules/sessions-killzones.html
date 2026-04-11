@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="premium">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Sessions, Killzones & Macros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0C0F0A;
+  --bg2:      #111510;
+  --bg3:      #181D14;
+  --border:   #1F2A1A;
+  --em:       #3D7A3A;
+  --em2:      #56A853;
+  --em-light: #A3D9A1;
+  --em-pale:  #E8F5E8;
+  --amber:    #D4882A;
+  --amber-l:  #F5C56A;
+  --red:      #C9453A;
+  --blue:     #4A90B8;
+  --muted:    #3A4535;
+  --text:     #DDE8D8;
+  --text-dim: #7D9478;
+  --serif:    'Playfair Display', serif;
+  --sans:     'Syne', sans-serif;
+  --body:     'Source Serif 4', serif;
+  --mono:     'Roboto Mono', monospace;
+  --sw: 270px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.75; display: flex; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── SIDEBAR ─────────────────────────── */
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 100;
+}
+
+.sb-logo {
+  padding: 28px 22px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sb-logo .mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--em), var(--em2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(61,122,58,.3);
+}
+
+.sb-logo h1 {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--em-light);
+  line-height: 1.25;
+}
+
+.sb-logo p {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.sb-section {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 16px 22px 5px;
+}
+
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 22px; text-decoration: none;
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 500;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.sb-link:hover { background: rgba(86,168,83,.06); color: var(--text); }
+.sb-link.active { background: rgba(86,168,83,.1); color: var(--em-light); border-left-color: var(--em2); }
+
+.sb-link .n {
+  font-family: var(--mono);
+  font-size: 0.62rem; font-weight: 500;
+  color: var(--muted); min-width: 22px;
+}
+.sb-link.active .n { color: var(--em2); }
+
+/* ── PROGRESS ────────────────────────── */
+#pbar {
+  position: fixed; top: 0; left: var(--sw); right: 0;
+  height: 2px; background: var(--border); z-index: 200;
+}
+#pfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--em), var(--em2), var(--amber));
+  width: 0%; transition: width 0.1s linear;
+}
+
+/* ── MAIN ────────────────────────────── */
+#main { margin-left: var(--sw); flex: 1; min-height: 100vh; }
+
+/* ── HERO ────────────────────────────── */
+#hero {
+  position: relative; overflow: hidden;
+  padding: 80px 64px 72px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-noise {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-lines {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 20px,
+    rgba(61,122,58,.04) 20px, rgba(61,122,58,.04) 21px
+  );
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(86,168,83,.12);
+  border: 1px solid rgba(86,168,83,.3);
+  color: var(--em-light);
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+
+#hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 5.5vw, 5rem);
+  line-height: 1.0;
+  color: #fff;
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+#hero h1 .em {
+  display: block;
+  background: linear-gradient(90deg, var(--em2), var(--em-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+#hero .sub {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 400;
+  color: var(--text-dim); max-width: 560px; margin-bottom: 44px;
+  line-height: 1.8;
+}
+
+.hero-kpis {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 14px; max-width: 720px;
+}
+
+.kpi {
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+}
+.kpi:hover { border-color: rgba(86,168,83,.35); }
+
+.kpi-v {
+  font-family: var(--mono);
+  font-size: 1.5rem; font-weight: 500;
+  color: var(--em-light); line-height: 1;
+  margin-bottom: 5px;
+}
+.kpi-l {
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── MODULE ──────────────────────────── */
+.mod {
+  padding: 64px; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.mod.vis { opacity: 1; transform: none; }
+
+.mod-head {
+  display: flex; align-items: flex-start; gap: 18px;
+  margin-bottom: 40px;
+}
+
+.mod-tag {
+  font-family: var(--mono);
+  font-size: 0.65rem; font-weight: 500;
+  color: var(--em2);
+  background: rgba(86,168,83,.1);
+  border: 1px solid rgba(86,168,83,.22);
+  padding: 5px 12px; border-radius: 6px;
+  white-space: nowrap; margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+.mod-head h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: #fff; line-height: 1.1;
+}
+
+/* ── SECTION TITLES ─────────────────── */
+.sec {
+  font-family: var(--sans);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--em-light);
+  margin: 42px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+  display: flex; align-items: center; gap: 10px;
+}
+.sec::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 18px;
+  background: linear-gradient(var(--em), var(--em2));
+  border-radius: 2px; flex-shrink: 0;
+}
+
+.subsec {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 700;
+  color: var(--text); margin: 26px 0 10px;
+}
+
+p {
+  font-size: 0.95rem; color: var(--text-dim);
+  line-height: 1.85; margin-bottom: 12px;
+}
+p strong { color: var(--text); font-weight: 600; }
+em { color: var(--em-light); font-style: italic; }
+
+/* ── CALLOUTS ────────────────────────── */
+.box {
+  border-radius: 10px; padding: 20px 24px;
+  margin: 18px 0; border-left: 3px solid;
+  background: rgba(255,255,255,.022);
+}
+.box-em  { border-color: var(--em2);  background: rgba(86,168,83,.06); }
+.box-am  { border-color: var(--amber); background: rgba(212,136,42,.06); }
+.box-re  { border-color: var(--red);   background: rgba(201,69,58,.06); }
+.box-bl  { border-color: var(--blue);  background: rgba(74,144,184,.06); }
+
+.box-title {
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 7px;
+}
+.box-em .box-title  { color: var(--em-light); }
+.box-am .box-title  { color: var(--amber-l); }
+.box-re .box-title  { color: #FCA5A5; }
+.box-bl .box-title  { color: #93C5FD; }
+.box p { margin: 0; font-size: 0.88rem; }
+
+/* ── LISTS ───────────────────────────── */
+ul.cl { list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 8px; }
+ul.cl li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ul.cl li::before {
+  content: '>'; color: var(--em2); font-size: 1rem;
+  margin-top: 1px; flex-shrink: 0;
+}
+ul.cl li strong { color: var(--text); }
+
+ol.nl { counter-reset: nl; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 9px; }
+ol.nl li {
+  counter-increment: nl;
+  display: flex; align-items: flex-start; gap: 13px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ol.nl li::before {
+  content: counter(nl);
+  background: rgba(86,168,83,.15);
+  border: 1px solid rgba(86,168,83,.28);
+  color: var(--em-light);
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+}
+
+/* ── TABLE ───────────────────────────── */
+.tbl {
+  width: 100%; border-collapse: collapse;
+  margin: 18px 0; font-size: 0.87rem;
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.tbl th {
+  background: rgba(86,168,83,.1);
+  color: var(--em-light);
+  font-family: var(--sans); font-weight: 700;
+  font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 11px 18px; text-align: left;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+}
+.tbl td {
+  padding: 10px 18px; color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top; line-height: 1.6;
+}
+.tbl td:first-child { color: var(--text); font-weight: 600; font-size: 0.83rem; white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(255,255,255,.015); }
+
+/* ── TIMELINE ───────────────────────── */
+.timeline {
+  position: relative;
+  margin: 24px 0;
+  padding-left: 28px;
+}
+.timeline::before {
+  content: '';
+  position: absolute; left: 8px; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--em), var(--em2), var(--amber));
+  border-radius: 1px;
+}
+.tl-item {
+  position: relative;
+  margin-bottom: 22px;
+  padding: 14px 20px;
+  background: rgba(255,255,255,.02);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: border-color 0.2s;
+}
+.tl-item:hover { border-color: rgba(86,168,83,.3); }
+.tl-item::before {
+  content: '';
+  position: absolute; left: -24px; top: 18px;
+  width: 10px; height: 10px;
+  background: var(--em2);
+  border: 2px solid var(--bg);
+  border-radius: 50%;
+}
+.tl-time {
+  font-family: var(--mono); font-size: 0.78rem;
+  color: var(--em-light); margin-bottom: 4px;
+}
+.tl-label {
+  font-family: var(--sans); font-size: 0.82rem; font-weight: 700;
+  color: var(--text); margin-bottom: 4px;
+}
+.tl-desc {
+  font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; margin: 0;
+}
+
+/* ── BADGE ──────────────────────────── */
+.badge {
+  display: inline-block;
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+  padding: 3px 10px; border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+.badge-green { background: rgba(86,168,83,.15); color: var(--em-light); border: 1px solid rgba(86,168,83,.25); }
+.badge-amber { background: rgba(212,136,42,.12); color: var(--amber-l); border: 1px solid rgba(212,136,42,.25); }
+.badge-red   { background: rgba(201,69,58,.12); color: #FCA5A5; border: 1px solid rgba(201,69,58,.25); }
+.badge-blue  { background: rgba(74,144,184,.12); color: #93C5FD; border: 1px solid rgba(74,144,184,.25); }
+
+/* ── QUOTE ───────────────────────────── */
+.quote {
+  position: relative; padding: 30px 36px;
+  margin: 32px 0;
+  border-left: 3px solid var(--em);
+  background: rgba(86,168,83,.04);
+  border-radius: 0 10px 10px 0;
+}
+.quote::before {
+  content: '\201C'; position: absolute; top: -12px; left: 14px;
+  font-family: var(--serif); font-size: 5rem;
+  color: rgba(86,168,83,.18); line-height: 1;
+}
+.quote p {
+  font-family: var(--serif); font-size: 1.2rem; font-style: italic;
+  color: var(--text); margin: 0; line-height: 1.65;
+}
+.quote cite {
+  display: block; margin-top: 12px;
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.09em; text-transform: uppercase; color: var(--em2);
+}
+
+/* ── FOOTER ──────────────────────────── */
+#footer { padding: 48px 64px; text-align: center; border-top: 1px solid var(--border); }
+#footer p { font-family: var(--sans); color: var(--muted); font-size: 0.8rem; margin: 0; }
+
+/* ── ANIMATIONS ──────────────────────── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+.hero-tag, #hero h1, #hero .sub, .hero-kpis { animation: fadeUp 0.6s ease both; }
+.hero-tag { animation-delay: 0.1s; }
+#hero h1 { animation-delay: 0.22s; }
+#hero .sub { animation-delay: 0.34s; }
+.hero-kpis { animation-delay: 0.46s; }
+
+@media (max-width: 900px) {
+  :root { --sw: 0px; }
+  #sidebar { transform: translateX(-270px); }
+  #main { margin-left: 0; }
+  .mod, #hero { padding: 36px 22px; }
+  .hero-kpis { grid-template-columns: 1fr 1fr; }
+}
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+
+<div id="pbar"><div id="pfill"></div></div>
+
+<!-- ════════════════ SIDEBAR ════════════════ -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="mark">A</div>
+    <h1>Sessions &amp; Timing</h1>
+    <p>Algorithmic Academy</p>
+  </div>
+
+  <div class="sb-section">Structure Temporelle</div>
+  <a class="sb-link" href="#bougies-6h"><span class="n">01</span> 4 Bougies de 6H</a>
+  <a class="sb-link" href="#sessions"><span class="n">02</span> Sessions</a>
+  <a class="sb-link" href="#calendrier"><span class="n">03</span> Calendrier</a>
+
+  <div class="sb-section">Killzones</div>
+  <a class="sb-link" href="#kz-london"><span class="n">04</span> London</a>
+  <a class="sb-link" href="#kz-nyam"><span class="n">05</span> NY AM</a>
+  <a class="sb-link" href="#kz-nypm"><span class="n">06</span> NY PM</a>
+  <a class="sb-link" href="#kz-asia"><span class="n">07</span> Asia</a>
+
+  <div class="sb-section">Macros de Precision</div>
+  <a class="sb-link" href="#macros"><span class="n">08</span> 20min Macros</a>
+  <a class="sb-link" href="#timing-ny"><span class="n">09</span> Timing NY</a>
+
+  <div class="sb-section">Opening Range</div>
+  <a class="sb-link" href="#or-30min"><span class="n">10</span> OR 30 Minutes</a>
+  <a class="sb-link" href="#or-strategies"><span class="n">11</span> Strategies OR</a>
+
+  <div class="sb-section">NDOG</div>
+  <a class="sb-link" href="#ndog-def"><span class="n">12</span> Definition</a>
+  <a class="sb-link" href="#ndog-usage"><span class="n">13</span> Utilisation</a>
+  <a class="sb-link" href="#ndog-exemples"><span class="n">14</span> Exemples</a>
+
+  <div class="sb-section">Profils de Livraison</div>
+  <a class="sb-link" href="#profil-london"><span class="n">15</span> London</a>
+  <a class="sb-link" href="#profil-am"><span class="n">16</span> AM</a>
+  <a class="sb-link" href="#profil-pm"><span class="n">17</span> PM</a>
+  <a class="sb-link" href="#profils-cles"><span class="n">18</span> Profils Cles</a>
+
+  <div class="sb-section">Regles Speciales</div>
+  <a class="sb-link" href="#vendredi"><span class="n">19</span> Vendredi</a>
+  <a class="sb-link" href="#news"><span class="n">20</span> News</a>
+  <a class="sb-link" href="#bank-holiday"><span class="n">21</span> Bank Holiday</a>
+</nav>
+
+<!-- ════════════════ MAIN ════════════════ -->
+<main id="main">
+
+<!-- ── HERO ──────────────────────────── -->
+<section id="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-tag">Module Premium</div>
+  <h1>Sessions &amp; Timing<span class="em">Maitriser le Temps du Marche</span></h1>
+  <p class="sub">Sessions -- Killzones -- Macros -- Opening Range -- NDOG -- 4 Bougies 6H</p>
+  <div class="hero-kpis">
+    <div class="kpi"><div class="kpi-v">4</div><div class="kpi-l">Bougies 6H</div></div>
+    <div class="kpi"><div class="kpi-v">5</div><div class="kpi-l">Killzones</div></div>
+    <div class="kpi"><div class="kpi-v">10</div><div class="kpi-l">Macros 20min</div></div>
+    <div class="kpi"><div class="kpi-v">4</div><div class="kpi-l">Profils Cles</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 1 : LES 4 BOUGIES DE 6 HEURES -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="bougies-6h">
+  <div class="mod-head">
+    <span class="mod-tag">01</span>
+    <h2>Les 4 Bougies de 6 Heures</h2>
+  </div>
+
+  <p>La journee de trading se decompose en <strong>4 bougies de 6 heures</strong>, chacune representant une phase distincte du cycle AMD (Accumulation, Manipulation, Distribution). Comprendre cette structure est fondamental pour anticiper les mouvements intraday.</p>
+
+  <div class="sec">Structure des 4 Bougies</div>
+
+  <table class="tbl">
+    <tr>
+      <th>Bougie</th>
+      <th>Horaire (NY)</th>
+      <th>Session</th>
+      <th>Role AMD</th>
+      <th>OHLC</th>
+    </tr>
+    <tr>
+      <td>B1</td>
+      <td>18:00 - 00:00</td>
+      <td>Asiatique</td>
+      <td>Open / Accumulation</td>
+      <td>O = Open du jour</td>
+    </tr>
+    <tr>
+      <td>B2</td>
+      <td>00:00 - 06:00</td>
+      <td>London Prep</td>
+      <td>Manipulation setup</td>
+      <td>L ou H selon biais</td>
+    </tr>
+    <tr>
+      <td>B3</td>
+      <td>06:00 - 12:00</td>
+      <td>London + NY AM</td>
+      <td>Distribution</td>
+      <td>H ou L + expansion</td>
+    </tr>
+    <tr>
+      <td>B4</td>
+      <td>12:00 - 18:00</td>
+      <td>NY PM</td>
+      <td>Cloture / Reinitialisation</td>
+      <td>C = Close du jour</td>
+    </tr>
+  </table>
+
+  <div class="box box-em">
+    <div class="box-title">Principe Fondamental</div>
+    <p>Chaque bougie de 6 heures constitue un <strong>micro-cycle AMD complet</strong>. Le prix accumule, manipule et distribue a l'interieur de chaque bougie, tout en s'inscrivant dans le cycle AMD plus large de la journee.</p>
+  </div>
+
+  <div class="sec" id="sessions">L'Open de 18h00 comme Reference</div>
+
+  <p>L'open de <strong>18h00 NY</strong> (minuit Paris) est le veritable open algorithmique de la journee. Il sert de reference pour determiner si le prix se trouve en zone <strong>premium</strong> (au-dessus) ou <strong>discount</strong> (en-dessous).</p>
+
+  <ul class="cl">
+    <li><strong>Premium :</strong> le prix trade au-dessus de l'open 18h00 -- biais vendeur probable</li>
+    <li><strong>Discount :</strong> le prix trade en-dessous de l'open 18h00 -- biais acheteur probable</li>
+    <li>Cette reference reste valide <strong>toute la journee</strong> jusqu'au prochain open a 18h00</li>
+    <li>A combiner avec le biais HTF pour confirmer la direction</li>
+  </ul>
+
+  <div class="sec" id="calendrier">Correlation OHLC / OLHC Daily</div>
+
+  <p>Les 4 bougies de 6H correspondent directement aux elements du chandelier daily :</p>
+
+  <table class="tbl">
+    <tr>
+      <th>Profil Daily</th>
+      <th>B1 (18-00)</th>
+      <th>B2 (00-06)</th>
+      <th>B3 (06-12)</th>
+      <th>B4 (12-18)</th>
+    </tr>
+    <tr>
+      <td>OHLC Bullish</td>
+      <td>Open</td>
+      <td>High (manipulation)</td>
+      <td>Low (sweep + reversal)</td>
+      <td>Close (expansion up)</td>
+    </tr>
+    <tr>
+      <td>OLHC Bearish</td>
+      <td>Open</td>
+      <td>Low (manipulation)</td>
+      <td>High (sweep + reversal)</td>
+      <td>Close (expansion down)</td>
+    </tr>
+    <tr>
+      <td>OHLC Classic</td>
+      <td>Open</td>
+      <td>Low ou High</td>
+      <td>Expansion principale</td>
+      <td>Close (continuation)</td>
+    </tr>
+  </table>
+
+  <div class="box box-am">
+    <div class="box-title">Astuce Pratique</div>
+    <p>Si la B2 (London Prep) cree le <strong>Low du jour</strong>, attendez-vous a une expansion haussiere sur B3 (London + NY AM). Si la B2 cree le <strong>High du jour</strong>, attendez une expansion baissiere. C'est la logique de manipulation-distribution.</p>
+  </div>
+
+  <p>Pour identifier le profil en cours, observez la relation entre B1 et B2 : si B2 descend sous le low de B1 puis remonte, le profil OLHC (bullish) est engage. Si B2 monte au-dessus du high de B1 puis redescend, le profil OHLC (bearish) est engage.</p>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 2 : LES KILLZONES              -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="kz-london">
+  <div class="mod-head">
+    <span class="mod-tag">02</span>
+    <h2>Les Killzones</h2>
+  </div>
+
+  <p>Les killzones sont des <strong>fenetres temporelles precises</strong> ou l'activite algorithmique est maximale. En dehors de ces zones, le marche est generalement en range ou en manipulation douce. Trader uniquement dans les killzones augmente drastiquement la probabilite de succes.</p>
+
+  <div class="sec">Vue d'Ensemble des Killzones</div>
+
+  <table class="tbl">
+    <tr>
+      <th>Killzone</th>
+      <th>Horaire (NY)</th>
+      <th>Horaire (Paris)</th>
+      <th>Caracteristique</th>
+    </tr>
+    <tr>
+      <td>Asia</td>
+      <td>20:00 - 00:00</td>
+      <td>02:00 - 06:00</td>
+      <td>Range, accumulation, faible volume</td>
+    </tr>
+    <tr>
+      <td>London</td>
+      <td>02:00 - 05:00</td>
+      <td>08:00 - 11:00</td>
+      <td>Manipulation, sweep Asia H/L</td>
+    </tr>
+    <tr>
+      <td>NY AM</td>
+      <td>08:30 - 11:00</td>
+      <td>14:30 - 17:00</td>
+      <td>Distribution principale, volume max</td>
+    </tr>
+    <tr>
+      <td>NY PM (Lunch)</td>
+      <td>12:00 - 13:00</td>
+      <td>18:00 - 19:00</td>
+      <td>Faible volume, pieges, eviter</td>
+    </tr>
+    <tr>
+      <td>NY PM Close</td>
+      <td>14:00 - 16:00</td>
+      <td>20:00 - 22:00</td>
+      <td>Cloture, retour equilibre</td>
+    </tr>
+  </table>
+
+  <div class="box box-re">
+    <div class="box-title">Regle Absolue</div>
+    <p>Ne trader <strong>QUE</strong> dans les killzones. Le reste du temps, le marche est en phase de consolidation ou de manipulation lente. Les mouvements hors killzone sont imprevisibles et manquent de suivi.</p>
+  </div>
+
+  <div class="sec" id="kz-nyam">London : La Manipulation</div>
+
+  <p>La session de Londres est <strong>la manipulation la plus violente</strong> de la journee. Son role principal est de sweep les extremes de la session asiatique pour generer la liquidite necessaire au mouvement de New York.</p>
+
+  <ul class="cl">
+    <li><strong>Sweep Asia High :</strong> indique que le mouvement reel sera baissier (New York vendra)</li>
+    <li><strong>Sweep Asia Low :</strong> indique que le mouvement reel sera haussier (New York achetera)</li>
+    <li>Le sweep se produit generalement entre <strong>02:00 et 03:30 NY</strong></li>
+    <li>Si London prend les deux cotes (High ET Low), la journee sera probablement <strong>choppy</strong></li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Identification du Sweep</div>
+    <p>Un sweep valide depasse l'extreme de l'Asia range d'au moins <strong>5-15 pips</strong> puis revient rapidement a l'interieur du range. Si le prix continue au-dela sans revenir, c'est potentiellement un breakout legitime et non un sweep.</p>
+  </div>
+
+  <div class="sec">NY AM : La Distribution</div>
+
+  <p>La session <strong>NY AM (08:30-11:00 NY)</strong> est le coeur de la journee. C'est ici que se produit le vrai mouvement directionnel, alimente par la liquidite capturee lors de la manipulation londonienne.</p>
+
+  <ul class="cl">
+    <li>Volume maximal de la journee -- les algorithmes deploient leurs ordres</li>
+    <li>Le mouvement de NY AM est generalement <strong>oppose a la manipulation de London</strong></li>
+    <li>Les meilleures entrees se situent entre <strong>08:50 et 10:10 NY</strong></li>
+    <li>Si le target n'est pas atteint avant 11:00, il sera probablement atteint en PM</li>
+  </ul>
+
+  <div class="sec" id="kz-nypm">NY PM : La Cloture</div>
+
+  <p>La session PM se divise en deux phases distinctes qu'il faut traiter differemment :</p>
+
+  <table class="tbl">
+    <tr>
+      <th>Phase</th>
+      <th>Horaire (NY)</th>
+      <th>Comportement</th>
+      <th>Action</th>
+    </tr>
+    <tr>
+      <td>Lunch Hour</td>
+      <td>12:00 - 13:00</td>
+      <td>Volume minimal, consolidation, faux signaux</td>
+      <td><span class="badge badge-red">EVITER</span></td>
+    </tr>
+    <tr>
+      <td>PM Session</td>
+      <td>13:00 - 14:00</td>
+      <td>Reprise graduelle, setup possible</td>
+      <td><span class="badge badge-amber">PRUDENCE</span></td>
+    </tr>
+    <tr>
+      <td>PM Close</td>
+      <td>14:00 - 16:00</td>
+      <td>Retour equilibre, continuation ou reversal</td>
+      <td><span class="badge badge-green">POSSIBLE</span></td>
+    </tr>
+  </table>
+
+  <div class="box box-am">
+    <div class="box-title">Lunch Hour = Zone Morte</div>
+    <p>Entre 12:00 et 13:00 NY, le volume chute drastiquement. Les spreads s'elargissent, les mouvements sont erratiques. Les pieges de liquidite sont frequents. <strong>Ne pas trader cette periode.</strong></p>
+  </div>
+
+  <div class="sec" id="kz-asia">Asia : L'Accumulation</div>
+
+  <p>La session asiatique (<strong>20:00-00:00 NY</strong>) est la phase d'accumulation. Le prix construit un range qui servira de carburant pour la manipulation de London et la distribution de New York.</p>
+
+  <ul class="cl">
+    <li>Le range asiatique definit les extremes que London viendra sweep</li>
+    <li><strong>Asia High intacte</strong> en fin de session : marche fortement baissier</li>
+    <li><strong>Asia Low intacte</strong> en fin de session : marche fortement haussier</li>
+    <li>Un range asiatique etroit = mouvement violent a venir</li>
+    <li>Un range asiatique large = mouvement potentiellement plus mesure</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 3 : MACROS DE PRECISION        -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="macros">
+  <div class="mod-head">
+    <span class="mod-tag">03</span>
+    <h2>Macros de Precision (20 Minutes)</h2>
+  </div>
+
+  <p>Les macros sont des fenetres de <strong>20 minutes</strong> ou les algorithmes executent des operations specifiques. Ces micro-fenetres offrent les entrees les plus precises disponibles en trading intraday.</p>
+
+  <div class="sec">Tableau Complet des Macros</div>
+
+  <table class="tbl">
+    <tr>
+      <th>Macro</th>
+      <th>Horaire (NY)</th>
+      <th>Horaire (Paris)</th>
+      <th>Role</th>
+    </tr>
+    <tr>
+      <td>Pre-London</td>
+      <td>01:50 - 02:10</td>
+      <td>07:50 - 08:10</td>
+      <td>Setup London</td>
+    </tr>
+    <tr>
+      <td>London Open</td>
+      <td>02:50 - 03:10</td>
+      <td>08:50 - 09:10</td>
+      <td>Sweep Asia, debut manipulation</td>
+    </tr>
+    <tr>
+      <td>Mid-London</td>
+      <td>03:50 - 04:10</td>
+      <td>09:50 - 10:10</td>
+      <td>Continuation ou reversal</td>
+    </tr>
+    <tr>
+      <td>London Close</td>
+      <td>04:50 - 05:10</td>
+      <td>10:50 - 11:10</td>
+      <td>Fin manipulation London</td>
+    </tr>
+    <tr>
+      <td>Pre-NY</td>
+      <td>07:50 - 08:10</td>
+      <td>13:50 - 14:10</td>
+      <td>Setup NY</td>
+    </tr>
+    <tr>
+      <td>NY Open</td>
+      <td>08:50 - 09:10</td>
+      <td>14:50 - 15:10</td>
+      <td>Debut session US</td>
+    </tr>
+    <tr>
+      <td>AM Session</td>
+      <td>09:50 - 10:10</td>
+      <td>15:50 - 16:10</td>
+      <td>Expansion principale</td>
+    </tr>
+    <tr>
+      <td>Last Ditch</td>
+      <td>10:50 - 11:10</td>
+      <td>16:50 - 17:10</td>
+      <td>Derniere chance AM</td>
+    </tr>
+    <tr>
+      <td>PM Session</td>
+      <td>13:10 - 13:40</td>
+      <td>19:10 - 19:40</td>
+      <td>Debut PM</td>
+    </tr>
+    <tr>
+      <td>PM Close</td>
+      <td>15:15 - 15:45</td>
+      <td>21:15 - 21:45</td>
+      <td>Preparation Fix</td>
+    </tr>
+  </table>
+
+  <div class="box box-em">
+    <div class="box-title">Regle des Macros</div>
+    <p>Pas de news ? Operer sur les macros. AM en consolidation ? Attendre le <strong>Last Ditch Macro</strong> (10:50-11:10 NY). C'est souvent la derniere fenetre viable pour une entree AM si le mouvement n'a pas encore demarre.</p>
+  </div>
+
+  <div class="sec" id="timing-ny">Hierarchie des Macros NY</div>
+
+  <p>Toutes les macros n'ont pas la meme importance. Voici la hierarchie pour la session New York :</p>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-time">07:50 - 08:10 NY</div>
+      <div class="tl-label">Pre-NY Macro <span class="badge badge-amber">SETUP</span></div>
+      <p class="tl-desc">Le marche prepare le terrain. Observer les niveaux cles, identifier les targets potentiels. Ne pas entrer ici sauf conviction extremement forte.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">08:50 - 09:10 NY</div>
+      <div class="tl-label">NY Open Macro <span class="badge badge-green">HAUTE PRIORITE</span></div>
+      <p class="tl-desc">Premiere fenetre d'entree NY. Souvent un sweep du pre-market suivi du vrai mouvement. Confluence avec l'Opening Range si alignee.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">09:50 - 10:10 NY</div>
+      <div class="tl-label">AM Session Macro <span class="badge badge-green">HAUTE PRIORITE</span></div>
+      <p class="tl-desc">Expansion principale. Si le mouvement a commence au NY Open, cette macro confirme la direction. Si non, c'est ici que le vrai mouvement demarre.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">10:50 - 11:10 NY</div>
+      <div class="tl-label">Last Ditch Macro <span class="badge badge-amber">DERNIERE CHANCE</span></div>
+      <p class="tl-desc">Derniere opportunite de la session AM. Si le mouvement n'a pas commence, cette macro represente la derniere chance avant le lunch hour.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">13:10 - 13:40 NY</div>
+      <div class="tl-label">PM Session Macro <span class="badge badge-blue">OPTIONNEL</span></div>
+      <p class="tl-desc">Debut de la session PM. Possible continuation du mouvement AM ou nouveau setup. A prendre uniquement si la session AM a laisse un target non atteint.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">15:15 - 15:45 NY</div>
+      <div class="tl-label">PM Close Macro <span class="badge badge-blue">FIX</span></div>
+      <p class="tl-desc">Preparation du London Fix et de la cloture de journee. Mouvements potentiellement violents mais imprevisibles. Reservee aux traders experimentes.</p>
+    </div>
+  </div>
+
+  <div class="box box-am">
+    <div class="box-title">Macro et Confluences</div>
+    <p>La puissance d'une macro est decuplee quand elle coincide avec un <strong>niveau de liquidite</strong>, un <strong>order block</strong>, ou un <strong>FVG</strong>. Macro seule = signal moyen. Macro + confluence = signal premium.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 4 : OPENING RANGE              -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="or-30min">
+  <div class="mod-head">
+    <span class="mod-tag">04</span>
+    <h2>Opening Range</h2>
+  </div>
+
+  <p>L'Opening Range (OR) est le <strong>range des 30 premieres minutes</strong> de la session de New York (09:30-10:00 NY). Ce range initial definit les extremes que le marche va utiliser pour sa manipulation avant de reveler la vraie direction.</p>
+
+  <div class="sec">Definition et Construction</div>
+
+  <table class="tbl">
+    <tr>
+      <th>Element</th>
+      <th>Valeur</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>OR High</td>
+      <td>Plus haut 09:30-10:00</td>
+      <td>Resistance initiale, liquidite sell-side au-dessus</td>
+    </tr>
+    <tr>
+      <td>OR Low</td>
+      <td>Plus bas 09:30-10:00</td>
+      <td>Support initial, liquidite buy-side en-dessous</td>
+    </tr>
+    <tr>
+      <td>OR Mid</td>
+      <td>50% du range</td>
+      <td>Point d'equilibre, zone de decision</td>
+    </tr>
+    <tr>
+      <td>OR Gap</td>
+      <td>Close J-1 vs Open J</td>
+      <td>Vide entre cloture precedente et ouverture</td>
+    </tr>
+  </table>
+
+  <p>L'Opening Range est une <strong>zone de liquidite concentree</strong>. Les ordres stop de nombreux participants sont places au-dessus du OR High et en-dessous du OR Low. Les algorithmes exploitent cette liquidite previsible.</p>
+
+  <div class="sec" id="or-strategies">Strategie Opening Range</div>
+
+  <ol class="nl">
+    <li><strong>Marquer le range 09:30-10:00 :</strong> identifier clairement le OR High et le OR Low sur votre graphique. Utiliser le timeframe M5 ou M1 pour la precision.</li>
+    <li><strong>Attendre le sweep d'une extremite :</strong> le prix doit casser au-dela d'un extreme du OR (High ou Low) pour capturer la liquidite. Ce sweep est la manipulation.</li>
+    <li><strong>Confirmer le rejet :</strong> apres le sweep, le prix doit montrer un rejet clair (FVG, order block reaction, displacement). Un simple retest ne suffit pas.</li>
+    <li><strong>Entrer direction opposee :</strong> si le OR High est sweep, entrer short. Si le OR Low est sweep, entrer long. L'entree se fait sur la confirmation du rejet.</li>
+    <li><strong>Target : extremite opposee de l'OR minimum :</strong> le target minimum est l'autre cote du range. En cas de forte conviction, le target peut etre etendu aux niveaux de liquidite suivants.</li>
+  </ol>
+
+  <div class="box box-em">
+    <div class="box-title">Opening Range Gap</div>
+    <p>Le <strong>Opening Range Gap</strong> est le vide entre le close du jour precedent (16:00 NY) et l'open du jour en cours. Ce gap agit comme un aimant : le prix tendra a le combler dans la journee. Si le gap est haussier, attention au biais baissier de comblement.</p>
+  </div>
+
+  <div class="subsec">Filtrage de l'OR par le Biais</div>
+
+  <table class="tbl">
+    <tr>
+      <th>Biais HTF</th>
+      <th>OR Sweep</th>
+      <th>Action</th>
+      <th>Probabilite</th>
+    </tr>
+    <tr>
+      <td>Bullish</td>
+      <td>OR Low sweep</td>
+      <td>LONG</td>
+      <td><span class="badge badge-green">HAUTE</span></td>
+    </tr>
+    <tr>
+      <td>Bullish</td>
+      <td>OR High sweep</td>
+      <td>NE PAS TRADER</td>
+      <td><span class="badge badge-red">CONFLIT</span></td>
+    </tr>
+    <tr>
+      <td>Bearish</td>
+      <td>OR High sweep</td>
+      <td>SHORT</td>
+      <td><span class="badge badge-green">HAUTE</span></td>
+    </tr>
+    <tr>
+      <td>Bearish</td>
+      <td>OR Low sweep</td>
+      <td>NE PAS TRADER</td>
+      <td><span class="badge badge-red">CONFLIT</span></td>
+    </tr>
+  </table>
+
+  <div class="box box-re">
+    <div class="box-title">Piege Classique</div>
+    <p>Ne jamais trader le breakout initial de l'OR. Le premier mouvement hors du range est tres souvent le <strong>sweep de liquidite</strong> (la manipulation). Attendre toujours le retour dans le range et la confirmation avant d'entrer.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 5 : NDOG                       -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="ndog-def">
+  <div class="mod-head">
+    <span class="mod-tag">05</span>
+    <h2>NDOG (New Daily Opening Gap)</h2>
+  </div>
+
+  <p>Le NDOG est le <strong>vide de prix entre la cloture de 16h14 et l'ouverture de 18h00 NY</strong>. Ce gap, visible sur les timeframes M1 et M5, represente un desequilibre que le marche cherchera a equilibrer.</p>
+
+  <div class="sec">Definition Technique</div>
+
+  <table class="tbl">
+    <tr>
+      <th>Element</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>Cloture</td>
+      <td>Derniere bougie avant 16:15 NY (fin CME pour certains instruments)</td>
+    </tr>
+    <tr>
+      <td>Ouverture</td>
+      <td>Premiere bougie apres 18:00 NY (debut nouvelle session)</td>
+    </tr>
+    <tr>
+      <td>NDOG</td>
+      <td>Espace entre ces deux prix -- visible sur M1/M5 uniquement</td>
+    </tr>
+    <tr>
+      <td>Taille</td>
+      <td>Variable : de quelques ticks a plusieurs dizaines de points</td>
+    </tr>
+  </table>
+
+  <div class="box box-bl">
+    <div class="box-title">Propriete Cle</div>
+    <p>Le NDOG n'est <strong>ni un support ni une resistance</strong>. C'est un desequilibre de prix. Le marche est attire vers ce niveau pour des raisons d'equilibrage algorithmique. Il peut agir temporairement comme support/resistance mais sa nature est celle d'un aimant a prix.</p>
+  </div>
+
+  <div class="sec" id="ndog-usage">Utilisation du NDOG</div>
+
+  <ul class="cl">
+    <li><strong>Zone d'entree :</strong> si le prix revient vers le NDOG avec confluence (FVG, OB), c'est un point d'entree potentiel de haute qualite</li>
+    <li><strong>Prise de profit :</strong> utiliser le NDOG comme target partiel, surtout si le mouvement va dans sa direction</li>
+    <li><strong>Cible logique :</strong> quand le prix se deplace dans la direction du NDOG, c'est un objectif naturel</li>
+    <li><strong>Filtre :</strong> si le NDOG est dans la meme direction que votre biais, cela renforce le trade</li>
+    <li><strong>Attention :</strong> le NDOG ne marque pas forcement la fin du mouvement -- le prix peut le traverser et continuer</li>
+  </ul>
+
+  <div class="sec" id="ndog-exemples">Exemples d'Application</div>
+
+  <table class="tbl">
+    <tr>
+      <th>Scenario</th>
+      <th>NDOG</th>
+      <th>Action</th>
+    </tr>
+    <tr>
+      <td>Biais bullish, NDOG en-dessous</td>
+      <td>Le prix descend combler le NDOG</td>
+      <td>Entree long au NDOG avec confirmation</td>
+    </tr>
+    <tr>
+      <td>Biais bearish, NDOG au-dessus</td>
+      <td>Le prix monte combler le NDOG</td>
+      <td>Entree short au NDOG avec confirmation</td>
+    </tr>
+    <tr>
+      <td>NDOG deja comble en Asia</td>
+      <td>Plus d'aimant actif</td>
+      <td>Ignorer le NDOG, focus sur autres niveaux</td>
+    </tr>
+    <tr>
+      <td>Multiple NDOG proches</td>
+      <td>Zone de congestion</td>
+      <td>Attendre que le marche choisisse une direction</td>
+    </tr>
+  </table>
+
+  <div class="box box-am">
+    <div class="box-title">Distinction NDOG vs NWOG</div>
+    <p>Le <strong>NDOG</strong> est le gap d'ouverture quotidien. Le <strong>NWOG</strong> (New Weekly Opening Gap) est le gap entre la cloture de vendredi et l'ouverture de dimanche soir. Le NWOG a une force d'attraction plus importante car il represente un desequilibre hebdomadaire.</p>
+  </div>
+
+  <div class="subsec">Gestion de Multiples NDOG</div>
+
+  <p>Lorsque plusieurs NDOG recents sont proches les uns des autres, cela cree une <strong>zone de congestion</strong>. Le marche hesite et a besoin de temps pour absorber ces desequilibres multiples.</p>
+
+  <ul class="cl">
+    <li>2 NDOG proches : le marche peut les combler en un seul mouvement</li>
+    <li>3+ NDOG dans la meme zone : attendre la consolidation et la resolution</li>
+    <li>NDOG d'un cote et objectif de liquidite de l'autre : le NDOG sera visite en route</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 6 : PROFILS DE LIVRAISON       -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="profil-london">
+  <div class="mod-head">
+    <span class="mod-tag">06</span>
+    <h2>Profils de Livraison</h2>
+  </div>
+
+  <p>Chaque session produit un <strong>profil de livraison de prix</strong> specifique. Comprendre ces profils permet d'anticiper le comportement de la session suivante et de choisir le bon moment pour entrer.</p>
+
+  <div class="sec">London Profile</div>
+
+  <p>Le profil London est centre sur la <strong>manipulation</strong>. Sa mission : sweep la liquidite asiatique pour alimenter le mouvement de New York.</p>
+
+  <table class="tbl">
+    <tr>
+      <th>Phase</th>
+      <th>Horaire</th>
+      <th>Action</th>
+    </tr>
+    <tr>
+      <td>Setup</td>
+      <td>02:00 - 02:30</td>
+      <td>Mouvement initial vers la liquidite cible</td>
+    </tr>
+    <tr>
+      <td>Sweep</td>
+      <td>02:30 - 03:30</td>
+      <td>Capture de la liquidite Asia H/L</td>
+    </tr>
+    <tr>
+      <td>Expansion</td>
+      <td>03:30 - 05:00</td>
+      <td>Mouvement dans la direction du DOL (Draw on Liquidity)</td>
+    </tr>
+    <tr>
+      <td>Transition</td>
+      <td>05:00 - 06:00</td>
+      <td>Ralentissement, preparation pour NY gap</td>
+    </tr>
+  </table>
+
+  <div class="sec" id="profil-am">AM Profile</div>
+
+  <p>Le profil AM est soit une <strong>continuation</strong> de London, soit un <strong>reversal</strong> post-manipulation. La cle est d'identifier lequel des deux se produit.</p>
+
+  <table class="tbl">
+    <tr>
+      <th>Scenario</th>
+      <th>London</th>
+      <th>NY AM</th>
+      <th>Action</th>
+    </tr>
+    <tr>
+      <td>Continuation</td>
+      <td>Sweep + expansion dans la direction du biais</td>
+      <td>Continuation du mouvement London</td>
+      <td>Entrer sur pullback en NY AM</td>
+    </tr>
+    <tr>
+      <td>Reversal</td>
+      <td>Mouvement fort dans une direction</td>
+      <td>Reversal complet du mouvement London</td>
+      <td>Attendre le sweep AM puis reversal</td>
+    </tr>
+    <tr>
+      <td>London morte</td>
+      <td>Range etroit, pas de sweep clair</td>
+      <td>NY AM prend le relais avec sweep + expansion</td>
+      <td>Traiter NY AM comme la manipulation</td>
+    </tr>
+  </table>
+
+  <div class="box box-em">
+    <div class="box-title">Regle de Potentiel</div>
+    <p>Si London produit un <strong>gros mouvement</strong> (>50% de l'ADR), NY AM risque d'etre morte. Le potentiel de la journee est souvent limite. Une session London violente epuise le carburant directionnel. A l'inverse, une London calme reserve une NY AM explosive.</p>
+  </div>
+
+  <div class="sec" id="profil-pm">PM Profile</div>
+
+  <p>La session PM offre deux possibilites principales :</p>
+
+  <ul class="cl">
+    <li><strong>Retour vers l'equilibre :</strong> si le mouvement AM a atteint son target, le PM ramene le prix vers le centre de la journee</li>
+    <li><strong>Continuation :</strong> si le target AM n'est pas atteint, le PM continue le mouvement jusqu'au target</li>
+    <li>Le PM profile est souvent une <strong>reversion vers la moyenne</strong> -- les positions sont cloturees</li>
+    <li>Ne trader le PM que si le contexte est tres clair</li>
+  </ul>
+
+  <div class="sec" id="profils-cles">Profils Cles a 09:30</div>
+
+  <p>A l'ouverture de New York (09:30), quatre profils principaux peuvent se developper :</p>
+
+  <table class="tbl">
+    <tr>
+      <th>Profil</th>
+      <th>Description</th>
+      <th>Sequence</th>
+      <th>Trade</th>
+    </tr>
+    <tr>
+      <td>Type 1 — OLHC Bullish</td>
+      <td>Open, sweep down, expansion up</td>
+      <td>09:30 Open &rarr; sweep OR Low &rarr; expansion haussiere</td>
+      <td>Long apres sweep du Low, target OR High + extension</td>
+    </tr>
+    <tr>
+      <td>Type 2 — OHLC Bearish</td>
+      <td>Open, sweep up, expansion down</td>
+      <td>09:30 Open &rarr; sweep OR High &rarr; expansion baissiere</td>
+      <td>Short apres sweep du High, target OR Low + extension</td>
+    </tr>
+    <tr>
+      <td>Type 3 — Late Expansion</td>
+      <td>Open, range, expansion tardive</td>
+      <td>09:30 Open &rarr; range &rarr; expansion vers 10:50</td>
+      <td>Attendre le Last Ditch Macro pour l'entree</td>
+    </tr>
+    <tr>
+      <td>Type 4 — Continuation</td>
+      <td>Open, directionnel immediat</td>
+      <td>09:30 Open &rarr; continuation du mouvement London</td>
+      <td>Entrer sur le premier pullback M1/M5</td>
+    </tr>
+  </table>
+
+  <div class="box box-bl">
+    <div class="box-title">Identification du Profil</div>
+    <p>Le profil en cours se revele generalement dans les <strong>20 premieres minutes</strong> apres l'open (09:30-09:50). Si le prix sweep immediatement un cote et reverse, c'est un Type 1 ou 2. Si le prix range, c'est un Type 3. Si le prix continue London sans hesitation, c'est un Type 4.</p>
+  </div>
+
+  <div class="subsec">Grille de Decision par Profil</div>
+
+  <table class="tbl">
+    <tr>
+      <th>Profil</th>
+      <th>Macro d'Entree</th>
+      <th>Stop Loss</th>
+      <th>Target</th>
+    </tr>
+    <tr>
+      <td>Type 1 (Bullish)</td>
+      <td>NY Open (08:50-09:10) ou AM (09:50-10:10)</td>
+      <td>Sous le sweep low + marge</td>
+      <td>OR High, puis PDH/DOL</td>
+    </tr>
+    <tr>
+      <td>Type 2 (Bearish)</td>
+      <td>NY Open (08:50-09:10) ou AM (09:50-10:10)</td>
+      <td>Au-dessus du sweep high + marge</td>
+      <td>OR Low, puis PDL/DOL</td>
+    </tr>
+    <tr>
+      <td>Type 3 (Late)</td>
+      <td>Last Ditch (10:50-11:10)</td>
+      <td>Oppose au sweep tardif</td>
+      <td>Objectif reduit (range plus petit)</td>
+    </tr>
+    <tr>
+      <td>Type 4 (Continuation)</td>
+      <td>Premier pullback M5</td>
+      <td>Sous/dessus le dernier swing</td>
+      <td>Extension du mouvement London</td>
+    </tr>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 7 : REGLES SPECIALES           -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="vendredi">
+  <div class="mod-head">
+    <span class="mod-tag">07</span>
+    <h2>Regles Speciales</h2>
+  </div>
+
+  <p>Certaines conditions de marche requierent des ajustements specifiques a votre approche. Ne pas respecter ces regles expose a des pertes evitables.</p>
+
+  <div class="sec">Vendredi : Journee de Retour</div>
+
+  <div class="box box-re">
+    <div class="box-title">Regle Critique</div>
+    <p>Le vendredi <strong>n'est PAS un quarter</strong> dans la Quarterly Theory. Sa seule fonction est de <strong>retourner vers le True Week Open</strong>. Ne pas trader de facon directionnelle SAUF si un SMT (divergence) est detecte entre jeudi et vendredi.</p>
+  </div>
+
+  <ul class="cl">
+    <li>Le vendredi est generalement une journee de <strong>retour vers le centre</strong> du range hebdomadaire</li>
+    <li>Les mouvements directionnels forts le vendredi sont rares et souvent des pieges</li>
+    <li>Si le prix est tres eloigne du True Week Open, un retracement significatif est probable</li>
+    <li>Les volumes diminuent progressivement apres 14:00 NY le vendredi</li>
+    <li>Pas de nouvelles positions apres le lunch hour du vendredi</li>
+  </ul>
+
+  <table class="tbl">
+    <tr>
+      <th>Condition</th>
+      <th>Action Vendredi</th>
+    </tr>
+    <tr>
+      <td>Prix au-dessus du True Week Open</td>
+      <td>Tendance au retour baissier vers le TWO</td>
+    </tr>
+    <tr>
+      <td>Prix en-dessous du True Week Open</td>
+      <td>Tendance au retour haussier vers le TWO</td>
+    </tr>
+    <tr>
+      <td>SMT Jeudi/Vendredi detecte</td>
+      <td>Possible exception : trader dans la direction du SMT</td>
+    </tr>
+    <tr>
+      <td>Aucun signal clair</td>
+      <td>NE PAS TRADER</td>
+    </tr>
+  </table>
+
+  <div class="sec" id="news">News Events : NFP / CPI / FOMC</div>
+
+  <p>Les evenements economiques majeurs creent des conditions de marche exceptionnelles qui necessitent une approche specifique.</p>
+
+  <table class="tbl">
+    <tr>
+      <th>Evenement</th>
+      <th>Impact</th>
+      <th>Frequence</th>
+      <th>Horaire (NY)</th>
+    </tr>
+    <tr>
+      <td>NFP (Non-Farm Payrolls)</td>
+      <td><span class="badge badge-red">EXTREME</span></td>
+      <td>1er vendredi du mois</td>
+      <td>08:30</td>
+    </tr>
+    <tr>
+      <td>CPI (Inflation)</td>
+      <td><span class="badge badge-red">EXTREME</span></td>
+      <td>Mensuel (~12-14 du mois)</td>
+      <td>08:30</td>
+    </tr>
+    <tr>
+      <td>FOMC (Taux)</td>
+      <td><span class="badge badge-red">EXTREME</span></td>
+      <td>8x par an</td>
+      <td>14:00</td>
+    </tr>
+    <tr>
+      <td>PMI / ISM</td>
+      <td><span class="badge badge-amber">FORT</span></td>
+      <td>Mensuel</td>
+      <td>10:00</td>
+    </tr>
+    <tr>
+      <td>Jobless Claims</td>
+      <td><span class="badge badge-amber">MODERE</span></td>
+      <td>Hebdomadaire (jeudi)</td>
+      <td>08:30</td>
+    </tr>
+  </table>
+
+  <div class="box box-re">
+    <div class="box-title">Regles News Events</div>
+    <p><strong>1.</strong> Attendre minimum 30 minutes apres la publication avant toute entree.<br>
+    <strong>2.</strong> Le mouvement initial est souvent la manipulation -- ne pas le suivre.<br>
+    <strong>3.</strong> Target etendu : utiliser l'IMP24 au lieu de l'IMP10 standard.<br>
+    <strong>4.</strong> Risque reduit : diminuer la taille de position de 50% minimum.</p>
+  </div>
+
+  <p>La volatilite post-news peut persister pendant <strong>30 a 90 minutes</strong>. Les spreads restent elargis, les ordres sont executes avec slippage. Seule la patience permet de distinguer la manipulation de la vraie direction.</p>
+
+  <div class="subsec">Sequence Type Post-News</div>
+
+  <ol class="nl">
+    <li><strong>Publication (T+0) :</strong> spike violent dans une direction -- c'est la reaction emotionnelle du marche. NE PAS ENTRER.</li>
+    <li><strong>Spike oppose (T+5 a T+15) :</strong> le marche reverse souvent pour sweep l'autre cote. C'est la manipulation algorithmique.</li>
+    <li><strong>Consolidation (T+15 a T+30) :</strong> le marche absorbe les ordres et se stabilise. Observer la structure.</li>
+    <li><strong>Vrai mouvement (T+30+) :</strong> la direction veritable emerge. C'est ici que l'entree est possible avec confirmation.</li>
+  </ol>
+
+  <div class="sec" id="bank-holiday">Bank Holidays</div>
+
+  <div class="box box-re">
+    <div class="box-title">Interdiction Stricte</div>
+    <p><strong>NE PAS TRADER</strong> les jours de bank holiday (US ou UK). Volume insuffisant = spreads elargis = pieges de liquidite permanents. Les algorithmes tournent au ralenti et les mouvements sont erratiques et sans suivi.</p>
+  </div>
+
+  <table class="tbl">
+    <tr>
+      <th>Indicateur</th>
+      <th>Jour Normal</th>
+      <th>Bank Holiday</th>
+    </tr>
+    <tr>
+      <td>Volume</td>
+      <td>100%</td>
+      <td>30-40%</td>
+    </tr>
+    <tr>
+      <td>Spread</td>
+      <td>Normal</td>
+      <td>2-5x plus large</td>
+    </tr>
+    <tr>
+      <td>Suivi directionnel</td>
+      <td>Oui</td>
+      <td>Non (range erratique)</td>
+    </tr>
+    <tr>
+      <td>Macros fiables</td>
+      <td>Oui</td>
+      <td>Non</td>
+    </tr>
+    <tr>
+      <td>Recommandation</td>
+      <td><span class="badge badge-green">TRADER</span></td>
+      <td><span class="badge badge-red">INTERDICTION</span></td>
+    </tr>
+  </table>
+
+  <div class="subsec">Jours Feries US Majeurs (pas de trading)</div>
+
+  <ul class="cl">
+    <li><strong>New Year's Day</strong> -- 1er janvier</li>
+    <li><strong>MLK Day</strong> -- 3e lundi de janvier</li>
+    <li><strong>Presidents' Day</strong> -- 3e lundi de fevrier</li>
+    <li><strong>Good Friday</strong> -- vendredi avant Paques</li>
+    <li><strong>Memorial Day</strong> -- dernier lundi de mai</li>
+    <li><strong>Independence Day</strong> -- 4 juillet</li>
+    <li><strong>Labor Day</strong> -- 1er lundi de septembre</li>
+    <li><strong>Thanksgiving</strong> -- 4e jeudi de novembre</li>
+    <li><strong>Christmas</strong> -- 25 decembre</li>
+  </ul>
+
+  <p>Attention egalement aux <strong>demi-jours</strong> (veilles de feries) ou les marches ferment tot. Le volume chute des le matin et les conditions deviennent similaires a un bank holiday.</p>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 8 : CORRELATION SESSIONS/BIAIS -->
+<!-- ═══════════════════════════════════════ -->
+<section class="mod" id="correlation">
+  <div class="mod-head">
+    <span class="mod-tag">08</span>
+    <h2>Correlation Sessions et Biais</h2>
+  </div>
+
+  <p>Les sessions ne fonctionnent pas en isolation. Chaque session laisse des indices sur le comportement de la session suivante. Maitriser ces correlations transforme votre lecture du marche.</p>
+
+  <div class="sec">Matrice de Correlation Inter-Sessions</div>
+
+  <table class="tbl">
+    <tr>
+      <th>Condition</th>
+      <th>Interpretation</th>
+      <th>Action</th>
+    </tr>
+    <tr>
+      <td>Asia High intacte en fin de session</td>
+      <td>Marche <strong>fortement baissier</strong></td>
+      <td>Chercher des shorts en London/NY</td>
+    </tr>
+    <tr>
+      <td>Asia Low intacte en fin de session</td>
+      <td>Marche <strong>fortement haussier</strong></td>
+      <td>Chercher des longs en London/NY</td>
+    </tr>
+    <tr>
+      <td>London gros mouvement (>50% ADR)</td>
+      <td>NY AM probablement <strong>morte</strong></td>
+      <td>Reduire les attentes NY, profit rapide</td>
+    </tr>
+    <tr>
+      <td>London prend Asia High ET Asia Low</td>
+      <td>Journee <strong>choppy probable</strong></td>
+      <td>Ne pas trader ou reduire la taille</td>
+    </tr>
+    <tr>
+      <td>London range etroit, pas de sweep</td>
+      <td>NY AM sera <strong>explosive</strong></td>
+      <td>Preparer une entree NY agressive</td>
+    </tr>
+    <tr>
+      <td>NY AM atteint le target en 1h</td>
+      <td>PM sera en <strong>consolidation</strong></td>
+      <td>Ne pas trader le PM</td>
+    </tr>
+    <tr>
+      <td>NY AM ne produit rien avant 11h</td>
+      <td>Journee probablement <strong>morte</strong></td>
+      <td>Pas de trade, sauf Last Ditch exceptionnel</td>
+    </tr>
+  </table>
+
+  <div class="box box-em">
+    <div class="box-title">Lecture de l'Asia Range</div>
+    <p>L'Asia range est le barometre de la journee. Un <strong>range etroit</strong> (< 30% ADR) signale un mouvement violent a venir. Un <strong>range large</strong> (> 60% ADR) signale une journee potentiellement calme car le carburant a deja ete consomme.</p>
+  </div>
+
+  <div class="sec">Sequence Ideale de Trading</div>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-time">20:00 - 00:00 NY (Asia)</div>
+      <div class="tl-label">Observation et Marquage</div>
+      <p class="tl-desc">Marquer le range asiatique (High/Low). Identifier les niveaux de liquidite. Ne pas trader. Preparer le plan pour la journee suivante.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">02:00 - 05:00 NY (London)</div>
+      <div class="tl-label">Detection de la Manipulation</div>
+      <p class="tl-desc">Observer quel cote de l'Asia range est sweep. Ne pas entrer dans le sweep. Attendre la confirmation du reversal. Prendre note de la direction revelee.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">08:30 - 09:30 NY (Pre-Open)</div>
+      <div class="tl-label">Analyse Pre-Marche</div>
+      <p class="tl-desc">Evaluer le profil London. Definir les scenarios possibles pour NY. Marquer l'Opening Range a venir. Identifier les targets (DOL).</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">09:30 - 10:00 NY (OR)</div>
+      <div class="tl-label">Construction de l'Opening Range</div>
+      <p class="tl-desc">Observer la construction du range. Ne pas entrer pendant cette phase. Marquer le OR High et OR Low une fois la bougie de 30 minutes cloturee.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">10:00 - 11:10 NY (Execution)</div>
+      <div class="tl-label">Fenetre d'Execution Principale</div>
+      <p class="tl-desc">Attendre le sweep de l'OR. Confirmer avec la macro en cours (AM ou Last Ditch). Executer avec stop serree et target defini. C'est la fenetre la plus fiable de la journee.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">11:10 - 12:00 NY (Gestion)</div>
+      <div class="tl-label">Gestion de Position</div>
+      <p class="tl-desc">Si en position, gerer le trade. Prendre des profits partiels. Ne pas ouvrir de nouvelles positions. Preparer la sortie avant le lunch hour.</p>
+    </div>
+  </div>
+
+  <div class="sec">Checklist Temporelle de Trading</div>
+
+  <table class="tbl">
+    <tr>
+      <th>Checkpoint</th>
+      <th>Heure (NY)</th>
+      <th>Question a se Poser</th>
+    </tr>
+    <tr>
+      <td>Asia Range</td>
+      <td>00:00</td>
+      <td>Le range est-il etroit ou large ? Quel cote sera sweep ?</td>
+    </tr>
+    <tr>
+      <td>London Sweep</td>
+      <td>03:30</td>
+      <td>Quel cote de l'Asia a ete sweep ? Dans quelle direction va le vrai mouvement ?</td>
+    </tr>
+    <tr>
+      <td>Pre-NY Setup</td>
+      <td>08:00</td>
+      <td>London a-t-elle deja consomme le potentiel ? Quel profil NY est probable ?</td>
+    </tr>
+    <tr>
+      <td>OR Formation</td>
+      <td>10:00</td>
+      <td>Le OR est-il forme ? Le biais est-il aligne avec le sweep attendu ?</td>
+    </tr>
+    <tr>
+      <td>Macro Check</td>
+      <td>10:50</td>
+      <td>Le trade est-il en cours ? Faut-il attendre le Last Ditch ?</td>
+    </tr>
+    <tr>
+      <td>Fermeture AM</td>
+      <td>11:10</td>
+      <td>Le target est-il atteint ? Faut-il gerer ou sortir ?</td>
+    </tr>
+    <tr>
+      <td>Decision PM</td>
+      <td>13:00</td>
+      <td>Y a-t-il une raison valide de trader le PM ? Le target AM est-il inacheve ?</td>
+    </tr>
+  </table>
+
+  <div class="quote">
+    <p>Le temps est la variable la plus importante du trading. Un bon setup au mauvais moment est un mauvais trade. Un setup moyen au bon moment est souvent un trade gagnant. Maitriser le timing, c'est maitriser le marche.</p>
+    <cite>Algorithmic Academy — Sessions et Timing</cite>
+  </div>
+
+  <div class="box box-em">
+    <div class="box-title">Resume des Regles Temporelles</div>
+    <p><strong>1.</strong> Ne trader que dans les killzones.<br>
+    <strong>2.</strong> Utiliser les macros de 20 minutes comme fenetres d'entree.<br>
+    <strong>3.</strong> L'Opening Range est votre boussole pour NY AM.<br>
+    <strong>4.</strong> Le NDOG agit comme un aimant a prix, pas comme support/resistance.<br>
+    <strong>5.</strong> Le vendredi est un jour de retour, pas de tendance.<br>
+    <strong>6.</strong> Les news necessitent 30 minutes d'attente minimum.<br>
+    <strong>7.</strong> Les bank holidays sont des jours de repos obligatoires.<br>
+    <strong>8.</strong> Chaque session est un indice pour la suivante -- lisez le contexte.</p>
+  </div>
+</section>
+
+<footer id="footer">
+  <p>Sessions &amp; Timing — Formation Complete Algorithmic Academy — 8 Sections — 4 Bougies 6H, Killzones, Macros, Opening Range, NDOG, Profils, Regles Speciales, Correlations</p>
+  <p style="margin-top:8px;color:var(--border)">Le trading comporte des risques. Ce cours est educatif uniquement.</p>
+</footer>
+
+</main>
+
+<script>
+// Progress bar
+const pf = document.getElementById('pfill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  pf.style.width = (window.scrollY / h * 100) + '%';
+}, { passive: true });
+
+// Fade in modules
+const io = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.05 });
+document.querySelectorAll('.mod').forEach(m => io.observe(m));
+
+// Active nav
+const secs = [...document.querySelectorAll('[id]')];
+const links = document.querySelectorAll('.sb-link');
+function updateNav() {
+  const y = window.scrollY + 110;
+  let cur = secs[0]?.id;
+  for (const s of secs) { if (s.offsetTop <= y) cur = s.id; }
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>

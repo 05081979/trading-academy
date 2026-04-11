@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="premium">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Cycles Temporels: Quarterly Theory Avancee & Temps Algorithmique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Barlow+Condensed:wght@400;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="../auth.js"></script>
+<style>
+:root {
+  --bg:      #040C06;
+  --bg2:     #081808;
+  --bg3:     #0D250F;
+  --border:  #13401A;
+  --cyan:    #00FFA3;
+  --cyan2:   #00FFB8;
+  --cyan-d:  #008855;
+  --violet:  #7BFF5F;
+  --violet2: #A0FF8C;
+  --amber:   #FFB340;
+  --amber2:  #FFD070;
+  --green:   #00E896;
+  --red:     #FF4D6D;
+  --muted:   #1D5530;
+  --text:    #D0FFE8;
+  --text-d:  #5AA87F;
+  --orb:     'Orbitron', monospace;
+  --bar:     'Barlow', sans-serif;
+  --barc:    'Barlow Condensed', sans-serif;
+  --fira:    'Fira Code', monospace;
+  --sw: 260px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--bar); line-height: 1.75; display: flex; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--cyan-d); }
+
+/* ── SIDEBAR ───────────────────────────── */
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 100;
+}
+
+.sb-logo {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+.logo-mark {
+  width: 44px; height: 44px;
+  border: 2px solid var(--cyan);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--orb); font-size: 1rem; font-weight: 700;
+  color: var(--cyan); margin-bottom: 12px;
+  box-shadow: 0 0 12px rgba(0,255,163,.25), inset 0 0 12px rgba(0,255,163,.05);
+  animation: pulse-ring 3s ease-in-out infinite;
+}
+
+@keyframes pulse-ring {
+  0%, 100% { box-shadow: 0 0 12px rgba(0,255,163,.25), inset 0 0 12px rgba(0,255,163,.05); }
+  50%       { box-shadow: 0 0 20px rgba(0,255,163,.45), inset 0 0 20px rgba(0,255,163,.1); }
+}
+
+.sb-logo h1 {
+  font-family: var(--orb);
+  font-size: 0.72rem; font-weight: 700;
+  color: var(--cyan); letter-spacing: 0.08em;
+  line-height: 1.3;
+}
+.sb-logo p {
+  font-family: var(--barc);
+  font-size: 0.68rem; font-weight: 400;
+  color: var(--text-d); letter-spacing: 0.06em;
+  margin-top: 3px;
+}
+
+.sb-section {
+  font-family: var(--orb); font-size: 0.55rem; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); padding: 14px 20px 4px;
+}
+
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 20px; text-decoration: none;
+  color: var(--text-d); font-family: var(--barc);
+  font-size: 0.8rem; font-weight: 400;
+  border-left: 2px solid transparent;
+  transition: all 0.15s; letter-spacing: 0.02em;
+}
+.sb-link:hover { background: rgba(0,255,163,.05); color: var(--text); }
+.sb-link.active { background: rgba(0,255,163,.08); color: var(--cyan); border-left-color: var(--cyan); }
+
+.sb-link .n {
+  font-family: var(--fira); font-size: 0.6rem;
+  color: var(--muted); min-width: 20px;
+}
+.sb-link.active .n { color: var(--cyan); }
+
+/* ── PROGRESS ──────────────────────────── */
+#pbar { position: fixed; top: 0; left: var(--sw); right: 0; height: 2px; background: var(--border); z-index: 200; }
+#pfill { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--violet), var(--amber)); width: 0%; transition: width .1s linear; }
+
+/* ── MAIN ──────────────────────────────── */
+#main { margin-left: var(--sw); flex: 1; min-height: 100vh; }
+
+/* ── HERO ──────────────────────────────── */
+#hero {
+  position: relative; overflow: hidden;
+  padding: 72px 60px 64px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,255,163,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,163,.03) 1px, transparent 1px);
+  background-size: 36px 36px;
+  pointer-events: none;
+}
+
+.hero-circle {
+  position: absolute; right: -80px; top: -80px;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,255,163,.06);
+  box-shadow: 0 0 80px rgba(0,255,163,.04);
+  pointer-events: none;
+}
+.hero-circle2 {
+  position: absolute; right: -20px; top: -20px;
+  width: 360px; height: 360px;
+  border-radius: 50%;
+  border: 1px solid rgba(123,255,95,.08);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(0,255,163,.08);
+  border: 1px solid rgba(0,255,163,.25);
+  color: var(--cyan); font-family: var(--orb);
+  font-size: 0.6rem; font-weight: 600;
+  letter-spacing: 0.15em; padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+
+#hero h1 {
+  font-family: var(--orb);
+  font-size: clamp(2rem, 4.5vw, 3.8rem);
+  font-weight: 900; line-height: 1.05; color: #fff;
+  max-width: 680px; margin-bottom: 6px; letter-spacing: -0.01em;
+}
+
+#hero h1 span {
+  display: block;
+  background: linear-gradient(90deg, var(--cyan), var(--violet2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+#hero .subtitle {
+  font-family: var(--barc); font-size: 1rem; font-weight: 400;
+  color: var(--text-d); max-width: 520px; margin-bottom: 42px;
+  line-height: 1.8; letter-spacing: 0.02em;
+}
+
+.hero-metrics {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 10px; max-width: 700px;
+}
+
+.metric {
+  background: rgba(255,255,255,.02);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px 16px;
+  transition: border-color 0.2s;
+}
+.metric:hover { border-color: rgba(0,255,163,.3); }
+.metric .v {
+  font-family: var(--orb); font-size: 1.2rem; font-weight: 700;
+  line-height: 1; margin-bottom: 5px;
+}
+.metric .l {
+  font-family: var(--barc); font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-d);
+}
+
+/* ── MODULE ────────────────────────────── */
+.mod {
+  padding: 60px; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.mod.vis { opacity: 1; transform: none; }
+
+.mod-head {
+  display: flex; align-items: flex-start; gap: 16px; margin-bottom: 36px;
+}
+
+.mod-tag {
+  font-family: var(--orb); font-size: 0.58rem; font-weight: 600;
+  color: var(--cyan); background: rgba(0,255,163,.08);
+  border: 1px solid rgba(0,255,163,.2);
+  padding: 4px 12px; border-radius: 4px;
+  white-space: nowrap; margin-top: 8px; letter-spacing: 0.1em;
+}
+
+.mod-head h2 {
+  font-family: var(--barc); font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+  font-weight: 700; color: #fff; line-height: 1.1; letter-spacing: 0.01em;
+}
+
+/* ── SECTION ───────────────────────────── */
+.sec {
+  font-family: var(--barc); font-size: 1.05rem; font-weight: 700;
+  color: var(--cyan); margin: 38px 0 14px;
+  display: flex; align-items: center; gap: 10px;
+  letter-spacing: 0.04em;
+}
+.sec::before {
+  content: '//';
+  font-family: var(--fira); font-size: 0.85rem;
+  color: rgba(0,255,163,.4); flex-shrink: 0;
+}
+
+.subsec {
+  font-family: var(--barc); font-size: 0.95rem; font-weight: 700;
+  color: var(--text); margin: 22px 0 8px; letter-spacing: 0.03em;
+}
+
+p { font-size: 0.93rem; color: var(--text-d); line-height: 1.85; margin-bottom: 12px; }
+p strong { color: var(--text); font-weight: 600; }
+em { color: var(--cyan); font-style: italic; }
+
+/* ── CALLOUTS ──────────────────────────── */
+.box {
+  border-radius: 8px; padding: 18px 22px; margin: 16px 0;
+  border-left: 3px solid; position: relative; overflow: hidden;
+}
+.box::before {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(255,255,255,.015); pointer-events: none;
+}
+.box-cy { border-color: var(--cyan);   background: rgba(0,255,163,.04); }
+.box-vi { border-color: var(--violet); background: rgba(123,255,95,.05); }
+.box-am { border-color: var(--amber);  background: rgba(255,179,64,.05); }
+.box-re { border-color: var(--red);    background: rgba(255,77,109,.05); }
+.box-gr { border-color: var(--green);  background: rgba(0,232,150,.04); }
+
+.box-title {
+  font-family: var(--orb); font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px;
+}
+.box-cy .box-title  { color: var(--cyan); }
+.box-vi .box-title  { color: var(--violet2); }
+.box-am .box-title  { color: var(--amber2); }
+.box-re .box-title  { color: #FF8FA3; }
+.box-gr .box-title  { color: var(--green); }
+.box p { margin: 0; font-size: 0.88rem; }
+
+/* ── LISTS ─────────────────────────────── */
+ul.cl { list-style: none; margin: 10px 0 16px; display: flex; flex-direction: column; gap: 7px; }
+ul.cl li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 0.88rem; color: var(--text-d); line-height: 1.65;
+}
+ul.cl li::before {
+  content: '|>'; color: var(--cyan); font-size: 0.6rem;
+  margin-top: 4px; flex-shrink: 0; font-family: var(--fira);
+}
+ul.cl li strong { color: var(--text); }
+
+ol.nl { counter-reset: nl; margin: 10px 0 16px; display: flex; flex-direction: column; gap: 8px; }
+ol.nl li {
+  counter-increment: nl;
+  display: flex; align-items: flex-start; gap: 13px;
+  font-size: 0.88rem; color: var(--text-d); line-height: 1.65;
+}
+ol.nl li::before {
+  content: counter(nl, decimal-leading-zero);
+  font-family: var(--fira); font-size: 0.7rem; color: var(--cyan);
+  background: rgba(0,255,163,.08); border: 1px solid rgba(0,255,163,.2);
+  padding: 2px 7px; border-radius: 4px; flex-shrink: 0; margin-top: 1px;
+}
+
+/* ── TABLE ─────────────────────────────── */
+.tbl { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.85rem; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+.tbl th { background: rgba(0,255,163,.07); color: var(--cyan); font-family: var(--orb); font-weight: 600; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 16px; text-align: left; border-bottom: 1px solid rgba(0,255,163,.15); }
+.tbl td { padding: 9px 16px; color: var(--text-d); border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+.tbl td:first-child { color: var(--text); font-weight: 600; font-size: 0.82rem; font-family: var(--barc); white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(0,255,163,.02); }
+
+/* ── SEQUENCE DIAGRAM ──────────────────── */
+.seq {
+  display: flex; align-items: center; gap: 8px;
+  margin: 14px 0; flex-wrap: wrap;
+}
+.seq-step {
+  display: flex; align-items: center; gap: 8px;
+}
+.seq-node {
+  font-family: var(--fira); font-size: 0.82rem; font-weight: 600;
+  padding: 6px 14px; border-radius: 6px; border: 1px solid;
+  white-space: nowrap;
+}
+.seq-arrow { color: var(--text-d); font-size: 1.2rem; }
+.sn-cy { background: rgba(0,255,163,.1); border-color: rgba(0,255,163,.3); color: var(--cyan); }
+.sn-vi { background: rgba(123,255,95,.1); border-color: rgba(123,255,95,.3); color: var(--violet2); }
+.sn-am { background: rgba(255,179,64,.1); border-color: rgba(255,179,64,.3); color: var(--amber2); }
+.sn-gr { background: rgba(0,232,150,.1); border-color: rgba(0,232,150,.3); color: var(--green); }
+.sn-re { background: rgba(255,77,109,.1); border-color: rgba(255,77,109,.3); color: #FF8FA3; }
+
+/* ── CHECKLIST ──────────────────────────── */
+.ck-list { display: flex; flex-direction: column; gap: 5px; margin: 14px 0; }
+.ck {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 9px 14px;
+  background: rgba(255,255,255,.016);
+  border: 1px solid var(--border);
+  border-radius: 7px; cursor: pointer;
+  transition: all 0.15s; user-select: none;
+}
+.ck:hover { border-color: rgba(0,232,150,.3); background: rgba(0,232,150,.02); }
+.ck.on { border-color: rgba(0,232,150,.25); background: rgba(0,232,150,.05); }
+.ck-box {
+  width: 16px; height: 16px;
+  border: 2px solid var(--muted); border-radius: 3px;
+  flex-shrink: 0; margin-top: 2px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.ck.on .ck-box { background: var(--green); border-color: var(--green); }
+.ck.on .ck-box::after { content: 'ok'; color: #000; font-size: 0.5rem; font-weight: 700; font-family: var(--fira); }
+.ck span { font-size: 0.85rem; color: var(--text-d); line-height: 1.6; }
+.ck.on span { color: var(--text); }
+
+/* ── QUOTE ─────────────────────────────── */
+.quote {
+  border-left: 3px solid var(--cyan);
+  padding: 24px 28px; margin: 28px 0;
+  background: rgba(0,255,163,.03);
+  border-radius: 0 8px 8px 0; position: relative;
+}
+.quote::before {
+  content: '"'; position: absolute; top: -8px; left: 14px;
+  font-family: var(--orb); font-size: 4rem; color: rgba(0,255,163,.12); line-height: 1;
+}
+.quote p {
+  font-family: var(--barc); font-size: 1.1rem; font-style: italic;
+  color: var(--text); margin: 0; line-height: 1.65; font-weight: 400;
+}
+.quote cite {
+  display: block; margin-top: 10px;
+  font-family: var(--orb); font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--cyan);
+}
+
+/* ── STATS ROW ──────────────────────────── */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
+.stat { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 16px 16px; text-align: center; }
+.stat .v { font-family: var(--orb); font-size: 1.6rem; font-weight: 700; line-height: 1; margin-bottom: 5px; }
+.stat .l { font-family: var(--barc); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-d); }
+
+/* ── QUARTER VISUAL ─────────────────────── */
+.q-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 4px; margin: 16px 0;
+}
+.q-card {
+  border-radius: 8px; padding: 14px 12px; text-align: center;
+  border: 1px solid; transition: transform 0.2s;
+}
+.q-card:hover { transform: translateY(-2px); }
+.q-card .q-name { font-family: var(--orb); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; margin-bottom: 6px; }
+.q-card .q-role { font-family: var(--barc); font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; line-height: 1.1; }
+.q-card .q-note { font-size: 0.7rem; opacity: 0.75; line-height: 1.3; }
+.qc-1 { background: rgba(0,255,163,.06); border-color: rgba(0,255,163,.2); color: var(--cyan); }
+.qc-2 { background: rgba(123,255,95,.07); border-color: rgba(123,255,95,.25); color: var(--violet2); }
+.qc-3 { background: rgba(255,179,64,.06); border-color: rgba(255,179,64,.2); color: var(--amber2); }
+.qc-4 { background: rgba(255,77,109,.05); border-color: rgba(255,77,109,.18); color: #FF8FA3; }
+
+/* ── FOOTER ─────────────────────────────── */
+#footer { padding: 44px 60px; text-align: center; border-top: 1px solid var(--border); }
+#footer p { font-family: var(--barc); color: var(--text-d); font-size: 0.8rem; margin: 0; }
+
+/* ── ANIMATIONS ──────────────────────────── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.hero-badge, #hero h1, #hero .subtitle, .hero-metrics { animation: fadeUp 0.6s ease both; }
+.hero-badge   { animation-delay: 0.1s; }
+#hero h1      { animation-delay: 0.2s; }
+#hero .subtitle { animation-delay: 0.32s; }
+.hero-metrics { animation-delay: 0.44s; }
+
+@media (max-width: 880px) {
+  :root { --sw: 0px; }
+  #sidebar { transform: translateX(-260px); }
+  #main { margin-left: 0; }
+  .mod, #hero { padding: 36px 20px; }
+  .hero-metrics, .stats { grid-template-columns: repeat(2,1fr); }
+  .q-grid { grid-template-columns: repeat(2,1fr); }
+}
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+<div id="pbar"><div id="pfill"></div></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="logo-mark">QT</div>
+    <h1>Cycles Temporels<br>GB TIME</h1>
+    <p>QUARTERLY THEORY AVANCEE</p>
+  </div>
+
+  <div class="sb-section">FONDATIONS</div>
+  <a class="sb-link active" href="#hero"><span class="n">00</span>Vue d'ensemble</a>
+  <a class="sb-link" href="#m1"><span class="n">01</span>QT Fondements</a>
+  <a class="sb-link" href="#m1-sessions"><span class="n">02</span>Sessions</a>
+  <a class="sb-link" href="#m1-opens"><span class="n">03</span>True Opens</a>
+
+  <div class="sb-section">PROFILS</div>
+  <a class="sb-link" href="#m2"><span class="n">04</span>AMDX</a>
+  <a class="sb-link" href="#m2-xamd"><span class="n">05</span>XAMD</a>
+  <a class="sb-link" href="#m2-id"><span class="n">06</span>Identification</a>
+
+  <div class="sb-section">GB TIME</div>
+  <a class="sb-link" href="#m3"><span class="n">07</span>Concept</a>
+  <a class="sb-link" href="#m3-calc"><span class="n">08</span>Calcul</a>
+  <a class="sb-link" href="#m3-algo"><span class="n">09</span>Algorithmes</a>
+  <a class="sb-link" href="#m3-track"><span class="n">10</span>Tracking</a>
+
+  <div class="sb-section">AOI</div>
+  <a class="sb-link" href="#m4"><span class="n">11</span>3 Types</a>
+  <a class="sb-link" href="#m4-inv"><span class="n">12</span>Invalidation</a>
+
+  <div class="sb-section">EXECUTION</div>
+  <a class="sb-link" href="#m5"><span class="n">13</span>Confirmation</a>
+  <a class="sb-link" href="#m5-entry"><span class="n">14</span>Entree</a>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+<!-- ══════ HERO ══════ -->
+<header id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-circle"></div>
+  <div class="hero-circle2"></div>
+
+  <div class="hero-badge">ALGORITHMIC ACADEMY — MODULE PREMIUM</div>
+  <h1>Cycles Temporels<br><span>Quarterly Theory Avancee &amp; Temps Algorithmique</span></h1>
+  <p class="subtitle">Quarterly Theory -- Profils AMDX/XAMD -- GB Time -- AOI -- Execution</p>
+
+  <div class="hero-metrics">
+    <div class="metric"><div class="v" style="color:var(--cyan)">QT</div><div class="l">Quarterly Theory</div></div>
+    <div class="metric"><div class="v" style="color:var(--violet2)">AMDX</div><div class="l">Profils</div></div>
+    <div class="metric"><div class="v" style="color:var(--amber2)">GB</div><div class="l">Numeric Time</div></div>
+    <div class="metric"><div class="v" style="color:var(--green)">AOI</div><div class="l">Area of Interest</div></div>
+    <div class="metric"><div class="v" style="color:#FF8FA3">EXE</div><div class="l">Execution</div></div>
+  </div>
+</header>
+
+
+<!-- ══════ MODULE 1 — FONDATIONS ══════ -->
+<section class="mod" id="m1">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 01</span>
+    <h2>Fondations — Quarterly Theory</h2>
+  </div>
+
+  <div class="box box-cy">
+    <div class="box-title">PRINCIPE FONDAMENTAL</div>
+    <p>Le temps est fractal. La meme logique de cycle se retrouve du cycle annuel jusqu'au cycle de 22 secondes. Chaque unite de temps se divise en 4 quarters avec des roles predefinis et repetitifs.</p>
+  </div>
+
+  <div class="sec">Les 4 Quarters</div>
+  <p>Chaque cycle temporel — annee, trimestre, mois, semaine, jour, session, micro-session — se decompose en <strong>4 quarters</strong> de duree egale. Chaque quarter a un role specifique dans le deploiement algorithmique du prix.</p>
+
+  <div class="q-grid">
+    <div class="q-card qc-1">
+      <div class="q-name">Q1</div>
+      <div class="q-role">Accumulation</div>
+      <div class="q-note">Consolidation, range initial, construction de positions</div>
+    </div>
+    <div class="q-card qc-2">
+      <div class="q-name">Q2</div>
+      <div class="q-role">Manipulation</div>
+      <div class="q-note">Faux mouvement, sweep de liquidite, piege directionnel</div>
+    </div>
+    <div class="q-card qc-3">
+      <div class="q-name">Q3</div>
+      <div class="q-role">Distribution</div>
+      <div class="q-note">Vrai mouvement, expansion vers la target</div>
+    </div>
+    <div class="q-card qc-4">
+      <div class="q-name">Q4</div>
+      <div class="q-role">X (Completion/Reversal)</div>
+      <div class="q-note">Finalisation ou retournement selon Q3</div>
+    </div>
+  </div>
+
+  <table class="tbl">
+    <thead>
+      <tr><th>Timeframe du Cycle</th><th>Duree Totale</th><th>Duree par Quarter</th><th>Application</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Annuel</td><td>12 mois</td><td>3 mois</td><td>Biais macro, swing long terme</td></tr>
+      <tr><td>Trimestriel</td><td>3 mois</td><td>~22 jours</td><td>Swing trading</td></tr>
+      <tr><td>Mensuel</td><td>~20 jours</td><td>~5 jours</td><td>Position hebdomadaire</td></tr>
+      <tr><td>Hebdomadaire</td><td>5 jours</td><td>~30 heures</td><td>Biais de la semaine</td></tr>
+      <tr><td>Session (6h)</td><td>6 heures</td><td>90 minutes</td><td>Intraday principal</td></tr>
+      <tr><td>Quarter (90min)</td><td>90 minutes</td><td>22.5 minutes</td><td>Micro-execution</td></tr>
+      <tr><td>Micro</td><td>22.5 min</td><td>~5.6 min</td><td>Scalping precis</td></tr>
+      <tr><td>Nano</td><td>~5.6 min</td><td>~84 sec</td><td>Ultra-court terme</td></tr>
+      <tr><td>Ultime</td><td>~84 sec</td><td>~22 sec</td><td>Cycles atomiques</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec" id="m1-sessions">Sessions de 6 Heures</div>
+  <p>Le marche se decoupe en <strong>sessions de 6 heures</strong>. Chaque session contient 4 quarters de 90 minutes. Chaque quarter de 90 minutes contient 4 micro-quarters de 22.5 minutes. Cette fractalite est la base du systeme.</p>
+
+  <table class="tbl">
+    <thead>
+      <tr><th>Session</th><th>Horaire (Zurich)</th><th>Quarters 90min</th><th>Caracteristique</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Asie</td><td>00:00 — 06:00</td><td>Q1-Q4 intra-session</td><td>Accumulation, range etroit, preparation</td></tr>
+      <tr><td>Londres</td><td>06:00 — 12:00</td><td>Q1-Q4 intra-session</td><td>Manipulation principale, sweep Asia H/L</td></tr>
+      <tr><td>New York AM</td><td>12:00 — 18:00</td><td>Q1-Q4 intra-session</td><td>Distribution majeure, mouvement directionnel</td></tr>
+      <tr><td>New York PM</td><td>18:00 — 00:00</td><td>Q1-Q4 intra-session</td><td>X — completion ou reversal</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box box-vi">
+    <div class="box-title">FRACTALITE EN ACTION</div>
+    <p>A l'interieur d'un quarter de 90 minutes, les 4 micro-quarters de 22.5 minutes reproduisent exactement le meme schema AMD(X). Le Q2 micro sweep le high/low du Q1 micro, puis le Q3 micro livre le vrai mouvement.</p>
+  </div>
+
+  <div class="sec" id="m1-opens">True Opens</div>
+  <p>Le <strong>True Open</strong> est l'ouverture du Q2 de n'importe quel cycle. C'est le filtre premium/discount le plus important du systeme.</p>
+
+  <ul class="cl">
+    <li><strong>True Day Open</strong> — ouverture du Q2 de la journee (typiquement debut de session Londres)</li>
+    <li><strong>True Week Open</strong> — ouverture du Q2 de la semaine (typiquement mardi matin)</li>
+    <li><strong>True Month Open</strong> — ouverture du Q2 du mois</li>
+    <li><strong>True Session Open</strong> — ouverture du Q2 de chaque session de 6h</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">TRUE OPENS COMME TARGETS</div>
+    <p>Regle fondamentale : si le prix est <strong>sous</strong> le True Day Open, alors le True Day Open devient une <strong>target haussiere</strong>. Si le prix est <strong>au-dessus</strong>, il devient une target baissiere. Le prix tend toujours a revenir vers son True Open avant de continuer.</p>
+  </div>
+
+  <div class="subsec">Hierarchie des True Opens</div>
+  <table class="tbl">
+    <thead>
+      <tr><th>True Open</th><th>Cycle Parent</th><th>Poids</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>True Yearly Open</td><td>Annuel</td><td>Maximum</td><td>Biais macro annuel</td></tr>
+      <tr><td>True Quarterly Open</td><td>Trimestriel</td><td>Tres eleve</td><td>Swing multi-semaines</td></tr>
+      <tr><td>True Monthly Open</td><td>Mensuel</td><td>Eleve</td><td>Biais mensuel</td></tr>
+      <tr><td>True Weekly Open</td><td>Hebdomadaire</td><td>Standard</td><td>Biais de la semaine</td></tr>
+      <tr><td>True Day Open</td><td>Journalier</td><td>Intraday</td><td>Filtre premium/discount jour</td></tr>
+      <tr><td>True Session Open</td><td>Session 6h</td><td>Micro</td><td>Filtre intra-session</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ══════ MODULE 2 — PROFILS AMDX / XAMD ══════ -->
+<section class="mod" id="m2">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 02</span>
+    <h2>Profils AMDX et XAMD</h2>
+  </div>
+
+  <div class="sec">Market Maker Model — 3 Phases</div>
+  <p>Le modele fondamental du marche repose sur <strong>3 phases</strong> qui se repetent a l'infini sur toutes les unites de temps :</p>
+
+  <ol class="nl">
+    <li><strong>Accumulation</strong> — Les positions sont construites dans un range. Le volume augmente sans que le prix ne bouge significativement. Les ordres sont empiles.</li>
+    <li><strong>Manipulation</strong> — Un faux mouvement est provoque pour pieger les traders dans la mauvaise direction. La liquidite (stop-loss) est chassee au-dessus/dessous du range.</li>
+    <li><strong>Distribution</strong> — Le vrai mouvement se deploie. Le prix quitte le range dans la direction opposee a la manipulation. C'est la phase de profit.</li>
+  </ol>
+
+  <div class="box box-cy">
+    <div class="box-title">FRACTALITE DU MODELE</div>
+    <p>Sur une bougie horaire de distribution, on observe le meme schema AMD en 1 minute a l'interieur. Chaque expansion contient une micro-accumulation, une micro-manipulation, et une micro-distribution. C'est la definition meme de la fractalite du marche.</p>
+  </div>
+
+  <div class="sec">Profil AMDX</div>
+  <p>Le profil <strong>AMDX</strong> est la sequence standard ou les 4 quarters suivent l'ordre naturel :</p>
+
+  <div class="seq">
+    <div class="seq-step"><div class="seq-node sn-cy">Q1 — Accumulation</div></div>
+    <div class="seq-arrow">--></div>
+    <div class="seq-step"><div class="seq-node sn-vi">Q2 — Manipulation</div></div>
+    <div class="seq-arrow">--></div>
+    <div class="seq-step"><div class="seq-node sn-am">Q3 — Distribution</div></div>
+    <div class="seq-arrow">--></div>
+    <div class="seq-step"><div class="seq-node sn-re">Q4 — X</div></div>
+  </div>
+
+  <table class="tbl">
+    <thead>
+      <tr><th>Quarter</th><th>Role</th><th>Action du Prix</th><th>Duree (session 6h)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Q1</td><td>Accumulation</td><td>Range, consolidation, formation de liquidite</td><td>90 min</td></tr>
+      <tr><td>Q2</td><td>Manipulation</td><td>Sweep du high/low de Q1, faux breakout</td><td>90 min</td></tr>
+      <tr><td>Q3</td><td>Distribution</td><td>Expansion dans la vraie direction, target atteinte</td><td>90 min</td></tr>
+      <tr><td>Q4</td><td>X</td><td>Completion ou reversal (voir regle du X)</td><td>90 min</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box box-re">
+    <div class="box-title">REGLE DU X — Q4</div>
+    <p><strong>Si Q3 n'atteint PAS la target</strong> : Q4 complete le mouvement dans la meme direction. Le X est une extension.<br>
+    <strong>Si Q3 atteint la target</strong> : Q4 reverse. Le X est un retournement. Le profit est pris en Q3, Q4 prepare le cycle suivant.</p>
+  </div>
+
+  <div class="sec" id="m2-xamd">Profil XAMD</div>
+  <p>Le profil <strong>XAMD</strong> inverse l'ordre : le X vient en premier. C'est une variante ou la manipulation precede l'accumulation visible.</p>
+
+  <div class="seq">
+    <div class="seq-step"><div class="seq-node sn-re">Q1 — X</div></div>
+    <div class="seq-arrow">--></div>
+    <div class="seq-step"><div class="seq-node sn-cy">Q2 — Accumulation</div></div>
+    <div class="seq-arrow">--></div>
+    <div class="seq-step"><div class="seq-node sn-vi">Q3 — Manipulation</div></div>
+    <div class="seq-arrow">--></div>
+    <div class="seq-step"><div class="seq-node sn-am">Q4 — Distribution</div></div>
+  </div>
+
+  <ul class="cl">
+    <li><strong>Le X initial</strong> est souvent un mouvement rapide et agressif des les premieres minutes du cycle</li>
+    <li>L'accumulation suit dans un range cree par le X</li>
+    <li>La manipulation sweep la liquidite du range d'accumulation</li>
+    <li>La distribution livre le mouvement final</li>
+  </ul>
+
+  <div class="sec" id="m2-id">Identification des le Debut de Semaine</div>
+  <p>Determiner si le profil de la semaine est <strong>AMDX ou XAMD</strong> est crucial. Voici les signaux d'identification :</p>
+
+  <div class="subsec">Signaux XAMD (X en premier)</div>
+  <ol class="nl">
+    <li><strong>Mardi take out Monday High/Low</strong> — Si mardi sweep le high ou le low de lundi de maniere agressive, c'est un signal fort de XAMD. Le X (sweep) a eu lieu.</li>
+    <li><strong>SMT mensuel au point de sweep</strong> — Divergence entre actifs correles (ex: NQ vs ES) exactement au moment ou le high/low est pris. Confirmation que le sweep est un piege.</li>
+    <li><strong>Rejection + retournement visible</strong> — Apres le sweep, le prix rejette violemment et montre un retournement clair sur le graphique en 15min ou 1h.</li>
+    <li><strong>Mercredi continue direction opposee au sweep</strong> — Si mardi a sweep le high, mercredi est baissier. Si mardi a sweep le low, mercredi est haussier. Mercredi confirme le profil.</li>
+  </ol>
+
+  <div class="box box-gr">
+    <div class="box-title">CLE D'IDENTIFICATION</div>
+    <p>La question est simple : est-ce que le premier mouvement significatif de la semaine (lundi-mardi) est un sweep de liquidite (XAMD) ou une consolidation progressive (AMDX) ? La reponse dicte tout le plan de trading de la semaine.</p>
+  </div>
+
+  <div class="subsec">Tableau Comparatif</div>
+  <table class="tbl">
+    <thead>
+      <tr><th>Critere</th><th>AMDX</th><th>XAMD</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Debut de semaine</td><td>Lundi consolide, range etroit</td><td>Lundi/mardi mouvement agressif</td></tr>
+      <tr><td>Manipulation</td><td>Mardi : sweep du range de lundi</td><td>Mardi : sweep violent du high/low</td></tr>
+      <tr><td>Direction principale</td><td>Mercredi-jeudi = distribution</td><td>Mercredi = debut de distribution</td></tr>
+      <tr><td>Q4 (vendredi)</td><td>Completion/reversal</td><td>Distribution finale</td></tr>
+      <tr><td>Entree ideale</td><td>Mardi apres manipulation</td><td>Mardi apres le X</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ══════ MODULE 3 — GB TIME / NUMERIC TIME ══════ -->
+<section class="mod" id="m3">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 03</span>
+    <h2>GB Time / Numeric Time</h2>
+  </div>
+
+  <div class="box box-cy">
+    <div class="box-title">CONCEPT CENTRAL</div>
+    <p>GB Time est un systeme de <strong>temps algorithmique</strong> base sur l'heure de Zurich. Il convertit chaque horaire en un numero unique, permettant d'identifier des fenetres temporelles precises ou le prix est susceptible de reagir. Ce systeme remplace l'analyse subjective du timing par un calcul mathematique objectif.</p>
+  </div>
+
+  <div class="sec" id="m3-calc">Methode de Calcul</div>
+  <p>Le calcul est simple : additionner les <strong>heures</strong> et les <strong>minutes</strong> de l'heure de Zurich pour obtenir un numero GB Time.</p>
+
+  <div class="subsec">Formule</div>
+  <div class="box box-am">
+    <div class="box-title">CALCUL GB TIME</div>
+    <p><strong>Numero = Heures + Minutes</strong> (en heure de Zurich)<br>
+    Chaque numero a un <strong>buffer de +/- 1 minute</strong> de chaque cote.</p>
+  </div>
+
+  <div class="subsec">Exemples de Calcul</div>
+  <table class="tbl">
+    <thead>
+      <tr><th>Heure Zurich</th><th>Calcul</th><th>Numero GB</th><th>Fenetre (avec buffer)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>15h41</td><td>15 + 41</td><td>56</td><td>15:40 — 15:42</td></tr>
+      <tr><td>14h42</td><td>14 + 42</td><td>56</td><td>14:41 — 14:43</td></tr>
+      <tr><td>17h12</td><td>17 + 12</td><td>29</td><td>17:11 — 17:13</td></tr>
+      <tr><td>09h20</td><td>9 + 20</td><td>29</td><td>09:19 — 09:21</td></tr>
+      <tr><td>16h55</td><td>16 + 55</td><td>71</td><td>16:54 — 16:56</td></tr>
+      <tr><td>12h23</td><td>12 + 23</td><td>35</td><td>12:22 — 12:24</td></tr>
+      <tr><td>18h59</td><td>18 + 59</td><td>77</td><td>18:58 — 19:00</td></tr>
+      <tr><td>10h19</td><td>10 + 19</td><td>29</td><td>10:18 — 10:20</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box box-vi">
+    <div class="box-title">REMARQUE IMPORTANTE</div>
+    <p>Plusieurs horaires differents produisent le meme numero GB Time. C'est intentionnel : le systeme identifie des <strong>fenetres de confluence temporelle</strong> ou plusieurs cycles convergent vers le meme numero, augmentant la probabilite de reaction du prix.</p>
+  </div>
+
+  <div class="sec" id="m3-algo">Les Algorithmes — Paths</div>
+  <p>Le systeme utilise deux sequences algorithmiques (paths) de numeros. Chaque sequence definit l'ordre dans lequel les numeros GB Time sont actives au cours de la journee.</p>
+
+  <div class="subsec">Algorithme 1 — Path Complet</div>
+  <div class="box box-cy">
+    <div class="box-title">ALGORITHME 1</div>
+    <p>Sequence ordonnee de numeros GB Time. Chaque numero represente une fenetre temporelle potentielle de reaction du prix. Le path se parcourt dans l'ordre, et chaque numero actif est verifie en temps reel.</p>
+  </div>
+
+  <div class="subsec">Algorithme 2 — Path Complet</div>
+  <div class="box box-vi">
+    <div class="box-title">ALGORITHME 2</div>
+    <p>Second path algorithmique avec sa propre sequence de numeros. Les deux algorithmes fonctionnent en parallele et se complementent. Quand un numero apparait dans les deux paths simultanement, la confluence est maximale.</p>
+  </div>
+
+  <div class="subsec">Interchangeabilite des Nodes</div>
+  <table class="tbl">
+    <thead>
+      <tr><th>Paire</th><th>Type</th><th>Signification</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>71 / 77</td><td>Start/End Nodes</td><td>Interchangeables — l'un peut remplacer l'autre dans le path</td></tr>
+      <tr><td>29 / 35</td><td>Start/End Nodes</td><td>Interchangeables — l'un peut remplacer l'autre dans le path</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box box-am">
+    <div class="box-title">DIRECTION DES PATHS</div>
+    <p>Les paths se parcourent dans <strong>les deux directions</strong> : forward (dans l'ordre) ET backward (en sens inverse). Cela signifie qu'a tout moment de la journee, le prochain numero GB Time actif peut provenir d'un parcours forward ou backward du path.</p>
+  </div>
+
+  <div class="sec" id="m3-track">Algo Path Tracking en Temps Reel</div>
+  <p>Le tracking en temps reel consiste a suivre la progression des paths algorithmiques au fil de la journee. A chaque minute, le systeme verifie si l'heure actuelle correspond a un numero GB Time actif.</p>
+
+  <div class="subsec">Past Targets vs Future Targets</div>
+  <ul class="cl">
+    <li><strong>Past Targets</strong> — Numeros GB Time deja atteints dans la journee. Ils servent de reference : le prix les a deja "traites" et ne devrait plus y reagir de la meme maniere.</li>
+    <li><strong>Future Targets</strong> — Numeros GB Time a venir. Ce sont les fenetres temporelles ou le prix est susceptible de reagir prochainement. L'anticipation se fait sur ces numeros.</li>
+    <li><strong>Numero Actif</strong> — Le numero GB Time courant (avec son buffer de +/- 1 minute). C'est la fenetre dans laquelle un retournement, une expansion ou un sweep est le plus probable.</li>
+  </ul>
+
+  <div class="subsec">Lien entre GB Time et Inducement</div>
+  <div class="box box-re">
+    <div class="box-title">MACRO-INDUCED DRAWS ON LIQUIDITY</div>
+    <p>Quand un <strong>high ou low</strong> se forme dans une fenetre d'inducement ET que cette fenetre correspond a un numero GB Time actif, on obtient un "Macro-Induced Draw on Liquidity". Ce sont les niveaux de liquidite les plus puissants du systeme — la confluence temps + prix + liquidite est maximale.</p>
+  </div>
+
+  <ul class="cl">
+    <li><strong>Inducement classique</strong> — High/low forme dans une zone de liquidite connue (previous session H/L, equal highs/lows)</li>
+    <li><strong>GB Time Inducement</strong> — Le meme high/low se forme PENDANT un numero GB Time actif</li>
+    <li><strong>Confluence maximale</strong> — Inducement + GB Time + AOI au meme niveau = trade haute probabilite</li>
+  </ul>
+
+  <div class="subsec">Regles d'Anchor Valide</div>
+  <ol class="nl">
+    <li>L'anchor doit etre un swing high/low clairement identifiable</li>
+    <li>Il doit s'etre forme pendant ou a proximite immediate d'un numero GB Time</li>
+    <li>Le buffer de +/- 1 minute s'applique a l'anchor</li>
+    <li>Un anchor valide sur un numero de forte confluence (present dans les deux algos) a plus de poids</li>
+    <li>L'anchor reste valide tant que le prix ne l'a pas depasse et cloture au-dela</li>
+  </ol>
+</section>
+
+
+<!-- ══════ MODULE 4 — AOI & INVALIDATION ══════ -->
+<section class="mod" id="m4">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 04</span>
+    <h2>Area of Interest (AOI) &amp; Invalidation</h2>
+  </div>
+
+  <p>Les AOI (Areas of Interest) sont des zones de prix precises ou la probabilite de reaction est elevee. Le systeme identifie <strong>3 types d'AOI</strong>, classes par ordre de puissance.</p>
+
+  <div class="sec">TYPE 1 — Previous Quarter High/Low Deplace</div>
+  <div class="box box-cy">
+    <div class="box-title">AOI TYPE 1 — LE PLUS PUISSANT</div>
+    <p>Un AOI Type 1 se forme quand le prix a <strong>cloture a travers</strong> un Previous Quarter High ou Low (PQ H/L), ET que ce niveau n'a <strong>pas encore ete touche au midpoint</strong> avant la cassure.</p>
+  </div>
+
+  <ul class="cl">
+    <li><strong>Condition 1</strong> — Le prix doit avoir CLOTURE a travers le PQ H/L (pas seulement meche)</li>
+    <li><strong>Condition 2</strong> — Le midpoint entre le PQ H/L et le prix de cloture ne doit pas avoir ete touche avant la cassure</li>
+    <li><strong>Condition 3</strong> — Le PQ H/L doit etre "deplace" (shifted) — il ne coincide plus avec le level actuel</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">HIERARCHIE DES TIMEFRAMES</div>
+    <p>Plus le timeframe du quarter est eleve, plus la reaction a l'AOI Type 1 sera forte. Un AOI Type 1 sur un quarter hebdomadaire provoquera une reaction beaucoup plus importante qu'un AOI Type 1 sur un quarter de 90 minutes.</p>
+  </div>
+
+  <table class="tbl">
+    <thead>
+      <tr><th>TF du Quarter</th><th>Force de Reaction</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Trimestriel</td><td>Maximale</td><td>Reversal macro, swing long terme</td></tr>
+      <tr><td>Mensuel</td><td>Tres forte</td><td>Swing multi-semaines</td></tr>
+      <tr><td>Hebdomadaire</td><td>Forte</td><td>Position de la semaine</td></tr>
+      <tr><td>Session (6h)</td><td>Moderee</td><td>Trade intraday</td></tr>
+      <tr><td>Quarter (90min)</td><td>Standard</td><td>Scalp / micro-trade</td></tr>
+      <tr><td>Micro (22.5min)</td><td>Faible</td><td>Confirmation seulement</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">TYPE 2 — AOI Imbalance</div>
+  <div class="box box-vi">
+    <div class="box-title">AOI TYPE 2</div>
+    <p>Zone d'imbalance (FVG, desequilibre de prix) qui a <strong>deja ete referencee par le prix</strong> au moins une fois. Le fait que le prix soit revenu tester cette zone sans la combler entierement la transforme en AOI. Le prix est susceptible d'y reagir a nouveau.</p>
+  </div>
+
+  <ul class="cl">
+    <li>L'imbalance doit etre clairement visible sur le graphique (gap entre meches)</li>
+    <li>Le prix doit avoir deja touche ou penetre dans la zone sans la combler a 100%</li>
+    <li>La zone restante (non comblee) devient l'AOI Type 2</li>
+    <li>Validite reduite si le prix traverse completement la zone</li>
+  </ul>
+
+  <div class="sec">TYPE 3 — AOI Structurel</div>
+  <div class="box box-gr">
+    <div class="box-title">AOI TYPE 3</div>
+    <p>Zone de confluence structurelle : Order Block, Breaker Block, ou zone de mitigation qui coincide avec un niveau de Fibonacci significatif (0.618, 0.705, 0.786) du mouvement precedent. La confluence structure + fib cree l'AOI.</p>
+  </div>
+
+  <div class="sec" id="m4-inv">Invalidation</div>
+  <p>Chaque AOI a un <strong>niveau d'invalidation</strong> precis. Si le prix cloture au-dela de ce niveau, l'AOI n'est plus valide et le biais doit etre réévalue.</p>
+
+  <table class="tbl">
+    <thead>
+      <tr><th>Type d'AOI</th><th>Niveau d'Invalidation</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Type 1</td><td>Cloture au-dela du PQ H/L oppose</td><td>Annuler le trade, réévaluer le profil</td></tr>
+      <tr><td>Type 2</td><td>Comblement total de l'imbalance</td><td>L'AOI est consomme, chercher le prochain</td></tr>
+      <tr><td>Type 3</td><td>Cloture au-dela du high/low de l'OB</td><td>Structure cassee, attendre nouveau setup</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box box-re">
+    <div class="box-title">REGLE D'INVALIDATION STRICTE</div>
+    <p>L'invalidation est <strong>non-negociable</strong>. Quand un AOI est invalide, le trade est annule immediatement. Pas de rationalisation, pas de "je vais attendre encore un peu". La discipline sur les invalidations est ce qui separe les traders rentables des autres.</p>
+  </div>
+</section>
+
+
+<!-- ══════ MODULE 5 — APPLICATION INTRADAY & EXECUTION ══════ -->
+<section class="mod" id="m5">
+  <div class="mod-head">
+    <span class="mod-tag">MODULE 05</span>
+    <h2>Application Intraday &amp; Execution</h2>
+  </div>
+
+  <div class="sec">AMDX/XAMD sur Cycles 90min et Micro Sessions</div>
+  <p>Le meme modele AMDX/XAMD s'applique identiquement sur les cycles de 90 minutes et les micro-sessions de 22.5 minutes. La fractalite permet une execution precise a l'interieur de chaque quarter.</p>
+
+  <div class="subsec">Decomposition d'un Quarter de 90 Minutes</div>
+
+  <div class="q-grid">
+    <div class="q-card qc-1">
+      <div class="q-name">Q1 MICRO</div>
+      <div class="q-role">Accumulation</div>
+      <div class="q-note">0:00 — 22:30 du quarter. Range initial, positions construites</div>
+    </div>
+    <div class="q-card qc-2">
+      <div class="q-name">Q2 MICRO</div>
+      <div class="q-role">Manipulation</div>
+      <div class="q-note">22:30 — 45:00. Sweep du Q1 H/L micro. Faux mouvement</div>
+    </div>
+    <div class="q-card qc-3">
+      <div class="q-name">Q3 MICRO</div>
+      <div class="q-role">Distribution</div>
+      <div class="q-note">45:00 — 67:30. Vrai mouvement, expansion</div>
+    </div>
+    <div class="q-card qc-4">
+      <div class="q-name">Q4 MICRO</div>
+      <div class="q-role">X</div>
+      <div class="q-note">67:30 — 90:00. Completion ou reversal</div>
+    </div>
+  </div>
+
+  <table class="tbl">
+    <thead>
+      <tr><th>Micro-Quarter</th><th>Duree</th><th>Role</th><th>Action Typique</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Q1 (22.5min)</td><td>Minute 0 a 22:30</td><td>Accumulation</td><td>Observer le range, identifier H/L, ne pas entrer</td></tr>
+      <tr><td>Q2 (22.5min)</td><td>Minute 22:30 a 45:00</td><td>Manipulation</td><td>Sweep du Q1 H/L, attendre la confirmation de rejet</td></tr>
+      <tr><td>Q3 (22.5min)</td><td>Minute 45:00 a 67:30</td><td>Distribution</td><td>Entrer sur la confirmation, gerer le trade</td></tr>
+      <tr><td>Q4 (22.5min)</td><td>Minute 67:30 a 90:00</td><td>X</td><td>Take profit si target atteinte, ou laisser courir</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec" id="m5-entry">Confirmation et Entree</div>
+
+  <div class="subsec">Checklist de Confirmation Pre-Entree</div>
+  <div class="ck-list">
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>Profil identifie</strong> — AMDX ou XAMD determine pour le cycle en cours (session, semaine)</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>Quarter actuel identifie</strong> — Savoir dans quel Q on se trouve et quel est le role attendu</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>True Open positionne</strong> — Prix au-dessus ou en-dessous du True Open du cycle ? Premium ou discount ?</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>GB Time actif</strong> — Un numero GB Time est dans sa fenetre active (avec buffer +/- 1 min)</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>AOI identifie</strong> — Au moins un AOI (Type 1, 2 ou 3) est present dans la zone d'entree</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>Sweep confirme</strong> — La liquidite (Q1 H/L, previous session H/L) a ete prise</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>Invalidation definie</strong> — Niveau de stop-loss clair base sur l'invalidation de l'AOI</span></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><span><strong>Target definie</strong> — Objectif de profit base sur le True Open, le prochain AOI ou le PQ H/L</span></div>
+  </div>
+
+  <div class="subsec">Sequence d'Entree Optimale</div>
+  <ol class="nl">
+    <li><strong>Attendre Q2</strong> — Ne jamais entrer pendant Q1. Laisser l'accumulation se former.</li>
+    <li><strong>Observer le sweep</strong> — Q2 doit sweep le Q1 H/L. Si pas de sweep, pas de setup.</li>
+    <li><strong>Chercher la confirmation</strong> — Apres le sweep : rejection visible, CISD, ou MSB sur le timeframe d'execution.</li>
+    <li><strong>Verifier GB Time</strong> — Le sweep/rejection coincide-t-il avec un numero GB Time actif ? Si oui, confluence maximale.</li>
+    <li><strong>Verifier l'AOI</strong> — Le prix est-il dans ou pres d'un AOI ? Type 1 = meilleur setup.</li>
+    <li><strong>Entrer en Q3</strong> — L'entree se fait au debut de Q3, apres confirmation. Le stop est sous/au-dessus du point de sweep.</li>
+    <li><strong>Gerer en Q3-Q4</strong> — Take profit partiel en Q3 si target atteinte. Laisser runner si Q4 est une extension.</li>
+  </ol>
+
+  <div class="box box-cy">
+    <div class="box-title">CONFLUENCE MAXIMALE</div>
+    <p>Le trade de plus haute probabilite reunit les 4 elements du Cycles Temporels simultanement : <strong>Quarter correct</strong> (Q2-Q3 transition) + <strong>Profil confirme</strong> (AMDX/XAMD) + <strong>GB Time actif</strong> (numero dans la fenetre) + <strong>AOI present</strong> (Type 1 ideal). Quand ces 4 elements convergent, le trade a le plus fort taux de reussite.</p>
+  </div>
+
+  <div class="subsec">Matrice de Confluence</div>
+  <table class="tbl">
+    <thead>
+      <tr><th>Elements Confluents</th><th>Niveau</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>4/4 (QT + Profil + GB + AOI)</td><td>A+ Setup</td><td>Entrer avec conviction, position pleine</td></tr>
+      <tr><td>3/4</td><td>A Setup</td><td>Entrer avec position reduite</td></tr>
+      <tr><td>2/4</td><td>B Setup</td><td>A eviter sauf experience avancee</td></tr>
+      <tr><td>1/4</td><td>Pas de trade</td><td>Ne pas entrer, attendre meilleure confluence</td></tr>
+    </tbody>
+  </table>
+
+  <div class="subsec">Erreurs Courantes a Eviter</div>
+  <div class="box box-re">
+    <div class="box-title">ERREURS FATALES</div>
+    <p><strong>1.</strong> Entrer pendant Q1 (pas encore de direction confirmee)<br>
+    <strong>2.</strong> Ignorer le True Open (trader contre le filtre premium/discount)<br>
+    <strong>3.</strong> Forcer un trade sans GB Time actif (timing subjectif)<br>
+    <strong>4.</strong> Ignorer l'invalidation de l'AOI (refuser de couper la perte)<br>
+    <strong>5.</strong> Confondre AMDX et XAMD (mauvaise lecture du debut de semaine)<br>
+    <strong>6.</strong> Trader Q4 sans comprendre la regle du X (direction incertaine)</p>
+  </div>
+
+  <div class="quote">
+    <p>Le temps et le prix sont des fractales. Quand on combine l'axe X (temps) avec l'axe Y (prix), on commence a voir le marche d'une maniere completement differente des autres traders. Une fois qu'on a vu ca, il n'y a pas de retour en arriere.</p>
+    <cite>Cycles Temporels — QUARTERLY THEORY AVANCEE</cite>
+  </div>
+
+  <div class="subsec">Resume du Systeme Cycles Temporels</div>
+  <div class="stats">
+    <div class="stat"><div class="v" style="color:var(--cyan)">4</div><div class="l">Quarters par Cycle</div></div>
+    <div class="stat"><div class="v" style="color:var(--violet2)">2</div><div class="l">Profils (AMDX/XAMD)</div></div>
+    <div class="stat"><div class="v" style="color:var(--amber2)">2</div><div class="l">Algos GB Time</div></div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="v" style="color:var(--green)">3</div><div class="l">Types d'AOI</div></div>
+    <div class="stat"><div class="v" style="color:#FF8FA3">9</div><div class="l">Niveaux Fractals</div></div>
+    <div class="stat"><div class="v" style="color:var(--cyan)">4</div><div class="l">Elements de Confluence</div></div>
+  </div>
+</section>
+
+
+<footer id="footer">
+  <p>Cycles Temporels — Quarterly Theory Avancee -- GB Time -- AMDX/XAMD -- AOI -- 5 Modules -- Temps Algorithmique -- Fractalite</p>
+  <p style="margin-top:7px;color:var(--border)">Ce cours est educatif uniquement. Le trading comporte des risques importants.</p>
+</footer>
+</main>
+
+<script>
+const pf = document.getElementById('pfill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  pf.style.width = (window.scrollY / h * 100) + '%';
+}, { passive: true });
+
+const io = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.04 });
+document.querySelectorAll('.mod').forEach(m => io.observe(m));
+
+const secs = [...document.querySelectorAll('[id]')];
+const links = document.querySelectorAll('.sb-link');
+function nav() {
+  const y = window.scrollY + 100;
+  let cur = secs[0]?.id;
+  for (const s of secs) { if (s.offsetTop <= y) cur = s.id; }
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}
+window.addEventListener('scroll', nav, { passive: true });
+nav();
+</script>
+<script src="../nav.js"></script>
+</body>
+</html>

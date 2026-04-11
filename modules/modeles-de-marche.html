@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="premium">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Modeles de Marche</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0C0F0A;
+  --bg2:      #111510;
+  --bg3:      #181D14;
+  --border:   #1F2A1A;
+  --em:       #3D7A3A;
+  --em2:      #56A853;
+  --em-light: #A3D9A1;
+  --em-pale:  #E8F5E8;
+  --amber:    #D4882A;
+  --amber-l:  #F5C56A;
+  --red:      #C9453A;
+  --blue:     #4A90B8;
+  --muted:    #3A4535;
+  --text:     #DDE8D8;
+  --text-dim: #7D9478;
+  --serif:    'Playfair Display', serif;
+  --sans:     'Syne', sans-serif;
+  --body:     'Source Serif 4', serif;
+  --mono:     'Roboto Mono', monospace;
+  --sw: 270px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.75; display: flex; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 100;
+}
+
+.sb-logo {
+  padding: 28px 22px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sb-logo .mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--em), var(--em2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(61,122,58,.3);
+}
+
+.sb-logo h1 {
+  font-family: var(--serif);
+  font-size: 1.05rem; font-weight: 700;
+  color: var(--em-light); line-height: 1.25;
+}
+
+.sb-logo p {
+  font-family: var(--sans);
+  font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-dim); margin-top: 4px;
+}
+
+.sb-section {
+  font-family: var(--sans); font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); padding: 16px 22px 5px;
+}
+
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 22px; text-decoration: none;
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 500;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.sb-link:hover { background: rgba(86,168,83,.06); color: var(--text); }
+.sb-link.active { background: rgba(86,168,83,.1); color: var(--em-light); border-left-color: var(--em2); }
+
+.sb-link .n {
+  font-family: var(--mono); font-size: 0.62rem; font-weight: 500;
+  color: var(--muted); min-width: 22px;
+}
+.sb-link.active .n { color: var(--em2); }
+
+#pbar {
+  position: fixed; top: 0; left: var(--sw); right: 0;
+  height: 2px; background: var(--border); z-index: 200;
+}
+#pfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--em), var(--em2), var(--amber));
+  width: 0%; transition: width 0.1s linear;
+}
+
+#main { margin-left: var(--sw); flex: 1; min-height: 100vh; }
+
+#hero {
+  position: relative; overflow: hidden;
+  padding: 80px 64px 72px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-noise {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-lines {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 20px,
+    rgba(61,122,58,.04) 20px, rgba(61,122,58,.04) 21px
+  );
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(86,168,83,.12);
+  border: 1px solid rgba(86,168,83,.3);
+  color: var(--em-light);
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+
+#hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 5.5vw, 5rem);
+  line-height: 1.0;
+  color: #fff;
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+#hero h1 .em {
+  display: block;
+  background: linear-gradient(90deg, var(--em2), var(--em-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+#hero .sub {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 400;
+  color: var(--text-dim); max-width: 560px; margin-bottom: 44px;
+  line-height: 1.8;
+}
+
+.hero-kpis {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 14px; max-width: 660px;
+}
+
+.kpi {
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+}
+.kpi:hover { border-color: rgba(86,168,83,.35); }
+
+.kpi-v {
+  font-family: var(--mono);
+  font-size: 1.5rem; font-weight: 500;
+  color: var(--em-light); line-height: 1;
+  margin-bottom: 5px;
+}
+.kpi-l {
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.mod {
+  padding: 64px; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.mod.vis { opacity: 1; transform: none; }
+
+.mod-head {
+  display: flex; align-items: flex-start; gap: 18px;
+  margin-bottom: 40px;
+}
+
+.mod-tag {
+  font-family: var(--mono); font-size: 0.65rem; font-weight: 500;
+  color: var(--em2);
+  background: rgba(86,168,83,.1);
+  border: 1px solid rgba(86,168,83,.22);
+  padding: 5px 12px; border-radius: 6px;
+  white-space: nowrap; margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+.mod-head h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: #fff; line-height: 1.1;
+}
+
+.sec {
+  font-family: var(--sans); font-size: 1.1rem; font-weight: 700;
+  color: var(--em-light);
+  margin: 42px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+  display: flex; align-items: center; gap: 10px;
+}
+.sec::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 18px;
+  background: linear-gradient(var(--em), var(--em2));
+  border-radius: 2px; flex-shrink: 0;
+}
+
+.subsec {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 700;
+  color: var(--text); margin: 26px 0 10px;
+}
+
+p {
+  font-size: 0.95rem; color: var(--text-dim);
+  line-height: 1.85; margin-bottom: 12px;
+}
+p strong { color: var(--text); font-weight: 600; }
+em { color: var(--em-light); font-style: italic; }
+
+.box {
+  border-radius: 10px; padding: 20px 24px;
+  margin: 18px 0; border-left: 3px solid;
+  background: rgba(255,255,255,.022);
+}
+.box-em  { border-color: var(--em2);  background: rgba(86,168,83,.06); }
+.box-am  { border-color: var(--amber); background: rgba(212,136,42,.06); }
+.box-re  { border-color: var(--red);   background: rgba(201,69,58,.06); }
+.box-bl  { border-color: var(--blue);  background: rgba(74,144,184,.06); }
+
+.box-title {
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 7px;
+}
+.box-em .box-title  { color: var(--em-light); }
+.box-am .box-title  { color: var(--amber-l); }
+.box-re .box-title  { color: #FCA5A5; }
+.box-bl .box-title  { color: #93C5FD; }
+.box p { margin: 0; font-size: 0.88rem; }
+
+ul.cl { list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 8px; }
+ul.cl li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ul.cl li::before {
+  content: '>'; color: var(--em2); font-size: 1rem;
+  margin-top: 1px; flex-shrink: 0;
+}
+ul.cl li strong { color: var(--text); }
+
+ol.nl { counter-reset: nl; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 9px; }
+ol.nl li {
+  counter-increment: nl;
+  display: flex; align-items: flex-start; gap: 13px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ol.nl li::before {
+  content: counter(nl);
+  background: rgba(86,168,83,.15);
+  border: 1px solid rgba(86,168,83,.28);
+  color: var(--em-light);
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+}
+
+.grid-2 {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; margin: 18px 0;
+}
+
+.phase-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 22px;
+  transition: border-color 0.2s;
+}
+.phase-card:hover { border-color: rgba(86,168,83,.35); }
+.phase-card .phase-num {
+  font-family: var(--mono); font-size: 0.65rem;
+  color: var(--em2); letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+.phase-card h4 {
+  font-family: var(--sans); font-size: 0.92rem; font-weight: 700;
+  color: var(--em-light); margin-bottom: 8px;
+}
+.phase-card p { font-size: 0.85rem; margin: 0; }
+
+.timeline {
+  position: relative;
+  margin: 24px 0 24px 18px;
+  padding-left: 28px;
+  border-left: 2px solid var(--border);
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 22px;
+}
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -35px; top: 6px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--em2);
+  border: 2px solid var(--bg);
+}
+.timeline-item h4 {
+  font-family: var(--sans); font-size: 0.88rem; font-weight: 700;
+  color: var(--em-light); margin-bottom: 4px;
+}
+.timeline-item p { font-size: 0.85rem; margin: 0; }
+
+footer {
+  padding: 40px 64px;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem; color: var(--text-dim);
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  :root { --sw: 0px; }
+  #sidebar { display: none; }
+  #main { margin-left: 0; }
+  .mod { padding: 36px 20px; }
+  #hero { padding: 50px 20px 40px; }
+  .hero-kpis { grid-template-columns: repeat(2, 1fr); }
+  .grid-2 { grid-template-columns: 1fr; }
+}
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+
+<aside id="sidebar">
+  <div class="sb-logo">
+    <div class="mark">A</div>
+    <h1>Modeles de Marche</h1>
+    <p>Algorithmic Academy</p>
+  </div>
+
+  <div class="sb-section">Paradigme</div>
+  <a class="sb-link" href="#m1"><span class="n">01</span> Smart Money &amp; IPDA</a>
+  <a class="sb-link" href="#m2"><span class="n">02</span> Programmes Buy / Sell</a>
+
+  <div class="sb-section">Market Maker Models</div>
+  <a class="sb-link" href="#m3"><span class="n">03</span> MMBM (Buy Model)</a>
+  <a class="sb-link" href="#m4"><span class="n">04</span> MMSM (Sell Model)</a>
+  <a class="sb-link" href="#m5"><span class="n">05</span> Phases &amp; Contexte</a>
+
+  <div class="sb-section">QUADS &amp; POI</div>
+  <a class="sb-link" href="#m6"><span class="n">06</span> Systeme QUADS</a>
+  <a class="sb-link" href="#m7"><span class="n">07</span> Selection du POI</a>
+
+  <div class="sb-section">Le Temps</div>
+  <a class="sb-link" href="#m8"><span class="n">08</span> Sessions &amp; Cycles</a>
+  <a class="sb-link" href="#m9"><span class="n">09</span> Macros &amp; Profils</a>
+
+  <div class="sb-section">SMT</div>
+  <a class="sb-link" href="#m10"><span class="n">10</span> Definition &amp; Types</a>
+  <a class="sb-link" href="#m11"><span class="n">11</span> Application SMT</a>
+
+  <div class="sb-section">Entrees</div>
+  <a class="sb-link" href="#m12"><span class="n">12</span> Unicorn Model</a>
+  <a class="sb-link" href="#m13"><span class="n">13</span> Three Candle Model</a>
+  <a class="sb-link" href="#m14"><span class="n">14</span> POI Execution</a>
+
+  <div class="sb-section">Gestion</div>
+  <a class="sb-link" href="#m15"><span class="n">15</span> Invalidation &amp; Trail</a>
+  <a class="sb-link" href="#m16"><span class="n">16</span> Protocole Complet</a>
+</aside>
+
+<div id="pbar"><div id="pfill"></div></div>
+
+<main id="main">
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HERO                                           -->
+<!-- ═══════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-tag">Premium -- Formation Avancee</div>
+  <h1>Modeles de Marche<span class="em">Market Maker Models &amp; Execution Algorithmique</span></h1>
+  <p class="sub">
+    Modeles de Marche -- QUADS -- IPDA -- SMT -- POI -- Three Candle Model -- Order Flow.
+    Maitrise complete des modeles Market Maker, du systeme de points d'interet, et des methodes d'execution haute probabilite.
+  </p>
+  <div class="hero-kpis">
+    <div class="kpi"><div class="kpi-v">16</div><div class="kpi-l">Modules</div></div>
+    <div class="kpi"><div class="kpi-v">QUADS</div><div class="kpi-l">POI System</div></div>
+    <div class="kpi"><div class="kpi-v">SMT</div><div class="kpi-l">Confirmation</div></div>
+    <div class="kpi"><div class="kpi-v">90mn</div><div class="kpi-l">Cycles</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODULE 1 — Le Paradigme Smart Money            -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="mod" id="m1">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 01</span>
+    <h2>Le Paradigme Smart Money</h2>
+  </div>
+
+  <p>
+    La premiere verite fondamentale a internaliser : <strong>tous les marches financiers sont controles par des algorithmes</strong>. Le prix ne se deplace pas de maniere aleatoire. Chaque mouvement, chaque sweep de liquidite, chaque deplacement est le resultat d'un programme informatique qui execute des ordres selon une logique precise et repetitive.
+  </p>
+
+  <div class="sec">IPDA -- Le Programme Central</div>
+  <p>
+    <strong>IPDA</strong> (Interbank Price Delivery Algorithm) est le programme qui gouverne la livraison du prix. Il ne s'agit pas d'une theorie abstraite mais d'un algorithme reel qui determine comment, quand et ou le prix est livre aux participants du marche.
+  </p>
+  <ul class="cl">
+    <li>L'IPDA fonctionne sur <strong>des cycles temporels precis</strong> : 20 jours, 40 jours, 60 jours de donnees sont utilises pour identifier les niveaux cles</li>
+    <li>L'algorithme <strong>cible systematiquement la liquidite</strong> : les pools d'ordres stop-loss et les zones ou les participants retail sont positionnes</li>
+    <li>Le programme alterne entre des <strong>phases d'accumulation et de distribution</strong>, creant les modeles que nous etudions</li>
+    <li>Chaque mouvement de prix est <strong>intentionnel</strong> : il sert a remplir des ordres institutionnels avant de deplacer le prix vers la prochaine cible</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Principe fondamental</div>
+    <p>L'IPDA ne produit pas des mouvements aleatoires. Il execute un programme. Notre travail est de <strong>lire ce programme</strong> et de s'aligner avec lui, pas de le predire ou de le combattre.</p>
+  </div>
+
+  <div class="sec">Programme Buy vs Programme Sell</div>
+  <p>
+    A tout moment, le marche est dans l'un de ces deux etats. Il n'existe pas de troisieme option. Comprendre dans quel programme on se trouve est la <strong>premiere decision</strong> de tout trade.
+  </p>
+  <ul class="cl">
+    <li><strong>Programme Buy (haussier)</strong> : l'algorithme accumule des positions longues. Il purge la liquidite sell-side (les stops des acheteurs) pour remplir ses ordres d'achat, puis deplace le prix vers le haut pour cibler la liquidite buy-side</li>
+    <li><strong>Programme Sell (baissier)</strong> : l'algorithme distribue des positions courtes. Il purge la liquidite buy-side (les stops des vendeurs) pour remplir ses ordres de vente, puis deplace le prix vers le bas pour cibler la liquidite sell-side</li>
+    <li>La <strong>cloture journaliere</strong> est l'element qui confirme ou invalide le programme en cours. Un seul wick ne suffit pas -- il faut une cloture decisive</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Regle de correlation</div>
+    <p>Les indices correles (par exemple NQ et ES) doivent etre dans le <strong>meme programme</strong> pour confirmer la direction. Si l'un est en programme buy et l'autre en programme sell, c'est un signal de divergence qui reduit la probabilite de tout trade directionnel.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODULE 2 — Programmes Buy / Sell               -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="mod" id="m2">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 02</span>
+    <h2>Programmes Buy / Sell en Detail</h2>
+  </div>
+
+  <p>
+    L'identification du programme actif est le <strong>prerequis absolu</strong> avant toute analyse plus fine. Sans cette determination, aucun modele, aucun POI, aucune entree n'a de validite.
+  </p>
+
+  <div class="sec">Identification du Programme</div>
+  <ol class="nl">
+    <li><strong>Analyse HTF</strong> : commencer par le Weekly et le Daily pour etablir le biais directionnel. Le programme HTF prime toujours sur les signaux LTF</li>
+    <li><strong>Structure de prix</strong> : identifier si le marche forme des higher highs / higher lows (programme buy) ou des lower highs / lower lows (programme sell)</li>
+    <li><strong>Liquidite ciblee</strong> : observer quelle liquidite a ete purgee recemment. Si les sell-side lows ont ete sweeps, le programme est probablement buy (et vice versa)</li>
+    <li><strong>Cloture journaliere</strong> : la cloture Daily confirme l'intention algorithmique. Un sweep sans cloture au-dela du niveau est un faux signal</li>
+  </ol>
+
+  <div class="sec">Transition entre Programmes</div>
+  <p>
+    Les transitions de programme ne sont pas instantanees. Elles passent par des phases distinctes qui peuvent etre lues sur le graphique.
+  </p>
+  <ul class="cl">
+    <li><strong>Phase de consolidation</strong> : le prix range, les deux cotes de liquidite sont construits. C'est la preparation du prochain programme</li>
+    <li><strong>Purge initiale</strong> : le prix sweep un cote de la liquidite (manipulation). C'est le signal que le nouveau programme commence</li>
+    <li><strong>Deplacement</strong> : mouvement agressif dans la direction du nouveau programme. C'est la confirmation</li>
+    <li><strong>Continuation</strong> : le prix continue dans la direction du programme, revenant periodiquement pour accumuler ou distribuer</li>
+  </ul>
+
+  <div class="box box-re">
+    <div class="box-title">Invalidation du programme</div>
+    <p>Un programme est invalide lorsque le prix <strong>cloture au-dela</strong> du point d'origine du programme sur le timeframe Daily ou superieur. Un simple wick au-dela ne suffit pas -- c'est la cloture qui compte. L'invalidation requiert une confirmation sur les DEUX marches correles.</p>
+  </div>
+
+  <div class="sec">La Gauche Influence la Droite</div>
+  <p>
+    Ce principe est central : tout ce qui s'est passe a gauche du graphique <strong>donne le contexte</strong> pour ce qui va se passer a droite. Les niveaux de liquidite laisses derriere, les FVG non combles, les order blocks non testes -- tout cela constitue la feuille de route de l'algorithme.
+  </p>
+  <ul class="cl">
+    <li>Les <strong>old highs et old lows</strong> sont des cibles algorithmiques tant qu'ils n'ont pas ete purges</li>
+    <li>Les <strong>Fair Value Gaps</strong> non combles attirent le prix comme des aimants</li>
+    <li>Les <strong>order blocks</strong> non testes offrent des zones de reentree pour l'algorithme</li>
+    <li>Plus un niveau est ancien et non visite, plus il a de probabilite d'etre cible</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODULE 3 — MMBM                               -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="mod" id="m3">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 03</span>
+    <h2>Market Maker Buy Model (MMBM)</h2>
+  </div>
+
+  <p>
+    Le MMBM est le modele que l'algorithme utilise pour <strong>accumuler des positions longues</strong> avant de deplacer le prix vers le haut. Il se decompose en quatre phases distinctes, chacune avec un objectif precis.
+  </p>
+
+  <div class="sec">Les 4 Phases du MMBM</div>
+
+  <div class="grid-2">
+    <div class="phase-card">
+      <div class="phase-num">PHASE 01</div>
+      <h4>Smart Money Reversal</h4>
+      <p>Manipulation basse. L'algorithme purge la liquidite sell-side en poussant le prix sous les lows evidents. Les stops des acheteurs retail sont declenches. C'est ici que l'accumulation invisible commence -- les ordres institutionnels sont remplis dans la liquidite generee par la panique.</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">PHASE 02</div>
+      <h4>Accumulation</h4>
+      <p>Construction de position longue. Le prix commence a monter mais avec des retracements reguliers. Chaque retracement est une opportunite pour l'algorithme d'ajouter a sa position. Le volume augmente progressivement. Les FVG et order blocks servent de points de reentree.</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">PHASE 03</div>
+      <h4>Re-accumulation</h4>
+      <p>Ajout de position. Apres le deplacement initial, le prix revient dans une zone de valeur (order block, FVG, breaker) pour permettre un ajout de position. C'est souvent la meilleure entree pour les traders qui ont manque la Phase 1 -- le risque est defini et le biais est confirme.</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">PHASE 04</div>
+      <h4>Distribution</h4>
+      <p>Sortie de position. L'algorithme commence a distribuer ses positions longues aux acheteurs retail qui entrent tardivement. Le prix atteint les cibles de liquidite buy-side (old highs, equal highs). Les derniers mouvements sont souvent les plus explosifs mais aussi les plus dangereux.</p>
+    </div>
+  </div>
+
+  <div class="box box-em">
+    <div class="box-title">Lecture du MMBM</div>
+    <p>La cle est d'identifier dans <strong>quelle phase</strong> on se trouve. La Phase 1 offre le meilleur ratio risque/reward mais la plus faible probabilite de lecture correcte. La Phase 3 offre le meilleur equilibre entre probabilite et reward. La Phase 4 est a eviter pour les nouvelles entrees.</p>
+  </div>
+
+  <div class="sec">Signatures du MMBM</div>
+  <ul class="cl">
+    <li><strong>Sweep de sell-side liquidity</strong> suivi d'un deplacement haussier agressif avec FVG</li>
+    <li><strong>Changement de structure</strong> (CSD/MSB) sur les timeframes intermediaires apres la purge</li>
+    <li><strong>SMT avec l'actif correle</strong> : l'un des deux actifs ne prend pas le low, confirmant la manipulation</li>
+    <li><strong>Rejet du POI</strong> avec des bougies de rejet claires (longue meche, corps petit)</li>
+    <li><strong>Volume spike</strong> au moment de la purge, suivi d'un volume decroissant pendant l'accumulation</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODULE 4 — MMSM                               -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="mod" id="m4">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 04</span>
+    <h2>Market Maker Sell Model (MMSM)</h2>
+  </div>
+
+  <p>
+    Le MMSM est le <strong>miroir exact du MMBM</strong>. L'algorithme distribue des positions courtes en purgeant d'abord la liquidite buy-side, puis deplace le prix vers le bas. La logique est identique mais inversee.
+  </p>
+
+  <div class="sec">Les 4 Phases du MMSM</div>
+
+  <div class="grid-2">
+    <div class="phase-card">
+      <div class="phase-num">PHASE 01</div>
+      <h4>Smart Money Reversal</h4>
+      <p>Manipulation haute. L'algorithme purge la liquidite buy-side en poussant le prix au-dessus des highs evidents. Les stops des vendeurs retail sont declenches. Les ordres de vente institutionnels sont remplis dans cette liquidite.</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">PHASE 02</div>
+      <h4>Distribution Initiale</h4>
+      <p>Le prix commence a descendre avec des retracements haussiers reguliers. Chaque retracement est utilise pour ajouter des positions courtes. Les SIBI (Sell-side Imbalance / Buy-side Inefficiency) servent de resistance.</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">PHASE 03</div>
+      <h4>Re-distribution</h4>
+      <p>Retour dans une zone de valeur pour ajouter des shorts. Le prix revient tester un order block bearish, un FVG, ou un breaker. C'est l'entree optimale pour les traders qui ont manque la Phase 1.</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">PHASE 04</div>
+      <h4>Accumulation Finale</h4>
+      <p>L'algorithme couvre ses positions courtes en accumulant dans la liquidite sell-side. Le prix atteint les cibles finales (old lows, equal lows). Le modele se termine et un nouveau cycle commence.</p>
+    </div>
+  </div>
+
+  <div class="sec">Reconnaissance du MMSM</div>
+  <ul class="cl">
+    <li><strong>Sweep de buy-side liquidity</strong> suivi d'un deplacement baissier agressif</li>
+    <li><strong>SIBI (Fair Value Gap baissier)</strong> formee dans le deplacement -- elle servira de resistance</li>
+    <li><strong>Changement de structure baissier</strong> : cassure du dernier higher low significatif</li>
+    <li><strong>SMT bearish</strong> : l'un des actifs correles ne prend pas le high, confirmant le retournement</li>
+    <li><strong>Rejet violent</strong> du POI avec une bougie engulfing ou un deplacement</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Symetrie des modeles</div>
+    <p>MMBM et MMSM sont des images miroir parfaites. Chaque concept qui s'applique a l'un s'applique a l'autre en inversant la direction. Si vous maitrisez un modele, vous maitrisez les deux. La seule difference est la <strong>direction du biais</strong> et les <strong>niveaux de liquidite cibles</strong>.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODULE 5 — Phases & Contexte                   -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="mod" id="m5">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 05</span>
+    <h2>Phases &amp; Contexte Multi-Timeframe</h2>
+  </div>
+
+  <p>
+    Chaque phase du modele Market Maker se manifeste differemment selon le timeframe. Un MMBM sur le Weekly contient des MMSM sur le H4. Un MMSM sur le Daily contient des MMBM sur le M15. Cette <strong>fractalite</strong> est essentielle a comprendre.
+  </p>
+
+  <div class="sec">Alignement des Timeframes</div>
+  <ul class="cl">
+    <li><strong>Weekly/Monthly</strong> : determine le programme macro. C'est le "courant" dans lequel on nage. Aller contre ce programme est possible mais la probabilite est reduite</li>
+    <li><strong>Daily</strong> : determine le programme intermediaire et la cible de la journee. La cloture Daily est l'element de confirmation le plus important</li>
+    <li><strong>H4/H1</strong> : determine le modele en cours d'execution. C'est ici qu'on identifie les phases du Market Maker Model</li>
+    <li><strong>M15/M5</strong> : determine l'entree precise. Le modele d'execution (Unicorn, Three Candle, etc.) est lu ici</li>
+    <li><strong>M1</strong> : raffinage ultime de l'entree. Uniquement utilise pour le timing exact, jamais pour le biais</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Regle d'or</div>
+    <p>Le biais vient du HTF, l'entree vient du LTF. <strong>Jamais l'inverse.</strong> On ne change pas le biais Daily a cause d'un signal M5. On utilise le M5 uniquement pour entrer dans la direction du Daily.</p>
+  </div>
+
+  <div class="sec">Fractalite des Modeles</div>
+  <p>
+    Chaque bougie sur un timeframe superieur contient un Market Maker Model complet sur le timeframe inferieur. Une bougie Daily baissiere contient un MMSM complet visible sur le M15. Cette fractalite permet de :
+  </p>
+  <ol class="nl">
+    <li><strong>Anticiper</strong> les mouvements intra-day en lisant le contexte Daily</li>
+    <li><strong>Identifier</strong> dans quelle phase du modele HTF on se trouve, et donc quel type de modele LTF chercher</li>
+    <li><strong>Valider</strong> les entrees LTF en verifiant qu'elles sont coherentes avec la phase HTF</li>
+    <li><strong>Eviter</strong> les trades contre-tendance en reconnaissant quand le modele HTF est en phase de distribution</li>
+  </ol>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODULE 6 — Systeme QUADS                       -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="mod" id="m6">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 06</span>
+    <h2>Systeme QUADS</h2>
+  </div>
+
+  <p>
+    Le systeme QUADS est une methode de <strong>precision d'entree</strong> qui divise chaque POI (Point d'Interet) en quatre quadrants. Cette subdivision permet de definir exactement ou entrer, ou placer le stop, et quand considerer le POI comme invalide.
+  </p>
+
+  <div class="sec">HTF POI vs POI Intermediaire</div>
+  <ul class="cl">
+    <li><strong>HTF POI</strong> : identifie sur le Daily ou le H4. C'est la zone macro ou le prix est attendu pour reagir. Il definit le <em>ou</em> general du trade</li>
+    <li><strong>POI Intermediaire</strong> : identifie sur le H1 ou le M15 a l'interieur du HTF POI. C'est la zone de precision pour l'entree effective</li>
+    <li>Le HTF POI valide la zone. Le POI intermediaire <strong>raffine l'entree</strong>. Les deux doivent etre alignes</li>
+    <li>Un POI sans contexte HTF est un POI orphelin -- il n'a pas de valeur actionnable</li>
+  </ul>
+
+  <div class="sec">Les 4 Quadrants</div>
+  <p>
+    Chaque POI est divise en 4 zones egales, du haut vers le bas. Cette division donne un cadre objectif pour l'entree et l'invalidation.
+  </p>
+  <div class="grid-2">
+    <div class="phase-card">
+      <div class="phase-num">QUAD 1</div>
+      <h4>Zone Premium Extreme</h4>
+      <p>Le quart superieur du POI. C'est la zone d'entree optimale pour un short (MMSM). L'entree ici offre le meilleur ratio risque/reward mais exige une confirmation precise.</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">QUAD 2</div>
+      <h4>Zone Premium</h4>
+      <p>Le deuxieme quart. Entree acceptable avec un ratio legerement inferieur. Souvent la zone ou le prix reagit le plus frequemment.</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">QUAD 3</div>
+      <h4>Zone Discount</h4>
+      <p>Le troisieme quart. Pour un long (MMBM), c'est une entree acceptable. Pour un short, le ratio devient moins favorable.</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">QUAD 4</div>
+      <h4>Zone Discount Extreme</h4>
+      <p>Le quart inferieur du POI. C'est la zone d'entree optimale pour un long (MMBM). Si le prix penetre au-dela, le POI est probablement invalide.</p>
+    </div>
+  </div>
+
+  <div class="box box-re">
+    <div class="box-title">Invalidation QUADS</div>
+    <p>Un POI est invalide lorsque le prix <strong>cloture au-dela du POI complet</strong> sur le timeframe de reference. Un wick au-dela du Quad 4 (pour un long) ou du Quad 1 (pour un short) n'est pas necessairement une invalidation -- c'est la cloture qui fait foi. L'invalidation doit etre confirmee sur les <strong>deux marches correles</strong>.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODULE 7 — Selection du POI                    -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="mod" id="m7">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 07</span>
+    <h2>Selection du POI</h2>
+  </div>
+
+  <p>
+    Tous les POI ne se valent pas. La selection du bon POI est un art qui combine <strong>recence, contexte, et invalidation claire</strong>. Un POI mal selectionne est la premiere cause d'echec, meme avec une lecture de biais correcte.
+  </p>
+
+  <div class="sec">Criteres de Selection</div>
+  <ol class="nl">
+    <li><strong>Recence</strong> : le POI le plus recent a la priorite. Les anciens POI ont souvent deja ete partiellement combles ou leur contexte a change</li>
+    <li><strong>Invalidation claire</strong> : le POI doit avoir un niveau d'invalidation objectif et mesurable. Si on ne peut pas dire exactement ou le trade est invalide, on ne prend pas le trade</li>
+    <li><strong>Alignement HTF</strong> : le POI doit etre dans la direction du programme actif. Un POI bullish dans un programme sell est un piege</li>
+    <li><strong>Liquidite en amont</strong> : il doit y avoir de la liquidite non purgee au-dessus (pour un long) ou en dessous (pour un short) du POI. C'est la cible du trade</li>
+    <li><strong>FVG ou order block valide</strong> : le POI doit etre une zone de desequilibre verifiable, pas une zone inventee</li>
+  </ol>
+
+  <div class="sec">Hierarchie des POI</div>
+  <ul class="cl">
+    <li><strong>Breaker Block</strong> : le POI le plus fiable. Un ancien support devenu resistance (ou vice versa) avec une confirmation de structure</li>
+    <li><strong>Order Block + FVG</strong> : un OB qui contient un FVG est plus fiable qu'un OB seul. La convergence renforce la zone</li>
+    <li><strong>FVG isole</strong> : utilisable mais moins fiable. Privilegier les FVG qui sont dans un contexte de desequilibre clair</li>
+    <li><strong>BPR (Balanced Price Range)</strong> : la convergence d'un BISI et d'un SIBI cree une zone de haute probabilite</li>
+    <li><strong>Zones de liquidite pure</strong> : equal highs/lows, trendline liquidity. Ce sont des cibles, pas des entrees</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Selection pratique</div>
+    <p>En pratique, on cherche le POI le plus recent qui a une <strong>invalidation claire</strong>, qui est <strong>aligne avec le programme HTF</strong>, et qui a de la <strong>liquidite non purgee</strong> comme cible. Si aucun POI ne remplit ces criteres, on attend. La patience est un edge.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODULE 8 — Sessions & Cycles de 90mn           -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="mod" id="m8">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 08</span>
+    <h2>Sessions &amp; Cycles de 90 Minutes</h2>
+  </div>
+
+  <p>
+    Le temps est la dimension la plus sous-estimee du trading algorithmique. L'algorithme ne delivre pas le prix de maniere constante -- il suit des <strong>fenetres temporelles precises</strong> qui se repetent jour apres jour.
+  </p>
+
+  <div class="sec">Hierarchie des Sessions</div>
+  <ul class="cl">
+    <li><strong>Asia (19h-00h NY)</strong> : session de consolidation et de construction de liquidite. Le range asiatique definit souvent les niveaux de manipulation pour Londres</li>
+    <li><strong>London (02h-05h NY)</strong> : premiere session d'expansion. Souvent la session de manipulation (purge du range asiatique) ou de premier deplacement directionnel</li>
+    <li><strong>New York AM (08h30-12h NY)</strong> : la session la plus volatile et la plus importante. C'est ici que la majorite des modeles se completent</li>
+    <li><strong>New York PM (13h30-16h NY)</strong> : session de continuation ou de reversal. Souvent moins volatile mais peut produire des deplacements significatifs</li>
+  </ul>
+
+  <div class="sec">Cycles de 90 Minutes (AMD)</div>
+  <p>
+    Chaque session de trading majeure se decompose en <strong>cycles de 90 minutes</strong>. Chaque cycle contient les trois phases AMD : Accumulation, Manipulation, Distribution. Ce decoupage donne un cadre temporel precis.
+  </p>
+  <div class="grid-2">
+    <div class="phase-card">
+      <div class="phase-num">30 PREMIERES MINUTES</div>
+      <h4>Accumulation</h4>
+      <p>Le prix range, construit de la liquidite des deux cotes. Les ordres sont accumules. Le volume est generalement faible. C'est la phase d'attente -- on ne trade pas ici, on observe.</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">30 MINUTES SUIVANTES</div>
+      <h4>Manipulation</h4>
+      <p>Le prix purge un cote de la liquidite accumulee. C'est le faux mouvement qui piege les traders impatients. La manipulation va souvent dans la direction opposee au mouvement final.</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">30 DERNIERES MINUTES</div>
+      <h4>Distribution</h4>
+      <p>Le vrai mouvement. Le prix se deplace agressivement dans la direction du programme. C'est ici que les entrees sont executees et que les cibles sont atteintes. Le volume augmente.</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">CLE</div>
+      <h4>Identification du Cycle</h4>
+      <p>Le 9:30 Open (New York) est le point de reference principal. Les cycles de 90 minutes commencent a 8:30, 10:00, 11:30, 13:00, 14:30. Chaque debut de cycle est un moment ou l'algorithme peut initier un nouveau mouvement.</p>
+    </div>
+  </div>
+
+  <div class="box box-em">
+    <div class="box-title">Le 9:30 Open</div>
+    <p>Le 9:30 New York Open est le moment le plus important de la journee de trading. C'est le point de reference a partir duquel les profils de livraison sont determines. Le prix relatif au 9:30 Open (au-dessus ou en dessous) donne le biais intra-journalier le plus fiable.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODULE 9 — Macros & Profils de Livraison       -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="mod" id="m9">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 09</span>
+    <h2>Macros &amp; Profils de Livraison</h2>
+  </div>
+
+  <p>
+    Les macros sont des <strong>fenetres de 20 minutes</strong> pendant lesquelles l'algorithme est le plus susceptible de produire des mouvements significatifs. Ce sont les moments de haute activite algorithmique.
+  </p>
+
+  <div class="sec">Macros de Precision (Heure NY)</div>
+  <div class="timeline">
+    <div class="timeline-item">
+      <h4>7:50 - 8:10</h4>
+      <p>Pre-market macro. Souvent le moment ou la manipulation du range asiatique/Londres est finalisee. Peut produire le low ou high de la session NY.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>8:50 - 9:10</h4>
+      <p>Macro d'ouverture. Le prix se positionne pour le 9:30 Open. Les mouvements ici sont souvent des pièges destines a attraper les traders qui anticipent la direction avant l'ouverture.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>9:50 - 10:10</h4>
+      <p>Silver Bullet macro. La fenetre la plus importante pour les entrees. L'algorithme produit frequemment un deplacement significatif ici. C'est le moment optimal pour chercher un modele d'entree (Unicorn, Three Candle).</p>
+    </div>
+    <div class="timeline-item">
+      <h4>10:50 - 11:10</h4>
+      <p>Macro de continuation. Confirme ou inverse le mouvement de la session AM. Si un trade est actif, c'est souvent le moment ou les cibles AM sont atteintes.</p>
+    </div>
+  </div>
+
+  <div class="sec">Profils de Livraison</div>
+  <p>
+    L'algorithme suit des <strong>profils de livraison previsibles</strong> qui determinent comment le mouvement est reparti entre les sessions.
+  </p>
+
+  <div class="subsec">Profil Classique</div>
+  <ul class="cl">
+    <li><strong>London</strong> : expansion dans la direction du programme</li>
+    <li><strong>NY AM</strong> : retracement (retour vers la zone de valeur)</li>
+    <li><strong>NY PM</strong> : continuation dans la direction initiale de London</li>
+  </ul>
+
+  <div class="subsec">Profil Inverse</div>
+  <ul class="cl">
+    <li><strong>London</strong> : manipulation (faux mouvement)</li>
+    <li><strong>NY AM</strong> : le vrai deplacement dans la direction du programme</li>
+    <li><strong>NY PM</strong> : continuation ou consolidation</li>
+  </ul>
+
+  <div class="subsec">Profil de Reversal</div>
+  <ul class="cl">
+    <li><strong>London + NY AM</strong> : expansion dans une direction</li>
+    <li><strong>NY PM</strong> : reversal complet, souvent apres un sweep de liquidite</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Identification du profil</div>
+    <p>Le profil ne peut etre identifie avec certitude qu'apres le fait. Cependant, le contexte HTF et la position du prix par rapport au 9:30 Open donnent des <strong>probabilites</strong> sur le profil le plus probable. Un prix sous le 9:30 Open dans un programme buy suggere que le profil prevoit un retracement AM suivi d'une continuation haussiere PM.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODULE 10 — SMT Definition & Types             -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="mod" id="m10">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 10</span>
+    <h2>SMT -- Definition &amp; Types</h2>
+  </div>
+
+  <p>
+    La SMT (Smart Money Tool/Technique) n'est <strong>pas un indicateur</strong> et n'est <strong>pas un pattern</strong>. C'est une <strong>confirmation de timing</strong> qui revele l'intention de l'algorithme en comparant le comportement de deux actifs correles.
+  </p>
+
+  <div class="sec">Le Principe Fondamental</div>
+  <p>
+    Lorsque deux actifs normalement correles (par exemple ES et NQ pour les indices US) cessent de se comporter de maniere identique a un moment cle, cela revele une <strong>divergence intentionnelle</strong> de l'algorithme.
+  </p>
+  <ul class="cl">
+    <li>L'actif qui <strong>prend le nouveau low</strong> (ou high) = <strong>actif faible</strong>. Il a ete utilise pour purger la liquidite</li>
+    <li>L'actif qui <strong>echoue a prendre le low</strong> (ou high) = <strong>actif fort</strong>. Il montre l'intention reelle de l'algorithme</li>
+    <li>On <strong>trade l'actif fort</strong> sur le failure swing. C'est la ou la probabilite est la plus elevee</li>
+    <li>La SMT revele le <strong>timing</strong> exact de la manipulation -- le moment ou l'algorithme a fini de purger et commence le vrai mouvement</li>
+  </ul>
+
+  <div class="sec">Types de SMT</div>
+  <div class="grid-2">
+    <div class="phase-card">
+      <div class="phase-num">TYPE 1</div>
+      <h4>HTF SMT (Contexte)</h4>
+      <p>Identifiee sur le Daily ou le Weekly. Donne le biais directionnel macro. Un actif fait un nouveau high/low tandis que le correle echoue. Ce n'est pas un signal d'entree mais un element de contexte qui renforce le biais.</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">TYPE 2</div>
+      <h4>Confirmation SMT (~90%)</h4>
+      <p>Identifiee sur le H1 ou le M15. C'est la SMT la plus fiable. Elle confirme le timing de la manipulation dans le cycle de 90 minutes. Quand une Confirmation SMT apparait dans un POI aligne avec le programme, la probabilite approche 90%.</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">TYPE 3</div>
+      <h4>Entry SMT (Bougie a Bougie)</h4>
+      <p>Identifiee sur le M5 ou le M1. Comparaison bougie par bougie entre les deux actifs. L'un forme un lower low, l'autre un higher low. C'est le signal de timing le plus precis pour l'entree exacte.</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">SPECIAL</div>
+      <h4>Double SMT</h4>
+      <p>Quand la SMT apparait simultanement sur deux timeframes (par exemple H1 + M5), la probabilite est maximale. C'est le signal le plus fort que l'algorithme offre. Un Double SMT dans un POI valide est la configuration ideale.</p>
+    </div>
+  </div>
+
+  <div class="box box-re">
+    <div class="box-title">Regle absolue</div>
+    <p><strong>Pas de SMT = pas de trade.</strong> La SMT est la confirmation que la manipulation est terminee et que le vrai mouvement commence. Sans cette confirmation, on manque la preuve que l'algorithme a fini de purger. Tout trade sans SMT est un pari, pas une execution algorithmique.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODULE 11 — Application SMT                    -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="mod" id="m11">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 11</span>
+    <h2>Application Pratique de la SMT</h2>
+  </div>
+
+  <p>
+    La SMT n'est pas un concept isole. Elle s'integre dans le flux de decision comme une <strong>couche de confirmation</strong> qui se superpose au biais, au POI, et au timing.
+  </p>
+
+  <div class="sec">Protocole de Lecture SMT</div>
+  <ol class="nl">
+    <li><strong>Identifier le programme</strong> : Buy ou Sell sur le HTF. Sans programme clair, la SMT n'a pas de contexte</li>
+    <li><strong>Localiser le POI</strong> : la zone ou la SMT est attendue. Elle doit apparaitre dans ou pres du POI identifie</li>
+    <li><strong>Ouvrir les deux actifs</strong> : placer ES et NQ (ou les actifs correles pertinents) cote a cote sur le meme timeframe</li>
+    <li><strong>Observer le sweep</strong> : quand le prix atteint le POI, observer si les deux actifs prennent le meme extreme ou si l'un echoue</li>
+    <li><strong>Confirmer la divergence</strong> : l'actif faible prend l'extreme, l'actif fort ne le prend pas. La SMT est confirmee</li>
+    <li><strong>Entrer sur l'actif fort</strong> : le failure swing de l'actif fort est le point d'entree. Le stop va sous le low/high de la SMT</li>
+  </ol>
+
+  <div class="sec">Paires de Correlation</div>
+  <ul class="cl">
+    <li><strong>ES / NQ</strong> : la paire principale pour les indices US. La plus fiable et la plus utilisee</li>
+    <li><strong>NQ / YM</strong> : paire alternative. YM (Dow) est souvent l'actif faible dans les mouvements tech-driven</li>
+    <li><strong>ES / YM</strong> : paire utile quand NQ est en mode "outlier" (mouvements extremes deconnectes)</li>
+    <li><strong>GBP/USD / EUR/USD</strong> : pour le Forex, la correlation GBP/EUR est forte et produit des SMT fiables</li>
+    <li><strong>Gold / Silver</strong> : pour les metaux, la correlation or/argent offre des opportunites SMT regulieres</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Lecture avancee</div>
+    <p>L'actif qui <strong>ne prend pas</strong> l'extreme est celui qui revele l'intention. Si NQ fait un nouveau low mais ES ne le fait pas, c'est ES qui montre la force. On entre long sur ES au moment du failure swing. Le stop est place sous le low de NQ (l'actif faible), car si NQ va encore plus bas, le biais est invalide.</p>
+  </div>
+
+  <div class="sec">Erreurs Courantes</div>
+  <ul class="cl">
+    <li><strong>Chercher la SMT partout</strong> : la SMT n'a de valeur que dans un POI identifie, pendant une fenetre temporelle pertinente. Une divergence aleatoire en milieu de range n'est pas une SMT actionnable</li>
+    <li><strong>Ignorer le contexte HTF</strong> : une SMT bullish dans un programme sell HTF est un piege. Le contexte prime toujours</li>
+    <li><strong>Trader l'actif faible</strong> : on ne trade pas l'actif qui a pris l'extreme. On trade celui qui a echoue a le prendre</li>
+    <li><strong>Utiliser des actifs non correles</strong> : la SMT ne fonctionne qu'entre actifs normalement correles. Comparer le Gold avec le NQ n'a pas de sens</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODULE 12 — Le Vrai Unicorn Model              -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="mod" id="m12">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 12</span>
+    <h2>Le Vrai Unicorn Model</h2>
+  </div>
+
+  <p>
+    L'Unicorn Model n'est <strong>pas un simple pattern graphique</strong>. C'est une <strong>signature algorithmique specifique</strong> qui apparait lorsque l'algorithme produit une configuration particuliere de structures de prix imbriquees. Il est rare, precis, et hautement fiable quand il est correctement identifie.
+  </p>
+
+  <div class="sec">Definition Precise</div>
+  <p>
+    L'Unicorn Model est un <strong>Breaker Block</strong> situe a l'interieur d'un <strong>SIBI</strong> (Sell-side Imbalance / Buy-side Inefficiency pour un setup bullish), qui peut se replier dans un <strong>BISI</strong>, creant un BPR (Balanced Price Range) specifique. Cette convergence de structures cree une zone d'entree de tres haute probabilite.
+  </p>
+  <ul class="cl">
+    <li>Le Breaker est un ancien <strong>support devenu resistance</strong> (ou vice versa) qui a ete valide par un changement de structure</li>
+    <li>Il se situe <strong>a l'interieur</strong> d'un desequilibre (FVG/SIBI/BISI), pas a cote</li>
+    <li>La convergence Breaker + FVG cree le <strong>BPR</strong> qui est la zone d'entree exacte</li>
+    <li>L'Unicorn se forme typiquement dans le <strong>wick d'une bougie horaire</strong> lors d'une purge de liquidite</li>
+  </ul>
+
+  <div class="sec">Les 6 Phases de Formation</div>
+  <div class="timeline">
+    <div class="timeline-item">
+      <h4>Phase 1 -- SIBI Imprime</h4>
+      <p>Un desequilibre sell-side (SIBI) est cree par un deplacement agressif. Ce desequilibre sera le cadre dans lequel l'Unicorn se forme. Le SIBI doit etre clair et non ambigu.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>Phase 2 -- Retest / Rejet</h4>
+      <p>Le prix revient tester la zone du SIBI et est rejete. Ce retest confirme que la zone a de la valeur. Le rejet peut etre violent (bougie de rejet) ou subtil (consolidation puis continuation).</p>
+    </div>
+    <div class="timeline-item">
+      <h4>Phase 3 -- Purge</h4>
+      <p>Le prix purge la liquidite au-dela du SIBI. C'est la manipulation qui cree le Breaker. L'ancien support/resistance est casse, les stops sont declenches, et l'algorithme remplit ses ordres.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>Phase 4 -- Deplacement Agressif (CSD)</h4>
+      <p>Change in State of Delivery. Le prix se deplace agressivement dans la direction opposee a la purge. Ce deplacement cree de nouveaux FVG et confirme que l'algorithme a change de programme.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>Phase 5 -- Cloture de Confirmation</h4>
+      <p>Le prix cloture au-dessus du SIBI (pour un setup bullish) ou en dessous du BISI (pour un setup bearish). Cette cloture confirme l'Unicorn et valide la zone d'entree.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>Phase 6 -- Entree sur Retest du BPR</h4>
+      <p>Le prix revient tester le BPR (la zone ou le Breaker et le FVG se chevauchent). C'est l'entree. Le stop est place sous le BPR. La cible est la prochaine zone de liquidite non purgee.</p>
+    </div>
+  </div>
+
+  <div class="box box-re">
+    <div class="box-title">Invalidation</div>
+    <p>L'Unicorn est invalide si le prix <strong>cloture sous le BPR</strong> (pour un long) ou <strong>au-dessus du BPR</strong> (pour un short). Un simple wick au-dela n'invalide pas -- c'est la cloture qui compte. Si l'Unicorn est invalide, on ne cherche pas a "sauver" le trade. On coupe et on attend le prochain setup.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODULE 13 — Three Candle Model                 -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="mod" id="m13">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 13</span>
+    <h2>Three Candle Model</h2>
+  </div>
+
+  <p>
+    Le Three Candle Model est un <strong>modele d'entree base sur trois bougies consecutives</strong>. Il est plus simple que l'Unicorn mais tout aussi efficace lorsqu'il est utilise dans le bon contexte. Sa force reside dans sa clarte : chaque bougie a un role precis et non ambigu.
+  </p>
+
+  <div class="sec">Les 3 Bougies</div>
+
+  <div class="grid-2">
+    <div class="phase-card">
+      <div class="phase-num">BOUGIE 1</div>
+      <h4>Setup -- Sweep de Liquidite</h4>
+      <p>La premiere bougie est la bougie de <strong>manipulation</strong>. Elle sweep la liquidite d'un cote (prend les stops). Son wick penetre dans la zone de liquidite ciblee. C'est la bougie qui "piege" les traders. Elle peut etre haussiere ou baissiere -- c'est son wick et le contexte qui comptent, pas sa couleur.</p>
+    </div>
+    <div class="phase-card">
+      <div class="phase-num">BOUGIE 2</div>
+      <h4>Confirmation -- Displacement</h4>
+      <p>La deuxieme bougie est la bougie de <strong>confirmation</strong>. Elle se deplace agressivement dans la direction opposee au sweep. Son corps est plein et decisif. Elle cree souvent un FVG avec la Bougie 1. C'est cette bougie qui confirme que la manipulation est terminee et que le vrai mouvement commence.</p>
+    </div>
+  </div>
+
+  <div class="phase-card" style="margin-top: 16px;">
+    <div class="phase-num">BOUGIE 3</div>
+    <h4>Entree -- Retour vers la Zone</h4>
+    <p>La troisieme bougie est la bougie d'<strong>entree</strong>. Elle retrace partiellement vers le FVG cree entre la Bougie 1 et la Bougie 2. C'est le moment d'execution. L'entree se fait sur le retour dans le FVG. Le stop est place au-dela du low/high de la Bougie 1 (le point de sweep). La cible est la prochaine zone de liquidite dans la direction du mouvement.</p>
+  </div>
+
+  <div class="sec">Conditions de Validite</div>
+  <ol class="nl">
+    <li><strong>Contexte HTF aligne</strong> : le Three Candle doit apparaitre dans la direction du programme. Un Three Candle bullish dans un programme sell n'est pas valide</li>
+    <li><strong>Dans un POI</strong> : le modele doit se former dans ou pres d'un POI identifie. Un Three Candle en plein milieu d'un range n'a pas de valeur</li>
+    <li><strong>Pendant une macro</strong> : le modele est le plus fiable lorsqu'il se forme pendant une fenetre macro (9:50-10:10, etc.)</li>
+    <li><strong>Avec SMT</strong> : la Bougie 1 devrait idealement correspondre a une SMT avec l'actif correle. Le sweep sur un actif sans confirmation sur l'autre renforce le signal</li>
+    <li><strong>FVG clair</strong> : le gap entre la Bougie 1 et la Bougie 2 doit etre visible et non ambigu. Si les corps se touchent, ce n'est pas un Three Candle valide</li>
+  </ol>
+
+  <div class="box box-am">
+    <div class="box-title">Timeframe optimal</div>
+    <p>Le Three Candle Model est le plus efficace sur le <strong>M5 et le M15</strong>. Sur des timeframes plus eleves, les bougies sont trop larges et le stop trop distant. Sur le M1, le bruit est trop important. Le M5 offre le meilleur equilibre entre precision et fiabilite.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODULE 14 — POI Execution                      -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="mod" id="m14">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 14</span>
+    <h2>Execution sur POI</h2>
+  </div>
+
+  <p>
+    L'execution est le moment ou toute l'analyse se concretise en une position. C'est aussi le moment ou la plupart des erreurs sont commises. Un <strong>processus d'execution rigoureux</strong> separe les traders consistants des traders aleatoires.
+  </p>
+
+  <div class="sec">Checklist Pre-Execution</div>
+  <ol class="nl">
+    <li><strong>Programme identifie</strong> : Buy ou Sell confirme sur le HTF avec cloture</li>
+    <li><strong>POI selectionne</strong> : le plus recent, avec invalidation claire, aligne avec le programme</li>
+    <li><strong>Fenetre temporelle</strong> : on est dans une session active et idealement dans une macro</li>
+    <li><strong>SMT presente</strong> : divergence confirmee entre les actifs correles au niveau du POI</li>
+    <li><strong>Modele d'entree forme</strong> : Unicorn, Three Candle, ou BPR retest visible</li>
+    <li><strong>Risque defini</strong> : stop place, taille de position calculee, ratio R:R minimum 2:1</li>
+  </ol>
+
+  <div class="sec">Types d'Entree</div>
+  <ul class="cl">
+    <li><strong>Limit Order sur le POI</strong> : place a l'avance sur le Quad optimal. Avantage : execution precise. Inconvenient : pas de confirmation en temps reel</li>
+    <li><strong>Market Order sur confirmation</strong> : on attend le Three Candle ou l'Unicorn, puis on entre au marche sur la Bougie 3/Phase 6. Avantage : confirmation visuelle. Inconvenient : slippage possible</li>
+    <li><strong>Stop Order au-dessus/en-dessous</strong> : place au-dela du point de confirmation (high de la Bougie 2 pour un long). Avantage : on ne rentre que si le mouvement est confirme. Inconvenient : ratio R:R reduit</li>
+  </ul>
+
+  <div class="sec">Gestion du Stop Initial</div>
+  <ul class="cl">
+    <li>Le stop est place <strong>au-dela du POI complet</strong> ou au-dela du low/high de la manipulation (Bougie 1 du Three Candle, low de la SMT)</li>
+    <li>Ne jamais placer le stop "tight" pour augmenter la taille de position. Le stop est dicte par la structure, pas par le money management</li>
+    <li>Si le stop structurel est trop large pour le risque acceptable, <strong>on reduit la taille de position</strong>, on ne raccourcit pas le stop</li>
+    <li>Un stop touche dans les bonnes conditions n'est pas un echec -- c'est le cout du trading</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Discipline d'execution</div>
+    <p>L'execution n'est pas le moment de reflechir -- c'est le moment d'<strong>executer un plan predetermine</strong>. Toute l'analyse a ete faite avant. Si au moment d'executer on hesite, c'est qu'un element du plan n'est pas clair. Dans ce cas, on ne trade pas. La clarte du plan avant l'execution est le vrai edge.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODULE 15 — Invalidation & Trail               -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="mod" id="m15">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 15</span>
+    <h2>Invalidation, Trail &amp; Partiels</h2>
+  </div>
+
+  <p>
+    La gestion du trade actif est tout aussi importante que l'entree. Un trade bien entre mais mal gere peut transformer un winner en loser. Un systeme de gestion <strong>mecanique et predetermine</strong> elimine les decisions emotionnelles.
+  </p>
+
+  <div class="sec">Invalidation Technique</div>
+  <ul class="cl">
+    <li><strong>Cloture au-dela du POI</strong> : si le prix cloture au-dela du POI sur le timeframe d'entree, le trade est invalide. On coupe immediatement, sans attendre un "retour"</li>
+    <li><strong>Cloture au-dela du stop structurel</strong> : si le prix atteint le stop, il est touche automatiquement. Pas de deplacement du stop pour "donner plus de place"</li>
+    <li><strong>Invalidation temporelle</strong> : si le trade ne se developpe pas dans les 2-3 cycles de 90 minutes apres l'entree, il est probablement mort. Sortir au breakeven ou avec une perte minimale</li>
+    <li><strong>Perte de correlation</strong> : si les actifs correles divergent apres l'entree dans une direction defavorable, c'est un signal d'alerte. Reduire l'exposition</li>
+  </ul>
+
+  <div class="sec">Trail de Stop Mecanique</div>
+  <ol class="nl">
+    <li><strong>Breakeven</strong> : des que le prix atteint 1R de profit (distance egale au stop initial), deplacer le stop au breakeven. Cela protege le capital sans sacrifier le potentiel</li>
+    <li><strong>Trail sur structure</strong> : deplacer le stop sous/au-dessus de chaque nouveau higher low (pour un long) ou lower high (pour un short) forme sur le timeframe d'entree</li>
+    <li><strong>Trail sur FVG</strong> : deplacer le stop sous/au-dessus de chaque nouveau FVG cree dans la direction du trade. Les FVG agissent comme des supports/resistances dynamiques</li>
+    <li><strong>Protection de profit</strong> : apres 2R de profit, le stop ne doit plus jamais etre en perte. Minimum breakeven + commissions</li>
+  </ol>
+
+  <div class="sec">Partiels</div>
+  <p>
+    La prise de profits partiels est un sujet debattu. Voici un cadre de reference a adapter selon le profil de risque individuel.
+  </p>
+  <ul class="cl">
+    <li><strong>Approche conservatrice</strong> : 50% a 1R, 25% a 2R, runner le reste avec trail. Avantage : securise le profit tot. Inconvenient : reduit le potentiel sur les grands mouvements</li>
+    <li><strong>Approche agressive</strong> : 100% de la position sur la cible finale. Avantage : maximise le profit sur les trades gagnants. Inconvenient : transforme des winners en breakeven plus souvent</li>
+    <li><strong>Approche equilibree</strong> : 33% a 1R, 33% a 2R, 34% sur cible finale ou trail. Compromis entre securisation et potentiel</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Mindset A vers B</div>
+    <p>Le prix va de A a B. <strong>A</strong> est le point d'entree (le POI). <strong>B</strong> est la cible (la prochaine zone de liquidite). Notre travail est de <strong>trader le parcours</strong> de A a B, pas de predire ou B se situe avec une precision absolue. Le trail de stop est l'outil qui nous permet de rester dans le trade tant que le parcours est en cours, et de sortir quand il est termine.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODULE 16 — Protocole Complet                  -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="mod" id="m16">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 16</span>
+    <h2>Protocole Complet d'Execution</h2>
+  </div>
+
+  <p>
+    Le protocole est une <strong>sequence de couches de confirmation</strong>. Chaque couche doit etre validee avant de passer a la suivante. Si une couche n'est pas confirmee, on <strong>ne passe pas</strong> a la suivante. Il n'y a pas d'exception.
+  </p>
+
+  <div class="sec">Les 6 Couches</div>
+  <div class="timeline">
+    <div class="timeline-item">
+      <h4>Couche 1 -- Environment Selection</h4>
+      <p>Determiner le programme actif (Buy/Sell) sur le HTF. Verifier la correlation entre les actifs. Identifier la liquidite non purgee. Si le programme n'est pas clair, STOP -- pas de trade aujourd'hui.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>Couche 2 -- Recognition</h4>
+      <p>Identifier le modele Market Maker en cours (MMBM/MMSM) et la phase actuelle. Localiser les POI pertinents. Si aucun POI clair n'est identifie, STOP -- pas de trade.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>Couche 3 -- Model</h4>
+      <p>Attendre que le prix atteigne le POI. Observer la reaction. Chercher l'Unicorn, le Three Candle, ou un retest de BPR. Si aucun modele ne se forme, STOP -- pas de trade.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>Couche 4 -- Entry</h4>
+      <p>Verifier la SMT. Confirmer le timing (macro, cycle de 90min). Calculer le risque. Placer l'ordre. Si la SMT est absente ou le timing mauvais, STOP -- pas de trade.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>Couche 5 -- Management</h4>
+      <p>Appliquer le plan de gestion predetermine. Trail mecanique. Partiels selon le plan. Aucune decision emotionnelle. Le plan est le plan.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>Couche 6 -- Log</h4>
+      <p>Documenter le trade integralement. Captures d'ecran de chaque couche. Resultat. Lecons. Le journal est l'outil d'amelioration -- sans lui, les memes erreurs se repetent indefiniment.</p>
+    </div>
+  </div>
+
+  <div class="box box-re">
+    <div class="box-title">Regle d'or du protocole</div>
+    <p>Un win n'est un win que si <strong>les regles ont ete suivies</strong>. Un trade gagnant qui a ete pris sans respecter le protocole est plus dangereux qu'une perte disciplinee -- il renforce de mauvaises habitudes. Le processus est plus important que le resultat sur un trade individuel.</p>
+  </div>
+
+  <div class="sec">Resume du Flux de Decision</div>
+  <ol class="nl">
+    <li><strong>HTF</strong> : Quel est le programme ? Buy ou Sell ? Les actifs correles sont-ils alignes ?</li>
+    <li><strong>POI</strong> : Ou est le POI le plus recent avec invalidation claire ? Est-il aligne avec le programme ?</li>
+    <li><strong>Temps</strong> : Sommes-nous dans une session active ? Dans une macro ? Dans un cycle de 90 minutes favorable ?</li>
+    <li><strong>SMT</strong> : Y a-t-il une divergence entre les actifs correles au niveau du POI ?</li>
+    <li><strong>Modele</strong> : Un Unicorn, Three Candle ou BPR retest se forme-t-il ?</li>
+    <li><strong>Execute</strong> : Risque defini, taille calculee, stop place. Execute le plan.</li>
+    <li><strong>Gere</strong> : Trail mecanique, partiels selon le plan. Pas d'improvisation.</li>
+    <li><strong>Log</strong> : Documente tout. Analyse apres cloture. Ameliore le processus.</li>
+  </ol>
+
+  <div class="box box-am">
+    <div class="box-title">Philosophie finale</div>
+    <p>Ce protocole n'est pas une garantie de profit sur chaque trade. C'est un <strong>systeme de filtrage</strong> qui elimine les trades de faible probabilite et ne conserve que les configurations ou les couches de confirmation sont alignees. Sur un echantillon suffisant, ce filtrage produit un edge positif. La discipline d'application est le seul facteur qui separe la connaissance de la performance.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Algorithmic Academy -- Formation avancee en trading algorithmique -- Modeles de Marche
+</footer>
+
+<script src="../auth.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Progress bar
+  const pfill = document.getElementById('pfill');
+  const main = document.getElementById('main');
+  window.addEventListener('scroll', () => {
+    const st = window.scrollY;
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    pfill.style.width = h > 0 ? (st / h * 100) + '%' : '0%';
+  });
+
+  // Sidebar active link
+  const links = document.querySelectorAll('.sb-link');
+  const sections = document.querySelectorAll('.mod, #hero');
+  const obs1 = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const id = e.target.id;
+        const active = document.querySelector(`.sb-link[href="#${id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -70% 0px' });
+  sections.forEach(s => obs1.observe(s));
+
+  // Reveal on scroll
+  const mods = document.querySelectorAll('.mod');
+  const obs2 = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('vis');
+        obs2.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  mods.forEach(m => obs2.observe(m));
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="premium">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Modeles d'Execution & Playbooks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0C0F0A;
+  --bg2:      #111510;
+  --bg3:      #181D14;
+  --border:   #1F2A1A;
+  --em:       #3D7A3A;
+  --em2:      #56A853;
+  --em-light: #A3D9A1;
+  --em-pale:  #E8F5E8;
+  --amber:    #D4882A;
+  --amber-l:  #F5C56A;
+  --red:      #C9453A;
+  --blue:     #4A90B8;
+  --muted:    #3A4535;
+  --text:     #DDE8D8;
+  --text-dim: #7D9478;
+  --serif:    'Playfair Display', serif;
+  --sans:     'Syne', sans-serif;
+  --body:     'Source Serif 4', serif;
+  --mono:     'Roboto Mono', monospace;
+  --sw: 270px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.75; display: flex; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* -- SIDEBAR -------------------------------- */
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 100;
+}
+
+.sb-logo {
+  padding: 28px 22px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sb-logo .mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--em), var(--em2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(61,122,58,.3);
+}
+
+.sb-logo h1 {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--em-light);
+  line-height: 1.25;
+}
+
+.sb-logo p {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.sb-section {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 16px 22px 5px;
+}
+
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 22px; text-decoration: none;
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 500;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.sb-link:hover { background: rgba(86,168,83,.06); color: var(--text); }
+.sb-link.active { background: rgba(86,168,83,.1); color: var(--em-light); border-left-color: var(--em2); }
+
+.sb-link .n {
+  font-family: var(--mono);
+  font-size: 0.62rem; font-weight: 500;
+  color: var(--muted); min-width: 22px;
+}
+.sb-link.active .n { color: var(--em2); }
+
+/* -- PROGRESS ------------------------------- */
+#pbar {
+  position: fixed; top: 0; left: var(--sw); right: 0;
+  height: 2px; background: var(--border); z-index: 200;
+}
+#pfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--em), var(--em2), var(--amber));
+  width: 0%; transition: width 0.1s linear;
+}
+
+/* -- MAIN ----------------------------------- */
+#main { margin-left: var(--sw); flex: 1; min-height: 100vh; }
+
+/* -- HERO ----------------------------------- */
+#hero {
+  position: relative; overflow: hidden;
+  padding: 80px 64px 72px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-noise {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-lines {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 20px,
+    rgba(61,122,58,.04) 20px, rgba(61,122,58,.04) 21px
+  );
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(86,168,83,.12);
+  border: 1px solid rgba(86,168,83,.3);
+  color: var(--em-light);
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+
+#hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 5.5vw, 5rem);
+  line-height: 1.0;
+  color: #fff;
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+#hero h1 .em {
+  display: block;
+  background: linear-gradient(90deg, var(--em2), var(--em-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+#hero .sub {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 400;
+  color: var(--text-dim); max-width: 560px; margin-bottom: 44px;
+  line-height: 1.8;
+}
+
+.hero-kpis {
+  display: grid; grid-template-columns: repeat(6, 1fr);
+  gap: 14px; max-width: 780px;
+}
+
+.kpi {
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+}
+.kpi:hover { border-color: rgba(86,168,83,.35); }
+
+.kpi-v {
+  font-family: var(--mono);
+  font-size: 1.5rem; font-weight: 500;
+  color: var(--em-light); line-height: 1;
+  margin-bottom: 5px;
+}
+.kpi-l {
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* -- MODULE --------------------------------- */
+.mod {
+  padding: 64px; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.mod.vis { opacity: 1; transform: none; }
+
+.mod-head {
+  display: flex; align-items: flex-start; gap: 18px;
+  margin-bottom: 40px;
+}
+
+.mod-tag {
+  font-family: var(--mono);
+  font-size: 0.65rem; font-weight: 500;
+  color: var(--em2);
+  background: rgba(86,168,83,.1);
+  border: 1px solid rgba(86,168,83,.22);
+  padding: 5px 12px; border-radius: 6px;
+  white-space: nowrap; margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+.mod-head h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: #fff; line-height: 1.1;
+}
+
+/* -- SECTION TITLES ------------------------- */
+.sec {
+  font-family: var(--sans);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--em-light);
+  margin: 42px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+  display: flex; align-items: center; gap: 10px;
+}
+.sec::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 18px;
+  background: linear-gradient(var(--em), var(--em2));
+  border-radius: 2px; flex-shrink: 0;
+}
+
+.subsec {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 700;
+  color: var(--text); margin: 26px 0 10px;
+}
+
+p {
+  font-size: 0.95rem; color: var(--text-dim);
+  line-height: 1.85; margin-bottom: 12px;
+}
+p strong { color: var(--text); font-weight: 600; }
+em { color: var(--em-light); font-style: italic; }
+
+/* -- CALLOUTS ------------------------------- */
+.box {
+  border-radius: 10px; padding: 20px 24px;
+  margin: 18px 0; border-left: 3px solid;
+  background: rgba(255,255,255,.022);
+}
+.box-em  { border-color: var(--em2);  background: rgba(86,168,83,.06); }
+.box-am  { border-color: var(--amber); background: rgba(212,136,42,.06); }
+.box-re  { border-color: var(--red);   background: rgba(201,69,58,.06); }
+.box-bl  { border-color: var(--blue);  background: rgba(74,144,184,.06); }
+
+.box-title {
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 7px;
+}
+.box-em .box-title  { color: var(--em-light); }
+.box-am .box-title  { color: var(--amber-l); }
+.box-re .box-title  { color: #FCA5A5; }
+.box-bl .box-title  { color: #93C5FD; }
+.box p { margin: 0; font-size: 0.88rem; }
+
+/* -- TABLES --------------------------------- */
+.tbl {
+  width: 100%; border-collapse: collapse;
+  margin: 18px 0; font-size: 0.87rem;
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.tbl th {
+  background: rgba(86,168,83,.1);
+  color: var(--em-light);
+  font-family: var(--sans); font-weight: 700;
+  font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 11px 18px; text-align: left;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+}
+.tbl td {
+  padding: 10px 18px; color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top; line-height: 1.6;
+}
+.tbl td:first-child { color: var(--text); font-weight: 600; font-size: 0.83rem; white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(255,255,255,.015); }
+
+/* -- LISTS ---------------------------------- */
+ul.cl { list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 8px; }
+ul.cl li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ul.cl li::before {
+  content: '>'; color: var(--em2); font-size: 1rem;
+  margin-top: 1px; flex-shrink: 0;
+}
+ul.cl li strong { color: var(--text); }
+
+ol.nl { counter-reset: nl; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 9px; }
+ol.nl li {
+  counter-increment: nl;
+  display: flex; align-items: flex-start; gap: 13px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ol.nl li::before {
+  content: counter(nl);
+  background: rgba(86,168,83,.15);
+  border: 1px solid rgba(86,168,83,.28);
+  color: var(--em-light);
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+}
+
+/* -- CHECKLIST ------------------------------ */
+ul.chk { list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 10px; }
+ul.chk li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+  padding: 8px 14px;
+  background: rgba(255,255,255,.018);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+ul.chk li::before {
+  content: '';
+  width: 16px; height: 16px;
+  border: 2px solid var(--em2);
+  border-radius: 4px;
+  flex-shrink: 0; margin-top: 3px;
+}
+ul.chk li strong { color: var(--text); }
+
+/* -- SCORE HIGHLIGHT ------------------------ */
+.score-good { color: var(--em-light); font-weight: 700; }
+.score-min { color: var(--amber-l); font-weight: 700; }
+
+/* -- FOOTER --------------------------------- */
+footer {
+  padding: 40px 64px;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem; color: var(--text-dim);
+  text-align: center;
+}
+
+/* -- RESPONSIVE ----------------------------- */
+@media (max-width: 900px) {
+  :root { --sw: 0px; }
+  #sidebar { display: none; }
+  #main { margin-left: 0; }
+  .mod { padding: 36px 20px; }
+  #hero { padding: 50px 20px 40px; }
+  .hero-kpis { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+
+<!-- -- SIDEBAR --------------------------------- -->
+<aside id="sidebar">
+  <div class="sb-logo">
+    <div class="mark">A</div>
+    <h1>Playbooks Traders</h1>
+    <p>Algorithmic Academy</p>
+  </div>
+  <div class="sb-section">Modules</div>
+  <a class="sb-link" href="#m1"><span class="n">01</span> Vue d'ensemble</a>
+  <a class="sb-link" href="#m2"><span class="n">02</span> Playbook Intraday MMXM</a>
+  <a class="sb-link" href="#m3"><span class="n">03</span> Playbook Order Blocks</a>
+  <a class="sb-link" href="#m4"><span class="n">04</span> Playbook Liquidite</a>
+  <a class="sb-link" href="#m5"><span class="n">05</span> Playbook DRT Blueprint</a>
+  <a class="sb-link" href="#m6"><span class="n">06</span> Modele d'Entree A+</a>
+  <a class="sb-link" href="#m7"><span class="n">07</span> Modele Fractal</a>
+  <a class="sb-link" href="#m8"><span class="n">08</span> Comparatif des Approches</a>
+  <a class="sb-link" href="#m9"><span class="n">09</span> Checklist Pre-Session</a>
+  <a class="sb-link" href="#m10"><span class="n">10</span> Protocole de Backtesting</a>
+</aside>
+
+<div id="pbar"><div id="pfill"></div></div>
+
+<!-- -- MAIN ------------------------------------ -->
+<main id="main">
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-tag">Premium</div>
+  <h1>Playbooks Traders<span class="em">Modeles d'Execution Professionnels</span></h1>
+  <p class="sub">
+    Compilation des methodologies professionnelles : playbooks complets, modeles d'entree, checklists d'execution, approches systematiques et protocoles de backtesting pour un trading structure et reproductible.
+  </p>
+  <div class="hero-kpis">
+    <div class="kpi"><div class="kpi-v">4</div><div class="kpi-l">Playbooks</div></div>
+    <div class="kpi"><div class="kpi-v">10</div><div class="kpi-l">Modeles</div></div>
+    <div class="kpi"><div class="kpi-v">A+</div><div class="kpi-l">Entrees</div></div>
+    <div class="kpi"><div class="kpi-v">12</div><div class="kpi-l">Plans</div></div>
+    <div class="kpi"><div class="kpi-v">9</div><div class="kpi-l">Checklists</div></div>
+    <div class="kpi"><div class="kpi-v">100+</div><div class="kpi-l">Backtesting</div></div>
+  </div>
+</section>
+
+
+<!-- ============================================= -->
+<!-- MODULE 1 -- Vue d'ensemble                    -->
+<!-- ============================================= -->
+<section class="mod" id="m1">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 01</span>
+    <h2>Vue d'ensemble des Playbooks</h2>
+  </div>
+
+  <div class="sec">Qu'est-ce qu'un Playbook ?</div>
+  <p>Un playbook est un <strong>systeme de trading complet</strong> avec des regles d'entree, de gestion et de sortie clairement definies. C'est votre plan d'execution reproductible -- un document vivant qui evolue avec votre experience mais qui reste ancre dans des principes solides.</p>
+  <p>Chaque playbook est adapte a un <strong>style et un contexte specifique</strong>. Il n'existe pas de playbook universel. Le marche offre differentes conditions et chaque approche excelle dans un environnement particulier.</p>
+
+  <div class="box box-em">
+    <div class="box-title">Principe fondamental</div>
+    <p>L'objectif est d'avoir <strong>UN playbook maitrise</strong>, pas 10 playbooks mediocres. La maitrise vient de la repetition, de la specialisation et de la discipline. Un trader avec un seul setup qu'il connait parfaitement surpassera toujours celui qui jongle entre multiples strategies sans en maitriser aucune.</p>
+  </div>
+
+  <div class="sec">Pourquoi structurer son approche ?</div>
+  <ul class="cl">
+    <li><strong>Reproductibilite</strong> -- Un playbook permet de reproduire les memes conditions de trade a chaque session, eliminant l'improvisation et les decisions emotionnelles</li>
+    <li><strong>Mesurabilite</strong> -- Avec des regles claires, vous pouvez mesurer votre performance reelle : winrate, R:R moyen, drawdown, profit factor</li>
+    <li><strong>Evolution structuree</strong> -- Les ajustements se font sur la base de donnees, pas de ressentis. Chaque modification est testee et validee</li>
+    <li><strong>Discipline</strong> -- Le playbook est votre garde-fou. Quand les emotions montent, vous revenez a vos regles</li>
+    <li><strong>Confiance</strong> -- Savoir que votre systeme est backteste sur 100+ trades donne la confiance necessaire pour executer sans hesitation</li>
+  </ul>
+
+  <div class="sec">Regles de validation</div>
+  <ol class="nl">
+    <li><strong>Backtest minimum 100 trades</strong> -- Aucun playbook ne doit etre utilise en reel sans un minimum de 100 trades backtestes. C'est le seuil statistique minimum pour avoir une idee de la performance reelle</li>
+    <li><strong>Winrate minimum 40%</strong> -- Avec un R:R de 2:1 minimum, un winrate de 40% est suffisant pour etre profitable. En dessous, le systeme n'est pas viable</li>
+    <li><strong>Profit factor superieur a 1.5</strong> -- Le ratio entre les gains totaux et les pertes totales doit depasser 1.5 pour avoir une marge de securite</li>
+    <li><strong>Drawdown maximum 15%</strong> -- Si votre pire serie de pertes depasse 15% du capital, le risque par trade est trop eleve ou le systeme n'est pas stable</li>
+    <li><strong>Consistance mensuelle</strong> -- Le systeme doit etre profitable sur au moins 8 mois sur 12. Des periodes de perte sont normales mais ne doivent pas etre majoritaires</li>
+  </ol>
+
+  <div class="box box-re">
+    <div class="box-title">Avertissement</div>
+    <p>Ne jamais passer en reel sans avoir complete le protocole de validation. Le marche ne pardonne pas l'improvisation. Chaque dollar perdu par manque de preparation est un dollar qui aurait pu etre preserve par la discipline.</p>
+  </div>
+
+  <div class="sec">Les quatre piliers d'un playbook</div>
+  <table class="tbl">
+    <thead><tr><th>Pilier</th><th>Description</th><th>Importance</th></tr></thead>
+    <tbody>
+      <tr><td>Contexte</td><td>Conditions de marche requises : session, volatilite, biais directionnel, niveaux cles</td><td>Determine si le trade est viable avant meme de chercher une entree</td></tr>
+      <tr><td>Entree</td><td>Regles precises de declenchement : pattern, confirmation, timeframe, type d'ordre</td><td>Elimine l'ambiguite et permet une execution mecanique</td></tr>
+      <tr><td>Gestion</td><td>Stop-loss, take-profit, gestion de position, break-even, partials</td><td>Protege le capital et maximise les gains sur les trades gagnants</td></tr>
+      <tr><td>Sortie</td><td>Conditions de cloture : target atteint, invalidation, fin de session, temps ecoule</td><td>Evite de rendre les profits ou de laisser courir les pertes</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ============================================= -->
+<!-- MODULE 2 -- Playbook Intraday MMXM            -->
+<!-- ============================================= -->
+<section class="mod" id="m2">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 02</span>
+    <h2>Playbook Intraday MMXM</h2>
+  </div>
+
+  <div class="sec">Framework complet</div>
+  <p>Le modele MMXM (Market Maker Execution Model) est une approche intraday structuree autour de la <strong>logique algorithmique institutionnelle</strong>. Il suit une sequence precise de validation avant chaque trade, du contexte macro a l'execution micro.</p>
+
+  <div class="subsec">Sequence de validation</div>
+  <ol class="nl">
+    <li><strong>HTF PDA / IRL ou ERL</strong> -- Identifier sur le Daily ou 4H si le prix est dans une zone de PD Array (Premium/Discount Array). Determiner si le prix cherche l'Internal Range Liquidity (IRL) ou l'External Range Liquidity (ERL)</li>
+    <li><strong>Dealing Range Premium &amp; Discount</strong> -- Sur le Dealing Range actif, determiner si le prix est en zone Premium (au-dessus de l'equilibre) ou Discount (en dessous). Ne trader que dans la direction logique de la zone</li>
+    <li><strong>Signatures LRLR</strong> -- Identifier le pattern Low-Rally-Low-Rally ou High-Decline-High-Decline qui montre l'intention directionnelle des market makers</li>
+    <li><strong>SMT ou Stop Hunt</strong> -- Confirmer la presence d'une divergence SMT (Smart Money Technique) avec un actif correle, ou un balayage visible de liquidite (stop hunt)</li>
+    <li><strong>Killzone</strong> -- Le trade doit se produire pendant une killzone active : London Open (02:00-05:00 EST) ou New York AM (08:30-11:00 EST)</li>
+    <li><strong>MSS (optionnel)</strong> -- Un Market Structure Shift sur le LTF confirme le retournement. Optionnel si les autres confluences sont fortes</li>
+    <li><strong>FVG Entry</strong> -- Entree sur le Fair Value Gap (desequilibre de prix) le plus proche de la zone de retournement. C'est le point d'entree optimal</li>
+    <li><strong>Target 2R minimum</strong> -- Le take-profit doit offrir un minimum de 2R. Idealement 3R+ pour compenser les trades perdants</li>
+    <li><strong>Journal</strong> -- Chaque trade est documente avec screenshot, analyse et notes pour le review</li>
+  </ol>
+
+  <div class="sec">Midnight Opening Price</div>
+  <p>Le <strong>Midnight Opening Price</strong> (prix d'ouverture a minuit EST) sert de reference centrale pour la session. Il represente le point d'equilibre des algorithmes pour la journee a venir.</p>
+  <ul class="cl">
+    <li>Si le prix est <strong>au-dessus</strong> du Midnight Open durant la session asiatique, il y a une probabilite elevee de retour en dessous avant le mouvement directionnel principal</li>
+    <li>Si le prix est <strong>en dessous</strong>, l'inverse s'applique -- les algorithmes cherchent souvent a revenir au-dessus avant de delivrer</li>
+    <li>Le Midnight Open agit comme un <strong>pivot naturel</strong> autour duquel les manipulations de pre-session s'organisent</li>
+    <li>Combiner le Midnight Open avec le NDOG (New Day Opening Gap) pour une reference encore plus precise</li>
+  </ul>
+
+  <div class="sec">Continuation Purges</div>
+  <p>Les continuation purges sont des balayages de liquidite qui <strong>ne signalent pas un retournement</strong> mais une continuation dans la direction dominante. Reconnaitre la difference entre un retournement et une continuation est crucial pour eviter les faux signaux.</p>
+
+  <div class="box box-am">
+    <div class="box-title">Identification d'une continuation purge</div>
+    <p>Une continuation purge se distingue par : (1) le sweep est superficiel, ne depassant que de quelques ticks le niveau de liquidite, (2) le displacement post-sweep est faible ou absent, (3) le contexte HTF montre une tendance forte dans la direction opposee au sweep. Dans ce cas, le prix reprendra son mouvement initial apres avoir collecte la liquidite.</p>
+  </div>
+
+  <div class="sec">Alignement des Timeframes</div>
+  <table class="tbl">
+    <thead><tr><th>Timeframe</th><th>Role</th><th>Element a verifier</th></tr></thead>
+    <tbody>
+      <tr><td>Daily</td><td>Biais directionnel</td><td>Tendance, PD Arrays, niveaux cles</td></tr>
+      <tr><td>4H</td><td>Contexte structurel</td><td>Dealing Range, Premium/Discount</td></tr>
+      <tr><td>1H</td><td>Zone de trading</td><td>OB, FVG, Breaker blocks</td></tr>
+      <tr><td>15M</td><td>Timing d'entree</td><td>MSS, FVG d'entree, SMT</td></tr>
+      <tr><td>5M</td><td>Execution precise</td><td>Point d'entree exact, SL placement</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Sessions cibles</div>
+  <ul class="cl">
+    <li><strong>London Open (02:00-05:00 EST)</strong> -- Session de manipulation initiale. Les algos balaient la liquidite accumulee pendant l'Asie. Ideal pour les retournements</li>
+    <li><strong>New York AM (08:30-11:00 EST)</strong> -- Session de delivery principale. Le mouvement directionnel le plus important de la journee se produit generalement ici</li>
+    <li><strong>London Close (10:00-12:00 EST)</strong> -- Fenetre secondaire pour les continuations ou les retournements intraday. Moins fiable mais offre des opportunites</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Regle d'or du MMXM</div>
+    <p>Ne jamais forcer un trade si la sequence complete n'est pas validee. Un trade MMXM sans au moins 5 des 8 criteres valides n'est pas un trade A+. La patience est votre plus grand avantage competitif.</p>
+  </div>
+
+  <div class="sec">R:R et gestion de position</div>
+  <ul class="cl">
+    <li><strong>R:R minimum : 2:1</strong> -- En dessous de ce ratio, le trade n'est pas pris, quel que soit le nombre de confluences</li>
+    <li><strong>Stop-loss</strong> -- Place au-dela du swing point qui a genere le displacement, jamais au milieu d'une zone</li>
+    <li><strong>Take-profit primaire</strong> -- Sur le premier pool de liquidite oppose (equal highs/lows)</li>
+    <li><strong>Take-profit secondaire</strong> -- Sur le FVG HTF non comble ou le prochain PD Array significatif</li>
+    <li><strong>Partials</strong> -- Securiser 50% a 1.5R, laisser runner le reste avec un SL a break-even</li>
+  </ul>
+</section>
+
+
+<!-- ============================================= -->
+<!-- MODULE 3 -- Playbook Order Blocks              -->
+<!-- ============================================= -->
+<section class="mod" id="m3">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 03</span>
+    <h2>Playbook Order Blocks</h2>
+  </div>
+
+  <div class="sec">Redefinir l'Order Block</div>
+  <p>L'Order Block n'est <strong>pas simplement "la derniere bougie opposee"</strong> avant un mouvement. C'est une interpretation reductrice qui mene a de nombreuses pertes. Un veritable OB est un <strong>groupe de bougies</strong> representant une zone ou les institutions ont accumule des positions -- avec un contexte precis qui valide son utilisation.</p>
+
+  <div class="box box-re">
+    <div class="box-title">Erreur courante</div>
+    <p>Identifier chaque bougie opposee comme un OB est la source numero un de pertes chez les traders SMC debutants. Sans le contexte de la liquidite environnante, du FVG adjacent et de la structure HTF, un "OB" n'est qu'une bougie comme une autre.</p>
+  </div>
+
+  <div class="sec">Anatomie d'un Order Block valide</div>
+  <ol class="nl">
+    <li><strong>Zone de sell-side ou buy-side</strong> -- L'OB doit se former dans une zone ou la liquidite a ete collectee (sweep de highs/lows precedents)</li>
+    <li><strong>Groupe de bougies</strong> -- Ce n'est pas une seule bougie mais un ensemble de 2 a 5 bougies qui representent la phase d'accumulation avant le mouvement</li>
+    <li><strong>FVG adjacent</strong> -- Un Fair Value Gap doit etre present immediatement apres le groupe de bougies OB, confirmant le desequilibre cree par l'entree institutionnelle</li>
+    <li><strong>Displacement</strong> -- Le mouvement post-OB doit montrer un deplacement agressif (bougies a corps complet, volume implicite) qui confirme la presence d'ordres institutionnels</li>
+    <li><strong>Contexte HTF</strong> -- L'OB LTF doit etre aligne avec la direction et les zones du HTF. Un OB bullish en zone Premium HTF est un piege</li>
+  </ol>
+
+  <div class="sec">Le rebond peut commencer avant</div>
+  <p>Un point crucial souvent neglige : le prix peut commencer a reagir <strong>des la premiere bougie du groupe OB</strong>, pas necessairement au bas (ou haut) exact de la zone. Les algorithmes n'attendent pas que le prix atteigne le pip exact -- ils commencent a deployer les ordres des l'entree dans la zone.</p>
+  <ul class="cl">
+    <li>Placer des ordres limites au <strong>milieu du corps</strong> de la premiere bougie du groupe OB offre souvent un meilleur fill que d'attendre le bas exact</li>
+    <li>Le <strong>gap entre les meches</strong> des bougies adjacentes dans le groupe OB est une zone de haute probabilite d'entree</li>
+    <li>Si le prix traverse completement le groupe OB avec des clotures au-dela, le setup est <strong>invalide</strong> -- ne pas moyenner a la baisse</li>
+  </ul>
+
+  <div class="sec">Equilibrage des ticks</div>
+  <p>Les algorithmes operent sur un principe d'<strong>equilibrage des ticks</strong>. Pour chaque volume d'achat, un volume equivalent de vente doit etre apparie. Les Order Blocks representent les zones ou cet equilibrage a laisse un desequilibre que les algorithmes doivent eventuellemlent corriger.</p>
+
+  <div class="box box-bl">
+    <div class="box-title">Mecanisme d'equilibrage</div>
+    <p>Quand un OB se forme, les algorithmes enregistrent les niveaux de prix ou les ticks n'ont pas ete equilibres. Le retour vers ces niveaux n'est pas aleatoire -- c'est un processus systematique de reevaluation. Les anciens ticks sont revisites pour completer l'equilibrage, ce qui explique pourquoi les OB attirent le prix comme un aimant.</p>
+  </div>
+
+  <div class="sec">Types d'Order Blocks</div>
+  <table class="tbl">
+    <thead><tr><th>Type</th><th>Formation</th><th>Utilisation</th><th>Fiabilite</th></tr></thead>
+    <tbody>
+      <tr><td>OB Standard</td><td>Derniere zone d'accumulation avant displacement</td><td>Entree en retracement sur FVG adjacent</td><td>Moyenne -- necessite confluences supplementaires</td></tr>
+      <tr><td>Breaker Block</td><td>Ancien OB qui a ete traverse puis reteste</td><td>Entree en continuation apres le break</td><td>Elevee -- le contexte de rupture ajoute de la conviction</td></tr>
+      <tr><td>Rejection Block</td><td>Zone de meches repetees sans clotures</td><td>Entree sur le retour vers la zone de meches</td><td>Moyenne a elevee selon le contexte</td></tr>
+      <tr><td>Mitigation Block</td><td>Ancien OB perdant qui est revisite</td><td>Entree lorsque le prix revient completer l'equilibrage</td><td>Elevee -- les algos doivent completer l'equilibrage</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Regles d'execution</div>
+  <ul class="cl">
+    <li><strong>Stop-loss</strong> -- Au-dela du swing low/high qui a cree l'OB, jamais a l'interieur de la zone</li>
+    <li><strong>Entree</strong> -- Ordre limite au milieu du corps de la premiere bougie du groupe, ou sur le FVG adjacent</li>
+    <li><strong>Target</strong> -- Le prochain pool de liquidite ou FVG HTF non comble dans la direction du trade</li>
+    <li><strong>Invalidation</strong> -- Si le prix cloture au-dela de l'OB sur le TF de formation, le setup est annule. Pas de seconde chance</li>
+    <li><strong>Timeframe</strong> -- Les OB 1H et 4H sont les plus fiables. Les OB 5M et 1M necessitent un contexte HTF impeccable</li>
+  </ul>
+</section>
+
+
+<!-- ============================================= -->
+<!-- MODULE 4 -- Playbook Liquidite                 -->
+<!-- ============================================= -->
+<section class="mod" id="m4">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 04</span>
+    <h2>Playbook Liquidite</h2>
+  </div>
+
+  <div class="sec">Concept de base</div>
+  <p>Le Playbook Liquidite repose sur un principe simple mais puissant : <strong>le prix se deplace vers la liquidite</strong>. Les pools de liquidite (concentrations de stop-loss) sont les cibles naturelles des algorithmes. En identifiant ces pools et en attendant leur balayage, vous vous positionnez dans le meme sens que les institutions.</p>
+
+  <div class="sec">Identifier les pools de liquidite</div>
+  <ul class="cl">
+    <li><strong>Equal highs / Equal lows</strong> -- Deux ou plusieurs sommets/creux au meme niveau creent un mur de stops juste au-dessus/en dessous. C'est le type de liquidite le plus visible et le plus fiable</li>
+    <li><strong>Trendlines</strong> -- Les traders placent leurs stops sous les trendlines haussieres et au-dessus des trendlines baissieres. Ces lignes attirent le prix</li>
+    <li><strong>Session highs/lows</strong> -- Les extremes de session (Asia, London, NY) accumulent de la liquidite au fil de la session. Le balayage est souvent le premier mouvement de la session suivante</li>
+    <li><strong>Previous Day High/Low (PDH/PDL)</strong> -- Les niveaux de la veille sont les pools de liquidite les plus importants pour le trading intraday</li>
+    <li><strong>Niveaux psychologiques</strong> -- Les chiffres ronds (1.1000, 1.0500) attirent naturellement les ordres et les stops</li>
+  </ul>
+
+  <div class="sec">Sequence d'execution</div>
+  <ol class="nl">
+    <li><strong>Identifier le pool</strong> -- Reperer le ou les pools de liquidite les plus proches sur le HTF (4H, Daily). Determiner quel pool est le plus susceptible d'etre cible en premier</li>
+    <li><strong>Attendre le sweep (trap move)</strong> -- Le prix doit penetrer le niveau de liquidite. Ce n'est pas un simple test -- le prix doit depasser le niveau de quelques pips pour declencher les stops</li>
+    <li><strong>Confirmer le rejet</strong> -- Apres le sweep, chercher un displacement agressif (grosse bougie de rejet) suivi d'un FVG. Le displacement confirme que les institutions ont absorbe la liquidite</li>
+    <li><strong>Entrer sur le retour</strong> -- Quand le prix revient remplir le FVG cree par le displacement, c'est le point d'entree optimal. Ordre limite sur le FVG avec SL au-dela du sweep</li>
+    <li><strong>Target : pool oppose</strong> -- Le take-profit est place sur le pool de liquidite oppose. Si vous avez achete apres un sweep de lows, votre target est le prochain pool de highs</li>
+  </ol>
+
+  <div class="box box-em">
+    <div class="box-title">La logique du liquidity trap</div>
+    <p>Le marche ne se deplace pas aleatoirement. Il se deplace de pool de liquidite en pool de liquidite. Comprendre ce concept transforme votre lecture du marche : au lieu de deviner la direction, vous identifiez la destination (le prochain pool) et vous attendez le signal de depart (le sweep + displacement).</p>
+  </div>
+
+  <div class="sec">Types de sweeps</div>
+  <table class="tbl">
+    <thead><tr><th>Type de sweep</th><th>Caracteristiques</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td>Sweep rapide</td><td>Penetration et rejet en 1-2 bougies, forte meche</td><td>Entree immediate sur le FVG, forte probabilite de retournement</td></tr>
+      <tr><td>Sweep lent</td><td>Le prix reste au-dela du niveau pendant plusieurs bougies avant de rejeter</td><td>Attendre le displacement clair avant d'entrer, risque de continuation</td></tr>
+      <tr><td>Double sweep</td><td>Le prix sweep un niveau, revient, puis sweep a nouveau un niveau plus profond</td><td>Entrer uniquement apres le second sweep, le premier est souvent un piege</td></tr>
+      <tr><td>Cascade sweep</td><td>Plusieurs niveaux de liquidite balayees en sequence rapide</td><td>Ne pas entrer pendant la cascade, attendre la stabilisation</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Gestion du trade</div>
+  <ul class="cl">
+    <li><strong>Stop-loss</strong> -- Place quelques pips au-dela du point extreme du sweep. Ce niveau ne devrait plus jamais etre atteint si le retournement est reel</li>
+    <li><strong>R:R cible : 3-5R</strong> -- Le Playbook Liquidite offre generalement les meilleurs ratios car le SL est serre (juste au-dela du sweep) et le target est loin (pool oppose)</li>
+    <li><strong>Partials</strong> -- 30% a 1.5R, 30% supplementaires a 2.5R, laisser les 40% restants pour le pool oppose</li>
+    <li><strong>Break-even</strong> -- Deplacer le SL a l'entree apres que le prix ait depasse 1R de profit</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Attention aux faux sweeps</div>
+    <p>Un sweep sans displacement n'est pas un signal valide. Si le prix penetre le niveau de liquidite mais ne montre pas de rejet agressif (pas de grande bougie de deplacement, pas de FVG), c'est probablement une continuation et non un retournement. Patience et discipline sont essentielles.</p>
+  </div>
+</section>
+
+
+<!-- ============================================= -->
+<!-- MODULE 5 -- Playbook DRT Blueprint             -->
+<!-- ============================================= -->
+<section class="mod" id="m5">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 05</span>
+    <h2>Playbook DRT Blueprint</h2>
+  </div>
+
+  <div class="sec">Le Dealing Range Theory</div>
+  <p>Le DRT (Dealing Range Theory) est un cadre d'analyse qui divise le marche en <strong>zones structurelles</strong> basees sur les Dealing Ranges. Chaque DR represente un cycle complet de prix entre un point bas et un point haut, et le positionnement du prix dans cette structure dicte la direction du trade.</p>
+
+  <div class="sec">Sequence d'analyse DRT</div>
+  <ol class="nl">
+    <li><strong>Identifier le DRT actif</strong> -- Sur le Daily ou 4H, tracer le Dealing Range actuel (du dernier swing low significatif au dernier swing high significatif). C'est votre cadre de reference</li>
+    <li><strong>Determiner Premium vs Discount</strong> -- Calculer l'equilibre (50% du DR). Au-dessus = Premium, en dessous = Discount. Le prix en Premium doit etre vendu, le prix en Discount doit etre achete</li>
+    <li><strong>Localiser la DOL (Draw On Liquidity)</strong> -- Identifier la destination probable du prix : le prochain pool de liquidite, FVG non comble ou PD Array significatif</li>
+    <li><strong>Entrer en Deep Zone uniquement</strong> -- Long uniquement en Deep Discount (en dessous de 30% du DR), short uniquement en Deep Premium (au-dessus de 70% du DR). Les zones intermediaires sont a eviter</li>
+    <li><strong>Confirmer avec le LTF</strong> -- Descendre sur le 15M ou 5M pour trouver un pattern d'entree (MSS, FVG, OB) aligne avec la direction du HTF</li>
+  </ol>
+
+  <div class="box box-re">
+    <div class="box-title">Regle absolue</div>
+    <p>Ne JAMAIS shorter en Deep Discount. Ne JAMAIS acheter en Deep Premium. C'est la regle la plus importante du DRT. Meme si le momentum semble fort dans la direction opposee, la structure du Dealing Range finira par prevaloir. Trader contre cette regle revient a trader contre les algorithmes.</p>
+  </div>
+
+  <div class="sec">Types de Dealing Range</div>
+  <table class="tbl">
+    <thead><tr><th>Type de DR</th><th>Caracteristiques</th><th>Strategie</th><th>Frequence</th></tr></thead>
+    <tbody>
+      <tr><td>Continuation</td><td>Le DR se forme dans la meme direction que le trend HTF</td><td>Acheter en Discount dans un uptrend, vendre en Premium dans un downtrend</td><td>Frequente -- 60% des cas</td></tr>
+      <tr><td>Reversal</td><td>Le DR marque un changement de direction majeur</td><td>Attendre la confirmation du reversal (BOS HTF) avant de trader</td><td>Rare -- 15% des cas</td></tr>
+      <tr><td>Consolidation</td><td>Le prix oscille dans le DR sans direction claire</td><td>Trader les extremes (acheter le bas, vendre le haut du range)</td><td>Moderee -- 25% des cas</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Niveaux cles dans le DR</div>
+  <ul class="cl">
+    <li><strong>Equilibrium (50%)</strong> -- Le point d'equilibre du DR. C'est la frontiere entre Premium et Discount. Le prix revient regulierement vers ce niveau</li>
+    <li><strong>Optimal Trade Entry (OTE - 62-79%)</strong> -- La zone de retracement ideale pour les entrees. Combine les niveaux Fibonacci 0.618, 0.705 et 0.79</li>
+    <li><strong>Deep Zone (0-30% / 70-100%)</strong> -- Les extremes du DR ou les trades offrent le meilleur R:R. C'est la ou les institutions placent leurs ordres</li>
+    <li><strong>Premium Arrays</strong> -- Les PD Arrays en zone Premium (OB bearish, Bearish FVG, Breaker) sont des zones de vente</li>
+    <li><strong>Discount Arrays</strong> -- Les PD Arrays en zone Discount (OB bullish, Bullish FVG, Breaker) sont des zones d'achat</li>
+  </ul>
+
+  <div class="sec">Execution DRT</div>
+  <div class="box box-bl">
+    <div class="box-title">Protocole d'entree DRT</div>
+    <p>1. Confirmer le type de DR (continuation, reversal, consolidation). 2. Attendre que le prix atteigne la Deep Zone correspondante. 3. Descendre en LTF et chercher un displacement + FVG. 4. Placer l'ordre limite sur le FVG avec SL au-dela du swing extreme. 5. Target : l'equilibre du DR en premier, puis la Deep Zone opposee. R:R typique : 2-4R.</p>
+  </div>
+
+  <div class="sec">Avantages du DRT</div>
+  <ul class="cl">
+    <li><strong>Clarte structurelle</strong> -- Le DR donne un cadre objectif : vous savez exactement ou vous etes dans la structure</li>
+    <li><strong>Patience integree</strong> -- En attendant les Deep Zones, vous evitez les trades mediocres au milieu du range</li>
+    <li><strong>Multi-timeframe naturel</strong> -- Le DRT fonctionne sur tous les timeframes, du mensuel au 5 minutes</li>
+    <li><strong>R:R superieur</strong> -- Les entrees en Deep Zone offrent mecaniquement un meilleur ratio risque/recompense</li>
+  </ul>
+</section>
+
+
+<!-- ============================================= -->
+<!-- MODULE 6 -- Modele d'Entree A+ Checklist       -->
+<!-- ============================================= -->
+<section class="mod" id="m6">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 06</span>
+    <h2>Modele d'Entree A+ -- Checklist de Scoring</h2>
+  </div>
+
+  <div class="sec">Systeme de scoring</div>
+  <p>Le modele A+ est un <strong>systeme de scoring quantitatif</strong> qui permet d'evaluer objectivement la qualite d'un setup avant de prendre le trade. Chaque critere recoit un score, et le total determine si le trade merite d'etre pris.</p>
+
+  <table class="tbl">
+    <thead><tr><th>Critere</th><th>Score</th><th>Details</th></tr></thead>
+    <tbody>
+      <tr><td>Biais HTF clair</td><td class="score-good">+2</td><td>Daily et 4H alignes dans la meme direction. Le biais doit etre evident, pas ambigu</td></tr>
+      <tr><td>En killzone</td><td class="score-good">+2</td><td>Le trade se produit pendant London Open (02:00-05:00 EST) ou New York AM (08:30-11:00 EST)</td></tr>
+      <tr><td>Manipulation vue</td><td class="score-good">+2</td><td>Un sweep de liquidite visible a eu lieu -- equal highs/lows balayees, stop hunt confirme</td></tr>
+      <tr><td>CSD/MSS confirme</td><td class="score-good">+2</td><td>Un displacement agressif suivi d'un FVG. Le changement de structure est clair et net</td></tr>
+      <tr><td>SMT present</td><td class="score-good">+2</td><td>Divergence de correlation avec un actif correle (ex: EURUSD vs GBPUSD, ES vs NQ)</td></tr>
+      <tr><td>POI identifie</td><td class="score-min">+1</td><td>Un Point of Interest precis est identifie : Order Block, FVG, Breaker Block</td></tr>
+      <tr><td>R:R &gt;= 3</td><td class="score-min">+1</td><td>Le ratio risque/recompense est superieur ou egal a 3:1</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box box-em">
+    <div class="box-title">Score minimum pour trader</div>
+    <p><strong>8/12</strong> est le seuil minimum pour prendre un trade. Un score de 10+ est un setup exceptionnel. Un score de 6-7 peut etre surveille mais ne doit pas etre trade. En dessous de 6, le setup est invalide quelle que soit votre conviction personnelle.</p>
+  </div>
+
+  <div class="sec">Interpretation des scores</div>
+  <table class="tbl">
+    <thead><tr><th>Score</th><th>Qualite</th><th>Action</th><th>Risque suggere</th></tr></thead>
+    <tbody>
+      <tr><td>10-12</td><td>A+ Exceptionnel</td><td>Prendre le trade avec conviction maximale</td><td>1% du capital</td></tr>
+      <tr><td>8-9</td><td>A Standard</td><td>Prendre le trade avec taille de position normale</td><td>0.75% du capital</td></tr>
+      <tr><td>6-7</td><td>B -- Sous le seuil</td><td>Surveiller mais ne pas trader. Attendre une amelioration</td><td>0% -- pas de trade</td></tr>
+      <tr><td>0-5</td><td>C -- Invalide</td><td>Ignorer completement. Pas de surveillance necessaire</td><td>0% -- pas de trade</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Application pratique</div>
+  <ol class="nl">
+    <li><strong>Avant la session</strong> -- Remplir les criteres HTF (biais, niveaux) avant l'ouverture de la killzone. Ces elements ne changent pas pendant la session</li>
+    <li><strong>Pendant la killzone</strong> -- Evaluer en temps reel les criteres dynamiques (manipulation, MSS, SMT). Mettre a jour le score a chaque nouvel element</li>
+    <li><strong>Decision</strong> -- Quand le score atteint 8+, preparer l'ordre. Quand le FVG ou l'OB d'entree est atteint, executer sans hesitation</li>
+    <li><strong>Post-trade</strong> -- Noter le score final dans le journal. Analyser la correlation entre le score et le resultat sur 50+ trades</li>
+  </ol>
+
+  <div class="sec">Erreurs courantes dans le scoring</div>
+  <ul class="cl">
+    <li><strong>Biais de confirmation</strong> -- Attribuer des points a des criteres faiblement remplis pour justifier un trade que vous voulez prendre. Etre objectif et honnete dans l'evaluation</li>
+    <li><strong>Ignorer le score</strong> -- Prendre un trade a 6/12 parce que "le graphique a l'air bien". Le scoring existe pour vous proteger de vos emotions</li>
+    <li><strong>Sur-optimiser</strong> -- Ajouter trop de criteres rend le systeme inutilisable. 7 criteres sont suffisants pour une evaluation complete</li>
+    <li><strong>Ne pas journaliser</strong> -- Le score n'a de valeur que si vous le trackez dans le temps pour valider sa capacite predictive</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Ajustement du seuil</div>
+    <p>Apres 100 trades journalises avec le scoring, analysez la correlation entre le score et le resultat. Si les trades a 8/12 ont un winrate inferieur a 45%, envisagez de monter le seuil a 9/12. Le seuil est un parametre ajustable base sur VOS donnees, pas sur la theorie.</p>
+  </div>
+</section>
+
+
+<!-- ============================================= -->
+<!-- MODULE 7 -- Modele Fractal                     -->
+<!-- ============================================= -->
+<section class="mod" id="m7">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 07</span>
+    <h2>Modele Fractal</h2>
+  </div>
+
+  <div class="sec">Introduction aux fractales de marche</div>
+  <p>Le marche est <strong>fractal par nature</strong>. Cela signifie que la meme structure se repete sur chaque timeframe : ce que vous voyez sur le Daily se retrouve sur le 4H, le 15M, le 5M et le 1M. Comprendre cette propriete fondamentale transforme votre capacite a lire le marche.</p>
+
+  <p>Une accumulation-manipulation-distribution sur le Daily est composee de multiples accumulations-manipulations-distributions sur le 4H, elles-memes composees de la meme structure sur le 15M, et ainsi de suite. Chaque niveau contient la meme logique algorithmique.</p>
+
+  <div class="sec">Hierarchie des timeframes</div>
+  <table class="tbl">
+    <thead><tr><th>Niveau</th><th>Timeframe</th><th>Role dans le modele fractal</th><th>Contexte d'utilisation</th></tr></thead>
+    <tbody>
+      <tr><td>Macro</td><td>Daily / Weekly</td><td>Definit le biais directionnel majeur et les zones cles de liquidite</td><td>Analyse pre-session, determination du biais</td></tr>
+      <tr><td>Structure</td><td>4H</td><td>Fournit le Dealing Range et les PD Arrays de reference</td><td>Identification des zones de trading</td></tr>
+      <tr><td>Timing</td><td>15M</td><td>Montre les manipulations et les MSS intraday</td><td>Timing des entrees et confirmations</td></tr>
+      <tr><td>Execution</td><td>5M / 1M</td><td>Point d'entree precis et placement du stop-loss</td><td>Execution du trade avec precision</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Alignement des timeframes</div>
+  <p>La <strong>probabilite d'un trade augmente proportionnellement au nombre de timeframes alignees</strong>. Un setup visible uniquement sur le 5M a une probabilite faible. Le meme setup, confirme par le 15M, le 4H et le Daily, a une probabilite significativement plus elevee.</p>
+
+  <div class="box box-em">
+    <div class="box-title">Regle d'alignement</div>
+    <p>Minimum 3 timeframes doivent etre alignees pour un trade valide. Idealement 4. L'alignement signifie : meme biais directionnel, le prix est dans la bonne zone sur chaque TF (Discount pour long, Premium pour short), et les PD Arrays sont coherents.</p>
+  </div>
+
+  <div class="sec">Entree LTF dans le contexte HTF</div>
+  <ol class="nl">
+    <li><strong>Analyser le Daily</strong> -- Determiner le biais. Le prix est-il en zone de Discount ou Premium ? Quel est le prochain pool de liquidite cible ?</li>
+    <li><strong>Descendre sur le 4H</strong> -- Identifier le Dealing Range actif. Le prix est-il dans la bonne zone (Discount pour acheter, Premium pour vendre) ?</li>
+    <li><strong>Passer au 15M</strong> -- Chercher la manipulation (sweep de liquidite) et le MSS qui confirment le retournement intraday</li>
+    <li><strong>Executer sur le 5M ou 1M</strong> -- Une fois la confirmation 15M obtenue, descendre pour placer l'entree sur le FVG ou l'OB le plus precis avec le SL le plus serre possible</li>
+  </ol>
+
+  <div class="sec">Convergence fractale</div>
+  <p>La convergence fractale se produit quand <strong>la meme zone de prix est significative sur plusieurs timeframes</strong>. Par exemple, un OB 4H qui coincide avec un FVG Daily et un niveau de liquidite Weekly cree une zone de convergence exceptionnelle. Ces zones offrent les meilleurs setups.</p>
+
+  <ul class="cl">
+    <li><strong>Zone de convergence double</strong> -- Deux TF alignes sur la meme zone. Probabilite moderee. Bon pour un trade standard</li>
+    <li><strong>Zone de convergence triple</strong> -- Trois TF alignes. Haute probabilite. Trade A+ avec taille de position augmentee</li>
+    <li><strong>Zone de convergence quadruple</strong> -- Quatre TF alignes. Probabilite maximale. Extremement rare mais quand ca arrive, c'est le trade du mois</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Piege fractal</div>
+    <p>Attention a ne pas confondre alignement fractal avec paralysis by analysis. Vous n'avez pas besoin de verifier 8 timeframes. Quatre niveaux suffisent : Daily pour le biais, 4H pour la structure, 15M pour le timing, 5M pour l'execution. Plus de timeframes = plus de bruit, pas plus de clarte.</p>
+  </div>
+</section>
+
+
+<!-- ============================================= -->
+<!-- MODULE 8 -- Comparatif des Approches           -->
+<!-- ============================================= -->
+<section class="mod" id="m8">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 08</span>
+    <h2>Comparatif des Approches</h2>
+  </div>
+
+  <div class="sec">Tableau comparatif global</div>
+  <p>Chaque playbook a ses forces et ses faiblesses. Le choix de votre approche depend de votre <strong>personnalite</strong>, votre <strong>disponibilite</strong> et votre <strong>tolerance au risque</strong>. Ce comparatif vous aide a identifier l'approche la plus adaptee a votre profil.</p>
+
+  <table class="tbl">
+    <thead><tr><th>Critere</th><th>MMXM</th><th>Order Blocks</th><th>Liquidite</th><th>DRT</th></tr></thead>
+    <tbody>
+      <tr><td>Style</td><td>Intraday</td><td>Intraday / Swing</td><td>Intraday</td><td>Swing</td></tr>
+      <tr><td>TF principal</td><td>15M / 5M</td><td>1H / 15M</td><td>15M / 5M</td><td>4H / Daily</td></tr>
+      <tr><td>Entree type</td><td>FVG</td><td>OB retest</td><td>Post-sweep</td><td>Deep zone</td></tr>
+      <tr><td>R:R moyen</td><td>2-4</td><td>2-3</td><td>3-5</td><td>2-4</td></tr>
+      <tr><td>Difficulte</td><td>Avance</td><td>Intermediaire</td><td>Avance</td><td>Intermediaire</td></tr>
+      <tr><td>Frequence</td><td>Quotidien</td><td>2-3 / semaine</td><td>2-3 / semaine</td><td>1-2 / semaine</td></tr>
+      <tr><td>Temps d'ecran</td><td>4-6h / jour</td><td>2-3h / jour</td><td>3-4h / jour</td><td>30min / jour</td></tr>
+      <tr><td>Capital minimum</td><td>Faible (scalp)</td><td>Moyen</td><td>Faible (scalp)</td><td>Eleve (swing)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Profils de traders</div>
+  <table class="tbl">
+    <thead><tr><th>Profil</th><th>Playbook recommande</th><th>Raison</th></tr></thead>
+    <tbody>
+      <tr><td>Trader a temps plein</td><td>MMXM ou Liquidite</td><td>Disponibilite pour surveiller les killzones en temps reel. Frequence elevee = plus d'opportunites</td></tr>
+      <tr><td>Trader a temps partiel</td><td>DRT ou Order Blocks</td><td>Analyse possible le soir, ordres limites places a l'avance. Moins de temps d'ecran necessaire</td></tr>
+      <tr><td>Debutant</td><td>DRT</td><td>Structure claire, regles simples, patience integree. Moins de decisions a prendre en temps reel</td></tr>
+      <tr><td>Trader experimente</td><td>MMXM + Liquidite</td><td>Combine les deux pour maximiser les opportunites. Necessite une maitrise avancee de la lecture de marche</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Compatibilite entre playbooks</div>
+  <ul class="cl">
+    <li><strong>MMXM + Liquidite</strong> -- Hautement compatible. Le sweep de liquidite est souvent le declencheur du setup MMXM. Les deux approches partagent la meme logique de base</li>
+    <li><strong>DRT + Order Blocks</strong> -- Tres compatible. Le DRT fournit le contexte macro (Premium/Discount) et les OB fournissent les points d'entree precis a l'interieur des zones</li>
+    <li><strong>MMXM + DRT</strong> -- Compatible avec separation des timeframes. DRT sur le Daily/4H pour le contexte, MMXM sur le 15M/5M pour l'execution</li>
+    <li><strong>Liquidite + DRT</strong> -- Naturellement complementaires. Les Deep Zones du DRT correspondent souvent aux pools de liquidite identifies par le Playbook Liquidite</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Conseil strategique</div>
+    <p>Commencez par maitriser UN seul playbook pendant 6 mois minimum. Backtestez-le sur 100+ trades, tradez-le en demo pendant 3 mois, puis en reel avec un risque minimal pendant 3 mois supplementaires. Ce n'est qu'apres cette phase de maitrise que vous devriez envisager d'ajouter un second playbook a votre arsenal.</p>
+  </div>
+
+  <div class="sec">Forces et faiblesses</div>
+  <table class="tbl">
+    <thead><tr><th>Playbook</th><th>Points forts</th><th>Points faibles</th></tr></thead>
+    <tbody>
+      <tr><td>MMXM</td><td>Complet, systematique, fort R:R quand maitrise</td><td>Complexe, necessite beaucoup de temps d'ecran, courbe d'apprentissage longue</td></tr>
+      <tr><td>Order Blocks</td><td>Zones precises, ordres limites possibles, flexible</td><td>Beaucoup de faux OB, necessite du contexte pour filtrer</td></tr>
+      <tr><td>Liquidite</td><td>Logique simple et puissante, excellent R:R</td><td>Timing difficile, faux sweeps frequents, necessite de la patience</td></tr>
+      <tr><td>DRT</td><td>Structure claire, peu de temps d'ecran, objectif</td><td>Frequence faible, peut manquer des opportunites, necessite du capital pour le swing</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ============================================= -->
+<!-- MODULE 9 -- Checklist Pre-Session              -->
+<!-- ============================================= -->
+<section class="mod" id="m9">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 09</span>
+    <h2>Checklist Pre-Session Universelle</h2>
+  </div>
+
+  <div class="sec">Preparation obligatoire</div>
+  <p>Cette checklist doit etre completee <strong>avant chaque session de trading</strong>, sans exception. Elle garantit que vous etes prepare mentalement et techniquement. Trader sans preparation revient a naviguer sans carte -- vous pouvez avoir de la chance, mais ce n'est pas reproductible.</p>
+
+  <ul class="chk">
+    <li><strong>Calendrier economique verifie</strong> -- Identifier les annonces majeures du jour (NFP, CPI, FOMC, etc.). Ne pas trader 30 minutes avant et apres les annonces a fort impact</li>
+    <li><strong>Biais HTF determine (4H/Daily)</strong> -- Analyser le Daily et le 4H pour determiner la direction dominante. Ce biais ne change pas pendant la session</li>
+    <li><strong>Asia High/Low marques</strong> -- Tracer les extremes de la session asiatique. Ces niveaux sont souvent les premiers pools de liquidite cibles par London et NY</li>
+    <li><strong>NDOG identifie</strong> -- Le New Day Opening Gap (gap entre la cloture de la veille et l'ouverture du jour) est une reference importante pour les algorithmes</li>
+    <li><strong>Niveaux cles HTF traces</strong> -- OB, FVG, Breaker Blocks et niveaux de liquidite sur le 4H et le Daily doivent etre visibles sur votre graphique</li>
+    <li><strong>DOL identifiee</strong> -- La Draw On Liquidity (destination probable du prix) doit etre determinee avant la session. Elle guide votre biais intraday</li>
+    <li><strong>Etat mental verifie</strong> -- Etes-vous repose, calme et concentre ? Si vous etes fatigue, stresse ou emotionnel, ne tradez pas</li>
+    <li><strong>Risque defini (0.5-1%)</strong> -- Le risque par trade est fixe avant la session et ne change pas. Maximum 1% par trade, 0.5% recommande pour les debutants</li>
+    <li><strong>Pas de revenge trading en cours</strong> -- Si vous avez perdu sur les sessions precedentes et que vous ressentez l'envie de "recuperer", arretez-vous. Le revenge trading est le tueur de comptes numero un</li>
+  </ul>
+
+  <div class="sec">Verification technique</div>
+  <ul class="cl">
+    <li><strong>Plateforme fonctionnelle</strong> -- Verifier que votre plateforme de trading est connectee, que les graphiques se chargent correctement et que les ordres peuvent etre passes</li>
+    <li><strong>Connexion internet stable</strong> -- Tester votre connexion avant la session. Un decrochage pendant un trade ouvert peut etre catastrophique</li>
+    <li><strong>Alertes configurees</strong> -- Placer des alertes de prix sur les niveaux cles pour ne pas rater les opportunites</li>
+    <li><strong>Taille de position calculee</strong> -- Avoir votre calculatrice de taille de position prete avec le risque en dollars et en lots deja calcule</li>
+  </ul>
+
+  <div class="sec">Routine mentale</div>
+  <div class="box box-bl">
+    <div class="box-title">Exercice pre-session (5 minutes)</div>
+    <p>1. Prenez 10 respirations profondes. 2. Rappelez-vous vos regles : "Je ne trade que les setups A+". 3. Acceptez que vous pouvez perdre aujourd'hui et que c'est OK. 4. Visualisez votre execution : entree calme, gestion sans emotion, sortie disciplinee. 5. Ouvrez votre journal et relisez votre derniere note de trading pour maintenir la continuite.</p>
+  </div>
+
+  <div class="sec">Quand ne PAS trader</div>
+  <ul class="cl">
+    <li><strong>Jour de news a fort impact</strong> -- NFP, FOMC, CPI sur les paires majeures. Le slippage et la volatilite rendent l'execution imprevisible</li>
+    <li><strong>Apres 2 pertes consecutives</strong> -- Arretez la session. Revenez demain avec un esprit frais. Deux pertes de suite affectent votre jugement plus que vous ne le pensez</li>
+    <li><strong>Lundi et vendredi</strong> -- Les lundis sont souvent des jours de positionnement sans delivery claire. Les vendredis voient les institutions cloturent leurs positions weekly</li>
+    <li><strong>Fin de mois / fin de trimestre</strong> -- Les flux institutionnels de reequilibrage creent de la volatilite aleatoire</li>
+    <li><strong>Quand vous etes malade ou fatigue</strong> -- Votre cerveau n'est pas en capacite de prendre des decisions optimales. Un jour de repos vaut mieux qu'un jour de pertes</li>
+  </ul>
+
+  <div class="box box-re">
+    <div class="box-title">Rappel critique</div>
+    <p>La checklist n'est pas optionnelle. Les jours ou vous decidez de "juste jeter un oeil" sans preparation sont statistiquement vos pires jours de trading. La preparation est ce qui separe les traders professionnels des joueurs.</p>
+  </div>
+</section>
+
+
+<!-- ============================================= -->
+<!-- MODULE 10 -- Protocole de Backtesting           -->
+<!-- ============================================= -->
+<section class="mod" id="m10">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 10</span>
+    <h2>Protocole de Backtesting</h2>
+  </div>
+
+  <div class="sec">Pourquoi backtester ?</div>
+  <p>Le backtesting est la <strong>fondation de tout systeme de trading viable</strong>. Sans donnees historiques pour valider votre approche, vous n'avez qu'une theorie. Les marches sont impitoyables avec les theories non testees. Le backtesting transforme votre hypothese en systeme mesurable et reproductible.</p>
+
+  <div class="sec">Volume minimum requis</div>
+  <div class="box box-em">
+    <div class="box-title">Regle des 100 trades</div>
+    <p>Minimum <strong>100 trades par playbook</strong>. Ce n'est pas arbitraire -- c'est le seuil statistique minimum pour avoir une estimation fiable du winrate, du R:R moyen et du drawdown. Avec moins de 100 trades, vos resultats sont domines par la variance aleatoire et ne peuvent pas etre extrapoles.</p>
+  </div>
+
+  <div class="sec">Donnees a enregistrer</div>
+  <p>Chaque trade backteste doit etre documente avec les elements suivants :</p>
+  <table class="tbl">
+    <thead><tr><th>Champ</th><th>Description</th><th>Exemple</th></tr></thead>
+    <tbody>
+      <tr><td>Date</td><td>Date et heure du trade</td><td>2026-03-15, 09:45 EST</td></tr>
+      <tr><td>Paire / Instrument</td><td>L'actif trade</td><td>EURUSD, NQ, ES</td></tr>
+      <tr><td>Setup</td><td>Le type de setup identifie</td><td>MMXM London sweep + FVG</td></tr>
+      <tr><td>Direction</td><td>Long ou Short</td><td>Long</td></tr>
+      <tr><td>Entree</td><td>Prix d'entree exact</td><td>1.08524</td></tr>
+      <tr><td>Stop-loss</td><td>Niveau du SL</td><td>1.08380</td></tr>
+      <tr><td>Take-profit</td><td>Niveau(x) du TP</td><td>TP1: 1.08812, TP2: 1.09000</td></tr>
+      <tr><td>Resultat</td><td>Gain ou perte en R</td><td>+2.3R</td></tr>
+      <tr><td>Screenshot</td><td>Capture d'ecran annotee du trade</td><td>Fichier PNG avec niveaux traces</td></tr>
+      <tr><td>Notes</td><td>Observations et lecons</td><td>"FVG comble partiellement, bonne reaction"</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Metriques a calculer</div>
+  <table class="tbl">
+    <thead><tr><th>Metrique</th><th>Formule</th><th>Seuil minimum</th><th>Seuil optimal</th></tr></thead>
+    <tbody>
+      <tr><td>Winrate</td><td>Trades gagnants / Total trades x 100</td><td>40%</td><td>50%+</td></tr>
+      <tr><td>R:R moyen</td><td>Moyenne des gains en R / Moyenne des pertes en R</td><td>2.0</td><td>3.0+</td></tr>
+      <tr><td>Profit Factor</td><td>Gains totaux / Pertes totales</td><td>1.5</td><td>2.0+</td></tr>
+      <tr><td>Drawdown max</td><td>Pire serie de pertes consecutives en % du capital</td><td>&lt; 15%</td><td>&lt; 10%</td></tr>
+      <tr><td>Expectancy</td><td>(Winrate x R:R moyen) - (Lossrate x 1)</td><td>&gt; 0.3</td><td>&gt; 0.6</td></tr>
+      <tr><td>Mois profitable</td><td>Nombre de mois positifs sur 12</td><td>8/12</td><td>10/12</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">Analyse par categorie</div>
+  <p>Ne vous contentez pas des metriques globales. <strong>Decomposez vos resultats</strong> pour identifier les patterns de performance :</p>
+
+  <div class="subsec">Par session</div>
+  <ul class="cl">
+    <li><strong>London Open</strong> -- Quel est votre winrate specifique sur cette session ? Certains traders performent mieux a Londres, d'autres a NY</li>
+    <li><strong>New York AM</strong> -- Comparez avec London. Si votre winrate est significativement meilleur sur une session, concentrez-vous dessus</li>
+    <li><strong>London Close</strong> -- Souvent la session la moins profitable. Si vos donnees le confirment, eliminez-la de votre plan</li>
+  </ul>
+
+  <div class="subsec">Par jour de la semaine</div>
+  <ul class="cl">
+    <li>Les <strong>mardis et mercredis</strong> sont statistiquement les meilleurs jours pour le trading intraday</li>
+    <li>Les <strong>jeudis</strong> peuvent etre bons mais la volatilite des news hebdomadaires (jobless claims) ajoute du bruit</li>
+    <li>Les <strong>lundis et vendredis</strong> sont generalement les pires jours. Verifiez si vos donnees le confirment</li>
+  </ul>
+
+  <div class="subsec">Par type de setup</div>
+  <ul class="cl">
+    <li>Quel type de setup (FVG entry, OB retest, post-sweep) a le meilleur winrate ?</li>
+    <li>Quel type offre le meilleur R:R moyen ?</li>
+    <li>Y a-t-il des setups que vous devriez <strong>eliminer</strong> car ils ont un edge negatif ?</li>
+  </ul>
+
+  <div class="sec">Protocole d'ajustement</div>
+  <div class="box box-am">
+    <div class="box-title">Regle des 50 trades supplementaires</div>
+    <p>Ne JAMAIS ajuster votre systeme sur la base de 5 ou 10 trades perdants. Les ajustements ne sont autorises qu'apres un minimum de <strong>50 trades supplementaires</strong> avec les nouvelles donnees. Modifier votre systeme apres chaque perte est la meilleure facon de detruire un edge qui fonctionne.</p>
+  </div>
+
+  <ol class="nl">
+    <li><strong>Identifier le probleme</strong> -- Apres 50+ trades supplementaires, les donnees montrent-elles un probleme reel ou une variance normale ?</li>
+    <li><strong>Formuler une hypothese</strong> -- "Mon winrate sur les lundis est de 25% vs 55% les autres jours. Hypothese : eliminer les lundis ameliorera le profit factor."</li>
+    <li><strong>Tester l'hypothese</strong> -- Backtester 50 trades supplementaires avec la modification proposee. Comparer les metriques avant/apres</li>
+    <li><strong>Implementer ou rejeter</strong> -- Si les metriques s'ameliorent significativement, implementer le changement. Sinon, rejeter l'hypothese et revenir au systeme original</li>
+    <li><strong>Documenter</strong> -- Chaque ajustement et son resultat doit etre documente pour eviter de tourner en rond</li>
+  </ol>
+
+  <div class="sec">Outils de backtesting</div>
+  <ul class="cl">
+    <li><strong>TradingView Replay</strong> -- L'outil le plus accessible. Permet de parcourir l'historique bougie par bougie et de simuler des trades en temps reel</li>
+    <li><strong>Tableur (Excel/Sheets)</strong> -- Pour le tracking des trades et le calcul automatique des metriques. Creez un template standardise</li>
+    <li><strong>Journal de trading</strong> -- Complement essentiel au tableur. Permet de capturer les observations qualitatives que les chiffres seuls ne montrent pas</li>
+    <li><strong>Screenshots annotes</strong> -- Chaque trade doit avoir une capture d'ecran avec les niveaux, le point d'entree, le SL et le TP clairement marques</li>
+  </ul>
+
+  <div class="sec">Erreurs de backtesting</div>
+  <ul class="cl">
+    <li><strong>Hindsight bias</strong> -- Savoir comment le prix a evolue apres influence votre "decision" d'entree. Utilisez le mode replay pour eviter ce biais</li>
+    <li><strong>Cherry-picking</strong> -- Ne selectionnez pas uniquement les trades gagnants. CHAQUE setup qui remplit vos criteres doit etre enregistre, gagnant ou perdant</li>
+    <li><strong>Over-fitting</strong> -- Ajouter des regles specifiques pour eviter des pertes passees rend le systeme fragile. Un bon systeme est robuste, pas sur-optimise</li>
+    <li><strong>Sample size insuffisant</strong> -- 20 ou 30 trades ne suffisent pas. Le minimum est 100. Idealement 200+ pour une confiance statistique elevee</li>
+    <li><strong>Ignorer le slippage</strong> -- En reel, le fill exact n'est pas garanti. Ajoutez 1-2 pips de slippage a chaque trade pour des resultats plus realistes</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Objectif final</div>
+    <p>Le backtesting n'est pas une corvee -- c'est votre investissement le plus rentable. Chaque heure passee en backtest vous economise des centaines de dollars de pertes en reel. L'objectif est d'arriver devant votre ecran avec une <strong>certitude statistique</strong> que votre systeme fonctionne, pas avec un espoir que "ca va marcher cette fois".</p>
+  </div>
+</section>
+
+
+<!-- -- FOOTER ----------------------------------- -->
+<footer id="footer">
+  <p>Playbooks Traders -- Algorithmic Academy -- 10 Modules -- Playbooks -- Modeles -- Entrees -- Plans -- Checklists -- Backtesting</p>
+  <p style="margin-top:8px;color:var(--border)">Le trading comporte des risques. Ce contenu est educatif uniquement.</p>
+</footer>
+
+</main>
+
+<script>
+// Progress bar
+const pf = document.getElementById('pfill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  pf.style.width = (window.scrollY / h * 100) + '%';
+}, { passive: true });
+
+// Fade in modules
+const io = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.05 });
+document.querySelectorAll('.mod').forEach(m => io.observe(m));
+
+// Active nav
+const secs = [...document.querySelectorAll('[id]')];
+const links = document.querySelectorAll('.sb-link');
+function updateNav() {
+  const y = window.scrollY + 110;
+  let cur = secs[0]?.id;
+  for (const s of secs) { if (s.offsetTop <= y) cur = s.id; }
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>

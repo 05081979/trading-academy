@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="premium">
+<head>
+<meta charset="UTF-8">
+<script src="../auth.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Architecture Mathematique des Niveaux</title>
+<link rel="stylesheet" href="../readability.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Syne:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&family=Roboto+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0C0F0A;
+  --bg2: #111510;
+  --bg3: #181D14;
+  --bg4: #1E2518;
+  --border: #1F2A1A;
+  --border2: #2A3822;
+  --em: #3D7A3A;
+  --em2: #56A853;
+  --em-light: #A3D9A1;
+  --text: #DDE8D8;
+  --text-dim: #7D9478;
+  --text-muted: #3E5038;
+  --gold: #C8A228;
+  --gold2: #E5BC3C;
+  --red: #D45050;
+  --red-dim: rgba(212,80,80,0.10);
+  --blue: #5090D4;
+  --blue-dim: rgba(80,144,212,0.10);
+  --orange: #D48A30;
+  --purple: #9B6CD4;
+  --cyan: #38BFA0;
+  --serif: 'Playfair Display', serif;
+  --sans: 'Syne', sans-serif;
+  --body: 'Source Serif 4', Georgia, serif;
+  --mono: 'Roboto Mono', monospace;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ── PROGRESS BAR ── */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--em), var(--em2), var(--em-light));
+  z-index: 9999;
+  transition: width 0.1s linear;
+  width: 0%;
+}
+
+/* ── LAYOUT ── */
+.app { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: 52px;
+  bottom: 0;
+  overflow-y: auto;
+  z-index: 50;
+}
+
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+.sidebar-header {
+  padding: 20px 18px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-header h2 {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--em2);
+  margin-bottom: 4px;
+}
+
+.sidebar-header p {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--mono);
+}
+
+.nav-group { padding: 8px 0; }
+
+.nav-group-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 8px 18px 4px;
+  font-family: var(--mono);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 18px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-dim);
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  user-select: none;
+  text-decoration: none;
+  font-family: var(--sans);
+}
+
+.nav-item:hover { background: rgba(86,168,83,0.05); color: var(--text); }
+.nav-item.active { background: rgba(86,168,83,0.08); color: var(--em2); border-left-color: var(--em2); font-weight: 700; }
+
+.nav-num {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--text-muted);
+  min-width: 18px;
+}
+.nav-item.active .nav-num { color: var(--em2); }
+
+/* ── MAIN ── */
+.main {
+  flex: 1;
+  margin-left: 280px;
+  padding: 32px 44px 80px;
+  max-width: 960px;
+}
+
+/* ── HERO ── */
+.hero {
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--em);
+  margin-bottom: 10px;
+}
+
+.hero h1 {
+  font-family: var(--serif);
+  font-size: 34px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, var(--em-light), var(--em2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-sub {
+  font-size: 15px;
+  color: var(--text-dim);
+  max-width: 640px;
+  line-height: 1.7;
+}
+
+.kpi-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.kpi {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 20px;
+  min-width: 140px;
+}
+
+.kpi-val {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--em2);
+}
+
+.kpi-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+/* ── MODULE SECTIONS ── */
+.mod {
+  margin-bottom: 56px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+
+.mod.vis {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mod-head {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 4px;
+  margin-bottom: 14px;
+  background: rgba(61,122,58,0.10);
+  color: var(--em2);
+}
+
+.sec {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 700;
+  color: #eef4ec;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.sec-desc {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+  max-width: 680px;
+  line-height: 1.7;
+}
+
+.subsec {
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--em-light);
+  margin: 24px 0 10px;
+}
+
+/* ── BOXES ── */
+.box {
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 16px 0;
+  border-left: 3px solid;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.box-em {
+  background: rgba(61,122,58,0.08);
+  border-color: var(--em2);
+}
+
+.box-am {
+  background: rgba(200,162,40,0.06);
+  border-color: var(--gold);
+}
+
+.box-re {
+  background: rgba(212,80,80,0.06);
+  border-color: var(--red);
+}
+
+.box-bl {
+  background: rgba(80,144,212,0.06);
+  border-color: var(--blue);
+}
+
+.box strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+.box p { margin: 6px 0; }
+
+/* ── TABLES ── */
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 13px;
+}
+
+.tbl th {
+  text-align: left;
+  padding: 10px 14px;
+  background: var(--bg3);
+  color: var(--em2);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border2);
+}
+
+.tbl td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+}
+
+.tbl tr:hover td {
+  color: var(--text);
+  background: rgba(255,255,255,0.02);
+}
+
+.tbl td strong { color: var(--text); }
+
+/* ── LISTS ── */
+ul.cl {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+}
+
+ul.cl li {
+  position: relative;
+  padding: 5px 0 5px 20px;
+  color: var(--text-dim);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+ul.cl li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 12px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--em);
+}
+
+ul.cl li strong { color: var(--text); }
+
+ol.nl {
+  padding-left: 22px;
+  margin: 12px 0;
+}
+
+ol.nl li {
+  padding: 5px 0;
+  color: var(--text-dim);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+ol.nl li strong { color: var(--text); }
+
+/* ── QUOTE ── */
+.quote {
+  border-left: 3px solid var(--em);
+  padding: 14px 20px;
+  margin: 16px 0;
+  background: rgba(61,122,58,0.05);
+  font-style: italic;
+  color: var(--text-dim);
+  font-size: 14px;
+}
+
+/* ── TAGS ── */
+.tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-right: 4px;
+}
+.tag-green { background: rgba(86,168,83,0.12); color: var(--em2); }
+.tag-red { background: var(--red-dim); color: var(--red); }
+.tag-blue { background: var(--blue-dim); color: var(--blue); }
+.tag-gold { background: rgba(200,162,40,0.12); color: var(--gold2); }
+.tag-purple { background: rgba(155,108,212,0.12); color: var(--purple); }
+
+/* code inline */
+code {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: var(--bg3);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--em-light);
+}
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: -300px;
+    width: 280px;
+    top: 52px;
+    transition: left 0.3s;
+    z-index: 100;
+  }
+  .sidebar.open { left: 0; }
+  .main { margin-left: 0; padding: 20px 16px 60px; }
+  .hero h1 { font-size: 24px; }
+  .kpi-row { flex-direction: column; }
+  .mobile-toggle { display: flex !important; }
+}
+
+.mobile-toggle {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--em2);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 4px 20px rgba(61,122,58,0.4);
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 90;
+}
+.overlay.show { display: block; }
+
+.section-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 40px 0;
+}
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+
+<div class="progress-bar" id="progressBar"></div>
+<button class="mobile-toggle" id="mobileToggle">&#9776;</button>
+<div class="overlay" id="overlay"></div>
+
+<div class="app">
+
+<!-- ─── SIDEBAR ─── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h2>Architecture des Niveaux</h2>
+    <p>10 Sections &mdash; Systeme Complet</p>
+  </div>
+
+  <!-- Fondations -->
+  <div class="nav-group">
+    <div class="nav-group-title">Fondations</div>
+    <a class="nav-item active" href="#s1"><span class="nav-num">01</span> Power of Three (PO3)</a>
+    <a class="nav-item" href="#s2"><span class="nav-num">02</span> Niveaux Institutionnel</a>
+    <a class="nav-item" href="#s3"><span class="nav-num">03</span> Fix CME 16h NY</a>
+  </div>
+
+  <!-- Structure -->
+  <div class="nav-group">
+    <div class="nav-group-title">Structure</div>
+    <a class="nav-item" href="#s4"><span class="nav-num">04</span> Dealing Ranges PO3</a>
+    <a class="nav-item" href="#s5"><span class="nav-num">05</span> HIPPO</a>
+  </div>
+
+  <!-- Formations -->
+  <div class="nav-group">
+    <div class="nav-group-title">Formations</div>
+    <a class="nav-item" href="#s6"><span class="nav-num">06</span> IMP Nodes</a>
+  </div>
+
+  <!-- Contexte -->
+  <div class="nav-group">
+    <div class="nav-group-title">Contexte</div>
+    <a class="nav-item" href="#s7"><span class="nav-num">07</span> Institutionnel PO3 729</a>
+  </div>
+
+  <!-- Temps -->
+  <div class="nav-group">
+    <div class="nav-group-title">Temps</div>
+    <a class="nav-item" href="#s8"><span class="nav-num">08</span> Institutionnel Time</a>
+  </div>
+
+  <!-- Setups -->
+  <div class="nav-group">
+    <div class="nav-group-title">Setups</div>
+    <a class="nav-item" href="#s9"><span class="nav-num">09</span> Setup NY Open (25H)</a>
+    <a class="nav-item" href="#s10"><span class="nav-num">10</span> Mitigation Plan (40H)</a>
+  </div>
+</aside>
+
+<!-- ─── MAIN CONTENT ─── -->
+<div class="main">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Module Premium &mdash; Framework Institutionnel</div>
+  <h1>Architecture des Niveaux &mdash; Systeme Institutionnel Complet</h1>
+  <p class="hero-sub">
+    Framework de trading institutionnel complet integrant la structure mathematique de Institutionnel, les puissances de 3, le Fix CME et le temps algorithmique. Chaque composante est une couche du systeme qui, combinees, forment un modele de precision institutionnelle.
+  </p>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-val">PO3</div><div class="kpi-label">Base Fractale</div></div>
+    <div class="kpi"><div class="kpi-val">21</div><div class="kpi-label">Niveaux Institutionnel</div></div>
+    <div class="kpi"><div class="kpi-val">729</div><div class="kpi-label">Range Principal</div></div>
+    <div class="kpi"><div class="kpi-val">16:00</div><div class="kpi-label">Fix CME NY</div></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 1 — POWER OF THREE                 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="mod" id="s1">
+  <div class="mod-head">Section 01 &mdash; Fondations</div>
+  <h2 class="sec">Power of Three (PO3)</h2>
+  <p class="sec-desc">
+    Le Power of Three (PO3) est le fondement mathematique de l'ensemble du framework. Il designe les puissances de 3, qui definissent la taille de tous les dealing ranges institutionnels.
+  </p>
+
+  <h3 class="subsec">Sequence des Puissances de 3</h3>
+  <p class="sec-desc">Chaque nombre est le triple du precedent. Cette progression forme l'architecture fractale des marches :</p>
+  <table class="tbl">
+    <tr><th>Puissance</th><th>Valeur</th><th>Usage Typique</th></tr>
+    <tr><td>3^1</td><td><strong>3</strong></td><td>Micro-range, scalping</td></tr>
+    <tr><td>3^2</td><td><strong>9</strong></td><td>Range de session</td></tr>
+    <tr><td>3^3</td><td><strong>27</strong></td><td>Range intraday court</td></tr>
+    <tr><td>3^4</td><td><strong>81</strong></td><td>Range journalier standard</td></tr>
+    <tr><td>3^5</td><td><strong>243</strong></td><td>Range multi-jours</td></tr>
+    <tr><td>3^6</td><td><strong>729</strong></td><td>Cycle principal (Institutionnel)</td></tr>
+    <tr><td>3^7</td><td><strong>2187</strong></td><td>Cycle swing</td></tr>
+    <tr><td>3^8</td><td><strong>6561</strong></td><td>Macro-cycle</td></tr>
+  </table>
+
+  <h3 class="subsec">Nature Fractale</h3>
+  <div class="box box-em">
+    <strong>Regle fondamentale :</strong> 3 ranges de taille N = 1 range de taille N x 3.
+    <p>Exemple : 3 ranges de 81 points = 1 range de 243 points. 3 ranges de 243 = 1 range de 729.</p>
+    <p>Cette auto-similarite est la cle de la structure des marches a toutes les echelles de temps.</p>
+  </div>
+
+  <ul class="cl">
+    <li><strong>Emboitement :</strong> Chaque range contient exactement 3 sous-ranges</li>
+    <li><strong>Scalabilite :</strong> Le meme comportement se repete du tick au cycle annuel</li>
+    <li><strong>Symetrie :</strong> Le midpoint (50%) de chaque range est toujours significatif</li>
+    <li><strong>Predictibilite :</strong> Une fois le range identifie, les targets sont mathematiques</li>
+  </ul>
+
+  <div class="quote">
+    Le marche ne se deplace pas de maniere aleatoire. Il livre le prix en increments de puissances de 3, creant une structure fractale parfaitement emboitee.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 2 — NIVEAUX GOLDBACH               -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="mod" id="s2">
+  <div class="mod-head">Section 02 &mdash; Fondations</div>
+  <h2 class="sec">Niveaux Institutionnel</h2>
+  <p class="sec-desc">
+    Bases sur la conjecture de Christian Institutionnel (1690-1764), ces niveaux definissent les zones de reaction du prix a l'interieur de chaque dealing range.
+  </p>
+
+  <h3 class="subsec">La Conjecture</h3>
+  <div class="box box-am">
+    <strong>Conjecture de Institutionnel :</strong> Tout nombre pair superieur a 2 peut s'exprimer comme la somme de deux nombres premiers.
+    <p>Pour 100 : il existe 6 partitions de nombres premiers, plus les bornes 0 et 100.</p>
+  </div>
+
+  <h3 class="subsec">Les 6 Partitions de 100</h3>
+  <table class="tbl">
+    <tr><th>#</th><th>Partition</th><th>Niveaux</th><th>Symetrie</th></tr>
+    <tr><td>0</td><td>Bornes</td><td><strong>0</strong> + <strong>100</strong></td><td>Extremes du range</td></tr>
+    <tr><td>1</td><td>3 + 97</td><td><strong>3%</strong> / <strong>97%</strong></td><td>Zone de manipulation extreme</td></tr>
+    <tr><td>2</td><td>11 + 89</td><td><strong>11%</strong> / <strong>89%</strong></td><td>Order Blocks forts</td></tr>
+    <tr><td>3</td><td>17 + 83</td><td><strong>17%</strong> / <strong>83%</strong></td><td>Fair Value Gaps</td></tr>
+    <tr><td>4</td><td>29 + 71</td><td><strong>29%</strong> / <strong>71%</strong></td><td>Zones de reaction moyenne</td></tr>
+    <tr><td>5</td><td>41 + 59</td><td><strong>41%</strong> / <strong>59%</strong></td><td>Proximite du MID</td></tr>
+    <tr><td>6</td><td>47 + 53</td><td><strong>47%</strong> / <strong>53%</strong></td><td>Encadrement du MID</td></tr>
+    <tr><td>MID</td><td>50</td><td><strong>50%</strong></td><td>Equilibre parfait (Fix Price)</td></tr>
+  </table>
+
+  <div class="box box-em">
+    <strong>Symetrie autour de 50% :</strong> Chaque paire de niveaux est symetrique par rapport au midpoint. Si 29% reagit en bas, 71% reagira en haut. Cette symetrie est la signature de la livraison algorithmique.
+  </div>
+
+  <h3 class="subsec">Niveaux Non-Institutionnel (NGB)</h3>
+  <ul class="cl">
+    <li><strong>Definition :</strong> Zones entre les niveaux Institutionnel ou aucun premier ne forme de partition</li>
+    <li><strong>Role :</strong> Zones de transition — le prix les traverse sans s'arreter</li>
+    <li><strong>Trading :</strong> Ne jamais entrer dans une zone NGB ; attendre un niveau Institutionnel</li>
+  </ul>
+
+  <h3 class="subsec">Niveaux CE (Consequent Encroachment)</h3>
+  <ul class="cl">
+    <li><strong>Definition :</strong> Points medians entre deux niveaux Institutionnel adjacents</li>
+    <li><strong>Role :</strong> Niveaux secondaires de reaction, confirmation de direction</li>
+    <li><strong>Calcul :</strong> CE = (Institutionnel_A + Institutionnel_B) / 2</li>
+  </ul>
+
+  <h3 class="subsec">Institutionnel FIB</h3>
+  <div class="box box-bl">
+    <strong>Outil Fibonacci Institutionnel :</strong> Reticule de Fibonacci ou les niveaux standard (23.6, 38.2, 50, 61.8, 78.6) sont remplaces par les niveaux Institutionnel :
+    <p><code>0, 3, 11, 17, 29, 41, 47, 50, 53, 59, 71, 83, 89, 97, 100</code></p>
+    <p>Application : tracer du Low au High du range (ou inversement) pour obtenir les niveaux de reaction precis.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 3 — FIX CME                        -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="mod" id="s3">
+  <div class="mod-head">Section 03 &mdash; Fondations</div>
+  <h2 class="sec">Fix CME 16h00 NY</h2>
+  <p class="sec-desc">
+    Le Fix Price est le prix de reference institutionnel calcule chaque jour a 16h00 heure de New York. C'est l'ancre du cycle journalier autour de laquelle tout le systeme s'articule.
+  </p>
+
+  <h3 class="subsec">Calcul du Fix</h3>
+  <div class="box box-em">
+    <strong>Methode VWAP 30 secondes :</strong> Le Fix est calcule comme le prix moyen pondere par le volume (VWAP) sur la fenetre de 15h59:30 a 16h00:00 NY. Ce calcul est effectue par le CME pour les contrats futures.
+  </div>
+
+  <table class="tbl">
+    <tr><th>Parametre</th><th>Detail</th></tr>
+    <tr><td><strong>Heure exacte</strong></td><td>16h00:00 New York (Eastern Time)</td></tr>
+    <tr><td><strong>Fenetre VWAP</strong></td><td>30 secondes (15:59:30 a 16:00:00)</td></tr>
+    <tr><td><strong>Instruments</strong></td><td>Tous les futures CME (ES, NQ, YM, RTY...)</td></tr>
+    <tr><td><strong>Role</strong></td><td>Ancre du dealing range journalier, situe au MID (50%)</td></tr>
+  </table>
+
+  <h3 class="subsec">Le Cycle du Fix</h3>
+  <ol class="nl">
+    <li><strong>Fix reinitialise :</strong> A 16h00 NY, le prix de reference est etabli. Le cycle commence.</li>
+    <li><strong>Nuit (Asia) :</strong> Le prix s'eloigne du Fix pendant la session asiatique, creant le mouvement initial.</li>
+    <li><strong>Europe :</strong> La session europeenne amplifie ou corrige le mouvement nocturne.</li>
+    <li><strong>US (NY AM/PM) :</strong> La session americaine ramene le prix vers le nouveau Fix a 16h00.</li>
+    <li><strong>Nouveau Fix :</strong> Le cycle se reinitialise. Le processus recommence.</li>
+  </ol>
+
+  <h3 class="subsec">Targets Typiques par Rapport au Fix</h3>
+  <div class="box box-am">
+    <strong>Niveaux de target les plus frequents :</strong>
+    <p><strong>41% / 59% :</strong> Targets proches du Fix, jours de faible volatilite</p>
+    <p><strong>71% :</strong> Target standard, jours normaux (le plus frequent)</p>
+    <p><strong>83% :</strong> Target etendu, jours de news ou forte volatilite</p>
+    <p><strong>89% / 97% :</strong> Jours exceptionnels, sweeps de liquidite complets</p>
+  </div>
+
+  <div class="quote">
+    Le Fix n'est pas un simple prix de cloture. C'est le point d'equilibre algorithmique autour duquel le marche livre ses ordres sur 24 heures.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 4 — DEALING RANGES PO3             -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="mod" id="s4">
+  <div class="mod-head">Section 04 &mdash; Structure</div>
+  <h2 class="sec">Dealing Ranges PO3</h2>
+  <p class="sec-desc">
+    Les Dealing Ranges sont les zones de prix definies par une hauteur en puissances de 3. Ce sont les "boites" dans lesquelles le prix oscille et livre ses ordres.
+  </p>
+
+  <h3 class="subsec">Definition et Construction</h3>
+  <ul class="cl">
+    <li><strong>Taille :</strong> Toujours une puissance de 3 (27, 81, 243, 729 points)</li>
+    <li><strong>Bornes :</strong> Low = 0%, High = 100% du range</li>
+    <li><strong>Midpoint :</strong> 50% du range, souvent ou se situe le Fix Price</li>
+    <li><strong>Niveaux internes :</strong> Tous les niveaux Institutionnel (3,11,17,29,41,47,50,53,59,71,83,89,97)</li>
+  </ul>
+
+  <h3 class="subsec">Empilement Fractal</h3>
+  <div class="box box-em">
+    <strong>Principe d'empilement :</strong> Les ranges s'empilent comme des etages d'un immeuble. 3 sous-ranges forment toujours 1 range superieur.
+    <p><strong>Etage 1 (sous-sol) :</strong> 3 ranges de 27 = 1 range de 81</p>
+    <p><strong>Etage 2 (rez-de-chaussee) :</strong> 3 ranges de 81 = 1 range de 243</p>
+    <p><strong>Etage 3 (principal) :</strong> 3 ranges de 243 = 1 range de 729</p>
+  </div>
+
+  <h3 class="subsec">Comportement du Prix dans un Range</h3>
+  <table class="tbl">
+    <tr><th>Comportement</th><th>Description</th></tr>
+    <tr><td><strong>Oscillation</strong></td><td>Le prix oscille entre les bornes du range (0% et 100%)</td></tr>
+    <tr><td><strong>Respect du MID</strong></td><td>Le midpoint (50%) agit comme un aimant — le prix y revient regulierement</td></tr>
+    <tr><td><strong>Wicks vs Bodies</strong></td><td>Les meches (wicks) peuvent sortir du range, mais les corps de bougie restent a l'interieur</td></tr>
+    <tr><td><strong>Sweep et retour</strong></td><td>Le prix sweep une borne puis retourne vers l'interieur</td></tr>
+  </table>
+
+  <h3 class="subsec">Mecanique de Liquidite</h3>
+  <ol class="nl">
+    <li><strong>Accumulation :</strong> Le prix consolide dans une zone etroite du range</li>
+    <li><strong>Sweep (Manipulation) :</strong> Le prix casse une borne pour capturer la liquidite (stop loss)</li>
+    <li><strong>Retour vers l'equilibre :</strong> Le prix revient rapidement vers le midpoint ou la borne opposee</li>
+    <li><strong>Distribution :</strong> Le mouvement directionnel se produit, delivrant les ordres institutionnels</li>
+  </ol>
+
+  <div class="box box-re">
+    <strong>Regle critique :</strong> Si le corps d'une bougie cloture en dehors du range sur un timeframe significatif, le range est considere comme "rompu" et un nouveau range doit etre identifie.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 5 — HIPPO                          -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="mod" id="s5">
+  <div class="mod-head">Section 05 &mdash; Structure</div>
+  <h2 class="sec">HIPPO (Hidden Interbank Price Point Objective)</h2>
+  <p class="sec-desc">
+    Le HIPPO est un point de prix cache ou les institutions ont positionne leurs ordres. Sa force depend de sa position dans le range, de sa relation avec le Fix, et du type de formation sur lequel il repose.
+  </p>
+
+  <h3 class="subsec">Classification par Zone</h3>
+  <p class="sec-desc">La position du HIPPO dans le dealing range determine sa puissance :</p>
+  <table class="tbl">
+    <tr><th>Zone</th><th>Position dans le Range</th><th>Force</th><th>Interpretation</th></tr>
+    <tr><td><span class="tag tag-blue">BLEUE</span></td><td><strong>23-35%</strong> / <strong>65-77%</strong></td><td>Puissant</td><td>Zone de delivery premium — les ordres institutionnels sont concentres ici</td></tr>
+    <tr><td><span class="tag tag-red">ROUGE</span></td><td><strong>41-59%</strong></td><td>Faible</td><td>Trop proche du MID — manque de desequilibre pour generer du mouvement</td></tr>
+    <tr><td><span class="tag tag-green">VERTE</span></td><td><strong>0-17%</strong> / <strong>83-100%</strong></td><td>Manipulation</td><td>Zone de sweep — utilise pour pieger les traders avant le vrai mouvement</td></tr>
+  </table>
+
+  <h3 class="subsec">Position par Rapport au Fix Price</h3>
+  <div class="box box-em">
+    <strong>Regle du Fix :</strong> Un HIPPO situe entre le Fix Price et le niveau IMP10 est le plus puissant. Il se trouve dans la zone ou le prix doit livrer ses ordres durant le cycle suivant.
+    <p>Un HIPPO au-dela de l'IMP10 est un objectif secondaire, moins probable.</p>
+  </div>
+
+  <h3 class="subsec">Force selon la Formation</h3>
+  <table class="tbl">
+    <tr><th>Formation</th><th>Niveau Institutionnel</th><th>Force</th></tr>
+    <tr><td><strong>FVG (Fair Value Gap)</strong></td><td>17% / 83%</td><td><span class="tag tag-green">Tres puissant</span></td></tr>
+    <tr><td><strong>OB (Order Block)</strong></td><td>11% / 89%</td><td><span class="tag tag-blue">Puissant</span></td></tr>
+    <tr><td><strong>Breaker</strong></td><td>29% / 71%</td><td><span class="tag tag-gold">Moyen</span></td></tr>
+    <tr><td><strong>Zone de MID</strong></td><td>47% / 53%</td><td><span class="tag tag-red">Faible</span></td></tr>
+  </table>
+
+  <h3 class="subsec">Anciennete et Validite</h3>
+  <ul class="cl">
+    <li><strong>HIPPO recent :</strong> Actif et puissant — le prix n'a pas encore livre a ce niveau</li>
+    <li><strong>HIPPO deja teste :</strong> Affaibli — une partie de la liquidite a deja ete absorbee</li>
+    <li><strong>HIPPO ancien non teste :</strong> Reste valide mais peut etre "oublie" apres plusieurs cycles</li>
+    <li><strong>HIPPO multiple :</strong> Plusieurs HIPPOs au meme niveau = confluence maximale</li>
+  </ul>
+
+  <div class="quote">
+    Un HIPPO dans la zone bleue, sur un FVG, entre le Fix et l'IMP10, non encore teste : c'est le setup le plus puissant du framework. Ces conditions reunies sont rares mais representent les trades les plus fiables.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 6 — IMP NODES                      -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="mod" id="s6">
+  <div class="mod-head">Section 06 &mdash; Formations</div>
+  <h2 class="sec">IMP Nodes (Institutional Movement Points)</h2>
+  <p class="sec-desc">
+    Les IMP Nodes sont les niveaux de saturation du mouvement journalier, derives des circuit breakers du CME. Ils definissent les targets maximales attendues pour chaque session.
+  </p>
+
+  <h3 class="subsec">Derivation des Circuit Breakers</h3>
+  <div class="box box-am">
+    <strong>Circuit Breakers CME :</strong> Le marche s'arrete automatiquement a -7%, -13% et -20% de baisse. Les IMP Nodes sont ces pourcentages divises par 10, appliques au mouvement journalier.
+  </div>
+
+  <table class="tbl">
+    <tr><th>Circuit Breaker</th><th>Division /10</th><th>IMP Node</th><th>Role</th></tr>
+    <tr><td>7%</td><td>0.7%</td><td><strong>IMP7</strong></td><td>Mouvement intraday minimal</td></tr>
+    <tr><td>10% (derive)</td><td>1.0%</td><td><strong>IMP10</strong></td><td>Target standard (la plus frequente)</td></tr>
+    <tr><td>13%</td><td>1.3%</td><td><strong>IMP13</strong></td><td>Mouvement etendu</td></tr>
+    <tr><td>20%</td><td>2.0%</td><td><strong>IMP20</strong></td><td>Mouvement extreme</td></tr>
+    <tr><td>24% (derive)</td><td>2.4%</td><td><strong>IMP24</strong></td><td>Jours de news majeures</td></tr>
+    <tr><td>36% (derive)</td><td>3.6%</td><td><strong>IMP36</strong></td><td>Exceptionnel (~10% des jours)</td></tr>
+  </table>
+
+  <h3 class="subsec">Sequence 2-5-8</h3>
+  <div class="box box-em">
+    <strong>Regle des 3 touches :</strong> Le prix atteint les IMP en sequence 2-5-8.
+    <p><strong>Touch 2 :</strong> Premiere saturation, pause ou rebond temporaire</p>
+    <p><strong>Touch 5 :</strong> Deuxieme poussee, confirmation de direction</p>
+    <p><strong>Touch 8 :</strong> Troisieme et derniere poussee, epuisement du mouvement</p>
+    <p>Chaque "touch" est un point de decision : continuation ou reversal.</p>
+  </div>
+
+  <h3 class="subsec">Probabilites par IMP</h3>
+  <table class="tbl">
+    <tr><th>IMP Node</th><th>Probabilite</th><th>Contexte</th></tr>
+    <tr><td><strong>IMP10</strong></td><td>~70% des jours</td><td>Target par defaut, jours normaux</td></tr>
+    <tr><td><strong>IMP13</strong></td><td>~40% des jours</td><td>Jours avec catalyseur modere</td></tr>
+    <tr><td><strong>IMP20</strong></td><td>~20% des jours</td><td>Jours de news importantes</td></tr>
+    <tr><td><strong>IMP24</strong></td><td>~15% des jours</td><td>FOMC, NFP, CPI</td></tr>
+    <tr><td><strong>IMP36</strong></td><td>~10% des jours</td><td>Evenements exceptionnels, crise</td></tr>
+  </table>
+
+  <div class="box box-re">
+    <strong>Regle de gestion du risque :</strong> Ne jamais cibler un IMP au-dela de l'IMP10 sans catalyseur identifie (news, calendrier). L'IMP10 est le target par defaut pour tous les setups standards.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 7 — TRIFECTA PO3 729               -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="mod" id="s7">
+  <div class="mod-head">Section 07 &mdash; Contexte</div>
+  <h2 class="sec">Institutionnel PO3 729</h2>
+  <p class="sec-desc">
+    Le range Institutionnel 729 est le cycle principal du framework. Il s'etend du Cycle Low au Cycle High sur 729 points et contient l'integralite de la structure de livraison.
+  </p>
+
+  <h3 class="subsec">Structure du Range 729</h3>
+  <table class="tbl">
+    <tr><th>Element</th><th>Position</th><th>Detail</th></tr>
+    <tr><td><strong>Cycle Low</strong></td><td>0% (borne basse)</td><td>Point bas du cycle — base de l'accumulation</td></tr>
+    <tr><td><strong>Cycle High</strong></td><td>100% (borne haute)</td><td>Point haut du cycle — sommet de la distribution</td></tr>
+    <tr><td><strong>Fix Price</strong></td><td>50% (MID)</td><td>Ancre du cycle, point d'equilibre algorithmique</td></tr>
+    <tr><td><strong>Range Total</strong></td><td>729 points</td><td>3^6 = 729, le coeur du systeme</td></tr>
+  </table>
+
+  <h3 class="subsec">Les 3 Zones de Comportement</h3>
+  <div class="box box-em">
+    <strong>Zone Basse (0-33%) :</strong> Zone d'accumulation. Le prix construit une base, les institutions accumulent. Les sweeps sous le Cycle Low sont des pièges.
+  </div>
+  <div class="box box-am">
+    <strong>Zone Mediane (33-66%) :</strong> Zone de transition. Le Fix Price se situe ici. Le prix oscille autour de l'equilibre. C'est la zone "neutre" ou les biais sont les plus difficiles a lire.
+  </div>
+  <div class="box box-re">
+    <strong>Zone Haute (66-100%) :</strong> Zone de distribution. Les institutions livrent leurs positions accumulees en bas. Les rallyes au-dessus du Cycle High sont des sweeps de liquidite.
+  </div>
+
+  <h3 class="subsec">Les 2 Algorithmes de Livraison</h3>
+  <table class="tbl">
+    <tr><th>Algorithme</th><th>Sequence</th><th>Description</th></tr>
+    <tr><td><strong>Algo 1 (Haussier)</strong></td><td>Low &rarr; MID &rarr; High</td><td>Accumulation en bas, distribution progressive vers le haut. Le prix monte methodiquement en respectant les niveaux Institutionnel.</td></tr>
+    <tr><td><strong>Algo 2 (Baissier)</strong></td><td>High &rarr; MID &rarr; Low</td><td>Distribution en haut, re-accumulation vers le bas. Le prix descend en cascades, niveaux apres niveaux.</td></tr>
+  </table>
+
+  <h3 class="subsec">Decomposition Fractale du 729</h3>
+  <ul class="cl">
+    <li><strong>3 x 243 :</strong> Le range 729 contient 3 sous-ranges de 243 points (tiers inferieur, median, superieur)</li>
+    <li><strong>9 x 81 :</strong> Chaque sous-range de 243 contient 3 ranges de 81 points (9 au total)</li>
+    <li><strong>27 x 27 :</strong> Chaque range de 81 contient 3 ranges de 27 points (27 au total)</li>
+    <li><strong>Principe :</strong> L'analyse commence au 729 et zoom progressivement pour l'execution</li>
+  </ul>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 8 — GOLDBACH TIME                  -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="mod" id="s8">
+  <div class="mod-head">Section 08 &mdash; Temps</div>
+  <h2 class="sec">Institutionnel Time</h2>
+  <p class="sec-desc">
+    Le Institutionnel Time est le systeme de temps algorithmique du framework. Il traduit l'heure en numeros Institutionnel pour identifier les moments precis ou le prix est susceptible de reagir.
+  </p>
+
+  <h3 class="subsec">Calcul du Numero GB Time</h3>
+  <div class="box box-em">
+    <strong>Methode :</strong> Le numero Institutionnel Time est la somme des heures et des minutes en heure de Zurich.
+    <p><strong>Exemple :</strong> 15h41 Zurich &rarr; 15 + 41 = <strong>56</strong>. On cherche si 56 est un niveau Institutionnel significatif.</p>
+    <p><strong>Autre exemple :</strong> 09h20 Zurich &rarr; 9 + 20 = <strong>29</strong>. Le 29 est un niveau Institutionnel actif.</p>
+  </div>
+
+  <h3 class="subsec">Niveaux de Temps Significatifs</h3>
+  <table class="tbl">
+    <tr><th>GB Time</th><th>Type</th><th>Signification</th></tr>
+    <tr><td><strong>3</strong></td><td>Institutionnel</td><td>Debut de sequence, mouvement initial</td></tr>
+    <tr><td><strong>11</strong></td><td>Institutionnel</td><td>Order Block temporel</td></tr>
+    <tr><td><strong>17</strong></td><td>Institutionnel</td><td>Fair Value Gap temporel</td></tr>
+    <tr><td><strong>29</strong></td><td>Institutionnel</td><td>Zone de reaction temporelle forte</td></tr>
+    <tr><td><strong>41</strong></td><td>Institutionnel</td><td>Approche du MID temporel</td></tr>
+    <tr><td><strong>47</strong></td><td>Institutionnel</td><td>Pre-equilibre</td></tr>
+    <tr><td><strong>50</strong></td><td>MID</td><td>Equilibre temporel</td></tr>
+    <tr><td><strong>53</strong></td><td>Institutionnel</td><td>Post-equilibre</td></tr>
+    <tr><td><strong>59</strong></td><td>Institutionnel</td><td>Zone de distribution temporelle</td></tr>
+    <tr><td><strong>71</strong></td><td>Institutionnel</td><td>Target temporel standard</td></tr>
+    <tr><td><strong>83</strong></td><td>Institutionnel</td><td>Extension temporelle</td></tr>
+  </table>
+
+  <h3 class="subsec">Buffer et Validation</h3>
+  <div class="box box-am">
+    <strong>Regle du buffer +/-1 minute :</strong> Une reaction est consideree comme "on time" si elle se produit dans une fenetre de +/-1 minute autour du GB Time calcule.
+    <p>Exemple : si le GB Time target est 29, la fenetre valide est de la minute qui donne 28 a la minute qui donne 30.</p>
+  </div>
+
+  <h3 class="subsec">Regle d'Interchangeabilite</h3>
+  <div class="box box-bl">
+    <strong>71 et 77 sont interchangeables :</strong> Une reaction a 71 ou 77 valide le meme signal temporel.
+    <p><strong>29 et 35 sont interchangeables :</strong> Meme principe pour la zone basse du spectre temporel.</p>
+    <p>Cette interchangeabilite reflete la flexibilite de l'algorithme dans des zones proches.</p>
+  </div>
+
+  <h3 class="subsec">Past Targets vs Future Targets</h3>
+  <ul class="cl">
+    <li><strong>Past Targets :</strong> Niveaux GB Time deja passes — confirment que l'algorithme est actif si le prix a reagi</li>
+    <li><strong>Future Targets :</strong> Prochains niveaux GB Time — permettent d'anticiper les fenetres de reaction</li>
+    <li><strong>Validation :</strong> 2 Past Targets confirmes = forte probabilite que le prochain Future Target sera respecte</li>
+    <li><strong>Inducement :</strong> Le lien avec l'inducement se fait quand le prix atteint un niveau Institutionnel (prix) exactement au moment d'un niveau Institutionnel (temps)</li>
+  </ul>
+
+  <h3 class="subsec">Deux Algorithmes Temporels</h3>
+  <table class="tbl">
+    <tr><th>Algo</th><th>Path</th><th>Description</th></tr>
+    <tr><td><strong>Algo Temps 1</strong></td><td>3 &rarr; 11 &rarr; 17 &rarr; 29 &rarr; 41 &rarr; 50</td><td>Sequence ascendante — les reactions se produisent a des GB Time croissants durant la journee</td></tr>
+    <tr><td><strong>Algo Temps 2</strong></td><td>97 &rarr; 89 &rarr; 83 &rarr; 71 &rarr; 59 &rarr; 50</td><td>Sequence descendante — les reactions se produisent a des GB Time decroissants</td></tr>
+  </table>
+
+  <div class="quote">
+    L'alignement du prix (Institutionnel spatiale) et du temps (Institutionnel temporel) au meme moment cree ce qu'on appelle la "confluence absolue" — le moment le plus probable pour un mouvement directionnel.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 9 — SETUP NY OPEN                  -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="mod" id="s9">
+  <div class="mod-head">Section 09 &mdash; Setups</div>
+  <h2 class="sec">Setup NY Open (25 Handles)</h2>
+  <p class="sec-desc">
+    Le setup NY Open est un trade intraday structure autour du retour du prix vers le Fix Price apres le mouvement nocturne. La target minimum est de 25 handles (points).
+  </p>
+
+  <h3 class="subsec">Conditions d'Entree</h3>
+  <ol class="nl">
+    <li><strong>Identifier le Fix Price :</strong> Localiser le Fix de la veille (16h00 NY) sur le chart</li>
+    <li><strong>Observer le mouvement nocturne :</strong> Le prix s'est eloigne du Fix pendant Asia/Europe</li>
+    <li><strong>Attendre le NY Open (09h30) :</strong> L'ouverture de New York cree souvent un sweep initial</li>
+    <li><strong>Confirmer le reversal :</strong> Un HIPPO ou un OB doit etre present au point de retournement</li>
+    <li><strong>Entrer dans la direction du Fix :</strong> Le trade vise le retour vers le Fix Price</li>
+  </ol>
+
+  <h3 class="subsec">Parametres du Setup</h3>
+  <table class="tbl">
+    <tr><th>Parametre</th><th>Valeur</th></tr>
+    <tr><td><strong>Target minimum</strong></td><td>25 handles (points ES/NQ)</td></tr>
+    <tr><td><strong>Stop Loss</strong></td><td>Au-dela du sweep (wick extreme)</td></tr>
+    <tr><td><strong>Fenetre horaire</strong></td><td>09h30 - 11h00 NY</td></tr>
+    <tr><td><strong>Risk:Reward minimum</strong></td><td>1:2</td></tr>
+    <tr><td><strong>Confirmation</strong></td><td>HIPPO + GB Time + direction du Fix</td></tr>
+  </table>
+
+  <div class="box box-em">
+    <strong>Sequence d'execution :</strong>
+    <p>1. Le prix sweep le high/low de la session nocturne</p>
+    <p>2. Un HIPPO est identifie au point de retournement</p>
+    <p>3. Le GB Time confirme (reaction dans la fenetre)</p>
+    <p>4. Entree avec stop au-dela du sweep</p>
+    <p>5. Target : niveau Institutionnel 41% ou 59% du range journalier (minimum 25 handles)</p>
+  </div>
+
+  <h3 class="subsec">Filtres de Qualite</h3>
+  <ul class="cl">
+    <li><strong>Filtre 1 :</strong> Le mouvement nocturne doit etre significatif (minimum 15 handles d'eloignement du Fix)</li>
+    <li><strong>Filtre 2 :</strong> Pas de news majeures dans les 30 premieres minutes du NY Open</li>
+    <li><strong>Filtre 3 :</strong> Le HIPPO doit etre dans la zone bleue (23-35% ou 65-77%)</li>
+    <li><strong>Filtre 4 :</strong> Alignement avec le biais HTF (Weekly/Daily)</li>
+  </ul>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 10 — MITIGATION PLAN               -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="mod" id="s10">
+  <div class="mod-head">Section 10 &mdash; Setups</div>
+  <h2 class="sec">Mitigation Plan (40 Handles)</h2>
+  <p class="sec-desc">
+    Le Mitigation Plan est un setup de plus grande amplitude qui cible 40 handles minimum. Il repose sur la mitigation d'un Order Block ou d'un FVG sur une echelle de temps superieure.
+  </p>
+
+  <h3 class="subsec">Principe de la Mitigation</h3>
+  <div class="box box-em">
+    <strong>Definition :</strong> La mitigation est le processus par lequel le prix retourne a un point d'interet (OB, FVG, Breaker) pour "combler" le desequilibre laisse par un mouvement precedent.
+    <p>Le Mitigation Plan exploite ce retour pour entrer dans la direction du mouvement suivant, avec une target etendue de 40 handles.</p>
+  </div>
+
+  <h3 class="subsec">Conditions du Setup</h3>
+  <ol class="nl">
+    <li><strong>Identifier un POI HTF :</strong> Order Block ou FVG sur H1/H4 non encore mitige</li>
+    <li><strong>Attendre l'approche :</strong> Le prix se deplace vers le POI (phase de mitigation)</li>
+    <li><strong>Confirmer la reaction :</strong> Sur M5/M15, un shift de structure (BOS/CHOCH) se produit au contact du POI</li>
+    <li><strong>Aligner avec le Institutionnel :</strong> Le POI doit se situer sur un niveau Institutionnel (idealement 17% ou 83%)</li>
+    <li><strong>Entrer sur confirmation LTF :</strong> Entree sur le shift de structure LTF avec stop au-dela du POI</li>
+  </ol>
+
+  <h3 class="subsec">Parametres du Setup</h3>
+  <table class="tbl">
+    <tr><th>Parametre</th><th>Valeur</th></tr>
+    <tr><td><strong>Target minimum</strong></td><td>40 handles (points ES/NQ)</td></tr>
+    <tr><td><strong>Stop Loss</strong></td><td>Au-dela du POI HTF</td></tr>
+    <tr><td><strong>Timeframe d'analyse</strong></td><td>H1 / H4 pour le POI</td></tr>
+    <tr><td><strong>Timeframe d'entree</strong></td><td>M5 / M15 pour le trigger</td></tr>
+    <tr><td><strong>Risk:Reward minimum</strong></td><td>1:3</td></tr>
+    <tr><td><strong>Confirmation</strong></td><td>BOS/CHOCH LTF + Institutionnel + GB Time</td></tr>
+  </table>
+
+  <h3 class="subsec">Niveaux de Target Institutionnel</h3>
+  <div class="box box-am">
+    <strong>Targets progressives :</strong>
+    <p><strong>TP1 (partiel) :</strong> Niveau Institutionnel 41% ou 59% du range superieur</p>
+    <p><strong>TP2 (principal) :</strong> Niveau Institutionnel 71% du range superieur (40+ handles)</p>
+    <p><strong>TP3 (extension) :</strong> Niveau Institutionnel 83% — uniquement si le momentum est fort et le GB Time aligne</p>
+  </div>
+
+  <h3 class="subsec">Difference avec le Setup NY Open</h3>
+  <table class="tbl">
+    <tr><th>Critere</th><th>NY Open (25H)</th><th>Mitigation Plan (40H)</th></tr>
+    <tr><td><strong>Target</strong></td><td>25 handles</td><td>40 handles</td></tr>
+    <tr><td><strong>POI Source</strong></td><td>Fix Price + sweep</td><td>OB/FVG H1-H4</td></tr>
+    <tr><td><strong>Fenetre</strong></td><td>09h30-11h00 NY</td><td>Toute la session</td></tr>
+    <tr><td><strong>Frequence</strong></td><td>Quotidien</td><td>2-3 fois par semaine</td></tr>
+    <tr><td><strong>R:R</strong></td><td>1:2</td><td>1:3</td></tr>
+    <tr><td><strong>Complexite</strong></td><td>Moderee</td><td>Elevee</td></tr>
+  </table>
+
+  <div class="quote">
+    Le Mitigation Plan est le trade "patient". Il demande plus de temps pour se mettre en place, mais sa target etendue et son R:R superieur en font le setup le plus rentable du framework sur le long terme.
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- SYNTHESE FINALE -->
+  <div class="box box-em" style="margin-top:32px;">
+    <strong>Synthese du Framework Architecture des Niveaux</strong>
+    <p>Le systeme repose sur 5 piliers interconnectes :</p>
+    <p><strong>1. PO3 :</strong> La structure fractale des ranges (puissances de 3)</p>
+    <p><strong>2. Institutionnel :</strong> Les niveaux de reaction a l'interieur des ranges</p>
+    <p><strong>3. Fix CME :</strong> L'ancre du cycle journalier (16h00 NY)</p>
+    <p><strong>4. HIPPO + IMP :</strong> Les objectifs de prix et les limites de mouvement</p>
+    <p><strong>5. GB Time :</strong> Le timing algorithmique pour l'execution</p>
+    <p style="margin-top:8px;">Chaque composante seule donne un avantage statistique. Combinees, elles forment un systeme de precision institutionnelle.</p>
+  </div>
+</div>
+
+
+</div><!-- /.main -->
+</div><!-- /.app -->
+
+<!-- ─── SCRIPTS ─── -->
+<script>
+// ── Intersection Observer for .mod animation ──
+(function(){
+  const observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('vis');
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.mod').forEach(function(el){
+    observer.observe(el);
+  });
+})();
+
+// ── Progress Bar ──
+(function(){
+  const bar = document.getElementById('progressBar');
+  if(!bar) return;
+  window.addEventListener('scroll', function(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollHeight = h.scrollHeight - h.clientHeight;
+    const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    bar.style.width = pct + '%';
+  });
+})();
+
+// ── Sidebar active link on scroll ──
+(function(){
+  const sections = document.querySelectorAll('.mod[id]');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  function setActive(){
+    let current = '';
+    sections.forEach(function(sec){
+      const top = sec.getBoundingClientRect().top;
+      if(top < 200) current = sec.id;
+    });
+    navItems.forEach(function(item){
+      item.classList.remove('active');
+      if(item.getAttribute('href') === '#' + current){
+        item.classList.add('active');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', setActive);
+  setActive();
+})();
+
+// ── Mobile toggle ──
+(function(){
+  var toggle = document.getElementById('mobileToggle');
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('overlay');
+  if(!toggle || !sidebar || !overlay) return;
+
+  toggle.addEventListener('click', function(){
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+  });
+  overlay.addEventListener('click', function(){
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+  });
+})();
+</script>
+</body>
+</html>

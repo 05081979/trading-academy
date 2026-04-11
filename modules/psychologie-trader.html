@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="premium">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Psychologie du Trader</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0C0F0A;
+  --bg2:      #111510;
+  --bg3:      #181D14;
+  --border:   #1F2A1A;
+  --em:       #3D7A3A;
+  --em2:      #56A853;
+  --em-light: #A3D9A1;
+  --em-pale:  #E8F5E8;
+  --amber:    #D4882A;
+  --amber-l:  #F5C56A;
+  --red:      #C9453A;
+  --blue:     #4A90B8;
+  --muted:    #3A4535;
+  --text:     #DDE8D8;
+  --text-dim: #7D9478;
+  --serif:    'Playfair Display', serif;
+  --sans:     'Syne', sans-serif;
+  --body:     'Source Serif 4', serif;
+  --mono:     'Roboto Mono', monospace;
+  --sw: 270px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.75; display: flex; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* -- SIDEBAR -- */
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 100;
+}
+
+.sb-logo {
+  padding: 28px 22px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sb-logo .mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--em), var(--em2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(61,122,58,.3);
+  font-family: var(--sans); font-weight: 800; color: #fff;
+}
+
+.sb-logo h1 {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--em-light);
+  line-height: 1.25;
+}
+
+.sb-logo p {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.sb-section {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 16px 22px 5px;
+}
+
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 22px; text-decoration: none;
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 500;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.sb-link:hover { background: rgba(86,168,83,.06); color: var(--text); }
+.sb-link.active { background: rgba(86,168,83,.1); color: var(--em-light); border-left-color: var(--em2); }
+
+.sb-link .n {
+  font-family: var(--mono);
+  font-size: 0.62rem; font-weight: 500;
+  color: var(--muted); min-width: 22px;
+}
+.sb-link.active .n { color: var(--em2); }
+
+/* -- PROGRESS -- */
+#pbar {
+  position: fixed; top: 0; left: var(--sw); right: 0;
+  height: 2px; background: var(--border); z-index: 200;
+}
+#pfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--em), var(--em2), var(--amber));
+  width: 0%; transition: width 0.1s linear;
+}
+
+/* -- MAIN -- */
+#main { margin-left: var(--sw); flex: 1; min-height: 100vh; }
+
+/* -- HERO -- */
+#hero {
+  position: relative; overflow: hidden;
+  padding: 80px 64px 72px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-noise {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-lines {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 20px,
+    rgba(61,122,58,.04) 20px, rgba(61,122,58,.04) 21px
+  );
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(86,168,83,.12);
+  border: 1px solid rgba(86,168,83,.3);
+  color: var(--em-light);
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+
+#hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(2.8rem, 5vw, 4.5rem);
+  line-height: 1.05;
+  color: #fff;
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+#hero h1 .em {
+  display: block;
+  background: linear-gradient(90deg, var(--em2), var(--em-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+#hero .sub {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 400;
+  color: var(--text-dim); max-width: 560px; margin-bottom: 44px;
+  line-height: 1.8;
+}
+
+.hero-kpis {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px; max-width: 700px;
+}
+
+.kpi {
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+}
+.kpi:hover { border-color: rgba(86,168,83,.35); }
+
+.kpi-v {
+  font-family: var(--mono);
+  font-size: 1.5rem; font-weight: 500;
+  color: var(--em-light); line-height: 1;
+  margin-bottom: 5px;
+}
+.kpi-l {
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* -- MODULE -- */
+.mod {
+  padding: 64px; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.mod.vis { opacity: 1; transform: none; }
+
+.mod-head {
+  display: flex; align-items: flex-start; gap: 18px;
+  margin-bottom: 40px;
+}
+
+.mod-tag {
+  font-family: var(--mono);
+  font-size: 0.65rem; font-weight: 500;
+  color: var(--em2);
+  background: rgba(86,168,83,.1);
+  border: 1px solid rgba(86,168,83,.22);
+  padding: 5px 12px; border-radius: 6px;
+  white-space: nowrap; margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+.mod-head h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: #fff; line-height: 1.1;
+}
+
+/* -- SECTION TITLES -- */
+.sec {
+  font-family: var(--sans);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--em-light);
+  margin: 42px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+  display: flex; align-items: center; gap: 10px;
+}
+.sec::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 18px;
+  background: linear-gradient(var(--em), var(--em2));
+  border-radius: 2px; flex-shrink: 0;
+}
+
+.subsec {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 700;
+  color: var(--text); margin: 26px 0 10px;
+}
+
+p {
+  font-size: 0.95rem; color: var(--text-dim);
+  line-height: 1.85; margin-bottom: 12px;
+}
+p strong { color: var(--text); font-weight: 600; }
+em { color: var(--em-light); font-style: italic; }
+
+/* -- CALLOUTS -- */
+.box {
+  border-radius: 10px; padding: 20px 24px;
+  margin: 18px 0; border-left: 3px solid;
+  background: rgba(255,255,255,.022);
+}
+.box-em  { border-color: var(--em2);  background: rgba(86,168,83,.06); }
+.box-am  { border-color: var(--amber); background: rgba(212,136,42,.06); }
+.box-re  { border-color: var(--red);   background: rgba(201,69,58,.06); }
+.box-bl  { border-color: var(--blue);  background: rgba(74,144,184,.06); }
+
+.box-title {
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 7px;
+}
+.box-em .box-title  { color: var(--em-light); }
+.box-am .box-title  { color: var(--amber-l); }
+.box-re .box-title  { color: #FCA5A5; }
+.box-bl .box-title  { color: #93C5FD; }
+.box p { margin: 0; font-size: 0.88rem; }
+
+/* -- LISTS -- */
+ul.cl { list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 8px; }
+ul.cl li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ul.cl li::before {
+  content: '>'; color: var(--em2); font-size: 1rem;
+  margin-top: 1px; flex-shrink: 0;
+}
+ul.cl li strong { color: var(--text); }
+
+ol.nl { counter-reset: nl; list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 9px; }
+ol.nl li {
+  counter-increment: nl;
+  display: flex; align-items: flex-start; gap: 13px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ol.nl li::before {
+  content: counter(nl);
+  background: rgba(86,168,83,.15);
+  border: 1px solid rgba(86,168,83,.28);
+  color: var(--em-light);
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+}
+
+/* -- TABLE -- */
+.tbl {
+  width: 100%; border-collapse: collapse;
+  margin: 18px 0; font-size: 0.87rem;
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.tbl th {
+  background: rgba(86,168,83,.1);
+  color: var(--em-light);
+  font-family: var(--sans); font-weight: 700;
+  font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 11px 18px; text-align: left;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+}
+.tbl td {
+  padding: 10px 18px; color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top; line-height: 1.6;
+}
+.tbl td:first-child { color: var(--text); font-weight: 600; font-size: 0.83rem; white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(255,255,255,.015); }
+
+/* -- QUOTE -- */
+.quote {
+  position: relative;
+  padding: 26px 28px; margin: 28px 0;
+  background: var(--bg3);
+  border-left: 3px solid var(--em2);
+  border-radius: 0 10px 10px 0;
+}
+.quote::before {
+  content: '\201C'; position: absolute; top: -12px; left: 14px;
+  font-family: var(--serif); font-size: 5rem;
+  color: rgba(86,168,83,.18); line-height: 1;
+}
+.quote p {
+  font-family: var(--serif); font-size: 1.2rem; font-style: italic;
+  color: var(--text); margin: 0; line-height: 1.65;
+}
+.quote cite {
+  display: block; margin-top: 12px;
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.09em; text-transform: uppercase; color: var(--em2);
+}
+
+/* -- LEVELS GRID -- */
+.levels {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 3px; margin: 18px 0;
+}
+.lv {
+  padding: 18px 14px; border-radius: 10px;
+  text-align: center; border: 1px solid;
+  transition: transform 0.2s;
+}
+.lv:hover { transform: translateY(-3px); }
+.lv .phase {
+  font-family: var(--sans); font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.lv .name { font-family: var(--serif); font-size: 1.15rem; margin-bottom: 4px; line-height: 1.1; }
+.lv .desc { font-size: 0.72rem; opacity: 0.75; line-height: 1.4; }
+.lv-g { background: rgba(86,168,83,.08); border-color: rgba(86,168,83,.3); color: var(--em-light); }
+.lv-a { background: rgba(212,136,42,.08); border-color: rgba(212,136,42,.3); color: var(--amber-l); }
+.lv-r { background: rgba(201,69,58,.08); border-color: rgba(201,69,58,.3); color: #FCA5A5; }
+.lv-b { background: rgba(74,144,184,.08); border-color: rgba(74,144,184,.3); color: #93C5FD; }
+
+/* -- FOOTER -- */
+#footer { padding: 48px 64px; text-align: center; border-top: 1px solid var(--border); }
+#footer p { font-family: var(--sans); color: var(--muted); font-size: 0.8rem; margin: 0; }
+
+/* -- ANIMATIONS -- */
+@keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+.hero-tag, #hero h1, #hero .sub, .hero-kpis { animation: fadeUp 0.6s ease both; }
+.hero-tag { animation-delay: 0.1s; }
+#hero h1 { animation-delay: 0.22s; }
+#hero .sub { animation-delay: 0.34s; }
+.hero-kpis { animation-delay: 0.46s; }
+
+@media (max-width: 900px) {
+  :root { --sw: 0px; }
+  #sidebar { transform: translateX(-270px); }
+  #main { margin-left: 0; }
+  .mod, #hero { padding: 36px 22px; }
+  .hero-kpis { grid-template-columns: 1fr 1fr; }
+  .levels { grid-template-columns: 1fr; }
+}
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+
+<div id="pbar"><div id="pfill"></div></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="mark">AA</div>
+    <h1>Psychologie Avancee</h1>
+    <p>Algorithmic Academy -- Le Jeu Mental</p>
+  </div>
+
+  <div class="sb-section">Fondations</div>
+  <a class="sb-link active" href="#hero"><span class="n">00</span>Vue d'ensemble</a>
+  <a class="sb-link" href="#m1"><span class="n">01</span>Les 7 Problemes</a>
+  <a class="sb-link" href="#m2"><span class="n">02</span>Paradigme Mental</a>
+
+  <div class="sb-section">Emotions</div>
+  <a class="sb-link" href="#m3"><span class="n">03</span>Cartographie</a>
+  <a class="sb-link" href="#m4"><span class="n">04</span>Causes Profondes</a>
+  <a class="sb-link" href="#m5"><span class="n">05</span>Boucles Emotionnelles</a>
+
+  <div class="sb-section">Discipline</div>
+  <a class="sb-link" href="#m6"><span class="n">06</span>Routines</a>
+  <a class="sb-link" href="#m7"><span class="n">07</span>Regles d'Engagement</a>
+  <a class="sb-link" href="#m8"><span class="n">08</span>Engagement Total</a>
+
+  <div class="sb-section">Pieges Psychologiques</div>
+  <a class="sb-link" href="#m9"><span class="n">09</span>FOMO & Revenge</a>
+  <a class="sb-link" href="#m10"><span class="n">10</span>Freeze & Over-leverage</a>
+
+  <div class="sb-section">Systeme Mental</div>
+  <a class="sb-link" href="#m11"><span class="n">11</span>Les 5 Etapes</a>
+  <a class="sb-link" href="#m12"><span class="n">12</span>Boite a Outils</a>
+  <a class="sb-link" href="#m13"><span class="n">13</span>Futur &amp; Croissance</a>
+
+  <div class="sb-section">Journal</div>
+  <a class="sb-link" href="#m14"><span class="n">14</span>Methode Complete</a>
+  <a class="sb-link" href="#m15"><span class="n">15</span>Script &amp; Variables</a>
+
+  <div class="sb-section">Performance</div>
+  <a class="sb-link" href="#m16"><span class="n">16</span>Survie vs Creation</a>
+  <a class="sb-link" href="#m17"><span class="n">17</span>Abondance</a>
+  <a class="sb-link" href="#m18"><span class="n">18</span>Les 10 Regles d'Or</a>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main id="main">
+
+<!-- HERO -->
+<header id="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-lines"></div>
+
+  <div class="hero-tag">Module Premium -- Psychologie Avancee</div>
+
+  <h1>Psychologie Avancee<br><span class="em">Le Jeu Mental du Trading</span></h1>
+
+  <p class="sub">Psychologie -- Discipline -- Emotions -- Journal -- Protocole Mental -- Performance. Le systeme complet pour maitriser l'aspect le plus critique du trading : votre propre esprit.</p>
+
+  <div class="hero-kpis">
+    <div class="kpi"><div class="kpi-v">7</div><div class="kpi-l">Problemes Cles</div></div>
+    <div class="kpi"><div class="kpi-v">5</div><div class="kpi-l">Etapes Mentales</div></div>
+    <div class="kpi"><div class="kpi-v">10</div><div class="kpi-l">Regles d'Or</div></div>
+    <div class="kpi"><div class="kpi-v">18</div><div class="kpi-l">Modules</div></div>
+  </div>
+</header>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 1 : LES 7 PROBLEMES -->
+<!-- ================================================================ -->
+<section class="mod" id="m1">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 01</span>
+    <h2>Les 7 Problemes Psychologiques du Trader</h2>
+  </div>
+
+  <p>Les experts en psychologie du trading ont identifie <strong>7 problemes recurrents</strong> qui detruisent les comptes de trading. Ce ne sont pas des problemes de strategie -- ce sont des problemes de cerveau. La plupart des traders ont un edge technique valide mais sont incapables de l'executer de maniere consistante a cause de ces 7 pieges.</p>
+
+  <div class="quote">
+    <p>La strategie represente 20% du succes en trading. Les 80% restants sont de la psychologie et du risk management.</p>
+    <cite>Les experts en psychologie du trading</cite>
+  </div>
+
+  <div class="sec">Probleme 1 : FOMO -- Fear Of Missing Out</div>
+  <p><strong>Definition :</strong> Entrer sur des setups qui ne respectent pas vos regles parce que vous avez peur de rater un mouvement. Le marche bouge et vous sautez dedans sans confirmation, sans biais clair, sans setup valide.</p>
+  <div class="box box-re">
+    <div class="box-title">Symptomes du FOMO</div>
+    <p>Vous voyez une bougie impulsive et vous entrez immediatement. Vous regardez une paire que vous ne tradez pas habituellement parce qu'elle bouge. Vous entrez a mi-parcours d'un mouvement deja fait. Vous sentez une urgence physique, un stress de "rater le train".</p>
+  </div>
+  <ul class="cl">
+    <li><strong>Cause racine :</strong> Croyance que les opportunites sont rares et qu'il faut les saisir immediatement</li>
+    <li><strong>Realite :</strong> Le marche offre des setups chaque jour. Un setup rate n'est jamais le dernier</li>
+    <li><strong>Solution :</strong> Regles mecaniques strictes. Si le setup ne coche pas toutes les cases, pas d'entree. Point final</li>
+  </ul>
+
+  <div class="sec">Probleme 2 : Freeze -- Paralysie d'Execution</div>
+  <p><strong>Definition :</strong> Vous identifiez un setup parfait, toutes les conditions sont reunies, mais vous etes <em>incapable d'appuyer sur le bouton</em>. Le marche part sans vous et vous regardez le profit que vous auriez du faire.</p>
+  <div class="box box-am">
+    <div class="box-title">Mecanisme du Freeze</div>
+    <p>Le freeze est la reponse du cerveau reptilien face au danger percu. Il interprete le risque financier comme un danger physique. Le resultat : paralysie totale. Ce n'est pas de la lachete -- c'est de la biologie.</p>
+  </div>
+  <ul class="cl">
+    <li><strong>Cause racine :</strong> Traumatisme de pertes passees, peur de la douleur financiere</li>
+    <li><strong>Solution :</strong> Reduire la taille de position jusqu'a ce que l'entree ne declenche plus d'anxiete, puis remonter progressivement</li>
+  </ul>
+
+  <div class="sec">Probleme 3 : Revenge Trading</div>
+  <p><strong>Definition :</strong> Apres une perte, vous re-entrez immediatement pour "recuperer" l'argent perdu. Vous ne tradez plus selon votre plan -- vous tradez contre le marche, par colere.</p>
+  <div class="box box-re">
+    <div class="box-title">Cercle Vicieux du Revenge</div>
+    <p>Perte initiale -- Frustration -- Re-entree impulsive -- Perte plus grande -- Frustration accrue -- Re-entree encore plus impulsive. Le cycle ne s'arrete que quand le compte est vide ou quand le trader se deconnecte.</p>
+  </div>
+  <ul class="cl">
+    <li><strong>Cause racine :</strong> L'ego refuse la perte. Le trader voit la perte comme un affront personnel</li>
+    <li><strong>Solution :</strong> Regle absolue : apres une perte, pause de 15 minutes minimum. Apres 2 pertes, fin de la journee de trading</li>
+  </ul>
+
+  <div class="sec">Probleme 4 : Over-leverage</div>
+  <p><strong>Definition :</strong> Augmenter la taille de position apres une grosse perte pour "revenir a zero plus vite". C'est la forme la plus dangereuse de revenge trading car elle peut detruire un compte en un seul trade.</p>
+  <div class="box box-re">
+    <div class="box-title">Danger Critique</div>
+    <p>Un trader qui perd 5% de son compte et double sa taille pour la prochaine position est dans un etat d'auto-destruction. Les statistiques montrent que 80% des comptes blown up le sont a cause de l'over-leverage, pas a cause d'une mauvaise strategie.</p>
+  </div>
+
+  <div class="sec">Probleme 5 : Impatience</div>
+  <p><strong>Definition :</strong> Ne pas attendre la confirmation complete du setup. Entrer trop tot, avant que le biais ne soit confirme, avant que la structure ne soit validee.</p>
+  <ul class="cl">
+    <li><strong>Manifestation :</strong> Entrer sur une bougie de displacement avant le retracement dans le FVG</li>
+    <li><strong>Manifestation :</strong> Entrer pendant la session asiatique alors que le biais necessite la session de Londres</li>
+    <li><strong>Solution :</strong> Protocole mecanique avec checklist obligatoire avant chaque entree</li>
+  </ul>
+
+  <div class="sec">Probleme 6 : Peur de Perdre</div>
+  <p><strong>Definition :</strong> Couper les trades gagnants trop tot par peur que le profit ne disparaisse. Le trader transforme systematiquement des trades de 3R en trades de 0.5R.</p>
+  <div class="box box-am">
+    <div class="box-title">Le Paradoxe du Gain</div>
+    <p>La peur de perdre un gain est psychologiquement plus forte que la peur de subir une perte. Les etudes comportementales montrent que la douleur de perdre 100 euros est 2.5x plus intense que le plaisir de gagner 100 euros. C'est ce qu'on appelle l'aversion a la perte.</p>
+  </div>
+
+  <div class="sec">Probleme 7 : Euphorie Post-Gains</div>
+  <p><strong>Definition :</strong> Apres une serie de gains, le trader se sent invincible. Il augmente le risque, trade des setups moins qualifies, et finit par perdre tout ce qu'il a gagne -- et plus encore.</p>
+  <ul class="cl">
+    <li><strong>Symptome :</strong> "Je suis chaud, je ne peux pas perdre aujourd'hui"</li>
+    <li><strong>Symptome :</strong> Doubler la taille apres 3 gains consecutifs</li>
+    <li><strong>Symptome :</strong> Trader des paires ou des timeframes inhabituels "parce que ca marche"</li>
+    <li><strong>Solution :</strong> Meme risque, memes regles, toujours. Le marche ne sait pas que vous etes en streak gagnante</li>
+  </ul>
+
+  <table class="tbl">
+    <tr><th>Probleme</th><th>Declencheur</th><th>Comportement</th><th>Antidote</th></tr>
+    <tr><td>FOMO</td><td>Mouvement rapide</td><td>Entree impulsive</td><td>Checklist obligatoire</td></tr>
+    <tr><td>Freeze</td><td>Setup valide</td><td>Paralysie</td><td>Taille reduite</td></tr>
+    <tr><td>Revenge</td><td>Perte recente</td><td>Re-entree colere</td><td>Pause 15 min / stop jour</td></tr>
+    <tr><td>Over-leverage</td><td>Grosse perte</td><td>Taille x2/x3</td><td>Risque fixe absolu</td></tr>
+    <tr><td>Impatience</td><td>Setup en formation</td><td>Entree prematuree</td><td>Attendre confirmation</td></tr>
+    <tr><td>Peur de perdre</td><td>Profit non realise</td><td>Sortie prematuree</td><td>TP predetermine</td></tr>
+    <tr><td>Euphorie</td><td>Serie de gains</td><td>Surexposition</td><td>Meme risque toujours</td></tr>
+  </table>
+</section>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 2 : PARADIGME MENTAL -->
+<!-- ================================================================ -->
+<section class="mod" id="m2">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 02</span>
+    <h2>Le Paradigme Mental du Trader</h2>
+  </div>
+
+  <p>Avant de pouvoir resoudre des problemes psychologiques, il faut d'abord comprendre <strong>le cadre mental</strong> dans lequel le trader evolue. La plupart des traders operent dans un paradigme defectueux sans meme s'en rendre compte.</p>
+
+  <div class="sec">Les Croyances Destructrices</div>
+  <table class="tbl">
+    <tr><th>Croyance Toxique</th><th>Realite</th></tr>
+    <tr><td>"Je dois gagner sur chaque trade"</td><td>Un win rate de 40% avec un RR de 3:1 est extremement profitable</td></tr>
+    <tr><td>"Les pertes signifient que je suis nul"</td><td>Les pertes sont des charges d'exploitation, comme le loyer d'un commerce</td></tr>
+    <tr><td>"Plus je trade, plus je gagne"</td><td>Les meilleurs traders prennent 1-3 trades par jour maximum</td></tr>
+    <tr><td>"Le marche est contre moi"</td><td>Le marche est neutre. Il ne connait pas votre existence</td></tr>
+    <tr><td>"Je dois comprendre chaque mouvement"</td><td>60% du temps le marche est en consolidation. Il n'y a rien a comprendre</td></tr>
+    <tr><td>"Ce trade va changer ma vie"</td><td>Aucun trade individuel ne doit changer quoi que ce soit. C'est la serie qui compte</td></tr>
+  </table>
+
+  <div class="sec">Les Croyances Constructives</div>
+  <div class="box box-em">
+    <div class="box-title">Paradigme du Trader Profitable</div>
+    <p>Les pertes font partie du metier. Mon objectif est de suivre mes regles, pas de gagner chaque trade. Le marche offrira toujours de nouvelles opportunites. Ma performance se mesure sur 100 trades, pas sur un seul. Je n'ai pas besoin de comprendre -- j'ai besoin d'executer mon plan.</p>
+  </div>
+
+  <div class="quote">
+    <p>La consistance ne vient pas de la strategie. La consistance vient de la capacite a executer la meme chose, de la meme maniere, encore et encore, sans emotion.</p>
+    <cite>Les experts en psychologie du trading</cite>
+  </div>
+
+  <div class="sec">Le Concept de "Charge d'Exploitation"</div>
+  <p>Un restaurant paie un loyer. Un chauffeur paie l'essence. Un trader paie des pertes. <strong>Les pertes sont votre loyer pour acceder au marche.</strong> Elles ne sont ni bonnes ni mauvaises -- elles sont simplement le cout de faire du business.</p>
+  <p>Quand un restaurateur paie son loyer, il ne se sent pas comme un echec. Quand vous prenez un stop loss selon vos regles, vous ne devriez pas non plus. Vous avez paye votre loyer. Maintenant, on continue.</p>
+  <div class="box box-bl">
+    <div class="box-title">Recadrage Mental</div>
+    <p>Remplacez "j'ai perdu de l'argent" par "j'ai paye mon loyer pour rester sur le marche". Ce simple changement de vocabulaire transforme l'experience emotionnelle de la perte.</p>
+  </div>
+</section>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 3 : CARTOGRAPHIE EMOTIONNELLE -->
+<!-- ================================================================ -->
+<section class="mod" id="m3">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 03</span>
+    <h2>La Cartographie Emotionnelle</h2>
+  </div>
+
+  <p>La premiere etape du systeme mental est de <strong>cartographier vos emotions</strong>. Vous ne pouvez pas corriger ce que vous ne pouvez pas voir. Chaque emotion a une cause, produit un comportement, et a une solution specifique.</p>
+
+  <div class="sec">Table de Cartographie Complete</div>
+  <table class="tbl">
+    <tr><th>Emotion</th><th>Cause Profonde</th><th>Comportement Resultant</th><th>Solution</th></tr>
+    <tr><td>Peur</td><td>Experience de perte traumatique</td><td>Entree tardive ou pas d'entree</td><td>Accepter la perte comme charge d'exploitation</td></tr>
+    <tr><td>Colere</td><td>Le marche semble "injuste"</td><td>Revenge trading, rage click</td><td>Pause obligatoire apres chaque perte</td></tr>
+    <tr><td>Euphorie</td><td>Serie de gains, ego gonfle</td><td>Over-trading, sur-exposition</td><td>Meme risque, memes regles, toujours</td></tr>
+    <tr><td>Anxiete</td><td>Incertitude sur le resultat</td><td>Over-analyse, paralysie</td><td>Protocole mecanique, checklist</td></tr>
+    <tr><td>Frustration</td><td>Attentes non satisfaites</td><td>Abandon du plan, improvisation</td><td>Objectifs bases sur le processus, pas le P&amp;L</td></tr>
+    <tr><td>Ennui</td><td>Pas de setup, inactivite</td><td>Trades forces, setups inventes</td><td>Accepter que ne pas trader = trader</td></tr>
+    <tr><td>Culpabilite</td><td>Perte evitable, regle cassee</td><td>Self-sabotage, spirale negative</td><td>Noter, apprendre, pardonner, avancer</td></tr>
+    <tr><td>Desespoir</td><td>Series de pertes prolongees</td><td>Abandon ou all-in destructeur</td><td>Retour en demo, rereview du plan</td></tr>
+  </table>
+
+  <div class="sec">Comment Utiliser la Cartographie</div>
+  <ol class="nl">
+    <li><strong>Identifier l'emotion</strong> -- Avant chaque trade, nommez ce que vous ressentez. Si vous ne pouvez pas nommer l'emotion, vous ne pouvez pas la gerer</li>
+    <li><strong>Remonter a la cause</strong> -- L'emotion n'est jamais le probleme. C'est le symptome. La cause est toujours une croyance, une experience passee, ou un schema cognitif</li>
+    <li><strong>Predire le comportement</strong> -- Maintenant que vous connaissez l'emotion et sa cause, vous savez quel comportement destructeur elle va produire</li>
+    <li><strong>Appliquer la solution</strong> -- La solution est preventive, pas reactive. Elle se met en place AVANT que le comportement ne se manifeste</li>
+  </ol>
+
+  <div class="box box-em">
+    <div class="box-title">Exercice Pratique</div>
+    <p>Pendant 2 semaines, avant chaque trade, ecrivez dans votre journal : "Je me sens [emotion]. Cela pourrait me faire [comportement]. Je vais donc [solution]." Cet exercice simple cree une conscience emotionnelle qui transforme votre trading.</p>
+  </div>
+</section>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 4 : CAUSES PROFONDES -->
+<!-- ================================================================ -->
+<section class="mod" id="m4">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 04</span>
+    <h2>Identifier les Causes Profondes</h2>
+  </div>
+
+  <p>Le systeme mental enseigne que la plupart des traders traitent les <strong>symptomes</strong> au lieu des <strong>causes</strong>. Dire "je dois arreter le revenge trading" est comme dire "je dois arreter d'avoir mal a la tete" sans traiter la migraine sous-jacente.</p>
+
+  <div class="sec">La Hierarchie des Problemes</div>
+  <div class="levels">
+    <div class="lv lv-r">
+      <div class="phase">Niveau 3 -- Surface</div>
+      <div class="name">Comportement</div>
+      <div class="desc">Le symptome visible : revenge trade, over-leverage, FOMO</div>
+    </div>
+    <div class="lv lv-a">
+      <div class="phase">Niveau 2 -- Intermediaire</div>
+      <div class="name">Emotion</div>
+      <div class="desc">Ce qui declenche le comportement : peur, colere, euphorie</div>
+    </div>
+    <div class="lv lv-g">
+      <div class="phase">Niveau 1 -- Racine</div>
+      <div class="name">Croyance</div>
+      <div class="desc">La cause profonde : "je ne suis pas assez bon", "les opportunites sont rares"</div>
+    </div>
+  </div>
+
+  <div class="sec">Exemples de Causes Profondes</div>
+  <table class="tbl">
+    <tr><th>Symptome</th><th>Cause Apparente</th><th>Cause Profonde Reelle</th></tr>
+    <tr><td>FOMO constant</td><td>"Je suis impatient"</td><td>"Je crois que les bonnes opportunites sont rares et que si je rate celle-ci, il n'y en aura plus"</td></tr>
+    <tr><td>Freeze sur setups</td><td>"J'ai peur de perdre"</td><td>"J'associe la perte financiere a mon identite personnelle et a ma valeur en tant que personne"</td></tr>
+    <tr><td>Over-leverage</td><td>"Je veux recuperer vite"</td><td>"Je ne peux pas accepter que le temps est necessaire. Je veux prouver ma valeur maintenant"</td></tr>
+    <tr><td>Couper les gains</td><td>"La peur du retournement"</td><td>"Je ne crois pas meriter ce profit. Inconsciemment, je sabote mes gains"</td></tr>
+  </table>
+
+  <div class="box box-am">
+    <div class="box-title">Methode de l'Iceberg</div>
+    <p>Pour chaque probleme, posez-vous la question "pourquoi ?" cinq fois de suite. La premiere reponse est le symptome. La cinquieme reponse est la cause profonde. C'est la methode des "5 pourquoi" adaptee au trading.</p>
+  </div>
+
+  <div class="quote">
+    <p>Vous ne resolvez pas un probleme de revenge trading en vous disant "je ne ferai plus de revenge trading". Vous le resolvez en comprenant pourquoi votre ego ne supporte pas la perte.</p>
+    <cite>Le systeme mental</cite>
+  </div>
+</section>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 5 : BOUCLES EMOTIONNELLES -->
+<!-- ================================================================ -->
+<section class="mod" id="m5">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 05</span>
+    <h2>Les Boucles Emotionnelles</h2>
+  </div>
+
+  <p>Une boucle emotionnelle est un <strong>cycle auto-renforceant</strong> ou une emotion produit un comportement qui produit un resultat qui renforce l'emotion initiale. Ces boucles peuvent etre destructrices ou constructives.</p>
+
+  <div class="sec">Boucle Destructrice Type</div>
+  <div class="box box-re">
+    <div class="box-title">Le Cycle de la Destruction</div>
+    <p><strong>Perte</strong> -- Frustration -- Entree impulsive -- <strong>Perte plus grande</strong> -- Colere -- Over-leverage -- <strong>Perte catastrophique</strong> -- Desespoir -- Pause forcee (compte vide). Ce cycle se repete tant que la cause profonde n'est pas traitee. Un nouveau depot ne resout rien -- il ne fait que relancer le cycle.</p>
+  </div>
+
+  <div class="sec">Boucle Constructive Cible</div>
+  <div class="box box-em">
+    <div class="box-title">Le Cycle de la Maitrise</div>
+    <p><strong>Setup identifie</strong> -- Check-list validee -- Entree mecanique -- <strong>Resultat (gain ou perte)</strong> -- Journal -- Analyse -- Ajustement -- <strong>Confiance renforcee</strong> -- Meilleure execution au prochain setup. La cle : le resultat individuel (gain ou perte) n'affecte pas la confiance, parce que la confiance est basee sur le processus, pas sur le P&amp;L.</p>
+  </div>
+
+  <div class="sec">Briser une Boucle Destructrice</div>
+  <ol class="nl">
+    <li><strong>Reconnaissance :</strong> Identifier que vous etes dans une boucle. "Je suis en train de revenge trader" = premier pas vers la sortie</li>
+    <li><strong>Interruption :</strong> Arreter physiquement. Fermer la plateforme. Se lever. Marcher. L'interruption physique brise la boucle mentale</li>
+    <li><strong>Analyse froide :</strong> 24 heures plus tard, relire le journal de la journee. Identifier le point d'entree dans la boucle</li>
+    <li><strong>Prevention :</strong> Installer une regle mecanique qui empeche la boucle de se reformer (exemple : limite de 2 trades/jour codee en dur)</li>
+  </ol>
+
+  <div class="quote">
+    <p>L'ennemi n'est pas le marche. L'ennemi est le cycle emotionnel que vous alimentez a chaque trade impulsif.</p>
+    <cite>Les experts en psychologie du trading</cite>
+  </div>
+</section>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 6 : ROUTINES -->
+<!-- ================================================================ -->
+<section class="mod" id="m6">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 06</span>
+    <h2>Discipline : Les Routines</h2>
+  </div>
+
+  <p>La discipline n'est pas une qualite innee. C'est un <strong>systeme de routines</strong> qui rend la bonne decision automatique. Si vous devez faire un choix chaque matin entre "trader avec discipline" et "trader sans discipline", vous perdrez tot ou tard. La solution : eliminer le choix.</p>
+
+  <div class="sec">Routine Pre-Session</div>
+  <table class="tbl">
+    <tr><th>Etape</th><th>Action</th><th>Duree</th><th>Objectif</th></tr>
+    <tr><td>1</td><td>Review HTF (D1, H4) -- structure, biais, niveaux cles</td><td>15 min</td><td>Etablir le biais directionnel</td></tr>
+    <tr><td>2</td><td>Identifier les zones d'interet (FVG, OB, liquidite)</td><td>10 min</td><td>Savoir OU regarder</td></tr>
+    <tr><td>3</td><td>Definir le plan du jour : scenario bullish ET bearish</td><td>10 min</td><td>Preparation a tout scenario</td></tr>
+    <tr><td>4</td><td>Check etat mental : suis-je calme ? Emotions presentes ?</td><td>5 min</td><td>Validation de l'etat d'esprit</td></tr>
+    <tr><td>5</td><td>Ecrire dans le journal : "Mon plan aujourd'hui est..."</td><td>5 min</td><td>Engagement ecrit</td></tr>
+  </table>
+
+  <div class="box box-em">
+    <div class="box-title">Regle de la Preparation</div>
+    <p>La preparation se fait le soir ou tot le matin, JAMAIS pendant la session de trading. Pendant la session, vous executez -- vous ne decidez pas. La decision a ete prise avant.</p>
+  </div>
+
+  <div class="sec">Routine Pendant la Session</div>
+  <ul class="cl">
+    <li><strong>Pas de decision nouvelle.</strong> Vous executez le plan prepare. Si le setup se presente, vous entrez. S'il ne se presente pas, vous n'entrez pas</li>
+    <li><strong>Check-list avant chaque entree :</strong> Biais HTF clair ? Setup confirme ? Zone d'interet atteinte ? Confirmation LTF ? Etat mental OK ? -- Si un seul "non" : pas d'entree</li>
+    <li><strong>Timer apres chaque trade :</strong> 15 minutes de pause obligatoire, quel que soit le resultat</li>
+    <li><strong>Interdiction de regarder le P&amp;L</strong> pendant la session. Le P&amp;L se regarde a la fin de la journee, jamais pendant</li>
+  </ul>
+
+  <div class="sec">Routine Post-Session</div>
+  <ul class="cl">
+    <li><strong>Journal detaille :</strong> Chaque trade documente avec screenshots, emotion, respect des regles</li>
+    <li><strong>Debrief emotionnel :</strong> Comment je me suis senti ? Ou ai-je ressenti de la tension ? Qu'est-ce qui a bien marche ?</li>
+    <li><strong>Note de conformite :</strong> Sur 10, a quel point ai-je respecte mes regles aujourd'hui ?</li>
+    <li><strong>Gratitude :</strong> Quelle lecon ai-je apprise aujourd'hui, meme si j'ai perdu ?</li>
+  </ul>
+
+  <div class="quote">
+    <p>Le matin, je prepare. Pendant la session, j'execute. Le soir, j'analyse. La discipline, c'est cette separation claire entre les trois temps.</p>
+    <cite>La methode</cite>
+  </div>
+</section>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 7 : REGLES D'ENGAGEMENT -->
+<!-- ================================================================ -->
+<section class="mod" id="m7">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 07</span>
+    <h2>Regles d'Engagement et de Desengagement</h2>
+  </div>
+
+  <p>Les regles d'engagement definissent <strong>quand vous avez le droit de trader</strong>. Les regles de desengagement definissent <strong>quand vous devez arreter</strong>. Les deux sont aussi importantes l'une que l'autre.</p>
+
+  <div class="sec">Conditions d'Engagement (Pour Trader)</div>
+  <div class="box box-em">
+    <div class="box-title">Checklist d'Engagement -- Toutes les Conditions Doivent Etre "Oui"</div>
+    <p>1. J'ai un biais HTF clair (bullish ou bearish, pas neutre). 2. Un setup conforme a mes regles est en formation ou s'est forme. 3. Je suis dans une Kill Zone active (Londres ou New York). 4. Mon etat mental est calme et concentre. 5. Je n'ai pas depasse ma limite de trades pour la journee. 6. Mon risk management est en place (SL et TP definis). 7. Je ne suis pas en train de "chercher" un trade -- le trade vient a moi.</p>
+  </div>
+
+  <div class="sec">Conditions de Desengagement (Pour Arreter)</div>
+  <div class="box box-re">
+    <div class="box-title">Arret Immediat si Une Seule Condition est Remplie</div>
+    <p>1. Deux pertes consecutives dans la journee. 2. Une emotion forte est presente (colere, frustration, euphorie extreme). 3. Le biais n'est plus clair (marche en consolidation, structure mixte). 4. Vous avez casse une de vos regles. 5. Vous ressentez l'urgence de "revenir a zero". 6. Vous etes fatigue, distrais, ou preoccupe par autre chose. 7. C'est vendredi apres-midi.</p>
+  </div>
+
+  <div class="sec">Ne Pas Trader = Aussi Trader</div>
+  <p>L'une des lecons les plus difficiles a integrer : <strong>ne pas prendre de trade est aussi un trade</strong>. Quand vous decidez de ne pas entrer parce que les conditions ne sont pas reunies, vous protegez votre capital. Proteger son capital est un take profit en soi.</p>
+
+  <div class="box box-bl">
+    <div class="box-title">Reformulation Mentale</div>
+    <p>Au lieu de dire "je n'ai rien fait aujourd'hui", dites "j'ai protege mon capital en attendant un meilleur setup". Les jours sans trade sont souvent vos meilleurs jours de trading -- vous avez gagne 0 et perdu 0, ce qui est mieux que 80% des traders retail.</p>
+  </div>
+</section>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 8 : ENGAGEMENT TOTAL -->
+<!-- ================================================================ -->
+<section class="mod" id="m8">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 08</span>
+    <h2>L'Engagement Total : 5 Ans Minimum</h2>
+  </div>
+
+  <p>Le trading n'est pas un sprint. C'est un marathon de <strong>minimum 5 ans</strong> avant de pouvoir se considerer comme un trader mature. La plupart des traders abandonnent avant la fin de la premiere annee parce qu'ils ont des attentes irrealistes.</p>
+
+  <div class="sec">La Courbe d'Apprentissage Reelle</div>
+  <table class="tbl">
+    <tr><th>Periode</th><th>Phase</th><th>Ce Qui se Passe</th><th>Etat Mental</th></tr>
+    <tr><td>0-6 mois</td><td>Decouverte</td><td>Tout semble possible. Gains de debutant. Overconfidence</td><td>Euphorie naive</td></tr>
+    <tr><td>6-18 mois</td><td>Desillusion</td><td>Les pertes s'accumulent. La realite frappe. Remise en question</td><td>Frustration, doute</td></tr>
+    <tr><td>18-36 mois</td><td>Construction</td><td>Debut de consistance. Processus en place. Resultats variables</td><td>Patience forcee</td></tr>
+    <tr><td>3-5 ans</td><td>Maturite</td><td>Execution mecanique. Emotions gerees. Profitabilite stable</td><td>Calme, confiance</td></tr>
+    <tr><td>5+ ans</td><td>Maitrise</td><td>Le trading devient "ennuyeux" (c'est le signe que ca marche)</td><td>Serenite</td></tr>
+  </table>
+
+  <div class="box box-am">
+    <div class="box-title">La Regle des 5 Ans</div>
+    <p>Donnez-vous 5 ans pour devenir profitable de maniere consistante. Pas 5 semaines, pas 5 mois -- 5 ans. Si vous n'etes pas pret a investir ce temps, le trading n'est probablement pas pour vous. Et ces 5 ans ne sont pas du temps perdu -- c'est un investissement dans une competence qui peut durer toute une vie.</p>
+  </div>
+
+  <div class="quote">
+    <p>Si tu acceptes que ce metier demande 5 ans de formation, tu arreteras de te mettre la pression pour des resultats a 5 mois. Et c'est precisement cette absence de pression qui te permettra de progresser plus vite.</p>
+    <cite>La methode</cite>
+  </div>
+</section>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 9 : FOMO & REVENGE EN DETAIL -->
+<!-- ================================================================ -->
+<section class="mod" id="m9">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 09</span>
+    <h2>FOMO et Revenge Trading : Analyse Approfondie</h2>
+  </div>
+
+  <p>Le FOMO et le revenge trading sont les <strong>deux plus grands destructeurs de comptes</strong> chez le trader retail. Ils meritent une analyse approfondie car ils sont souvent interconnectes et se renforcent mutuellement.</p>
+
+  <div class="sec">Anatomie du FOMO</div>
+  <p>Le FOMO se decompose en <strong>trois phases</strong> :</p>
+  <ol class="nl">
+    <li><strong>Phase de Perception :</strong> Vous voyez un mouvement en cours. Le prix monte/descend rapidement. Votre cerveau interprete cela comme "une opportunite qui disparait"</li>
+    <li><strong>Phase de Tension :</strong> Votre corps reagit -- acceleration cardiaque, mains moites, sensation d'urgence. Le systeme limbique active la reponse de "chasse" : il faut attraper la proie avant qu'elle ne s'echappe</li>
+    <li><strong>Phase d'Action Impulsive :</strong> Vous entrez sans plan, sans stop loss defini, sans savoir ou est votre target. L'entree est motivee par l'emotion, pas par l'analyse</li>
+  </ol>
+
+  <div class="box box-re">
+    <div class="box-title">Statistique Cle</div>
+    <p>Les trades pris sous FOMO ont un taux de reussite estime a 15-20%, contre 55-65% pour les trades pris selon un plan predetermine. Le FOMO ne vous fait pas juste perdre de l'argent -- il vous fait perdre de l'argent avec une consistance remarquable.</p>
+  </div>
+
+  <div class="sec">Protocole Anti-FOMO</div>
+  <ul class="cl">
+    <li><strong>Regle du 10 secondes :</strong> Si vous ressentez l'urgence d'entrer, comptez 10 secondes. Si l'urgence persiste, c'est du FOMO. N'entrez pas</li>
+    <li><strong>Test de la checklist :</strong> Passez le setup a travers votre checklist complete. Si une case n'est pas cochee, c'est du FOMO</li>
+    <li><strong>Mantra :</strong> "Le marche sera la demain. Ce setup rate n'est pas le dernier"</li>
+    <li><strong>Screenshot :</strong> Prenez un screenshot du setup rate. Revenez le lendemain voir comment il a evolue. 7 fois sur 10, le trade aurait ete perdant</li>
+  </ul>
+
+  <div class="sec">Anatomie du Revenge Trading</div>
+  <p>Le revenge trading est une <strong>reaction de l'ego</strong>, pas une strategie. Le trader ne trade plus pour gagner de l'argent -- il trade pour prouver qu'il avait raison. C'est un combat contre le marche, et le marche gagne toujours ce combat.</p>
+
+  <div class="box box-am">
+    <div class="box-title">Les 5 Signes du Revenge Trading</div>
+    <p>1. Vous entrez dans la meme direction que votre trade perdant, sur la meme paire. 2. Vous augmentez la taille de position. 3. Vous n'avez pas attendu votre pause de 15 minutes. 4. Votre seule motivation est "recuperer" la perte. 5. Vous ressentez de la colere contre "le marche" ou contre vous-meme.</p>
+  </div>
+
+  <div class="sec">Protocole Anti-Revenge</div>
+  <ol class="nl">
+    <li><strong>Regle absolue :</strong> Apres TOUTE perte, pause de 15 minutes minimum. Pas de reduction, pas d'exception</li>
+    <li><strong>Apres 2 pertes :</strong> La journee de trading est terminee. Pas de negociation avec soi-meme</li>
+    <li><strong>Pendant la pause :</strong> Se lever, marcher, boire de l'eau. Ecrire dans le journal ce qui s'est passe</li>
+    <li><strong>Test de retour :</strong> Avant de reprendre (le lendemain), repondre a la question : "Est-ce que je trade pour recuperer ou pour executer mon plan ?"</li>
+  </ol>
+</section>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 10 : FREEZE & OVER-LEVERAGE -->
+<!-- ================================================================ -->
+<section class="mod" id="m10">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 10</span>
+    <h2>Freeze et Over-leverage : Les Extremes</h2>
+  </div>
+
+  <p>Le freeze et l'over-leverage sont les <strong>extremes opposes du spectre</strong>. Le freeze est l'incapacite d'agir. L'over-leverage est l'action excessive. Les deux detruisent les comptes de maniere differente mais avec la meme efficacite.</p>
+
+  <div class="sec">Le Freeze : Quand le Cerveau Dit Non</div>
+  <p>Le freeze est un mecanisme de <strong>survie biologique</strong>. Votre cerveau reptilien interprete le risque financier comme un danger physique et declenche la reponse de gel -- la meme reponse qu'un animal devant un predateur.</p>
+
+  <table class="tbl">
+    <tr><th>Type de Freeze</th><th>Description</th><th>Traitement</th></tr>
+    <tr><td>Freeze pre-entree</td><td>Impossible de cliquer sur Buy/Sell meme avec un setup parfait</td><td>Commencer avec des tailles microscopiques (0.01 lot) jusqu'a normaliser l'acte d'entrer</td></tr>
+    <tr><td>Freeze post-perte</td><td>Apres une perte importante, incapacite de trader pendant des jours/semaines</td><td>Retourner en compte demo pour rebuilder la confiance. Pas de honte a ca</td></tr>
+    <tr><td>Freeze de decision</td><td>Over-analyse permanent, besoin de "plus de confirmation" a l'infini</td><td>Definir un nombre fixe de confirmations necessaires (3 max). Au-dela, c'est de la paralysie</td></tr>
+  </table>
+
+  <div class="box box-bl">
+    <div class="box-title">Technique de Desensibilisation</div>
+    <p>Tradez avec une taille si petite que le gain ou la perte n'a aucune importance emotionnelle. Faites 50 trades a cette taille. Puis augmentez de 20%. Refaites 50 trades. Continuez jusqu'a atteindre votre taille normale. Ce processus graduel desensibilise le cerveau au risque.</p>
+  </div>
+
+  <div class="sec">L'Over-leverage : L'Auto-Destruction Active</div>
+  <p>L'over-leverage est le contraire du freeze : au lieu de ne pas agir, le trader agit <strong>avec une force disproportionnee</strong>. Il met 10% de son compte sur un trade au lieu de 1%. Le resultat : un seul trade peut detruire des semaines ou des mois de travail.</p>
+
+  <div class="box box-re">
+    <div class="box-title">Mathematiques de la Destruction</div>
+    <p>Risque de 1% par trade : il faut 100 pertes consecutives pour perdre tout le compte (impossible). Risque de 5% par trade : il faut 20 pertes pour perdre tout (possible). Risque de 10% par trade : il faut 10 pertes (probable sur 6 mois). Risque de 25% par trade : 4 pertes et le compte est fini.</p>
+  </div>
+
+  <ul class="cl">
+    <li><strong>Regle d'Or :</strong> Maximum 1% de risque par trade. 2% absolu maximum dans des conditions exceptionnelles</li>
+    <li><strong>Jamais plus :</strong> Aucune excuse, aucune "opportunite unique", aucune "certitude" ne justifie de risquer plus de 2%</li>
+    <li><strong>Test :</strong> Si le montant en euros/dollars de votre stop loss vous fait reagir emotionnellement, votre taille est trop grande</li>
+  </ul>
+</section>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 11 : LE SYSTEME MENTAL EN 5 ETAPES -->
+<!-- ================================================================ -->
+<section class="mod" id="m11">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 11</span>
+    <h2>Le Systeme Mental en 5 Etapes</h2>
+  </div>
+
+  <p>Le systeme developpe par les experts en psychologie du trading propose une <strong>methode structuree en 5 etapes</strong> pour transformer votre jeu mental. Ce n'est pas de la motivation -- c'est un processus systematique, mesurable, et reproductible.</p>
+
+  <div class="sec">Etape 1 : Cartographier ses Emotions</div>
+  <div class="box box-em">
+    <div class="box-title">Objectif : Voir Clairement</div>
+    <p>Pendant 2 a 4 semaines, votre seul objectif est d'observer. Pas de changer, pas de corriger -- juste observer. Notez chaque emotion que vous ressentez avant, pendant, et apres chaque trade. Notez le contexte : heure, resultat du trade precedent, fatigue, stress externe. Cherchez les patterns recurrents.</p>
+  </div>
+  <ul class="cl">
+    <li>Outil : Journal emotionnel quotidien</li>
+    <li>Duree : 2-4 semaines minimum</li>
+    <li>Critere de succes : Vous pouvez nommer vos 3 emotions dominantes et leurs declencheurs</li>
+  </ul>
+
+  <div class="sec">Etape 2 : Identifier les Causes Profondes</div>
+  <div class="box box-am">
+    <div class="box-title">Objectif : Comprendre le Pourquoi</div>
+    <p>Maintenant que vous voyez VOS patterns, remontez aux causes. Pourquoi le FOMO ? Parce que vous croyez que les opportunites sont rares ? Pourquoi cette croyance ? Parce qu'une experience passee vous a marque ? Laquelle ? Utilisez la methode des 5 pourquoi pour chaque probleme identifie.</p>
+  </div>
+
+  <div class="sec">Etape 3 : Construire sa Boite a Outils Mentale</div>
+  <div class="box box-bl">
+    <div class="box-title">Objectif : Avoir des Solutions Concretes</div>
+    <p>Pour chaque probleme identifie (etape 1) et chaque cause profonde (etape 2), construisez une solution concrete et actionnable. Pas "je dois etre plus discipline" mais "apres une perte, je ferme ma plateforme pendant 15 minutes et j'ecris 3 lignes dans mon journal".</p>
+  </div>
+
+  <div class="sec">Etape 4 : Affiner et Ajuster</div>
+  <p>Les solutions de l'etape 3 ne fonctionneront pas toutes. Certaines seront trop rigides, d'autres pas assez. <strong>Le processus est iteratif.</strong> Chaque semaine, evaluez ce qui fonctionne et ce qui ne fonctionne pas. Ajustez. C'est un processus continu, pas un "one-shot".</p>
+
+  <div class="sec">Etape 5 : Croissance et Maintien</div>
+  <p>Le travail mental ne s'arrete jamais. Meme apres 5 ans de trading profitable, de <strong>nouveaux defis</strong> apparaissent : trader avec un compte plus gros, gerer le stress d'un drawdown prolonge, maintenir la discipline quand tout va bien. Chaque nouveau niveau de competence amene de nouveaux problemes psychologiques.</p>
+
+  <div class="quote">
+    <p>Le travail mental n'est pas un projet avec une date de fin. C'est une pratique quotidienne, comme l'entrainement d'un athlete. Le jour ou vous arretez de vous entrainer mentalement, vous commencez a regresser.</p>
+    <cite>Le systeme</cite>
+  </div>
+</section>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 12 : BOITE A OUTILS MENTALE -->
+<!-- ================================================================ -->
+<section class="mod" id="m12">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 12</span>
+    <h2>La Boite a Outils Mentale</h2>
+  </div>
+
+  <p>Votre boite a outils mentale est votre <strong>arsenal de techniques</strong> pour gerer les situations difficiles en temps reel. Chaque outil a un usage specifique et doit etre pratique regulierement pour etre efficace en situation de stress.</p>
+
+  <div class="sec">Outils de Prevention</div>
+  <table class="tbl">
+    <tr><th>Outil</th><th>Quand l'Utiliser</th><th>Comment</th></tr>
+    <tr><td>Checklist Pre-Trade</td><td>Avant chaque entree</td><td>Liste de 5-7 conditions. Toutes doivent etre "oui"</td></tr>
+    <tr><td>Journal d'Intention</td><td>Debut de session</td><td>Ecrire : "Aujourd'hui, je vais..." avec des objectifs de processus</td></tr>
+    <tr><td>Scan Emotionnel</td><td>Debut de session et apres chaque trade</td><td>Nommer l'emotion presente sur une echelle de 1-10</td></tr>
+    <tr><td>Visualisation</td><td>Avant la session</td><td>Visualiser un scenario de perte et votre reaction ideale</td></tr>
+  </table>
+
+  <div class="sec">Outils de Gestion en Temps Reel</div>
+  <table class="tbl">
+    <tr><th>Outil</th><th>Quand l'Utiliser</th><th>Comment</th></tr>
+    <tr><td>Respiration 4-7-8</td><td>Moment de stress aigu</td><td>Inspirer 4 sec, retenir 7 sec, expirer 8 sec. 3 cycles</td></tr>
+    <tr><td>Pause Physique</td><td>Apres perte ou emotion forte</td><td>Se lever, marcher 5 minutes, boire de l'eau</td></tr>
+    <tr><td>Regle du Stop Jour</td><td>Apres 2 pertes consecutives</td><td>Fermer la plateforme. Pas de negociation</td></tr>
+    <tr><td>Ancrage</td><td>Avant de cliquer Buy/Sell</td><td>"Est-ce que ce trade respecte toutes mes regles ?" Repondre a voix haute</td></tr>
+  </table>
+
+  <div class="sec">Outils de Recovery</div>
+  <table class="tbl">
+    <tr><th>Outil</th><th>Quand l'Utiliser</th><th>Comment</th></tr>
+    <tr><td>Journal Post-Trade</td><td>Apres chaque trade</td><td>Documenter le trade, l'emotion, le respect des regles</td></tr>
+    <tr><td>Review Hebdomadaire</td><td>Dimanche</td><td>Analyser la semaine : patterns emotionnels, conformite aux regles</td></tr>
+    <tr><td>Retour Demo</td><td>Apres une serie de pertes ou une rupture de discipline</td><td>Trader en demo jusqu'a retrouver la confiance et la conformite</td></tr>
+    <tr><td>Pardon</td><td>Apres une erreur grave</td><td>Ecrire : "J'ai fait cette erreur. J'ai appris ceci. Je me pardonne. J'avance."</td></tr>
+  </table>
+
+  <div class="box box-em">
+    <div class="box-title">Principe Directeur</div>
+    <p>Les outils ne fonctionnent que si vous les utilisez AVANT d'en avoir besoin (prevention) ou IMMEDIATEMENT quand vous en avez besoin (gestion). Un outil que vous decidez d'utiliser "apres" est un outil inutile. L'automatisation est la cle : les outils doivent devenir des reflexes, pas des decisions.</p>
+  </div>
+</section>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 13 : FUTUR ET CROISSANCE -->
+<!-- ================================================================ -->
+<section class="mod" id="m13">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 13</span>
+    <h2>Futur et Croissance Continue</h2>
+  </div>
+
+  <p>Le jeu mental n'a pas de ligne d'arrivee. Chaque palier de croissance en trading amene de <strong>nouveaux defis psychologiques</strong>. Le trader qui gere un compte de 1.000 euros n'a pas les memes problemes que celui qui gere 100.000 euros.</p>
+
+  <div class="sec">Les Defis par Palier</div>
+  <table class="tbl">
+    <tr><th>Palier</th><th>Defi Principal</th><th>Solution</th></tr>
+    <tr><td>Debutant (0-1K)</td><td>Apprendre a perdre sans paniquer</td><td>Taille micro, focus processus</td></tr>
+    <tr><td>Intermediaire (1K-10K)</td><td>Maintenir la discipline sur la duree</td><td>Routines fixes, journal obligatoire</td></tr>
+    <tr><td>Avance (10K-50K)</td><td>Ne pas changer de strategie apres un drawdown</td><td>Backtesting, confiance dans les stats</td></tr>
+    <tr><td>Pro (50K-500K)</td><td>Gerer le stress d'un gros capital</td><td>Penser en % pas en euros/dollars</td></tr>
+    <tr><td>Elite (500K+)</td><td>Maintenir la motivation quand les besoins sont couverts</td><td>Objectifs non-financiers, legacy</td></tr>
+  </table>
+
+  <div class="box box-am">
+    <div class="box-title">Le Piege de la Zone de Confort</div>
+    <p>Quand tout va bien pendant 3-6 mois, le danger est de relacher la discipline. "Je n'ai plus besoin de mon journal." "Je connais mon systeme par coeur, pas besoin de checklist." C'est exactement a ce moment que les mauvaises habitudes reviennent. La discipline doit etre maintenue surtout quand tout va bien.</p>
+  </div>
+
+  <div class="sec">Le Concept de Regression Programmee</div>
+  <p>Selon les experts en psychologie du trading, il est <strong>normal et previsible</strong> de regresser temporairement. Un trader qui etait discipline pendant 3 mois peut soudainement recommencer a faire du FOMO. Ce n'est pas un echec -- c'est une regression normale. La difference entre un amateur et un professionnel : le professionnel detecte la regression rapidement et applique ses outils.</p>
+
+  <div class="quote">
+    <p>La maitrise n'est pas l'absence de problemes. La maitrise, c'est la vitesse a laquelle vous detectez et corrigez les problemes quand ils reapparaissent.</p>
+    <cite>Les experts en psychologie du trading</cite>
+  </div>
+</section>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 14 : JOURNAL METHODE COMPLETE -->
+<!-- ================================================================ -->
+<section class="mod" id="m14">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 14</span>
+    <h2>Le Journal de Trading : Methode Complete</h2>
+  </div>
+
+  <p>Le journal de trading est <strong>l'outil le plus puissant et le plus sous-utilise</strong> en trading. Ce n'est pas un simple registre de trades -- c'est un miroir de votre psychologie, un outil de detection de patterns, et un accelerateur d'apprentissage.</p>
+
+  <div class="sec">Pourquoi 90% des Traders ne Tiennent Pas de Journal</div>
+  <ul class="cl">
+    <li><strong>Raison 1 :</strong> Ils ne veulent pas faire face a la realite de leurs erreurs</li>
+    <li><strong>Raison 2 :</strong> Ils pensent que c'est une perte de temps ("je sais deja ce que j'ai fait")</li>
+    <li><strong>Raison 3 :</strong> Ils ne savent pas quoi noter</li>
+    <li><strong>Raison 4 :</strong> Ils commencent puis abandonnent apres 1-2 semaines</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Realite</div>
+    <p>Les traders professionnels tiennent tous un journal. C'est une correlation, pas une coincidence. Le journal est le pont entre "savoir quoi faire" et "faire ce qu'on sait". Sans journal, vous repetez les memes erreurs indefiniment sans meme vous en rendre compte.</p>
+  </div>
+
+  <div class="sec">Structure du Journal -- Les 3 Temps</div>
+
+  <div class="subsec">Temps 1 : AVANT le Trade -- Le Script d'Intention</div>
+  <p>Avant chaque trade, ecrivez :</p>
+  <ul class="cl">
+    <li>"Je vois [setup] sur [paire] en [timeframe]"</li>
+    <li>"Mon biais HTF est [bullish/bearish] parce que [raison]"</li>
+    <li>"Mon entree est a [prix], mon SL a [prix], mon TP a [prix]"</li>
+    <li>"Mon R:R est de [ratio]"</li>
+    <li>"Mon etat mental est [emotion, 1-10]"</li>
+    <li>"Ce trade respecte [X/Y] de mes regles d'entree"</li>
+  </ul>
+
+  <div class="subsec">Temps 2 : PENDANT le Trade -- Le Monitoring Emotionnel</div>
+  <p>Pendant que le trade est actif :</p>
+  <ul class="cl">
+    <li>"Le prix est a [position par rapport a l'entree]. Je me sens [emotion]"</li>
+    <li>"Est-ce que je suis tente de deplacer mon SL ? Oui/Non -- Pourquoi ?"</li>
+    <li>"Est-ce que je suis tente de couper avant le TP ? Oui/Non -- Pourquoi ?"</li>
+  </ul>
+
+  <div class="subsec">Temps 3 : APRES le Trade -- L'Analyse</div>
+  <ul class="cl">
+    <li>"Resultat : [gain/perte] de [montant] = [R]"</li>
+    <li>"Ai-je respecte mes regles ? [oui/non, details]"</li>
+    <li>"Si non, quelle regle ai-je cassee et pourquoi ?"</li>
+    <li>"Capture d'ecran du trade"</li>
+    <li>"Lecon : [une phrase]"</li>
+    <li>"Emotion apres cloture : [1-10]"</li>
+  </ul>
+
+  <div class="sec">La Review Hebdomadaire</div>
+  <div class="box box-bl">
+    <div class="box-title">Chaque Dimanche -- 30 Minutes</div>
+    <p>1. Combien de trades cette semaine ? Combien respectaient mes regles ? 2. Quel est mon taux de conformite aux regles (pas mon win rate -- ma conformite) ? 3. Quels patterns emotionnels se repetent ? 4. Quel est mon probleme numero 1 cette semaine ? 5. Quel ajustement concret pour la semaine prochaine ? 6. Gratitude : qu'est-ce qui a bien marche ?</p>
+  </div>
+
+  <div class="quote">
+    <p>Ne vous concentrez pas sur le P&amp;L. Concentrez-vous sur le processus. Si le processus est bon, le P&amp;L suivra. Si le P&amp;L est bon mais le processus est mauvais, le P&amp;L finira par s'effondrer.</p>
+    <cite>La methode</cite>
+  </div>
+</section>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 15 : SCRIPT ET VARIABLES -->
+<!-- ================================================================ -->
+<section class="mod" id="m15">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 15</span>
+    <h2>Script de Journaling et Variables Cles</h2>
+  </div>
+
+  <p>Voici le modele complet de journal avec toutes les <strong>variables essentielles</strong> a tracker pour maximiser votre apprentissage et identifier vos patterns.</p>
+
+  <div class="sec">Variables Essentielles par Trade</div>
+  <table class="tbl">
+    <tr><th>Variable</th><th>Type</th><th>Pourquoi</th></tr>
+    <tr><td>Date et Heure</td><td>Horodatage</td><td>Identifier les Kill Zones les plus/moins performantes</td></tr>
+    <tr><td>Paire/Instrument</td><td>Texte</td><td>Identifier les paires ou vous performez le mieux</td></tr>
+    <tr><td>Timeframe d'execution</td><td>Texte</td><td>Correler la performance au timeframe</td></tr>
+    <tr><td>Biais HTF</td><td>Bullish/Bearish/Neutre</td><td>Mesurer la qualite de votre analyse directionnelle</td></tr>
+    <tr><td>Type de Setup</td><td>Texte (FVG, OB, BOS, etc.)</td><td>Identifier vos setups les plus fiables</td></tr>
+    <tr><td>Prix d'Entree</td><td>Numerique</td><td>Reference</td></tr>
+    <tr><td>Stop Loss</td><td>Numerique</td><td>Calculer le risque reel</td></tr>
+    <tr><td>Take Profit</td><td>Numerique</td><td>Calculer le R:R reel</td></tr>
+    <tr><td>R:R prevu</td><td>Ratio</td><td>Comparer au R:R realise</td></tr>
+    <tr><td>Resultat</td><td>Win/Loss/BE</td><td>Statistiques de base</td></tr>
+    <tr><td>P&amp;L en R</td><td>Numerique</td><td>Mesure standardisee de performance</td></tr>
+    <tr><td>Emotion Avant</td><td>Echelle 1-10 + nom</td><td>Correler l'etat mental au resultat</td></tr>
+    <tr><td>Emotion Pendant</td><td>Echelle 1-10 + nom</td><td>Identifier les perturbations en cours de trade</td></tr>
+    <tr><td>Emotion Apres</td><td>Echelle 1-10 + nom</td><td>Mesurer l'impact emotionnel du resultat</td></tr>
+    <tr><td>Conformite Regles</td><td>Oui/Non + details</td><td>La metrique la plus importante</td></tr>
+    <tr><td>Screenshot</td><td>Image</td><td>Reference visuelle pour la review</td></tr>
+    <tr><td>Lecon</td><td>1 phrase</td><td>Cristalliser l'apprentissage</td></tr>
+  </table>
+
+  <div class="sec">Variables de Session (Quotidiennes)</div>
+  <table class="tbl">
+    <tr><th>Variable</th><th>Pourquoi</th></tr>
+    <tr><td>Etat mental du matin (1-10)</td><td>Correler l'etat initial a la performance</td></tr>
+    <tr><td>Heures de sommeil</td><td>Correler la qualite du sommeil aux decisions</td></tr>
+    <tr><td>Stress externe (1-10)</td><td>Identifier les jours ou il vaut mieux ne pas trader</td></tr>
+    <tr><td>Nombre de trades pris</td><td>Detecter l'over-trading</td></tr>
+    <tr><td>Nombre de trades conformes</td><td>Calculer le taux de conformite</td></tr>
+    <tr><td>Note de discipline (1-10)</td><td>Auto-evaluation quotidienne</td></tr>
+  </table>
+
+  <div class="box box-em">
+    <div class="box-title">Metriques a Calculer Chaque Semaine</div>
+    <p><strong>Taux de conformite :</strong> (trades conformes / total trades) x 100. Objectif : >90%. <strong>Win rate des trades conformes :</strong> Mesurer la qualite de votre edge quand vous le respectez. <strong>Win rate des trades non-conformes :</strong> Mesurer le cout de la desobeissance. <strong>R moyen :</strong> Gain moyen en R -- objectif >1.5R. <strong>Correlation emotion/resultat :</strong> Vos meilleurs trades sont pris dans quel etat mental ?</p>
+  </div>
+</section>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 16 : SURVIE VS CREATION -->
+<!-- ================================================================ -->
+<section class="mod" id="m16">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 16</span>
+    <h2>Survie vs Creation</h2>
+  </div>
+
+  <p>C'est peut-etre la lecon la plus importante de toute la psychologie du trading : <strong>vous ne pouvez pas etre en mode survie et en mode createur en meme temps</strong>. Votre cerveau fonctionne dans un mode ou dans l'autre, jamais les deux.</p>
+
+  <div class="sec">Le Mode Survie</div>
+  <div class="box box-re">
+    <div class="box-title">Caracteristiques du Mode Survie</div>
+    <p>Systeme nerveux en alerte. Decisions rapides et emotionnelles. Vision tunnel -- incapacite de voir le big picture. Focalisation sur la douleur immediate (la perte). Incapacite de prendre des risques calcules. Le cerveau interprete chaque trade comme une question de vie ou de mort. Resultat : freeze, FOMO, revenge, over-leverage.</p>
+  </div>
+
+  <p><strong>Quand activez-vous le mode survie ?</strong></p>
+  <ul class="cl">
+    <li>Quand votre loyer depend de vos gains de trading</li>
+    <li>Quand vous tradez avec de l'argent que vous ne pouvez pas vous permettre de perdre</li>
+    <li>Quand vous etes en drawdown et que la pression monte</li>
+    <li>Quand votre identite et votre valeur personnelle sont liees a votre performance</li>
+    <li>Quand quelqu'un vous regarde (compte gere, challenge prop firm avec deadline)</li>
+  </ul>
+
+  <div class="sec">Le Mode Createur</div>
+  <div class="box box-em">
+    <div class="box-title">Caracteristiques du Mode Createur</div>
+    <p>Systeme nerveux calme. Decisions reflechies et strategiques. Vision large -- capacite de voir les patterns et les tendances. Focalisation sur le processus, pas sur le resultat immediat. Capacite de prendre des risques calcules avec serenite. Le cerveau interprete chaque trade comme une iteration dans une longue serie. Resultat : execution mecanique, patience, discipline naturelle.</p>
+  </div>
+
+  <div class="sec">La Regle Fondamentale</div>
+  <div class="quote">
+    <p>Le trading depuis le desespoir financier est un echec garanti. La pression des resultats detruit la capacite de decision. Separez le trading de votre survie financiere, ou ne tradez pas du tout.</p>
+    <cite>Les experts en psychologie du trading</cite>
+  </div>
+
+  <div class="box box-am">
+    <div class="box-title">Application Pratique</div>
+    <p>1. Ne tradez jamais avec de l'argent dont vous avez besoin pour vivre. 2. Ayez un revenu stable en dehors du trading (au moins pendant les 2-3 premieres annees). 3. Ne fixez pas d'objectifs de P&amp;L mensuels ("je dois faire 5.000 euros ce mois-ci"). 4. Fixez des objectifs de processus ("je vais respecter mes regles sur 90% de mes trades"). 5. Si vous etes en situation financiere difficile, tradez en demo jusqu'a ce que la pression soit reduite.</p>
+  </div>
+</section>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 17 : ABONDANCE -->
+<!-- ================================================================ -->
+<section class="mod" id="m17">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 17</span>
+    <h2>L'Abondance Financiere et la Mentalite du Trader</h2>
+  </div>
+
+  <p>L'abondance n'est pas une question de montant sur votre compte. C'est une <strong>posture mentale</strong> qui influence chaque decision de trading. Trader depuis l'abondance vs trader depuis le manque produit des resultats radicalement differents.</p>
+
+  <div class="sec">Trader Depuis le Manque</div>
+  <table class="tbl">
+    <tr><th>Croyance de Manque</th><th>Comportement Resultant</th><th>Consequence</th></tr>
+    <tr><td>"Je dois faire de l'argent aujourd'hui"</td><td>Over-trading, setups forces</td><td>Pertes evitables</td></tr>
+    <tr><td>"Ce setup est ma seule chance"</td><td>Over-leverage, pas de SL serre</td><td>Risque disproportionne</td></tr>
+    <tr><td>"Les autres gagnent, pas moi"</td><td>Comparaison, changement de strategie</td><td>Absence de consistance</td></tr>
+    <tr><td>"Le marche me doit quelque chose"</td><td>Revenge trading, colere</td><td>Spirale destructrice</td></tr>
+  </table>
+
+  <div class="sec">Trader Depuis l'Abondance</div>
+  <table class="tbl">
+    <tr><th>Croyance d'Abondance</th><th>Comportement Resultant</th><th>Consequence</th></tr>
+    <tr><td>"Le marche offre des setups chaque jour"</td><td>Patience, selectivite</td><td>Trades de haute qualite</td></tr>
+    <tr><td>"Ce n'est qu'un trade parmi des milliers"</td><td>Risque mesure, detachement</td><td>Gestion du risque optimale</td></tr>
+    <tr><td>"Mon processus est bon, les resultats viendront"</td><td>Focus sur la conformite</td><td>Amelioration continue</td></tr>
+    <tr><td>"Une perte est juste un cout d'exploitation"</td><td>Acceptation sereine</td><td>Pas de spirale emotionnelle</td></tr>
+  </table>
+
+  <div class="sec">La Discipline Shaolin</div>
+  <p>Les experts comparent la discipline du trader a celle d'un <strong>moine shaolin</strong> : repetition, patience, maitrise de soi. Le moine shaolin ne s'entraine pas pour le combat de demain -- il s'entraine pour la maitrise de soi. Le trader ne trade pas pour le profit de demain -- il trade pour la maitrise de son processus.</p>
+
+  <div class="box box-em">
+    <div class="box-title">Les 3 Piliers de la Discipline Shaolin en Trading</div>
+    <p><strong>Repetition :</strong> Faire la meme chose, de la meme maniere, chaque jour. Meme routine, meme checklist, meme risque. La repetition elimine l'emotion et installe l'automatisme. <strong>Patience :</strong> Attendre le setup parfait. Ne pas forcer. Accepter les jours sans trade. La patience est la vertu la plus profitable en trading. <strong>Maitrise de soi :</strong> Controler ses impulsions, pas le marche. Vous ne pouvez pas controler le prix -- vous pouvez controler votre reaction au prix.</p>
+  </div>
+
+  <div class="sec">Confiance dans le Processus</div>
+  <p>La confiance du trader profitable ne repose pas sur les resultats individuels. Elle repose sur le <strong>processus</strong>. Quand vous savez que votre strategie a un edge positif sur 100 trades, un trade perdant ne vous affecte pas. C'est simplement une iteration dans une serie gagnante.</p>
+
+  <div class="quote">
+    <p>La confiance ne vient pas des gains. La confiance vient de la certitude que vous allez executer votre plan, quel que soit le resultat. Les gains sont une consequence de cette confiance.</p>
+    <cite>La methode</cite>
+  </div>
+</section>
+
+
+<!-- ================================================================ -->
+<!-- MODULE 18 : LES 10 REGLES D'OR -->
+<!-- ================================================================ -->
+<section class="mod" id="m18">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 18</span>
+    <h2>Les 10 Regles d'Or de la Psychologie du Trader</h2>
+  </div>
+
+  <p>Ces 10 regles sont le <strong>condensat de toute la formation</strong>. Imprimez-les. Affichez-les a cote de votre ecran. Relisez-les chaque matin avant de trader. Elles sont simples a comprendre et incroyablement difficiles a appliquer -- c'est exactement pour cela qu'elles fonctionnent.</p>
+
+  <ol class="nl">
+    <li><strong>Ne jamais trader sans biais clair.</strong> Si vous ne pouvez pas dire avec conviction "bullish" ou "bearish" sur le HTF, vous n'avez pas le droit de trader. Un biais neutre = pas de trade. C'est non-negociable</li>
+    <li><strong>1 perte = analyser. 2 pertes = arreter la journee.</strong> La premiere perte est normale. La deuxieme perte consecutive signale un probleme : soit le marche ne correspond pas a votre analyse, soit votre etat mental est compromis. Dans les deux cas, arreter est la decision la plus profitable</li>
+    <li><strong>Meme risque, toujours.</strong> Pas d'augmentation apres un gain ("je suis chaud"). Pas d'augmentation apres une perte ("je dois recuperer"). 1% du compte, chaque trade, point final. Le marche ne sait pas si votre dernier trade etait gagnant ou perdant</li>
+    <li><strong>Le processus est superieur au resultat.</strong> Un trade perdant pris selon les regles est un "bon trade". Un trade gagnant pris en violation des regles est un "mauvais trade". Evaluez-vous sur la conformite, pas sur le P&amp;L</li>
+    <li><strong>Pause de 15 minutes apres chaque trade.</strong> Gagnant ou perdant, peu importe. Cette pause empeche le FOMO post-gain et le revenge post-perte. Se lever, marcher, respirer. Ne pas toucher a la plateforme pendant 15 minutes</li>
+    <li><strong>Ne pas regarder le P&amp;L en cours de session.</strong> Le P&amp;L se regarde une fois la session terminee, pas pendant. Regarder le P&amp;L pendant que vous tradez influence vos decisions de maniere inconsciente et destructrice</li>
+    <li><strong>Preparation le soir, execution le matin.</strong> L'analyse et la reflexion se font la veille au soir ou tot le matin. Pendant la session, vous executez le plan prepare. Vous ne decidez pas -- vous agissez selon des decisions deja prises</li>
+    <li><strong>Gratitude pour chaque journee sans perte.</strong> Un jour ou vous n'avez pas trade parce qu'il n'y avait pas de setup = un bon jour. Vous avez protege votre capital. Soyez reconnaissant pour la discipline, pas frustre par l'inaction</li>
+    <li><strong>Pas de trading le vendredi.</strong> Sauf conditions exceptionnelles (setup parfait pendant la session de Londres uniquement). Le vendredi apres-midi est particulierement dangereux : spreads elargis, mouvements erratiques, cloture hebdomadaire imprevisible</li>
+    <li><strong>Revoir ses trades de la semaine le dimanche.</strong> 30 minutes chaque dimanche pour analyser la semaine ecoulee. Patterns emotionnels, respect des regles, ajustements pour la semaine suivante. C'est le moment ou vous transformez l'experience en apprentissage</li>
+  </ol>
+
+  <div class="box box-em">
+    <div class="box-title">La Regle Au-Dessus des Regles</div>
+    <p>"Si je suis mes regles et je perds = c'est un win. Si je casse mes regles et je gagne = c'est une perte." Cette inversion de la definition du succes est le changement de paradigme le plus puissant en psychologie du trading. Le jour ou vous l'integrez veritablement, votre trading change pour toujours.</p>
+  </div>
+
+  <div class="quote">
+    <p>Le trader mediocre cherche des gains. Le trader professionnel cherche la conformite a son plan. Les gains sont la consequence naturelle de la conformite repetee sur des centaines de trades.</p>
+    <cite>Les experts en psychologie du trading</cite>
+  </div>
+
+  <div class="sec">Checklist Quotidienne -- A Imprimer</div>
+  <table class="tbl">
+    <tr><th>Question</th><th>Reponse Requise</th></tr>
+    <tr><td>Ai-je un biais HTF clair ?</td><td>Oui obligatoire</td></tr>
+    <tr><td>Mon etat mental est calme (>7/10) ?</td><td>Oui obligatoire</td></tr>
+    <tr><td>J'ai ecrit mon plan dans le journal ?</td><td>Oui obligatoire</td></tr>
+    <tr><td>Mon risque est a 1% maximum ?</td><td>Oui obligatoire</td></tr>
+    <tr><td>J'ai verifie le calendrier economique ?</td><td>Oui obligatoire</td></tr>
+    <tr><td>J'ai visualise un scenario de perte ?</td><td>Recommande</td></tr>
+    <tr><td>Je ne suis pas en mode revenge ?</td><td>Oui obligatoire</td></tr>
+    <tr><td>J'ai dormi plus de 6 heures ?</td><td>Recommande</td></tr>
+  </table>
+
+  <div class="box box-bl">
+    <div class="box-title">Note Finale</div>
+    <p>La psychologie du trading n'est pas un sujet a etudier une fois puis a oublier. C'est une pratique quotidienne, comme la meditation ou l'entrainement physique. Le jour ou vous arretez de travailler votre mental, votre mental arrete de travailler pour vous. Relisez ce module regulierement. Appliquez les outils. Tenez votre journal. Les resultats suivront.</p>
+  </div>
+</section>
+
+
+<!-- FOOTER QUOTE -->
+<section class="mod" id="outro">
+  <div class="quote">
+    <p>Le marche ne recompense pas l'intelligence. Le marche recompense la discipline. Et la discipline est un muscle qui se renforce par la repetition quotidienne.</p>
+    <cite>Algorithmic Academy -- Psychologie Avancee</cite>
+  </div>
+</section>
+
+<footer id="footer">
+  <p>Psychologie Avancee -- Le Jeu Mental du Trading -- Algorithmic Academy -- 18 Modules -- Discipline -- Emotions -- Journal -- Performance</p>
+  <p style="margin-top:8px;color:var(--border)">Le trading comporte des risques. Ce cours est educatif uniquement.</p>
+</footer>
+
+</main>
+
+<script>
+// Progress bar
+const pf = document.getElementById('pfill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  pf.style.width = (window.scrollY / h * 100) + '%';
+}, { passive: true });
+
+// Fade in modules
+const io = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.05 });
+document.querySelectorAll('.mod').forEach(m => io.observe(m));
+
+// Active nav
+const secs = [...document.querySelectorAll('[id]')];
+const links = document.querySelectorAll('.sb-link');
+function updateNav() {
+  const y = window.scrollY + 110;
+  let cur = secs[0]?.id;
+  for (const s of secs) { if (s.offsetTop <= y) cur = s.id; }
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>

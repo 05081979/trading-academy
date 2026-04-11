@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="premium">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Zones de Prix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0C0F0A;
+  --bg2:      #111510;
+  --bg3:      #181D14;
+  --border:   #1F2A1A;
+  --em:       #3D7A3A;
+  --em2:      #56A853;
+  --em-light: #A3D9A1;
+  --em-pale:  #E8F5E8;
+  --amber:    #D4882A;
+  --amber-l:  #F5C56A;
+  --red:      #C9453A;
+  --blue:     #4A90B8;
+  --muted:    #3A4535;
+  --text:     #DDE8D8;
+  --text-dim: #7D9478;
+  --serif:    'Playfair Display', serif;
+  --sans:     'Syne', sans-serif;
+  --body:     'Source Serif 4', serif;
+  --mono:     'Roboto Mono', monospace;
+  --sw: 270px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.75; display: flex; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── SIDEBAR ─────────────────────────── */
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 100;
+}
+
+.sb-logo {
+  padding: 28px 22px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sb-logo .mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--em), var(--em2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(61,122,58,.3);
+}
+
+.sb-logo h1 {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--em-light);
+  line-height: 1.25;
+}
+
+.sb-logo p {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.sb-section {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 16px 22px 5px;
+}
+
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 22px; text-decoration: none;
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 500;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.sb-link:hover { background: rgba(86,168,83,.06); color: var(--text); }
+.sb-link.active { background: rgba(86,168,83,.1); color: var(--em-light); border-left-color: var(--em2); }
+
+.sb-link .n {
+  font-family: var(--mono);
+  font-size: 0.62rem; font-weight: 500;
+  color: var(--muted); min-width: 22px;
+}
+.sb-link.active .n { color: var(--em2); }
+
+/* ── PROGRESS ────────────────────────── */
+#pbar {
+  position: fixed; top: 0; left: var(--sw); right: 0;
+  height: 2px; background: var(--border); z-index: 200;
+}
+#pfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--em), var(--em2), var(--amber));
+  width: 0%; transition: width 0.1s linear;
+}
+
+/* ── MAIN ────────────────────────────── */
+#main { margin-left: var(--sw); flex: 1; min-height: 100vh; }
+
+/* ── HERO ────────────────────────────── */
+#hero {
+  position: relative; overflow: hidden;
+  padding: 80px 64px 72px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-noise {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-lines {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 20px,
+    rgba(61,122,58,.04) 20px, rgba(61,122,58,.04) 21px
+  );
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(86,168,83,.12);
+  border: 1px solid rgba(86,168,83,.3);
+  color: var(--em-light);
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+
+#hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 5.5vw, 5rem);
+  line-height: 1.0;
+  color: #fff;
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+#hero h1 .em {
+  display: block;
+  background: linear-gradient(90deg, var(--em2), var(--em-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+#hero .sub {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 400;
+  color: var(--text-dim); max-width: 560px; margin-bottom: 44px;
+  line-height: 1.8;
+}
+
+.hero-kpis {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 14px; max-width: 660px;
+}
+
+.kpi {
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+}
+.kpi:hover { border-color: rgba(86,168,83,.35); }
+
+.kpi-v {
+  font-family: var(--mono);
+  font-size: 1.5rem; font-weight: 500;
+  color: var(--em-light); line-height: 1;
+  margin-bottom: 5px;
+}
+.kpi-l {
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── MODULE ──────────────────────────── */
+.mod {
+  padding: 64px; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.mod.vis { opacity: 1; transform: none; }
+
+.mod-head {
+  display: flex; align-items: flex-start; gap: 18px;
+  margin-bottom: 40px;
+}
+
+.mod-tag {
+  font-family: var(--mono);
+  font-size: 0.65rem; font-weight: 500;
+  color: var(--em2);
+  background: rgba(86,168,83,.1);
+  border: 1px solid rgba(86,168,83,.22);
+  padding: 5px 12px; border-radius: 6px;
+  white-space: nowrap; margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+.mod-head h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: #fff; line-height: 1.1;
+}
+
+/* ── SECTION TITLES ─────────────────── */
+.sec {
+  font-family: var(--sans);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--em-light);
+  margin: 42px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+  display: flex; align-items: center; gap: 10px;
+}
+.sec::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 18px;
+  background: linear-gradient(var(--em), var(--em2));
+  border-radius: 2px; flex-shrink: 0;
+}
+
+.subsec {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 700;
+  color: var(--text); margin: 26px 0 10px;
+}
+
+p {
+  font-size: 0.95rem; color: var(--text-dim);
+  line-height: 1.85; margin-bottom: 12px;
+}
+p strong { color: var(--text); font-weight: 600; }
+em { color: var(--em-light); font-style: italic; }
+
+/* ── CALLOUTS ────────────────────────── */
+.box {
+  border-radius: 10px; padding: 20px 24px;
+  margin: 18px 0; border-left: 3px solid;
+  background: rgba(255,255,255,.022);
+}
+.box-em  { border-color: var(--em2);  background: rgba(86,168,83,.06); }
+.box-am  { border-color: var(--amber); background: rgba(212,136,42,.06); }
+.box-re  { border-color: var(--red);   background: rgba(201,69,58,.06); }
+.box-bl  { border-color: var(--blue);  background: rgba(74,144,184,.06); }
+
+.box-title {
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 7px;
+}
+.box-em .box-title  { color: var(--em-light); }
+.box-am .box-title  { color: var(--amber-l); }
+.box-re .box-title  { color: #FCA5A5; }
+.box-bl .box-title  { color: #93C5FD; }
+.box p { margin: 0; font-size: 0.88rem; }
+
+/* ── LISTS ───────────────────────────── */
+ul.cl { list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 8px; }
+ul.cl li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ul.cl li::before {
+  content: '>'; color: var(--em2); font-size: 1rem;
+  margin-top: 1px; flex-shrink: 0;
+}
+ul.cl li strong { color: var(--text); }
+
+ol.nl { counter-reset: nl; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 9px; }
+ol.nl li {
+  counter-increment: nl;
+  display: flex; align-items: flex-start; gap: 13px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ol.nl li::before {
+  content: counter(nl);
+  background: rgba(86,168,83,.15);
+  border: 1px solid rgba(86,168,83,.28);
+  color: var(--em-light);
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+}
+
+/* ── TABLE ───────────────────────────── */
+.tbl {
+  width: 100%; border-collapse: collapse;
+  margin: 18px 0; font-size: 0.87rem;
+  border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.tbl th {
+  background: rgba(86,168,83,.1);
+  color: var(--em-light);
+  font-family: var(--sans); font-weight: 700;
+  font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 11px 18px; text-align: left;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+}
+.tbl td {
+  padding: 10px 18px; color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top; line-height: 1.6;
+}
+.tbl td:first-child { color: var(--text); font-weight: 600; font-size: 0.83rem; white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(255,255,255,.015); }
+
+/* ── QUOTE ───────────────────────────── */
+.quote {
+  position: relative; padding: 30px 36px;
+  margin: 32px 0;
+  border-left: 3px solid var(--em);
+  background: rgba(86,168,83,.04);
+  border-radius: 0 10px 10px 0;
+}
+.quote::before {
+  content: '"'; position: absolute; top: -12px; left: 14px;
+  font-family: var(--serif); font-size: 5rem;
+  color: rgba(86,168,83,.18); line-height: 1;
+}
+.quote p {
+  font-family: var(--serif); font-size: 1.2rem; font-style: italic;
+  color: var(--text); margin: 0; line-height: 1.65;
+}
+.quote cite {
+  display: block; margin-top: 12px;
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.09em; text-transform: uppercase; color: var(--em2);
+}
+
+/* ── FOOTER ──────────────────────────── */
+#footer { padding: 48px 64px; text-align: center; border-top: 1px solid var(--border); }
+#footer p { font-family: var(--sans); color: var(--muted); font-size: 0.8rem; margin: 0; }
+
+/* ── ANIMATIONS ──────────────────────── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+.hero-tag, #hero h1, #hero .sub, .hero-kpis { animation: fadeUp 0.6s ease both; }
+.hero-tag { animation-delay: 0.1s; }
+#hero h1 { animation-delay: 0.22s; }
+#hero .sub { animation-delay: 0.34s; }
+.hero-kpis { animation-delay: 0.46s; }
+
+@media (max-width: 900px) {
+  :root { --sw: 0px; }
+  #sidebar { transform: translateX(-270px); }
+  #main { margin-left: 0; }
+  .mod, #hero { padding: 36px 22px; }
+  .hero-kpis { grid-template-columns: 1fr 1fr; }
+}
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+
+<div id="pbar"><div id="pfill"></div></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="mark">&#x25C8;</div>
+    <h1>Zones de Prix</h1>
+    <p>Algorithmic Academy — Formation Complete</p>
+  </div>
+
+  <div class="sb-section">Fondations</div>
+  <a class="sb-link active" href="#hero"><span class="n">00</span>Vue d'ensemble</a>
+  <a class="sb-link" href="#m1"><span class="n">01</span>Definition & Trace</a>
+  <a class="sb-link" href="#m2"><span class="n">02</span>Niveaux du Zones de Prix</a>
+  <a class="sb-link" href="#m3"><span class="n">03</span>Regle du Deep</a>
+
+  <div class="sb-section">Types de Zones de Prix</div>
+  <a class="sb-link" href="#m4"><span class="n">04</span>Type 1 — Continuation</a>
+  <a class="sb-link" href="#m5"><span class="n">05</span>Type 2 — Reversal</a>
+  <a class="sb-link" href="#m6"><span class="n">06</span>Type 3 — Consolidation</a>
+
+  <div class="sb-section">PD Arrays</div>
+  <a class="sb-link" href="#m7"><span class="n">07</span>FVG, OB, Breaker</a>
+  <a class="sb-link" href="#m8"><span class="n">08</span>Hierarchie des Arrays</a>
+
+  <div class="sb-section">Liquidite</div>
+  <a class="sb-link" href="#m9"><span class="n">09</span>IRL / ERL & Pendule</a>
+  <a class="sb-link" href="#m10"><span class="n">10</span>Regles de Liquidite</a>
+
+  <div class="sb-section">Zones de Prix Interne / Externe</div>
+  <a class="sb-link" href="#m11"><span class="n">11</span>Macro vs Micro</a>
+
+  <div class="sb-section">Execution</div>
+  <a class="sb-link" href="#m12"><span class="n">12</span>Protocole d'Execution</a>
+  <a class="sb-link" href="#m13"><span class="n">13</span>Biais & Entree</a>
+
+  <div class="sb-section">Sessions</div>
+  <a class="sb-link" href="#m14"><span class="n">14</span>4 Bougies de 6 Heures</a>
+  <a class="sb-link" href="#m15"><span class="n">15</span>NDOG</a>
+  <a class="sb-link" href="#m16"><span class="n">16</span>AMD & Timing</a>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+<!-- HERO -->
+<header id="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-tag">Module Premium</div>
+  <h1>Zones de Prix<span class="em">Dealing Range Theory Complete</span></h1>
+  <p class="sub">Zones de Prix -- Types 1/2/3 -- PD Arrays -- IRL-ERL -- Liquidite -- Execution</p>
+  <div class="hero-kpis">
+    <div class="kpi"><div class="kpi-v">3</div><div class="kpi-l">Types de Zones de Prix</div></div>
+    <div class="kpi"><div class="kpi-v">5</div><div class="kpi-l">Niveaux Cles</div></div>
+    <div class="kpi"><div class="kpi-v">4</div><div class="kpi-l">Sessions 6H</div></div>
+    <div class="kpi"><div class="kpi-v">16</div><div class="kpi-l">Sections</div></div>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- M1 — DEFINITION ET TRACE DU Zones de Prix -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section class="mod" id="m1">
+  <div class="mod-head">
+    <span class="mod-tag">SEC 01</span>
+    <h2>Definition et Trace du Dealing Range</h2>
+  </div>
+
+  <h3 class="sec">Qu'est-ce qu'un Dealing Range ?</h3>
+  <p>Un <strong>Dealing Range</strong> (Zones de Prix) est la zone comprise entre un <strong>swing high</strong> et un <strong>swing low</strong> significatifs. C'est le cadre dans lequel le prix opere, se reequilibre et cherche de la liquidite. Le Zones de Prix n'est pas un signal — c'est une <em>carte</em> qui eclaircit la structure du prix.</p>
+
+  <p>Le Zones de Prix represente le champ de bataille entre acheteurs et vendeurs. Chaque dealing range contient des zones premium (au-dessus de l'equilibre) et discount (en dessous), et le prix oscille naturellement entre ces extremites en quete de liquidite et d'efficacite.</p>
+
+  <h3 class="sec">Definition du Swing</h3>
+  <p>Un swing valide se compose de <strong>3 bougies minimum</strong> dans la formation dite <strong>A-B-C</strong>. Cette regle est non-negociable :</p>
+
+  <ul class="cl">
+    <li><strong>Swing High :</strong> La bougie B fait un high plus haut que A et C. Les bougies A et C encadrent B avec des highs inferieurs.</li>
+    <li><strong>Swing Low :</strong> La bougie B fait un low plus bas que A et C. Les bougies A et C encadrent B avec des lows superieurs.</li>
+    <li><strong>On utilise les meches, pas les corps.</strong> Le prix reel est la meche — le corps ne reflete que l'ouverture et la fermeture, pas l'extremite atteinte.</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Attention</div>
+    <p>Ne pas confondre swing et simple fluctuation de prix. Un swing valide necessite la structure A-B-C complete. Sans cette formation, le niveau n'a aucune validite structurelle et ne devrait pas servir de base a un Zones de Prix.</p>
+  </div>
+
+  <h3 class="sec">Trace du Dealing Range</h3>
+  <ol class="nl">
+    <li>Identifier le <strong>swing low</strong> significatif le plus recent (A-B-C sur les meches)</li>
+    <li>Identifier le <strong>swing high</strong> significatif le plus recent (A-B-C sur les meches)</li>
+    <li>Tracer une zone du low au high — c'est le Dealing Range</li>
+    <li>Diviser en niveaux : 0%, 25%, 50%, 75%, 100%</li>
+    <li>Observer ou le prix se situe actuellement dans cette zone</li>
+  </ol>
+
+  <h3 class="sec">Ce que le Zones de Prix sert a faire</h3>
+  <ul class="cl">
+    <li><strong>Eclaircir le prix :</strong> donner un cadre visuel clair a l'action du prix</li>
+    <li><strong>Aider au biais :</strong> savoir si le prix est en premium ou en discount</li>
+    <li><strong>Reperer les PD Arrays :</strong> identifier les zones de reaction potentielle</li>
+    <li><strong>Contextualiser :</strong> comprendre ou le prix a ete et ou il pourrait aller</li>
+  </ul>
+
+  <div class="box box-re">
+    <div class="box-title">Ce que le Zones de Prix ne sert PAS a faire</div>
+    <p>Le Zones de Prix <strong>ne dicte pas la direction</strong>. Il ne donne pas de signal d'entree. Il ne remplace pas l'analyse du biais HTF. Le Zones de Prix est un outil de lecture, pas un systeme de trading a lui seul. Trader uniquement sur la base d'un Zones de Prix sans confluence est une erreur fondamentale.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- M2 — NIVEAUX DU Zones de Prix -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section class="mod" id="m2">
+  <div class="mod-head">
+    <span class="mod-tag">SEC 02</span>
+    <h2>Niveaux du Dealing Range</h2>
+  </div>
+
+  <h3 class="sec">Les 5 Niveaux Fondamentaux</h3>
+  <p>Chaque Dealing Range se decompose en 5 niveaux precis qui definissent les zones premium et discount. Ces niveaux ne sont pas arbitraires — ils correspondent aux zones ou les institutions placent leurs ordres et ou la liquidite se concentre.</p>
+
+  <table class="tbl">
+    <tr><th>Niveau</th><th>Nom</th><th>Zone</th><th>Signification</th></tr>
+    <tr><td>0%</td><td>DR Low</td><td>Discount</td><td>Extremite basse du range. Zone d'accumulation institutionnelle pour les achats.</td></tr>
+    <tr><td>25%</td><td>Deep Discount</td><td>Discount</td><td>Zone profonde de discount. Pas de vente ici — jamais.</td></tr>
+    <tr><td>50%</td><td>Equilibrium / CE</td><td>Neutre</td><td>Consequent Encroachment. Zone de reequilibrage. Prix "juste".</td></tr>
+    <tr><td>75%</td><td>Deep Premium</td><td>Premium</td><td>Zone profonde de premium. Pas d'achat ici — jamais.</td></tr>
+    <tr><td>100%</td><td>DR High</td><td>Premium</td><td>Extremite haute du range. Zone de distribution institutionnelle pour les ventes.</td></tr>
+  </table>
+
+  <h3 class="sec">Premium vs Discount</h3>
+  <p>La logique est simple et immuable : les institutions <strong>achetent en discount</strong> et <strong>vendent en premium</strong>. Le retail fait l'inverse — c'est la qu'est l'avantage.</p>
+
+  <ul class="cl">
+    <li><strong>Zone Premium (50-100%) :</strong> le prix est "cher". On cherche des opportunites de vente si le biais HTF est bearish.</li>
+    <li><strong>Zone Discount (0-50%) :</strong> le prix est "bon marche". On cherche des opportunites d'achat si le biais HTF est bullish.</li>
+    <li><strong>Equilibrium (50%) :</strong> zone neutre. Le prix n'est ni cher ni bon marche. Moins de conviction ici.</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Note sur l'Equilibrium</div>
+    <p>Les 50% (equilibrium) ne sont pas essentiels pour l'execution. Preferer l'OTE (Optimal Trade Entry) dans les zones profondes : le 25% pour les achats, le 75% pour les ventes. L'equilibrium sert de repere mais rarement de niveau d'entree optimal.</p>
+  </div>
+
+  <h3 class="sec">Calcul des Niveaux</h3>
+  <p>Les niveaux se calculent mathematiquement a partir du range total :</p>
+
+  <table class="tbl">
+    <tr><th>Niveau</th><th>Formule</th><th>Exemple (Low=100, High=200)</th></tr>
+    <tr><td>0% (Low)</td><td>Low du swing</td><td>100.00</td></tr>
+    <tr><td>25%</td><td>Low + (Range x 0.25)</td><td>125.00</td></tr>
+    <tr><td>50% (CE)</td><td>Low + (Range x 0.50)</td><td>150.00</td></tr>
+    <tr><td>75%</td><td>Low + (Range x 0.75)</td><td>175.00</td></tr>
+    <tr><td>100% (High)</td><td>High du swing</td><td>200.00</td></tr>
+  </table>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- M3 — REGLE STRICTE DU DEEP -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section class="mod" id="m3">
+  <div class="mod-head">
+    <span class="mod-tag">SEC 03</span>
+    <h2>Regle Stricte du Deep</h2>
+  </div>
+
+  <h3 class="sec">Les Deux Regles Absolues</h3>
+  <p>Ces deux regles sont <strong>non-negociables</strong>. Elles constituent la base de la gestion du risque dans le framework Zones de Prix. Les enfreindre revient a trader contre la logique institutionnelle.</p>
+
+  <div class="box box-re">
+    <div class="box-title">Regle 1 — Deep Discount</div>
+    <p><strong>En Deep Discount (0-25%) : pas de sell. Point.</strong> Le prix est en zone de forte accumulation. Vendre ici c'est vendre au meilleur prix pour les acheteurs institutionnels. Vous etes la liquidite.</p>
+  </div>
+
+  <div class="box box-re">
+    <div class="box-title">Regle 2 — Deep Premium</div>
+    <p><strong>En Deep Premium (75-100%) : pas de buy. Point.</strong> Le prix est en zone de forte distribution. Acheter ici c'est acheter au meilleur prix pour les vendeurs institutionnels. Vous etes la liquidite.</p>
+  </div>
+
+  <h3 class="sec">Le Piege du Debutant</h3>
+  <p>La regle du deep est souvent mal comprise. Voici la subtilite cruciale :</p>
+
+  <div class="box box-am">
+    <div class="box-title">Distinction Fondamentale</div>
+    <p>Etre en Deep Discount <strong>NE SIGNIFIE PAS</strong> buy automatique. Il faut une <strong>signature</strong> — un changement de structure, un FVG, une prise de liquidite. Le deep vous dit seulement <strong>dans quelle direction chercher</strong>, pas quand entrer.</p>
+  </div>
+
+  <p>La difference entre un trader amateur et un trader discipline :</p>
+
+  <table class="tbl">
+    <tr><th>Situation</th><th>Amateur</th><th>Discipline</th></tr>
+    <tr><td>Prix en Deep Discount</td><td>Buy immediatement</td><td>Attend une signature bullish (BOS, FVG, OB touch)</td></tr>
+    <tr><td>Prix en Deep Premium</td><td>Sell immediatement</td><td>Attend une signature bearish (BOS, FVG, OB touch)</td></tr>
+    <tr><td>Prix a l'Equilibrium</td><td>Hesitation, entre quand meme</td><td>Pas d'action — attend que le prix atteigne une zone deep</td></tr>
+    <tr><td>Prix entre 25% et 75%</td><td>Force un trade</td><td>Patience — pas de conviction dans cette zone</td></tr>
+  </table>
+
+  <h3 class="sec">OTE vs Equilibrium</h3>
+  <p>L'Optimal Trade Entry (OTE) se situe dans les <strong>zones profondes</strong>, pas a l'equilibrium. Le 50% est un repere, pas une cible d'entree. Les meilleurs setups se trouvent :</p>
+
+  <ul class="cl">
+    <li><strong>Pour un buy :</strong> entre 0% et 25% du Zones de Prix (Deep Discount) — avec signature bullish</li>
+    <li><strong>Pour un sell :</strong> entre 75% et 100% du Zones de Prix (Deep Premium) — avec signature bearish</li>
+    <li><strong>Les Fibonacci 0.618 / 0.705 / 0.786</strong> a l'interieur de ces zones affinent encore l'entree</li>
+  </ul>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- M4 — TYPE 1 : CONTINUATION -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section class="mod" id="m4">
+  <div class="mod-head">
+    <span class="mod-tag">SEC 04</span>
+    <h2>Type 1 — Continuation</h2>
+  </div>
+
+  <h3 class="sec">Caracteristiques</h3>
+  <p>Le Zones de Prix Type 1 est le dealing range de <strong>continuation</strong>. Il se forme quand le marche est en tendance claire sur le timeframe superieur et que le mouvement se poursuit dans la meme direction. C'est le type le plus frequent et souvent le plus simple a trader.</p>
+
+  <ul class="cl">
+    <li><strong>Contexte :</strong> marche en tendance sur HTF (Daily, 4H)</li>
+    <li><strong>Formation :</strong> le Zones de Prix se forme dans la direction de la tendance</li>
+    <li><strong>Comportement :</strong> retrace dans le Zones de Prix, puis reprend dans la direction initiale</li>
+    <li><strong>Cible :</strong> le prix vise l'extremite opposee du Zones de Prix ou au-dela</li>
+  </ul>
+
+  <h3 class="sec">Identification du Type 1</h3>
+  <ol class="nl">
+    <li>Confirmer la tendance HTF : sequence de BOS (Break of Structure) clairs</li>
+    <li>Le prix cree un nouveau swing high (tendance haussiere) ou swing low (tendance baissiere)</li>
+    <li>Le prix retrace — un nouveau Zones de Prix se forme dans le sens de la tendance</li>
+    <li>Le retracement entre dans la zone deep (25% pour buy / 75% pour sell)</li>
+    <li>Une signature apparait (FVG, OB, BOS sur LTF) — entree en continuation</li>
+  </ol>
+
+  <h3 class="sec">Limite du 75%</h3>
+  <p>Dans un Zones de Prix Type 1, le marche peut <strong>s'arreter au niveau 75%</strong> s'il n'y a pas d'inefficacite au-dessus (dans un scenario bullish). Cela se produit quand :</p>
+
+  <ul class="cl">
+    <li>Les FVG au-dessus du 75% ont deja ete combles</li>
+    <li>Pas de liquidite externe evidente au-dessus du DR High</li>
+    <li>Le momentum faiblit (divergence, reduction de volume)</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Regle Pratique</div>
+    <p>Si le prix atteint le 75% du Zones de Prix sans inefficacite au-dela, envisager une prise de profit partielle. Le prix n'est pas oblige d'atteindre le DR High. La liquidite et les inefficacites dictent la portee du mouvement, pas le niveau technique seul.</p>
+  </div>
+
+  <table class="tbl">
+    <tr><th>Critere</th><th>Type 1 Bullish</th><th>Type 1 Bearish</th></tr>
+    <tr><td>Tendance HTF</td><td>Haussiere confirmee</td><td>Baissiere confirmee</td></tr>
+    <tr><td>Zones de Prix se forme</td><td>Du dernier swing low au swing high</td><td>Du dernier swing high au swing low</td></tr>
+    <tr><td>Retracement ideal</td><td>Vers 25% (Deep Discount)</td><td>Vers 75% (Deep Premium)</td></tr>
+    <tr><td>Cible</td><td>DR High ou au-dela</td><td>DR Low ou au-dela</td></tr>
+    <tr><td>Stop Loss</td><td>Sous le DR Low</td><td>Au-dessus du DR High</td></tr>
+  </table>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- M5 — TYPE 2 : REVERSAL -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section class="mod" id="m5">
+  <div class="mod-head">
+    <span class="mod-tag">SEC 05</span>
+    <h2>Type 2 — Reversal</h2>
+  </div>
+
+  <h3 class="sec">La Signature la Plus Puissante</h3>
+  <p>Le Zones de Prix Type 2 est la signature de <strong>retournement</strong>. C'est le setup le plus puissant du framework car il capture le changement de direction du marche. Il est aussi le plus difficile a identifier en temps reel car il va a contre-courant de la tendance apparente.</p>
+
+  <div class="box box-em">
+    <div class="box-title">Principe Cle</div>
+    <p>Le Type 2 se forme quand le marche a complete son objectif dans la direction precedente et que les institutions preparent un retournement en chassant la liquidite aux extremes.</p>
+  </div>
+
+  <h3 class="sec">Composantes du Type 2</h3>
+  <ul class="cl">
+    <li><strong>Equal Highs/Lows clairement visibles :</strong> la liquidite est evidente et invite le prix a la chasser</li>
+    <li><strong>Sweep de liquidite :</strong> le prix depasse les equal highs/lows pour capturer les stops</li>
+    <li><strong>Retour agressif :</strong> le prix revient immediatement a l'interieur du range apres le sweep</li>
+    <li><strong>Changement de structure :</strong> BOS sur LTF confirme le retournement</li>
+  </ul>
+
+  <h3 class="sec">Formation Bullish Type 2</h3>
+  <p>Voici la sequence complete d'un Type 2 bullish :</p>
+
+  <ol class="nl">
+    <li><strong>Equal highs</strong> sont clairement visibles au-dessus — ils representent le DOL (Draw on Liquidity)</li>
+    <li>Le marche descend et <strong>casse sous un vieux low</strong> — ce devient le DR Low du nouveau dealing range</li>
+    <li>Le marche remonte et <strong>depasse un vieux high</strong> — ce devient le DR High</li>
+    <li>Le DOL (les equal highs) est au-dessus du DR High — le marche <strong>doit</strong> aller les chercher</li>
+    <li>Le prix retrace dans le Zones de Prix pour une entree en Deep Discount (0-25%)</li>
+    <li>Entree buy avec cible = les equal highs (DOL)</li>
+  </ol>
+
+  <h3 class="sec">Formation Bearish Type 2</h3>
+  <ol class="nl">
+    <li><strong>Equal lows</strong> sont clairement visibles en dessous — DOL</li>
+    <li>Le marche monte et <strong>casse au-dessus d'un vieux high</strong> — DR High</li>
+    <li>Le marche redescend et <strong>passe sous un vieux low</strong> — DR Low</li>
+    <li>Le DOL (les equal lows) est sous le DR Low</li>
+    <li>Le prix retrace dans le Zones de Prix vers le Deep Premium (75-100%)</li>
+    <li>Entree sell avec cible = les equal lows (DOL)</li>
+  </ol>
+
+  <div class="box box-am">
+    <div class="box-title">Regle Critique</div>
+    <p>Meme si le HTF est bearish, un <strong>Type 2 bullish</strong> donne un biais haussier a court terme. Le Type 2 peut aller contre la tendance HTF parce que la liquidite (equal highs/lows) est un aimant plus fort que la tendance. Cela dit, le Type 2 dans le sens du HTF est toujours plus fiable.</p>
+  </div>
+
+  <table class="tbl">
+    <tr><th>Element</th><th>Type 2 Bullish</th><th>Type 2 Bearish</th></tr>
+    <tr><td>Liquidite visible</td><td>Equal highs au-dessus</td><td>Equal lows en dessous</td></tr>
+    <tr><td>DR Low</td><td>Cassure sous vieux low</td><td>Cassure sous vieux low</td></tr>
+    <tr><td>DR High</td><td>Cassure au-dessus vieux high</td><td>Cassure au-dessus vieux high</td></tr>
+    <tr><td>DOL</td><td>Equal highs au-dessus DR High</td><td>Equal lows sous DR Low</td></tr>
+    <tr><td>Zone d'entree</td><td>Deep Discount (0-25%)</td><td>Deep Premium (75-100%)</td></tr>
+    <tr><td>Cible</td><td>Equal highs</td><td>Equal lows</td></tr>
+  </table>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- M6 — TYPE 3 : CONSOLIDATION -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section class="mod" id="m6">
+  <div class="mod-head">
+    <span class="mod-tag">SEC 06</span>
+    <h2>Type 3 — Consolidation</h2>
+  </div>
+
+  <h3 class="sec">Le Plus Difficile a Trader</h3>
+  <p>Le Zones de Prix Type 3 apparait quand le marche est en <strong>consolidation</strong>. Le prix oscille entre les extremes du range sans direction claire. C'est le type le plus dangereux car il genere le plus de faux signaux et le plus de stops chasses.</p>
+
+  <h3 class="sec">Quand le Type 3 Apparait</h3>
+  <ul class="cl">
+    <li><strong>Objectif HTF complete :</strong> le prix a atteint sa cible majeure (ancien high/low, FVG HTF comble) et n'a plus de direction immediate</li>
+    <li><strong>News majeur attendu :</strong> NFP, FOMC, CPI — le marche attend le catalyseur avant de choisir une direction</li>
+    <li><strong>Niveau de liquidite majeur :</strong> le prix est entre deux pools de liquidite importants et hesite</li>
+    <li><strong>Fin de semaine / fin de mois :</strong> les institutions cloturent des positions, reduisant la directionnalite</li>
+  </ul>
+
+  <h3 class="sec">Comportement Typique</h3>
+  <p>Le Type 3 se caracterise par des <strong>stop runs repetitifs</strong> aux deux extremes :</p>
+
+  <ul class="cl">
+    <li><strong>Stop run au DR High :</strong> meche au-dessus, corps qui revient a l'interieur</li>
+    <li><strong>Stop run au DR Low :</strong> meche en dessous, corps qui revient a l'interieur</li>
+    <li><strong>Wicks dehors, bodies dedans :</strong> la regle d'or du Type 3. Si les clotures restent a l'interieur du range malgre des meches qui sortent, c'est de la consolidation.</li>
+    <li><strong>Volume decroissant :</strong> chaque tentative de breakout a moins de conviction que la precedente</li>
+  </ul>
+
+  <div class="box box-re">
+    <div class="box-title">Regle de Trading Type 3</div>
+    <p>Ne trader qu'aux <strong>extremes</strong>, jamais au milieu. Si le prix est entre 25% et 75% dans un Type 3, il n'y a rien a faire. Attendre que le prix atteigne le DR High (pour sell) ou le DR Low (pour buy), toujours avec une signature de rejet.</p>
+  </div>
+
+  <table class="tbl">
+    <tr><th>Critere</th><th>Type 3</th><th>Type 1/2</th></tr>
+    <tr><td>Direction</td><td>Aucune — range</td><td>Continuation ou reversal</td></tr>
+    <tr><td>Meches</td><td>Sortent du range, corps reviennent</td><td>Clotures au-dela du range</td></tr>
+    <tr><td>Strategie</td><td>Fade les extremes uniquement</td><td>Trader dans le sens du biais</td></tr>
+    <tr><td>Risque</td><td>Eleve — stop runs frequents</td><td>Modere si bien identifie</td></tr>
+    <tr><td>Meilleure action</td><td>Souvent ne pas trader</td><td>Attendre zone deep + signature</td></tr>
+  </table>
+
+  <h3 class="sec">Comment Differencier les 3 Types</h3>
+  <table class="tbl">
+    <tr><th>Question</th><th>Type 1</th><th>Type 2</th><th>Type 3</th></tr>
+    <tr><td>Tendance HTF claire ?</td><td>Oui</td><td>Fin de tendance</td><td>Pas de tendance</td></tr>
+    <tr><td>Equal H/L visibles ?</td><td>Non critique</td><td>Oui, essentiels</td><td>Possible aux extremes</td></tr>
+    <tr><td>Le prix casse et tient ?</td><td>Oui</td><td>Oui, dans la nouvelle direction</td><td>Non, revient toujours</td></tr>
+    <tr><td>Volume / Momentum</td><td>Dans le sens de la tendance</td><td>Fort sur le reversal</td><td>Decroissant</td></tr>
+    <tr><td>Quand trader ?</td><td>Retracement en deep</td><td>Apres sweep + BOS</td><td>Aux extremes ou pas du tout</td></tr>
+  </table>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- M7 — PD ARRAYS : FVG, OB, BREAKER -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section class="mod" id="m7">
+  <div class="mod-head">
+    <span class="mod-tag">SEC 07</span>
+    <h2>PD Arrays — FVG, Order Block, Breaker</h2>
+  </div>
+
+  <h3 class="sec">Fair Value Gap (FVG)</h3>
+  <p>Le FVG est une <strong>inefficacite de prix</strong> creee par un mouvement impulsif. Il represente une zone ou le prix n'a pas ete correctement "negocie" et ou le marche a tendance a revenir pour combler ce vide.</p>
+
+  <p class="subsec">Formation du FVG</p>
+  <ul class="cl">
+    <li><strong>3 bougies consecutives</strong> ou il n'y a pas de chevauchement entre la meche de la bougie 1 et la meche de la bougie 3</li>
+    <li><strong>FVG Bullish :</strong> le low de la bougie 3 est au-dessus du high de la bougie 1 — le gap est entre les deux</li>
+    <li><strong>FVG Bearish :</strong> le high de la bougie 3 est en dessous du low de la bougie 1 — le gap est entre les deux</li>
+  </ul>
+
+  <p class="subsec">Les 3 Niveaux d'un FVG</p>
+  <table class="tbl">
+    <tr><th>Niveau</th><th>Position</th><th>Utilisation</th></tr>
+    <tr><td>Premium End</td><td>Extremite superieure du FVG</td><td>Zone de rejet pour les sells (FVG bearish)</td></tr>
+    <tr><td>CE (Consequent Encroachment)</td><td>50% du FVG</td><td>Niveau de reequilibrage — le prix cible souvent ce niveau</td></tr>
+    <tr><td>Discount End</td><td>Extremite inferieure du FVG</td><td>Zone de rejet pour les buys (FVG bullish)</td></tr>
+  </table>
+
+  <div class="box box-bl">
+    <div class="box-title">FVG et Temporalite</div>
+    <p>Un FVG sur le HTF (H4, Daily) a beaucoup plus de poids qu'un FVG sur le M5. Les FVG HTF agissent comme des aimants pour le prix et sont rarement ignores. Un FVG M1 peut etre comble et ignore en quelques minutes.</p>
+  </div>
+
+  <h3 class="sec">Order Block (OB)</h3>
+  <p>L'Order Block est la <strong>derniere bougie opposee</strong> avant un mouvement impulsif qui cree un FVG. C'est la zone ou les institutions ont place leurs ordres avant de lancer le mouvement.</p>
+
+  <ul class="cl">
+    <li><strong>OB Bullish :</strong> derniere bougie baissiere (rouge) avant un mouvement haussier impulsif creant un FVG bullish</li>
+    <li><strong>OB Bearish :</strong> derniere bougie haussiere (verte) avant un mouvement baissier impulsif creant un FVG bearish</li>
+    <li><strong>Validation :</strong> l'OB n'est valide que s'il est suivi d'un mouvement qui cree un FVG et un BOS (Break of Structure)</li>
+    <li><strong>Zone d'entree :</strong> le corps de l'OB, pas ses meches — les meches representent le bruit</li>
+  </ul>
+
+  <h3 class="sec">Breaker Block</h3>
+  <p>Le Breaker est un <strong>Order Block qui a echoue</strong>. Quand un OB est traverse par le prix (le prix casse au-dela de l'OB), cet ancien OB devient un Breaker — une zone de retournement potentiel.</p>
+
+  <ul class="cl">
+    <li><strong>Breaker Bullish :</strong> ancien OB bearish qui a ete casse a la hausse — devient support</li>
+    <li><strong>Breaker Bearish :</strong> ancien OB bullish qui a ete casse a la baisse — devient resistance</li>
+    <li><strong>Logique :</strong> les institutions qui avaient des positions dans l'OB original sont desormais piégees et doivent couvrir quand le prix revient</li>
+  </ul>
+
+  <h3 class="sec">Mitigation Block</h3>
+  <p>Le Mitigation Block est similaire au Breaker mais avec un contexte different. Il se forme quand le prix revient a un niveau ou des ordres anterieurs doivent etre "mitigés" (compenses) par les institutions. La distinction principale est que le Mitigation Block se trouve souvent dans un contexte de continuation plutot que de retournement.</p>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- M8 — HIERARCHIE DES PD ARRAYS -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section class="mod" id="m8">
+  <div class="mod-head">
+    <span class="mod-tag">SEC 08</span>
+    <h2>Hierarchie des PD Arrays</h2>
+  </div>
+
+  <h3 class="sec">Ordre de Priorite</h3>
+  <p>Tous les PD Arrays ne se valent pas. La hierarchie est essentielle pour savoir quel niveau respecter en priorite quand plusieurs zones se superposent.</p>
+
+  <table class="tbl">
+    <tr><th>Rang</th><th>PD Array</th><th>Poids</th><th>Justification</th></tr>
+    <tr><td>1</td><td>FVG sur HTF</td><td>Maximum</td><td>Inefficacite visible sur les timeframes institutionnels — le prix doit la combler</td></tr>
+    <tr><td>2</td><td>Order Block</td><td>Tres eleve</td><td>Zone d'accumulation/distribution institutionnelle directe</td></tr>
+    <tr><td>3</td><td>Breaker Block</td><td>Eleve</td><td>Ancien OB echoue — piege institutionnel</td></tr>
+    <tr><td>4</td><td>Mitigation Block</td><td>Moyen</td><td>Zone de compensation — moins de conviction</td></tr>
+    <tr><td>5</td><td>FVG sur LTF</td><td>Faible</td><td>Peut etre ignore si en conflit avec un PD Array superieur</td></tr>
+  </table>
+
+  <h3 class="sec">Confluence des PD Arrays</h3>
+  <p>La puissance d'une zone augmente exponentiellement quand plusieurs PD Arrays convergent au meme endroit :</p>
+
+  <ul class="cl">
+    <li><strong>OB + FVG :</strong> l'OB se trouve dans un FVG HTF — zone de tres haute probabilite</li>
+    <li><strong>OB + niveau Zones de Prix (25% ou 75%) :</strong> confluence structure + PD Array — setup ideal</li>
+    <li><strong>FVG + Breaker :</strong> double raison pour le prix de reagir — force augmentee</li>
+    <li><strong>PD Array + liquidite externe :</strong> zone de reaction quasi-certaine si le timing s'aligne</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Regle de la Confluence</div>
+    <p>Ne jamais entrer sur un seul PD Array isole. Chercher au minimum <strong>2 confluences</strong> : un PD Array + un niveau Zones de Prix, ou un PD Array + un contexte de liquidite. La confluence transforme une zone "possible" en une zone "probable".</p>
+  </div>
+
+  <h3 class="sec">Invalidation des PD Arrays</h3>
+  <p>Un PD Array est invalide quand :</p>
+
+  <ul class="cl">
+    <li><strong>Le prix traverse completement la zone</strong> avec une cloture au-dela — l'OB est devenu un Breaker</li>
+    <li><strong>Le FVG est entierement comble :</strong> le prix a traverse toute l'inefficacite — elle n'existe plus</li>
+    <li><strong>Temporalite depassee :</strong> un FVG M5 vieux de 3 jours perd sa pertinence — les FVG HTF durent plus longtemps</li>
+    <li><strong>Contexte change :</strong> un changement de structure HTF invalide les PD Arrays dans l'ancienne direction</li>
+  </ul>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- M9 — IRL / ERL & PENDULE -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section class="mod" id="m9">
+  <div class="mod-head">
+    <span class="mod-tag">SEC 09</span>
+    <h2>IRL / ERL et le Pendule de Liquidite</h2>
+  </div>
+
+  <h3 class="sec">Definitions</h3>
+
+  <table class="tbl">
+    <tr><th>Type</th><th>Nom Complet</th><th>Exemples</th><th>Nature</th></tr>
+    <tr><td>IRL</td><td>Internal Range Liquidity</td><td>FVG, Order Block, Volume Imbalance, Breaker Block</td><td>Liquidite a l'interieur d'un range — zones de reequilibrage</td></tr>
+    <tr><td>ERL</td><td>External Range Liquidity</td><td>Swing H/L majeurs, Equal H/L, PDH/PDL, PWH/PWL</td><td>Liquidite aux extremes d'un range — cibles de mouvement</td></tr>
+  </table>
+
+  <h3 class="sec">Le Pendule IRL-ERL</h3>
+  <p>Le prix se deplace selon un mouvement de <strong>pendule</strong> entre IRL et ERL. Cette dynamique est le moteur fondamental de tout mouvement de prix :</p>
+
+  <ol class="nl">
+    <li><strong>ERL chassee :</strong> le prix atteint et depasse un niveau de liquidite externe (sweep d'un high ou low)</li>
+    <li><strong>Prix revient en IRL :</strong> apres avoir capture la liquidite externe, le prix se retracte vers la liquidite interne pour se reequilibrer (FVG, OB)</li>
+    <li><strong>Reequilibrage :</strong> le prix comble les inefficacites internes (FVG) et teste les zones institutionnelles (OB)</li>
+    <li><strong>Reprise vers ERL opposee :</strong> une fois reequilibre, le prix repart vers la liquidite externe dans la direction opposee</li>
+  </ol>
+
+  <div class="box box-em">
+    <div class="box-title">Visualisation du Pendule</div>
+    <p>Imaginez un pendule : il monte (ERL haute chassee), redescend au milieu (IRL comble), puis va chercher l'autre extreme (ERL basse). Ce mouvement est perpetuel. Comprendre ou le pendule se trouve dans son cycle est la cle pour anticiper le prochain mouvement.</p>
+  </div>
+
+  <h3 class="sec">Application Pratique</h3>
+  <ul class="cl">
+    <li><strong>Le prix vient de chasser un swing high :</strong> il va probablement revenir combler les FVG en dessous (IRL) avant de repartir</li>
+    <li><strong>Le prix a comble un FVG majeur :</strong> il est en phase de reequilibrage et va bientot repartir vers une ERL</li>
+    <li><strong>Equal highs/lows visibles :</strong> c'est de l'ERL evidente — le prix va les chercher, la question est quand</li>
+    <li><strong>Pas de FVG a combler :</strong> le prix est "efficace" et peut aller directement a l'ERL suivante sans retrace</li>
+  </ul>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- M10 — REGLES DE LIQUIDITE -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section class="mod" id="m10">
+  <div class="mod-head">
+    <span class="mod-tag">SEC 10</span>
+    <h2>Regles de Liquidite</h2>
+  </div>
+
+  <h3 class="sec">Liquidity Grab vs Breakout Expansion</h3>
+  <p>Savoir distinguer un <strong>liquidity grab</strong> d'un <strong>breakout expansion</strong> est ce qui separe les traders rentables de ceux qui se font pieger sur chaque mouvement.</p>
+
+  <table class="tbl">
+    <tr><th>Critere</th><th>Liquidity Grab</th><th>Breakout Expansion</th></tr>
+    <tr><td>Meche vs Cloture</td><td>Meche au-dela du niveau, corps revient a l'interieur</td><td>Cloture nette au-dela du niveau</td></tr>
+    <tr><td>Volume</td><td>Spike de volume puis retrait</td><td>Volume soutenu dans la direction</td></tr>
+    <tr><td>Temps</td><td>Rapide — quelques bougies puis retour</td><td>Progressif — plusieurs clotures au-dela</td></tr>
+    <tr><td>Suite</td><td>Le prix revient immediatement chercher l'IRL</td><td>Le prix continue dans la direction du breakout</td></tr>
+    <tr><td>Interpretation</td><td>Piege — les stops ont ete chasses</td><td>Mouvement reel — nouvelle direction</td></tr>
+  </table>
+
+  <h3 class="sec">Regles Strictes</h3>
+  <div class="box box-re">
+    <div class="box-title">Regle Absolue</div>
+    <p><strong>JAMAIS entrer sur un mouvement en extension.</strong> Si le prix est deja en train de chasser l'ERL, c'est trop tard. Attendre au MINIMUM un retracement vers l'IRL (un FVG ou un OB) avant de considerer une entree. Entrer en extension c'est courir apres le train — le risque est maximal et le reward minimal.</p>
+  </div>
+
+  <ul class="cl">
+    <li><strong>L'ERL est la cible, pas l'entree :</strong> on n'entre jamais AU niveau de l'ERL — on entre dans l'IRL pour viser l'ERL</li>
+    <li><strong>Apres un sweep d'ERL, chercher l'IRL :</strong> le premier mouvement apres un grab est le retrace — c'est la que se trouve le setup</li>
+    <li><strong>Multiple sweeps = consolidation :</strong> si les deux extremes sont sweepees sans continuation, c'est un Type 3</li>
+    <li><strong>L'ERL la plus evidente sera chassee en premier :</strong> les equal highs/lows les plus visibles sont les premieres cibles</li>
+  </ul>
+
+  <h3 class="sec">Ordre d'Attraction de la Liquidite</h3>
+  <ol class="nl">
+    <li><strong>Equal Highs / Equal Lows :</strong> liquidite la plus evidente — maximum d'ordres stop concentres</li>
+    <li><strong>PDH / PDL (Previous Day H/L) :</strong> niveaux institutionnels de reference quotidienne</li>
+    <li><strong>PWH / PWL (Previous Week H/L) :</strong> niveaux de reference hebdomadaire</li>
+    <li><strong>Swing H/L majeurs :</strong> points de structure sur HTF</li>
+    <li><strong>FVG HTF non-combles :</strong> inefficacites qui attirent le prix pour reequilibrage</li>
+  </ol>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- M11 — Zones de Prix EXTERNE VS INTERNE -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section class="mod" id="m11">
+  <div class="mod-head">
+    <span class="mod-tag">SEC 11</span>
+    <h2>Zones de Prix Externe vs Zones de Prix Interne</h2>
+  </div>
+
+  <h3 class="sec">Zones de Prix Externe — Le Biais Macro</h3>
+  <p>Le Zones de Prix externe est trace sur le <strong>timeframe superieur</strong> (Daily, H4, Weekly). Il donne la direction generale du marche et le cadre macro dans lequel tous les mouvements intraday se produisent.</p>
+
+  <ul class="cl">
+    <li><strong>Fonction :</strong> definir le biais directionnel — haussier ou baissier</li>
+    <li><strong>Niveaux :</strong> les zones deep du Zones de Prix externe sont les zones ou on cherche des setups</li>
+    <li><strong>Validite :</strong> un Zones de Prix Daily reste valide pendant plusieurs jours/semaines</li>
+    <li><strong>Changement :</strong> le Zones de Prix externe ne change que sur un BOS significatif du HTF</li>
+  </ul>
+
+  <h3 class="sec">Zones de Prix Interne — La Precision d'Execution</h3>
+  <p>Le Zones de Prix interne est trace sur le <strong>timeframe inferieur</strong> (H1, M15, M5). Il sert a affiner l'entree une fois que le biais macro est etabli par le Zones de Prix externe.</p>
+
+  <ul class="cl">
+    <li><strong>Fonction :</strong> trouver le point d'entree precis a l'interieur du biais macro</li>
+    <li><strong>Formation :</strong> se forme depuis les bases de consolidation, les IOFED, les zones d'accumulation</li>
+    <li><strong>Validite :</strong> plus courte — un Zones de Prix M15 peut etre invalide en quelques heures</li>
+    <li><strong>Relation :</strong> le Zones de Prix interne doit etre en accord avec le Zones de Prix externe pour un trade de haute probabilite</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Principe d'Alignement</div>
+    <p>Le trade ideal : le Zones de Prix externe indique une direction (prix en deep discount par exemple), et le Zones de Prix interne fournit un point d'entree precis dans cette meme direction. Quand les deux Zones de Prix sont alignes, la probabilite du trade augmente considerablement.</p>
+  </div>
+
+  <h3 class="sec">Sources du Zones de Prix Interne</h3>
+  <table class="tbl">
+    <tr><th>Source</th><th>Description</th><th>Fiabilite</th></tr>
+    <tr><td>Base de Consolidation</td><td>Zone etroite ou le prix a accumule avant un mouvement — le Zones de Prix interne se forme a partir de cette base</td><td>Tres haute</td></tr>
+    <tr><td>IOFED</td><td>Institutional Order Flow Entry Drill — point d'entree institutionnel identifie sur LTF</td><td>Haute</td></tr>
+    <tr><td>Zone d'Accumulation</td><td>Zone ou le volume s'est concentre sans mouvement de prix significatif</td><td>Haute</td></tr>
+    <tr><td>Swing LTF</td><td>Simple swing A-B-C sur le timeframe inferieur a l'interieur du Zones de Prix externe</td><td>Moyenne</td></tr>
+  </table>
+
+  <h3 class="sec">Processus Multi-Timeframe</h3>
+  <ol class="nl">
+    <li><strong>HTF (Daily/H4) :</strong> Tracer le Zones de Prix externe — identifier le biais (premium/discount)</li>
+    <li><strong>MTF (H1) :</strong> Observer la structure — le prix approche-t-il une zone deep du Zones de Prix externe ?</li>
+    <li><strong>LTF (M15/M5) :</strong> Tracer le Zones de Prix interne — chercher une signature d'entree dans la zone deep</li>
+    <li><strong>Execution (M1/M5) :</strong> Affiner l'entree sur le PD Array le plus precis du Zones de Prix interne</li>
+  </ol>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- M12 — PROTOCOLE D'EXECUTION -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section class="mod" id="m12">
+  <div class="mod-head">
+    <span class="mod-tag">SEC 12</span>
+    <h2>Protocole d'Execution</h2>
+  </div>
+
+  <h3 class="sec">Les 3 Questions Fondamentales</h3>
+  <p>Avant chaque trade, repondre a ces trois questions. Si une seule reste sans reponse claire, <strong>pas de trade</strong>.</p>
+
+  <table class="tbl">
+    <tr><th>#</th><th>Question</th><th>Ce que vous cherchez</th></tr>
+    <tr><td>1</td><td>Qu'a fait le prix ?</td><td>Quel mouvement vient de se produire ? ERL chassee ? IRL comblee ? BOS ? Sweep ?</td></tr>
+    <tr><td>2</td><td>Ou est-il maintenant ?</td><td>Dans quel Zones de Prix ? Premium ou Discount ? Pres d'un PD Array ? Dans une zone deep ?</td></tr>
+    <tr><td>3</td><td>Ou va-t-il aller ?</td><td>Quel est le DOL ? Ou est la prochaine ERL ? Y a-t-il de l'IRL a combler avant ?</td></tr>
+  </table>
+
+  <div class="box box-re">
+    <div class="box-title">Regle d'Or</div>
+    <p>Si vous ne pouvez pas repondre clairement aux 3 questions = <strong>pas de trade</strong>. L'absence de clarte est un signal en soi : le marche est probablement en consolidation (Type 3) ou entre deux Zones de Prix. Forcer un trade dans le flou est la premiere cause de pertes.</p>
+  </div>
+
+  <h3 class="sec">Checklist Pre-Trade</h3>
+  <ol class="nl">
+    <li><strong>Biais HTF confirme ?</strong> Le Zones de Prix externe montre une direction claire (prix en deep discount pour buy, deep premium pour sell)</li>
+    <li><strong>Type de Zones de Prix identifie ?</strong> Type 1 (continuation), Type 2 (reversal), ou Type 3 (ne pas trader au milieu)</li>
+    <li><strong>PD Array present ?</strong> FVG, OB, ou Breaker dans la zone d'entree — au minimum un PD Array</li>
+    <li><strong>Confluence ?</strong> Au moins 2 elements convergent (PD Array + niveau Zones de Prix, ou PD Array + liquidite)</li>
+    <li><strong>DOL identifie ?</strong> La cible du trade est clairement definie (ERL, equal H/L, PDH/PDL)</li>
+    <li><strong>Risk/Reward acceptable ?</strong> Minimum 1:2 — idealement 1:3 ou mieux</li>
+    <li><strong>Pas en extension ?</strong> Le prix a retrace vers l'IRL — pas de chase</li>
+    <li><strong>Timing correct ?</strong> Session active (London ou NY AM) — pas en Asiatique si on trade les majeurs</li>
+  </ol>
+
+  <h3 class="sec">Gestion de Position</h3>
+  <ul class="cl">
+    <li><strong>Stop Loss :</strong> toujours au-dela du DR Low (pour buy) ou DR High (pour sell) — JAMAIS a l'interieur du Zones de Prix</li>
+    <li><strong>Take Profit 1 :</strong> CE (50%) du Zones de Prix si l'entree est en deep</li>
+    <li><strong>Take Profit 2 :</strong> extremite opposee du Zones de Prix</li>
+    <li><strong>Take Profit 3 :</strong> DOL (ERL au-dela du Zones de Prix si le Type 2 l'indique)</li>
+    <li><strong>Partials :</strong> securiser 50% a TP1, 30% a TP2, laisser 20% courir vers TP3</li>
+  </ul>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- M13 — BIAIS & ENTREE -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section class="mod" id="m13">
+  <div class="mod-head">
+    <span class="mod-tag">SEC 13</span>
+    <h2>Biais et Criteres d'Entree</h2>
+  </div>
+
+  <h3 class="sec">Etablir le Biais</h3>
+  <p>Le biais est la direction dans laquelle on cherche des trades. Il se determine sur le HTF et ne change pas au cours de la journee sauf evenement majeur.</p>
+
+  <table class="tbl">
+    <tr><th>Element</th><th>Biais Bullish</th><th>Biais Bearish</th></tr>
+    <tr><td>Structure HTF</td><td>Higher highs, higher lows</td><td>Lower highs, lower lows</td></tr>
+    <tr><td>Position dans Zones de Prix externe</td><td>Prix en discount (0-50%)</td><td>Prix en premium (50-100%)</td></tr>
+    <tr><td>Liquidite</td><td>ERL au-dessus (equal highs, PDH)</td><td>ERL en dessous (equal lows, PDL)</td></tr>
+    <tr><td>FVG HTF</td><td>FVG bullish non comble en dessous</td><td>FVG bearish non comble au-dessus</td></tr>
+    <tr><td>Action recente</td><td>Sweep du low + retour dans le range</td><td>Sweep du high + retour dans le range</td></tr>
+  </table>
+
+  <h3 class="sec">Criteres d'Entree — La Signature</h3>
+  <p>Le biais dit <strong>dans quelle direction</strong> chercher. La signature dit <strong>quand</strong> entrer. Sans signature, pas d'entree — meme si le biais est clair.</p>
+
+  <ul class="cl">
+    <li><strong>BOS sur LTF :</strong> Break of Structure sur M5/M15 dans le sens du biais — la structure locale confirme la direction</li>
+    <li><strong>FVG cree apres BOS :</strong> le mouvement post-BOS laisse un FVG — c'est la zone d'entree</li>
+    <li><strong>OB touche avec rejet :</strong> le prix touche un OB dans la zone deep et rejette (meche + cloture opposee)</li>
+    <li><strong>Displacement :</strong> mouvement agressif et rapide dans le sens du biais — confirme la presence institutionnelle</li>
+    <li><strong>CISD (Change in State of Delivery) :</strong> passage d'un etat de distribution a un etat d'accumulation ou inversement</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Patience</div>
+    <p><strong>1 a 2 trades par semaine suffisent.</strong> Les meilleurs traders du framework prennent en moyenne 4 a 6 trades par mois. La qualite prime enormement sur la quantite. Un seul trade bien place avec un R:R de 1:3 vaut mieux que 10 trades forces a 1:1.</p>
+  </div>
+
+  <h3 class="sec">Les Signatures a Eviter</h3>
+  <ul class="cl">
+    <li><strong>Faux BOS :</strong> cassure par la meche seulement, corps qui revient — ce n'est pas un vrai BOS</li>
+    <li><strong>BOS en asiatique :</strong> la liquidite est faible, le BOS peut etre un faux mouvement</li>
+    <li><strong>Entree sans FVG :</strong> si le mouvement post-BOS ne laisse pas de FVG, il manque de conviction institutionnelle</li>
+    <li><strong>Multiple rejets au meme niveau :</strong> si le prix teste 3+ fois le meme OB, celui-ci s'affaiblit</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Ne pas trader = aussi trader</div>
+    <p>La decision de ne pas entrer est une decision de trading a part entiere. Chaque jour ou vous preservez votre capital en evitant un trade mediocre est un jour productif. Le marche sera la demain. Votre capital doit l'etre aussi.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- M14 — LES 4 BOUGIES DE 6 HEURES -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section class="mod" id="m14">
+  <div class="mod-head">
+    <span class="mod-tag">SEC 14</span>
+    <h2>Les 4 Bougies de 6 Heures</h2>
+  </div>
+
+  <h3 class="sec">Decoupe de la Journee</h3>
+  <p>La journee de trading se decoupe en <strong>4 bougies de 6 heures</strong>, chacune correspondant a une phase specifique du cycle AMD (Accumulation - Manipulation - Distribution). Cette structure est fondamentale pour comprendre le timing du marche.</p>
+
+  <table class="tbl">
+    <tr><th>Bougie</th><th>Heures (NY)</th><th>Session</th><th>Phase AMD</th><th>Comportement</th></tr>
+    <tr><td>1</td><td>18h00 - 00h00</td><td>Asiatique</td><td>Open / Accumulation</td><td>Le prix definit le range initial. Volume faible. Le high ou low de cette bougie est souvent le high ou low de la journee.</td></tr>
+    <tr><td>2</td><td>00h00 - 06h00</td><td>London</td><td>Manipulation</td><td>Le prix casse un extreme de la bougie asiatique (stop hunt). Ce mouvement est souvent un piege — la direction finale est opposee.</td></tr>
+    <tr><td>3</td><td>06h00 - 12h00</td><td>NY AM</td><td>Distribution</td><td>Le vrai mouvement se produit. Le prix va dans la direction du biais. C'est la fenetre d'execution principale.</td></tr>
+    <tr><td>4</td><td>12h00 - 18h00</td><td>NY PM</td><td>Cloture</td><td>Le prix consolide ou retrace partiellement. Prise de profits institutionnelle. Pas de nouveaux trades ici.</td></tr>
+  </table>
+
+  <h3 class="sec">Chaque Bougie = Phase AMD</h3>
+  <p>A l'interieur de chaque bougie de 6 heures, le meme cycle AMD se reproduit en fractal :</p>
+
+  <ul class="cl">
+    <li><strong>Accumulation :</strong> les 30-60 premieres minutes — le prix range etroitement, les ordres s'accumulent</li>
+    <li><strong>Manipulation :</strong> fausse cassure dans la direction opposee au mouvement reel — chasse de stops</li>
+    <li><strong>Distribution :</strong> le vrai mouvement se deploie — c'est ici qu'on est positionne si l'analyse est correcte</li>
+  </ul>
+
+  <h3 class="sec">Open 18h — La Reference</h3>
+  <p>L'<strong>Open 18h NY</strong> (debut de la bougie asiatique) est la reference premium/discount pour la journee suivante :</p>
+
+  <ul class="cl">
+    <li><strong>Prix au-dessus de l'Open 18h :</strong> le marche est en premium pour la journee — chercher des sells si le biais est bearish</li>
+    <li><strong>Prix en dessous de l'Open 18h :</strong> le marche est en discount pour la journee — chercher des buys si le biais est bullish</li>
+    <li><strong>L'Open 18h agit comme un equilibrium intraday :</strong> le prix y revient souvent au cours des 24 heures</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Regle de Timing</div>
+    <p>La majorite des setups de haute probabilite se produisent dans la <strong>bougie 3 (NY AM, 06h-12h NY)</strong>. Si vous ne trouvez pas de setup dans cette fenetre, la journee n'offre probablement rien de qualite. Ne pas forcer un trade dans les bougies 1 ou 4.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- M15 — NDOG -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section class="mod" id="m15">
+  <div class="mod-head">
+    <span class="mod-tag">SEC 15</span>
+    <h2>NDOG — New Daily Opening Gap</h2>
+  </div>
+
+  <h3 class="sec">Definition</h3>
+  <p>Le <strong>NDOG</strong> (New Daily Opening Gap) est le vide de prix qui se forme entre la <strong>cloture a 16h14 NY</strong> (fin du marche regulier + settlement) et l'<strong>ouverture a 18h NY</strong> (debut de la session asiatique). Ce gap represente une zone d'inefficacite que le prix est naturellement attire a combler.</p>
+
+  <h3 class="sec">Pourquoi le NDOG est Important</h3>
+  <ul class="cl">
+    <li><strong>Zone d'equilibrage logique :</strong> le prix "doit" revenir combler cette inefficacite, comme pour tout FVG</li>
+    <li><strong>Reference temporelle :</strong> le NDOG se forme chaque jour — c'est un repere recurrent et fiable</li>
+    <li><strong>Aimant de prix :</strong> le marche est attire par le NDOG, surtout dans les premieres heures de la session suivante</li>
+    <li><strong>Mesure de momentum :</strong> un NDOG large indique un changement de sentiment overnight</li>
+  </ul>
+
+  <h3 class="sec">Utilisations du NDOG</h3>
+  <table class="tbl">
+    <tr><th>Utilisation</th><th>Description</th><th>Exemple</th></tr>
+    <tr><td>Zone d'entree</td><td>Le prix revient dans le NDOG — entrer dans le sens du biais quand le gap est comble</td><td>NDOG bearish comble + biais bearish = entree sell dans le gap</td></tr>
+    <tr><td>Prise de profit</td><td>Utiliser le NDOG comme cible intermediaire avant la cible finale</td><td>TP1 au CE du NDOG, TP2 a l'ERL</td></tr>
+    <tr><td>Cible</td><td>Le NDOG non comble au-dessus/en dessous est un objectif de prix</td><td>NDOG haussier non comble = prix va monter le combler</td></tr>
+    <tr><td>Filtre</td><td>Si le prix n'a pas comble le NDOG, ne pas entrer dans la direction opposee</td><td>NDOG bearish non comble = ne pas buy tant que le gap n'est pas traite</td></tr>
+  </table>
+
+  <div class="box box-bl">
+    <div class="box-title">NDOG et Biais</div>
+    <p>Le NDOG peut renforcer ou contredire le biais. Un NDOG dans le sens du biais HTF est un signe de continuite. Un NDOG contraire au biais HTF est souvent comble rapidement (le marche "corrige" le gap overnight) avant de reprendre dans la direction HTF.</p>
+  </div>
+
+  <h3 class="sec">Identification Pratique</h3>
+  <ol class="nl">
+    <li>Marquer le <strong>niveau de cloture 16h14 NY</strong> sur votre graphique</li>
+    <li>Marquer le <strong>niveau d'ouverture 18h00 NY</strong></li>
+    <li>La zone entre ces deux niveaux est le NDOG</li>
+    <li>Observer si le prix revient combler cette zone dans les heures suivantes</li>
+    <li>Le CE (50%) du NDOG est souvent le niveau le plus reactif</li>
+  </ol>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- M16 — AMD & TIMING -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<section class="mod" id="m16">
+  <div class="mod-head">
+    <span class="mod-tag">SEC 16</span>
+    <h2>AMD, Timing et Discipline</h2>
+  </div>
+
+  <h3 class="sec">Le Cycle AMD en Detail</h3>
+  <p>Le cycle <strong>Accumulation - Manipulation - Distribution</strong> est le moteur de tout mouvement de marche. Il se manifeste a toutes les echelles temporelles, du tick au mensuel.</p>
+
+  <table class="tbl">
+    <tr><th>Phase</th><th>Ce qui se passe</th><th>Votre action</th></tr>
+    <tr><td>Accumulation</td><td>Le prix range etroitement. Les institutions accumulent des positions discretement. Le volume est bas mais les ordres limites sont places.</td><td>Observer. Identifier le range. Placer vos alertes aux extremes.</td></tr>
+    <tr><td>Manipulation</td><td>Fausse cassure du range. Le prix depasse un extreme pour chasser les stops. Les traders retail entrent dans la mauvaise direction.</td><td>NE PAS reagir. C'est le piege. Attendre la confirmation que c'est un sweep, pas un breakout.</td></tr>
+    <tr><td>Distribution</td><td>Le vrai mouvement se deploie. Le prix va dans la direction opposee a la manipulation. C'est le mouvement le plus agressif et le plus volumineux.</td><td>Entrer si votre checklist est validee. C'est votre fenetre.</td></tr>
+  </table>
+
+  <h3 class="sec">Killzones — Fenetres d'Execution</h3>
+  <p>Les <strong>killzones</strong> sont les fenetres temporelles ou la probabilite de setup est la plus elevee :</p>
+
+  <table class="tbl">
+    <tr><th>Killzone</th><th>Heures (NY)</th><th>Heures (Paris)</th><th>Caracteristique</th></tr>
+    <tr><td>London Open</td><td>02h00 - 05h00</td><td>08h00 - 11h00</td><td>Manipulation de la session asiatique. Souvent le faux mouvement.</td></tr>
+    <tr><td>NY Open</td><td>07h00 - 10h00</td><td>13h00 - 16h00</td><td>Le vrai mouvement. Fenetre principale d'execution.</td></tr>
+    <tr><td>London Close</td><td>10h00 - 12h00</td><td>16h00 - 18h00</td><td>Retracement ou continuation. Setups secondaires possibles.</td></tr>
+  </table>
+
+  <div class="box box-am">
+    <div class="box-title">Timing Hierarchique</div>
+    <p>La majorite des traders du framework ne tradent que durant le <strong>NY Open Killzone (07h-10h NY)</strong>. Si aucun setup ne se presente dans cette fenetre de 3 heures, la journee est terminee. Cette discipline elimine 80% des trades perdants qui se produisent en dehors des heures actives.</p>
+  </div>
+
+  <h3 class="sec">Discipline — Le Facteur Decisif</h3>
+  <p>La maitrise technique du Zones de Prix ne represente qu'une partie de l'equation. La discipline est ce qui separe les traders rentables de tous les autres.</p>
+
+  <ul class="cl">
+    <li><strong>1 a 2 trades par semaine suffisent :</strong> la suractation est la premiere cause de pertes</li>
+    <li><strong>Ne pas trader = aussi trader :</strong> chaque jour sans trade est un jour ou le capital est preserve</li>
+    <li><strong>Revenge trading :</strong> apres une perte, ne JAMAIS reprendre immediatement — attendre le lendemain minimum</li>
+    <li><strong>Journal de trading :</strong> noter chaque trade ET chaque decision de ne pas trader — les deux sont instructifs</li>
+    <li><strong>Risque fixe :</strong> 1% maximum par trade, sans exception, quelle que soit la "qualite" du setup</li>
+  </ul>
+
+  <h3 class="sec">Synthese du Framework Zones de Prix</h3>
+  <table class="tbl">
+    <tr><th>Etape</th><th>Action</th><th>Timeframe</th></tr>
+    <tr><td>1. Biais</td><td>Zones de Prix externe — direction macro</td><td>Daily / H4</td></tr>
+    <tr><td>2. Type</td><td>Identifier Type 1, 2 ou 3</td><td>H4 / H1</td></tr>
+    <tr><td>3. Zone</td><td>Attendre que le prix entre en zone deep</td><td>H1 / M15</td></tr>
+    <tr><td>4. PD Array</td><td>Identifier FVG, OB, Breaker dans la zone</td><td>M15 / M5</td></tr>
+    <tr><td>5. Signature</td><td>BOS + FVG sur LTF dans le sens du biais</td><td>M5 / M1</td></tr>
+    <tr><td>6. Entree</td><td>Entrer sur le retrace du FVG post-BOS</td><td>M1 / M5</td></tr>
+    <tr><td>7. Gestion</td><td>SL au-dela du Zones de Prix, TP en partials</td><td>—</td></tr>
+  </table>
+
+  <div class="quote">
+    <p>Le marche recompense la patience et la discipline. Chaque dealing range est une histoire — apprenez a la lire avant de vouloir y participer. La precision de l'entree est le fruit de la patience de l'attente.</p>
+    <cite>Algorithmic Academy — Zones de Prix</cite>
+  </div>
+</section>
+
+<footer id="footer">
+  <p>Zones de Prix — Dealing Range Theory Complete — Algorithmic Academy — 16 Sections — Types, PD Arrays, IRL-ERL, Execution, Sessions</p>
+  <p style="margin-top:8px;color:var(--border)">Le trading comporte des risques. Ce cours est educatif uniquement.</p>
+</footer>
+
+</main>
+
+<script>
+// Progress bar
+const pf = document.getElementById('pfill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  pf.style.width = (window.scrollY / h * 100) + '%';
+}, { passive: true });
+
+// Fade in modules
+const io = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.05 });
+document.querySelectorAll('.mod').forEach(m => io.observe(m));
+
+// Active nav
+const secs = [...document.querySelectorAll('[id]')];
+const links = document.querySelectorAll('.sb-link');
+function updateNav() {
+  const y = window.scrollY + 110;
+  let cur = secs[0]?.id;
+  for (const s of secs) { if (s.offsetTop <= y) cur = s.id; }
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>

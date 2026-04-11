@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="premium">
+<head>
+<meta charset="UTF-8">
+<script src="../auth.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Comprendre la Liquidite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0C0F0A;
+  --bg2:      #111510;
+  --bg3:      #181D14;
+  --border:   #1F2A1A;
+  --em:       #3D7A3A;
+  --em2:      #56A853;
+  --em-light: #A3D9A1;
+  --em-pale:  #E8F5E8;
+  --amber:    #D4882A;
+  --amber-l:  #F5C56A;
+  --red:      #C9453A;
+  --blue:     #4A90B8;
+  --muted:    #3A4535;
+  --text:     #DDE8D8;
+  --text-dim: #7D9478;
+  --serif:    'Playfair Display', serif;
+  --sans:     'Syne', sans-serif;
+  --body:     'Source Serif 4', serif;
+  --mono:     'Roboto Mono', monospace;
+  --sw: 270px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); line-height: 1.75; display: flex; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* -- SIDEBAR -- */
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sw); height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 100;
+}
+
+.sb-logo {
+  padding: 28px 22px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sb-logo .mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--em), var(--em2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(61,122,58,.3);
+}
+
+.sb-logo h1 {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--em-light);
+  line-height: 1.25;
+}
+
+.sb-logo p {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.sb-section {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 16px 22px 5px;
+}
+
+.sb-link {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 22px; text-decoration: none;
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 500;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.sb-link:hover { background: rgba(86,168,83,.06); color: var(--text); }
+.sb-link.active { background: rgba(86,168,83,.1); color: var(--em-light); border-left-color: var(--em2); }
+
+.sb-link .n {
+  font-family: var(--mono);
+  font-size: 0.62rem; font-weight: 500;
+  color: var(--muted); min-width: 22px;
+}
+.sb-link.active .n { color: var(--em2); }
+
+/* -- PROGRESS -- */
+#pbar {
+  position: fixed; top: 0; left: var(--sw); right: 0;
+  height: 2px; background: var(--border); z-index: 200;
+}
+#pfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--em), var(--em2), var(--amber));
+  width: 0%; transition: width 0.1s linear;
+}
+
+/* -- MAIN -- */
+#main { margin-left: var(--sw); flex: 1; min-height: 100vh; }
+
+/* -- HERO -- */
+#hero {
+  position: relative; overflow: hidden;
+  padding: 80px 64px 72px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.hero-noise {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-lines {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
+  background: repeating-linear-gradient(
+    -45deg, transparent, transparent 20px,
+    rgba(61,122,58,.04) 20px, rgba(61,122,58,.04) 21px
+  );
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(86,168,83,.12);
+  border: 1px solid rgba(86,168,83,.3);
+  color: var(--em-light);
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+}
+
+#hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 5.5vw, 5rem);
+  line-height: 1.0;
+  color: #fff;
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+#hero h1 .em {
+  display: block;
+  background: linear-gradient(90deg, var(--em2), var(--em-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
+#hero .sub {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 400;
+  color: var(--text-dim); max-width: 560px; margin-bottom: 44px;
+  line-height: 1.8;
+}
+
+.hero-kpis {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 14px; max-width: 750px;
+}
+
+.kpi {
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+}
+.kpi:hover { border-color: rgba(86,168,83,.35); }
+
+.kpi-v {
+  font-family: var(--mono);
+  font-size: 1.5rem; font-weight: 500;
+  color: var(--em-light); line-height: 1;
+  margin-bottom: 5px;
+}
+.kpi-l {
+  font-family: var(--sans);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* -- MODULE -- */
+.mod {
+  padding: 64px; border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.mod.vis { opacity: 1; transform: none; }
+
+.mod-head {
+  display: flex; align-items: flex-start; gap: 18px;
+  margin-bottom: 40px;
+}
+
+.mod-tag {
+  font-family: var(--mono);
+  font-size: 0.65rem; font-weight: 500;
+  color: var(--em2);
+  background: rgba(86,168,83,.1);
+  border: 1px solid rgba(86,168,83,.22);
+  padding: 5px 12px; border-radius: 6px;
+  white-space: nowrap; margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+.mod-head h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: #fff; line-height: 1.1;
+}
+
+/* -- SECTION TITLES -- */
+.sec {
+  font-family: var(--sans);
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--em-light);
+  margin: 42px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(86,168,83,.18);
+  display: flex; align-items: center; gap: 10px;
+}
+.sec::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 18px;
+  background: linear-gradient(var(--em), var(--em2));
+  border-radius: 2px; flex-shrink: 0;
+}
+
+.subsec {
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 700;
+  color: var(--text); margin: 26px 0 10px;
+}
+
+p {
+  font-size: 0.95rem; color: var(--text-dim);
+  line-height: 1.85; margin-bottom: 12px;
+}
+p strong { color: var(--text); font-weight: 600; }
+em { color: var(--em-light); font-style: italic; }
+
+/* -- CALLOUTS -- */
+.box {
+  border-radius: 10px; padding: 20px 24px;
+  margin: 18px 0; border-left: 3px solid;
+  background: rgba(255,255,255,.022);
+}
+.box-em  { border-color: var(--em2);  background: rgba(86,168,83,.06); }
+.box-am  { border-color: var(--amber); background: rgba(212,136,42,.06); }
+.box-re  { border-color: var(--red);   background: rgba(201,69,58,.06); }
+.box-bl  { border-color: var(--blue);  background: rgba(74,144,184,.06); }
+
+.box-title {
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 7px;
+}
+.box-em .box-title  { color: var(--em-light); }
+.box-am .box-title  { color: var(--amber-l); }
+.box-re .box-title  { color: #FCA5A5; }
+.box-bl .box-title  { color: #93C5FD; }
+.box p { margin: 0; font-size: 0.88rem; }
+
+/* -- LISTS -- */
+ul.cl { list-style: none; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 8px; }
+ul.cl li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ul.cl li::before {
+  content: '>'; color: var(--em2); font-size: 1rem;
+  margin-top: 1px; flex-shrink: 0;
+}
+ul.cl li strong { color: var(--text); }
+
+ol.nl { counter-reset: nl; margin: 12px 0 18px; display: flex; flex-direction: column; gap: 9px; }
+ol.nl li {
+  counter-increment: nl;
+  display: flex; align-items: flex-start; gap: 13px;
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+}
+ol.nl li::before {
+  content: counter(nl);
+  background: rgba(86,168,83,.15);
+  border: 1px solid rgba(86,168,83,.28);
+  color: var(--em-light);
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+}
+
+/* -- TABLES -- */
+.tbl { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.85rem; }
+.tbl th {
+  text-align: left; padding: 10px 14px;
+  background: var(--bg3);
+  color: var(--em-light);
+  font-family: var(--mono); font-size: 0.7rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.tbl td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(31,42,26,.6);
+  color: var(--text-dim);
+}
+.tbl tr:hover td { color: var(--text); background: rgba(255,255,255,.02); }
+.tbl .col-bad { color: var(--red); }
+.tbl .col-good { color: var(--em-light); }
+
+/* -- FOOTER -- */
+footer {
+  padding: 40px 64px;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem; color: var(--text-dim);
+  text-align: center;
+}
+
+/* -- RESPONSIVE -- */
+@media (max-width: 900px) {
+  :root { --sw: 0px; }
+  #sidebar { display: none; }
+  #main { margin-left: 0; }
+  .mod { padding: 36px 20px; }
+  #hero { padding: 50px 20px 40px; }
+  .hero-kpis { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+<link rel="stylesheet" href="../readability.css">
+</head>
+<body>
+
+<!-- -- SIDEBAR -- -->
+<aside id="sidebar">
+  <div class="sb-logo">
+    <div class="mark">A</div>
+    <h1>Liquidite Algorithmique</h1>
+    <p>Formation Algorithmic Academy</p>
+  </div>
+
+  <div class="sb-section">Fondations</div>
+  <a class="sb-link" href="#m1"><span class="n">01</span> Mecanique du Marche</a>
+  <a class="sb-link" href="#m2"><span class="n">02</span> Loi Cause-Effet</a>
+
+  <div class="sb-section">Liquidite</div>
+  <a class="sb-link" href="#m3"><span class="n">03</span> Ou elle se trouve</a>
+  <a class="sb-link" href="#m4"><span class="n">04</span> Types de liquidite</a>
+  <a class="sb-link" href="#m5"><span class="n">05</span> Pools</a>
+
+  <div class="sb-section">Cycles</div>
+  <a class="sb-link" href="#m6"><span class="n">06</span> Cycle de Liquidite</a>
+  <a class="sb-link" href="#m7"><span class="n">07</span> Imbrication des Cycles</a>
+  <a class="sb-link" href="#m8"><span class="n">08</span> Phases</a>
+
+  <div class="sb-section">Traps</div>
+  <a class="sb-link" href="#m9"><span class="n">09</span> Types de Pieges</a>
+  <a class="sb-link" href="#m10"><span class="n">10</span> Comment les Eviter</a>
+  <a class="sb-link" href="#m11"><span class="n">11</span> Identification</a>
+
+  <div class="sb-section">Execution</div>
+  <a class="sb-link" href="#m12"><span class="n">12</span> Entrees</a>
+  <a class="sb-link" href="#m13"><span class="n">13</span> Confirmation</a>
+  <a class="sb-link" href="#m14"><span class="n">14</span> Gestion</a>
+</aside>
+
+<div id="pbar"><div id="pfill"></div></div>
+
+<!-- -- MAIN -- -->
+<main id="main">
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-tag">Formation Premium</div>
+  <h1>Liquidite<span class="em">Algorithmique</span></h1>
+  <p class="sub">
+    Comprendre le plan du marche. Liquidite, Cycles, Traps, Cause-Effet et Execution Institutionnelle -- le cadre complet pour lire les mouvements de prix comme les institutions.
+  </p>
+  <div class="hero-kpis">
+    <div class="kpi"><div class="kpi-v">14</div><div class="kpi-l">Modules</div></div>
+    <div class="kpi"><div class="kpi-v">4</div><div class="kpi-l">Phases</div></div>
+    <div class="kpi"><div class="kpi-v">MTF</div><div class="kpi-l">Fractalite</div></div>
+    <div class="kpi"><div class="kpi-v">5</div><div class="kpi-l">Traps</div></div>
+    <div class="kpi"><div class="kpi-v">5R+</div><div class="kpi-l">Objectif</div></div>
+  </div>
+</section>
+
+
+<!-- =========================================== -->
+<!-- MODULE 1 — Mecanique Profonde du Marche     -->
+<!-- =========================================== -->
+<section class="mod" id="m1">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 01</span>
+    <h2>Mecanique Profonde du Marche</h2>
+  </div>
+
+  <p>
+    Le marche financier n'est pas un casino aleatoire. Il obeit a des <strong>contraintes mecaniques</strong> fondamentales liees a la taille des ordres institutionnels. Comprendre cette mecanique est le prerequis absolu avant d'utiliser le moindre outil technique.
+  </p>
+
+  <div class="sec">Le probleme de la contrepartie</div>
+  <p>
+    Les institutions -- banques centrales, hedge funds, fonds souverains -- operent avec des positions de <strong>plusieurs milliards</strong>. Pour acheter 1 milliard de dollars d'un actif, il faut exactement 1 milliard a vendre en face. C'est la loi fondamentale de tout marche : chaque achat necessite un vendeur, chaque vente necessite un acheteur.
+  </p>
+
+  <ul class="cl">
+    <li>Les institutions ne peuvent <strong>pas</strong> simplement cliquer sur "acheter" comme un trader retail -- leur taille d'ordre est trop importante</li>
+    <li>Si une institution place un ordre de 2 milliards d'un coup, le prix s'envolerait instantanement contre elle -- elle n'obtiendrait jamais un bon prix moyen</li>
+    <li>La solution : <strong>fragmenter les ordres</strong> et les executer progressivement en recuperant la contrepartie disponible</li>
+    <li>Les lots (contrats) se liberent quand des traders sortent de position -- via <strong>Take Profit</strong>, <strong>Stop Loss</strong>, ou <strong>Break Even</strong></li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Principe fondamental</div>
+    <p>La priorite numero 1 des institutions n'est pas de "chasser vos stops". C'est de <strong>recuperer suffisamment de contrats</strong> pour executer leurs ordres massifs. Tout le reste decoule de cette contrainte mecanique.</p>
+  </div>
+
+  <div class="sec">La realite de la "liquidation"</div>
+  <p>
+    Quand on parle de "liquider" des positions, il ne s'agit pas forcement de toucher les Stop Loss. Un trader qui prend son <strong>Take Profit</strong> ou qui deplace son stop au <strong>Break Even</strong> libere aussi des contrats. Chaque sortie de position cree de la liquidite que les institutions peuvent absorber.
+  </p>
+
+  <ul class="cl">
+    <li><strong>Stop Loss touche</strong> = contrats liberes (le trader vend, l'institution achete)</li>
+    <li><strong>Take Profit touche</strong> = contrats liberes (le trader vend, l'institution achete)</li>
+    <li><strong>Break Even touche</strong> = contrats liberes (meme mecanisme)</li>
+    <li>Les <strong>ordres limites</strong> en attente = liquidite disponible a un prix fixe</li>
+  </ul>
+
+  <div class="sec">Pas de complot -- une contrainte mecanique</div>
+  <p>
+    Il n'y a pas de "manipulation" au sens complotiste. Le marche multiplie les pieges dans les deux directions parce que c'est le <strong>seul moyen</strong> pour les gros acteurs de recuperer assez de contrats. Le prix doit aller chercher la liquidite la ou elle se trouve, puis revenir dans la direction reelle.
+  </p>
+
+  <div class="box box-am">
+    <div class="box-title">Changement de perspective</div>
+    <p>Arretez de penser "le marche est contre moi". Pensez plutot : "le marche a besoin de mes contrats et de ceux de milliers d'autres traders pour executer un ordre massif". C'est impersonnel et mecanique.</p>
+  </div>
+
+  <table class="tbl">
+    <tr><th>Aspect</th><th>Vision Retail</th><th>Realite Mecanique</th></tr>
+    <tr><td>Mouvement de prix</td><td class="col-bad">"Le marche est manipule"</td><td class="col-good">Le prix cherche la contrepartie</td></tr>
+    <tr><td>Stop Loss touche</td><td class="col-bad">"Ils chassent mes stops"</td><td class="col-good">Les institutions recuperent des contrats</td></tr>
+    <tr><td>Faux breakout</td><td class="col-bad">"Le marche est truque"</td><td class="col-good">Sweep de liquidite pour remplir les ordres</td></tr>
+    <tr><td>Consolidation</td><td class="col-bad">"Le marche ne fait rien"</td><td class="col-good">Accumulation de liquidite dans les 2 sens</td></tr>
+    <tr><td>Spike soudain</td><td class="col-bad">"Volatilite aleatoire"</td><td class="col-good">Prise de liquidite puis mouvement directionnel</td></tr>
+  </table>
+</section>
+
+
+<!-- =========================================== -->
+<!-- MODULE 2 — Loi de Cause a Effet            -->
+<!-- =========================================== -->
+<section class="mod" id="m2">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 02</span>
+    <h2>Loi de Cause a Effet</h2>
+  </div>
+
+  <p>
+    Chaque mouvement de prix a une <strong>cause</strong> (liquidite a recuperer) et un <strong>effet</strong> (mouvement directionnel). Il n'existe pas de mouvement sans raison dans le marche. Comprendre cette loi transforme completement votre lecture du graphique.
+  </p>
+
+  <div class="sec">Le principe causal</div>
+  <ul class="cl">
+    <li><strong>Cause</strong> = la liquidite accumulee a un niveau precis (stops, limites, TP clusters)</li>
+    <li><strong>Effet</strong> = le mouvement directionnel qui suit la prise de cette liquidite</li>
+    <li>Plus la cause est importante (grand pool de liquidite), plus l'effet sera puissant</li>
+    <li>Pas de mouvement significatif sans une prise de liquidite prealable</li>
+  </ul>
+
+  <div class="box box-re">
+    <div class="box-title">Erreur fatale</div>
+    <p>Utiliser les outils techniques (Order Blocks, FVG, Breakers) sans comprendre le plan global de liquidite, c'est comme percer des murs au hasard dans un batiment. Vous pouvez avoir le meilleur outil du monde -- sans savoir ou l'appliquer, il est inutile.</p>
+  </div>
+
+  <div class="sec">L'ordre correct d'apprentissage</div>
+  <ol class="nl">
+    <li><strong>Comprendre le marche</strong> -- pourquoi le prix bouge, la mecanique de la contrepartie, le role de la liquidite</li>
+    <li><strong>Lire le plan</strong> -- identifier ou se trouve la liquidite, dans quel cycle on est, quelle phase se deroule</li>
+    <li><strong>Utiliser les outils</strong> -- appliquer OB, FVG, Breakers, etc. UNIQUEMENT dans le contexte du plan identifie</li>
+  </ol>
+
+  <p>
+    La majorite des traders retail commencent directement a l'etape 3. Ils apprennent les Order Blocks ou les Fair Value Gaps et les appliquent partout, sans contexte. Le resultat : des pertes systematiques malgre des outils techniquement corrects.
+  </p>
+
+  <div class="sec">Exemples pratiques</div>
+  <table class="tbl">
+    <tr><th>Scenario</th><th>Cause (Liquidite)</th><th>Effet (Mouvement)</th></tr>
+    <tr><td>Double top casse</td><td>BSL au-dessus des equal highs</td><td>Retournement baissier apres sweep</td></tr>
+    <tr><td>Consolidation longue</td><td>Liquidite accumulee des 2 cotes</td><td>Mouvement explosif dans une direction</td></tr>
+    <tr><td>Trendline cassee</td><td>Stops places sous la trendline</td><td>Continuation haussiere apres sweep SSL</td></tr>
+    <tr><td>News spike</td><td>Large pool de liquidite a sweeper</td><td>Direction finale opposee au spike initial</td></tr>
+  </table>
+
+  <div class="box box-em">
+    <div class="box-title">Regle d'or</div>
+    <p>Avant chaque trade, posez-vous la question : "Quelle est la CAUSE de ce mouvement ? Ou est la liquidite qui a ete prise ?" Si vous ne pouvez pas repondre, ne tradez pas.</p>
+  </div>
+</section>
+
+
+<!-- =========================================== -->
+<!-- MODULE 3 — Ou se trouve la Liquidite       -->
+<!-- =========================================== -->
+<section class="mod" id="m3">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 03</span>
+    <h2>Ou se trouve la Liquidite</h2>
+  </div>
+
+  <p>
+    La liquidite n'est pas invisible. Elle se concentre a des endroits <strong>previsibles</strong> sur le graphique, la ou la majorite des traders placent leurs ordres. Apprendre a la localiser est la competence la plus importante du framework.
+  </p>
+
+  <div class="sec">Buy-Side Liquidity (BSL)</div>
+  <p>
+    La liquidite acheteuse se trouve <strong>au-dessus</strong> des niveaux ou les traders ont place des ordres. Ces niveaux attirent le prix vers le haut.
+  </p>
+  <ul class="cl">
+    <li><strong>Au-dessus des swing highs</strong> -- les stops des vendeurs sont places au-dessus des sommets</li>
+    <li><strong>Double tops / Equal highs</strong> -- concentration massive de stops au meme niveau</li>
+    <li><strong>Trendlines descendantes</strong> -- les traders placent des buy stops au-dessus de la trendline pour trader le breakout</li>
+    <li><strong>Previous Day/Week/Month High</strong> -- niveaux de reference institutionnels avec des clusters de stops</li>
+  </ul>
+
+  <div class="sec">Sell-Side Liquidity (SSL)</div>
+  <p>
+    La liquidite vendeuse se trouve <strong>en-dessous</strong> des niveaux cles. Ces niveaux attirent le prix vers le bas.
+  </p>
+  <ul class="cl">
+    <li><strong>En-dessous des swing lows</strong> -- les stops des acheteurs sont places sous les creux</li>
+    <li><strong>Double bottoms / Equal lows</strong> -- concentration massive de stops au meme niveau</li>
+    <li><strong>Trendlines montantes</strong> -- les traders placent des sell stops sous la trendline</li>
+    <li><strong>Previous Day/Week/Month Low</strong> -- niveaux de reference avec clusters de stops</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Logique cle</div>
+    <p>Partout ou les traders retail placent des ordres en masse, c'est la que la liquidite se concentre. Les institutions le savent et le prix ira inevitablement chercher ces niveaux.</p>
+  </div>
+
+  <div class="sec">Hierarchie de la liquidite</div>
+  <table class="tbl">
+    <tr><th>Type</th><th>Localisation</th><th>Importance</th><th>Exemple</th></tr>
+    <tr><td><strong>Major BSL</strong></td><td>Au-dessus des HTF swing highs</td><td class="col-good">Tres elevee</td><td>Weekly/Monthly high</td></tr>
+    <tr><td><strong>Minor BSL</strong></td><td>Au-dessus des LTF swing highs</td><td>Moderee</td><td>Session high, 4H high</td></tr>
+    <tr><td><strong>Major SSL</strong></td><td>En-dessous des HTF swing lows</td><td class="col-good">Tres elevee</td><td>Weekly/Monthly low</td></tr>
+    <tr><td><strong>Minor SSL</strong></td><td>En-dessous des LTF swing lows</td><td>Moderee</td><td>Session low, 4H low</td></tr>
+    <tr><td><strong>Equal Highs</strong></td><td>Meme prix exact (2+ touches)</td><td class="col-good">Tres elevee</td><td>Triple top parfait</td></tr>
+    <tr><td><strong>Equal Lows</strong></td><td>Meme prix exact (2+ touches)</td><td class="col-good">Tres elevee</td><td>Triple bottom parfait</td></tr>
+  </table>
+</section>
+
+
+<!-- =========================================== -->
+<!-- MODULE 4 — Types de Liquidite              -->
+<!-- =========================================== -->
+<section class="mod" id="m4">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 04</span>
+    <h2>Types de Liquidite</h2>
+  </div>
+
+  <p>
+    Toute la liquidite n'est pas egale. Certains pools sont plus "magnetiques" que d'autres, et comprendre la difference permet de prioriser les niveaux et de filtrer les faux signaux.
+  </p>
+
+  <div class="sec">Liquidite statique vs dynamique</div>
+  <ul class="cl">
+    <li><strong>Liquidite statique</strong> -- niveaux horizontaux fixes : equal highs, equal lows, PDH, PDL, PWH, PWL. Ces niveaux ne bougent pas et sont faciles a identifier.</li>
+    <li><strong>Liquidite dynamique</strong> -- niveaux qui se deplacent avec le temps : trendlines, moyennes mobiles, canaux. Les traders retail ajustent leurs stops le long de ces niveaux, creant une liquidite "en mouvement".</li>
+  </ul>
+
+  <div class="sec">Liquidite interne vs externe</div>
+  <ul class="cl">
+    <li><strong>Liquidite externe</strong> -- se trouve aux <strong>extremes</strong> du range (highs et lows). C'est la liquidite BSL et SSL classique.</li>
+    <li><strong>Liquidite interne</strong> -- se trouve a l'<strong>interieur</strong> du range (FVG, imbalances, OB). Le prix comble les desequilibres en revenant chercher ces zones.</li>
+    <li>Le mouvement du prix <strong>alterne</strong> entre liquidite externe (sweep des highs/lows) et liquidite interne (comblement des FVG/OB)</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Principe d'alternance</div>
+    <p>Le prix va chercher la liquidite <strong>externe</strong> (sweep d'un high ou low), puis revient combler la liquidite <strong>interne</strong> (FVG, imbalance), puis repart vers la prochaine liquidite externe. Ce cycle d'alternance est constant et previsible.</p>
+  </div>
+
+  <div class="sec">Classification par attractivite</div>
+  <table class="tbl">
+    <tr><th>Niveau</th><th>Attractivite</th><th>Pourquoi</th></tr>
+    <tr><td>Equal Highs / Equal Lows</td><td class="col-good">Maximale</td><td>Concentration evidente de stops au meme prix exact</td></tr>
+    <tr><td>Old High / Old Low HTF</td><td class="col-good">Tres forte</td><td>Niveaux visibles par tous les participants</td></tr>
+    <tr><td>Trendline avec 3+ touches</td><td>Forte</td><td>Plus il y a de touches, plus il y a de stops places le long</td></tr>
+    <tr><td>Session High/Low</td><td>Moderee</td><td>Liquidite intraday, pertinente pour le scalping</td></tr>
+    <tr><td>Minor swing dans un range</td><td class="col-bad">Faible</td><td>Peu de stops accumules, sweep rapide possible</td></tr>
+  </table>
+</section>
+
+
+<!-- =========================================== -->
+<!-- MODULE 5 — Pools de Liquidite              -->
+<!-- =========================================== -->
+<section class="mod" id="m5">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 05</span>
+    <h2>Pools de Liquidite</h2>
+  </div>
+
+  <p>
+    Les pools de liquidite sont des <strong>zones de concentration</strong> ou un grand nombre d'ordres attendent d'etre executes. Comprendre comment ils se forment et comment le marche les cible est essentiel pour anticiper les mouvements de prix.
+  </p>
+
+  <div class="sec">Formation des pools</div>
+  <ol class="nl">
+    <li>Le prix cree un <strong>swing high ou low</strong> visible</li>
+    <li>Les traders retail placent des stops juste au-dessus (pour les shorts) ou en-dessous (pour les longs)</li>
+    <li>D'autres traders placent des ordres <strong>breakout</strong> au meme niveau (buy stops au-dessus du high, sell stops en-dessous du low)</li>
+    <li>Le temps passe -- plus le niveau tient longtemps, plus la liquidite s'accumule</li>
+    <li>Le pool devient suffisamment important pour attirer l'interet institutionnel</li>
+    <li>Le prix <strong>sweep</strong> le niveau, recupere la liquidite, puis se retourne</li>
+  </ol>
+
+  <div class="sec">Comment identifier un pool puissant</div>
+  <ul class="cl">
+    <li><strong>Nombre de touches</strong> -- un niveau teste 3 fois ou plus accumule enormement de stops</li>
+    <li><strong>Duree</strong> -- plus un niveau est ancien et visible, plus il concentre de liquidite</li>
+    <li><strong>Timeframe</strong> -- un pool HTF (Weekly, Daily) contient beaucoup plus de liquidite qu'un pool M15</li>
+    <li><strong>Precision</strong> -- des highs ou lows au prix exact (equal) concentrent plus que des niveaux approximatifs</li>
+    <li><strong>Visibilite</strong> -- si c'est evident sur le graphique pour tout le monde, c'est un gros pool</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Regle pratique</div>
+    <p>Un pool de liquidite est comme un aimant. Plus il est gros (plus il y a de stops accumules), plus l'attraction est forte. Le prix finira <strong>toujours</strong> par y aller -- la seule question est "quand".</p>
+  </div>
+
+  <div class="sec">Pools empiles</div>
+  <p>
+    Parfois, plusieurs niveaux de liquidite sont tres proches les uns des autres, formant un <strong>cluster</strong> ou un "pool empile". Le marche peut sweeper ces niveaux un par un (inducement en cascade) ou les prendre tous d'un coup avec un mouvement violent.
+  </p>
+
+  <ul class="cl">
+    <li><strong>Cluster serre</strong> (5-10 pips entre les niveaux) -- generalement pris en une seule meche</li>
+    <li><strong>Cluster large</strong> (30+ pips) -- souvent pris en plusieurs etapes avec des pullbacks intermediaires</li>
+    <li>Les clusters sont des <strong>zones</strong>, pas des lignes -- raisonnez en termes de zone de prix</li>
+  </ul>
+</section>
+
+
+<!-- =========================================== -->
+<!-- MODULE 6 — Le Cycle de Liquidite           -->
+<!-- =========================================== -->
+<section class="mod" id="m6">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 06</span>
+    <h2>Le Cycle de Liquidite</h2>
+  </div>
+
+  <p>
+    Le marche fonctionne en <strong>cycles repetes</strong>. Chaque cycle suit les memes phases, de l'accumulation a la distribution. Comprendre dans quelle phase vous vous trouvez est la cle pour eviter les pieges et trader dans la bonne direction.
+  </p>
+
+  <div class="sec">Les 4 phases du cycle</div>
+
+  <div class="subsec">Phase 1 : Accumulation</div>
+  <p>
+    Le marche cree des swings, des ranges et des structures qui <strong>construisent la liquidite</strong>. Le prix oscille dans une zone definie, attrapant des traders des deux cotes. C'est la phase la plus dangereuse pour trader car il n'y a pas de direction claire.
+  </p>
+  <ul class="cl">
+    <li>Le prix cree des <strong>equal highs et equal lows</strong></li>
+    <li>Des trendlines commencent a se former dans les deux directions</li>
+    <li>Les traders retail commencent a prendre position (long ou short) selon leur biais</li>
+    <li>La liquidite <strong>s'accumule</strong> au-dessus et en-dessous du range</li>
+  </ul>
+
+  <div class="subsec">Phase 2 : Manipulation</div>
+  <p>
+    Le prix fait un mouvement <strong>CONTRE</strong> la direction finale pour <strong>sweeper la liquidite</strong> accumulee. C'est le piege classique. Les traders retail pensent que le breakout est reel et entrent en position -- ils seront liquides.
+  </p>
+  <ul class="cl">
+    <li>Un <strong>faux breakout</strong> casse un niveau cle (high ou low du range)</li>
+    <li>Les stops sont touches, les ordres breakout sont declenches</li>
+    <li>Le volume explose brievement puis retombe</li>
+    <li>Le prix revient rapidement a l'interieur du range</li>
+  </ul>
+
+  <div class="subsec">Phase 3 : Distribution</div>
+  <p>
+    Apres la manipulation, le prix part dans la <strong>direction reelle</strong>. C'est le mouvement directionnel ou les institutions distribuent leurs positions accumulees. Ce mouvement est souvent rapide et impulsif.
+  </p>
+  <ul class="cl">
+    <li>Mouvement <strong>impulsif</strong> avec des bougies pleines et peu de meches</li>
+    <li>Break of Structure (BOS) dans la direction reelle</li>
+    <li>Creation de <strong>FVG</strong> (Fair Value Gaps) -- zones de desequilibre</li>
+    <li>Le prix va cibler le <strong>prochain pool de liquidite</strong> dans la direction opposee</li>
+  </ul>
+
+  <div class="subsec">Phase 4 : Reinitialisation</div>
+  <p>
+    Le mouvement directionnel atteint son objectif (pool de liquidite oppose). Un <strong>nouveau cycle commence</strong>. Le prix entre en phase d'accumulation a nouveau, preparant le prochain mouvement.
+  </p>
+
+  <div class="box box-em">
+    <div class="box-title">Cycle complet</div>
+    <p>Accumulation (construction de liquidite) -- Manipulation (sweep de liquidite) -- Distribution (mouvement directionnel) -- Reinitialisation (nouveau cycle). Ce schema se repete a l'infini, sur toutes les timeframes.</p>
+  </div>
+
+  <table class="tbl">
+    <tr><th>Phase</th><th>Caracteristique</th><th>Action du trader</th><th>Piege courant</th></tr>
+    <tr><td>Accumulation</td><td>Range, consolidation, oscillation</td><td class="col-good">Observer, ne pas trader</td><td class="col-bad">Trader le range</td></tr>
+    <tr><td>Manipulation</td><td>Faux breakout, sweep de liquidite</td><td class="col-good">Se preparer a entrer</td><td class="col-bad">Trader le breakout</td></tr>
+    <tr><td>Distribution</td><td>Mouvement impulsif directionnel</td><td class="col-good">Entrer apres confirmation</td><td class="col-bad">Attendre trop longtemps</td></tr>
+    <tr><td>Reinitialisation</td><td>Ralentissement, nouveau range</td><td class="col-good">Prendre profits, observer</td><td class="col-bad">Rester en position trop longtemps</td></tr>
+  </table>
+</section>
+
+
+<!-- =========================================== -->
+<!-- MODULE 7 — Imbrication des Cycles          -->
+<!-- =========================================== -->
+<section class="mod" id="m7">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 07</span>
+    <h2>Imbrication des Cycles</h2>
+  </div>
+
+  <p>
+    Le cycle de liquidite est <strong>fractal</strong>. Le meme schema (accumulation, manipulation, distribution, reinitialisation) se reproduit identiquement sur toutes les timeframes. Un grand cycle contient des petits cycles identiques, qui eux-memes contiennent des micro-cycles.
+  </p>
+
+  <div class="sec">Fractalite du marche</div>
+  <ul class="cl">
+    <li>Un cycle <strong>monthly</strong> contient plusieurs cycles weekly</li>
+    <li>Chaque cycle <strong>weekly</strong> contient plusieurs cycles daily</li>
+    <li>Chaque cycle <strong>daily</strong> contient des cycles de session (Asia, London, NY)</li>
+    <li>Chaque cycle de <strong>session</strong> contient des micro-cycles sur M15/M5/M1</li>
+    <li>La <strong>meme mecanique</strong> s'applique a chaque niveau</li>
+  </ul>
+
+  <div class="box box-bl">
+    <div class="box-title">Analogie</div>
+    <p>Imaginez des poupees russes. La grande poupee (cycle Monthly) contient une poupee plus petite (Weekly) qui contient une encore plus petite (Daily), etc. Chaque poupee a la meme forme -- chaque cycle a la meme structure.</p>
+  </div>
+
+  <div class="sec">Alignement multi-timeframe</div>
+  <p>
+    Le <strong>pouvoir reel</strong> du framework vient de l'alignement des cycles entre les timeframes. Quand la phase de distribution du HTF coincide avec la phase de distribution du LTF, le mouvement est extremement puissant.
+  </p>
+
+  <ol class="nl">
+    <li>Identifiez le cycle sur le <strong>HTF</strong> (Weekly/Daily) -- dans quelle phase sommes-nous ?</li>
+    <li>Verifiez si le <strong>MTF</strong> (H4/H1) confirme la meme direction</li>
+    <li>Attendez que le <strong>LTF</strong> (M15/M5) entre en phase de manipulation puis distribution alignee</li>
+    <li>Le trade ideal : les 3 timeframes en <strong>phase de distribution dans la meme direction</strong></li>
+  </ol>
+
+  <div class="sec">Conflits de cycles</div>
+  <p>
+    Quand les cycles de differentes timeframes sont en <strong>conflit</strong> (par exemple HTF en distribution haussiere mais LTF en manipulation baissiere), c'est un signal d'<strong>attendre</strong>. Ne forcez jamais un trade quand les timeframes ne sont pas alignees.
+  </p>
+
+  <table class="tbl">
+    <tr><th>HTF (D1/W1)</th><th>MTF (H4/H1)</th><th>LTF (M15/M5)</th><th>Decision</th></tr>
+    <tr><td class="col-good">Distribution haussiere</td><td class="col-good">Distribution haussiere</td><td class="col-good">Manipulation puis distribution haussiere</td><td class="col-good">Trade long ideal</td></tr>
+    <tr><td class="col-good">Distribution haussiere</td><td>Accumulation</td><td>Manipulation baissiere</td><td>Attendre alignement</td></tr>
+    <tr><td class="col-good">Distribution haussiere</td><td class="col-bad">Manipulation baissiere</td><td class="col-bad">Distribution baissiere</td><td class="col-bad">Ne pas trader</td></tr>
+    <tr><td>Accumulation</td><td>Accumulation</td><td>Quelconque</td><td class="col-bad">Pas de contexte, pas de trade</td></tr>
+  </table>
+</section>
+
+
+<!-- =========================================== -->
+<!-- MODULE 8 — Phases detaillees               -->
+<!-- =========================================== -->
+<section class="mod" id="m8">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 08</span>
+    <h2>Phases Detaillees du Cycle</h2>
+  </div>
+
+  <p>
+    Chaque phase du cycle de liquidite a des <strong>caracteristiques specifiques</strong> qui permettent de l'identifier en temps reel. Ce module detaille les signaux concrets a observer pour chaque phase.
+  </p>
+
+  <div class="sec">Identifier l'accumulation</div>
+  <ul class="cl">
+    <li>Le prix cree un <strong>range visible</strong> avec des highs et lows clairs</li>
+    <li>Les bougies sont relativement <strong>petites</strong> avec des meches des deux cotes</li>
+    <li>Le <strong>volume diminue</strong> progressivement (compression)</li>
+    <li>Des <strong>equal highs et equal lows</strong> se forment -- pools de liquidite en construction</li>
+    <li>Les indicateurs de momentum (RSI, MACD) <strong>oscillent</strong> autour de l'equilibre</li>
+  </ul>
+
+  <div class="sec">Identifier la manipulation</div>
+  <ul class="cl">
+    <li>Le prix <strong>casse brusquement</strong> un niveau du range (high ou low)</li>
+    <li>Une <strong>longue meche</strong> apparait au-dela du niveau casse</li>
+    <li>Le <strong>volume spike</strong> brievement puis retombe immediatement</li>
+    <li>Le prix <strong>revient rapidement</strong> a l'interieur du range</li>
+    <li>Les traders retail paniquent -- stops touches, ordres breakout declenches</li>
+  </ul>
+
+  <div class="sec">Identifier la distribution</div>
+  <ul class="cl">
+    <li>Apres le retour dans le range, le prix part dans la <strong>direction opposee</strong> au sweep</li>
+    <li>Des <strong>bougies impulsives</strong> avec des corps pleins apparaissent</li>
+    <li>Un <strong>BOS clair</strong> casse la structure dans la direction reelle</li>
+    <li>Des <strong>FVG</strong> (gaps) se creent pendant le mouvement impulsif</li>
+    <li>Le prix se deplace rapidement vers le prochain pool de liquidite</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Sequence type</div>
+    <p>Range (accumulation) -- Sweep du low (manipulation) -- Retour dans le range -- BOS haussier (debut distribution) -- Mouvement impulsif vers le BSL (distribution complete). Le trade se prend APRES le sweep + BOS, jamais avant.</p>
+  </div>
+
+  <div class="sec">Duree des phases par timeframe</div>
+  <table class="tbl">
+    <tr><th>Timeframe</th><th>Accumulation</th><th>Manipulation</th><th>Distribution</th></tr>
+    <tr><td>Monthly</td><td>2-6 semaines</td><td>3-7 jours</td><td>2-4 semaines</td></tr>
+    <tr><td>Weekly</td><td>3-10 jours</td><td>1-2 jours</td><td>3-7 jours</td></tr>
+    <tr><td>Daily</td><td>1-3 jours</td><td>1-4 heures</td><td>6-24 heures</td></tr>
+    <tr><td>Session (H1)</td><td>1-3 heures</td><td>15-45 minutes</td><td>1-3 heures</td></tr>
+    <tr><td>Micro (M5)</td><td>15-45 min</td><td>2-10 minutes</td><td>10-30 minutes</td></tr>
+  </table>
+</section>
+
+
+<!-- =========================================== -->
+<!-- MODULE 9 — Types de Pieges                 -->
+<!-- =========================================== -->
+<section class="mod" id="m9">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 09</span>
+    <h2>Types de Pieges</h2>
+  </div>
+
+  <p>
+    Le marche est un <strong>generateur de pieges</strong>. Pour recuperer la contrepartie necessaire, il doit pieger des traders dans la mauvaise direction. Connaitre ces pieges est la premiere etape pour les eviter.
+  </p>
+
+  <div class="sec">Piege #1 : Le Breakout Trap</div>
+  <p>
+    Le piege le plus classique et le plus frequent. Le prix casse un niveau cle (high ou low), les traders retail entrent en position dans la direction du breakout, puis le prix se retourne violemment.
+  </p>
+  <ul class="cl">
+    <li>Le prix <strong>depasse</strong> un high ou low significatif</li>
+    <li>Les traders retail voient un "breakout" et entrent long (au-dessus du high) ou short (en-dessous du low)</li>
+    <li>Leurs ordres fournissent la <strong>contrepartie</strong> aux institutions</li>
+    <li>Le prix se <strong>retourne</strong> et les liquidise</li>
+  </ul>
+
+  <div class="sec">Piege #2 : L'Entree Prematuree</div>
+  <p>
+    Entrer en position <strong>avant que la manipulation ne soit terminee</strong>. Le trader identifie correctement la direction mais entre trop tot, avant que la liquidite ait ete prise.
+  </p>
+  <ul class="cl">
+    <li>Le trader voit un OB ou un FVG et entre immediatement</li>
+    <li>Le prix continue dans la direction opposee pour <strong>sweeper la liquidite</strong></li>
+    <li>Le stop est touche PUIS le prix va dans la direction anticipee</li>
+    <li>C'est le scenario le plus frustrant -- "j'avais raison mais trop tot"</li>
+  </ul>
+
+  <div class="sec">Piege #3 : L'Absence de contexte HTF</div>
+  <p>
+    Trader sur un petit timeframe sans verifier le contexte du timeframe superieur. Le LTF peut montrer un setup parfait, mais si le HTF est en phase contraire, le trade echouera.
+  </p>
+
+  <div class="sec">Piege #4 : Trader sans contexte de liquidite</div>
+  <p>
+    Utiliser les outils techniques (OB, FVG, Breakers) sans savoir ou est la liquidite. C'est le piege le plus subtil -- le setup semble techniquement correct mais il n'a aucun sens dans le contexte global.
+  </p>
+
+  <div class="sec">Piege #5 : Le Double Fake</div>
+  <p>
+    Le marche sweep la liquidite d'un cote, revient, puis sweep la liquidite de l'<strong>autre cote</strong> avant de faire le mouvement reel. Les traders qui pensent que le premier sweep est la manipulation sont pieges par le second.
+  </p>
+
+  <div class="box box-re">
+    <div class="box-title">Statistique critique</div>
+    <p>La majorite des traders retail perdent de l'argent parce qu'ils tombent systematiquement dans ces 5 pieges. Chaque piege est lie a un manque de comprehension du cycle de liquidite. Le framework ne vous protege que si vous suivez TOUTES les etapes.</p>
+  </div>
+
+  <table class="tbl">
+    <tr><th>Piege</th><th>Comportement Retail</th><th>Comportement Informe</th></tr>
+    <tr><td>Breakout Trap</td><td class="col-bad">Acheter les highs, vendre les lows</td><td class="col-good">Attendre le retournement apres sweep</td></tr>
+    <tr><td>Entree Prematuree</td><td class="col-bad">Entrer au premier OB/FVG visible</td><td class="col-good">Attendre la prise de liquidite</td></tr>
+    <tr><td>Pas de HTF</td><td class="col-bad">Trader uniquement sur M5/M1</td><td class="col-good">Commencer par le Daily/H4</td></tr>
+    <tr><td>Pas de contexte</td><td class="col-bad">OB/FVG partout = setup partout</td><td class="col-good">OB/FVG valides UNIQUEMENT dans le contexte</td></tr>
+    <tr><td>Double Fake</td><td class="col-bad">Entrer apres le premier sweep</td><td class="col-good">Attendre confirmation du mouvement reel</td></tr>
+  </table>
+</section>
+
+
+<!-- =========================================== -->
+<!-- MODULE 10 — Comment Eviter les Pieges      -->
+<!-- =========================================== -->
+<section class="mod" id="m10">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 10</span>
+    <h2>Comment Eviter les Pieges</h2>
+  </div>
+
+  <p>
+    Eviter les pieges n'est pas une question de chance -- c'est un <strong>processus systematique</strong>. En suivant un protocole strict, vous pouvez eliminer la majorite des trades perdants avant meme d'entrer en position.
+  </p>
+
+  <div class="sec">Regle fondamentale</div>
+  <div class="box box-em">
+    <div class="box-title">La regle des regles</div>
+    <p>La manipulation = le mouvement <strong>CONTRE</strong> la direction finale. Toujours attendre la manipulation AVANT d'entrer. Si vous n'avez pas vu le sweep de liquidite, vous n'avez pas le droit d'entrer.</p>
+  </div>
+
+  <div class="sec">Protocole anti-pieges</div>
+  <ol class="nl">
+    <li><strong>Identifier le HTF</strong> -- sur le Daily ou H4, dans quelle phase du cycle sommes-nous ? Si accumulation, ne pas trader.</li>
+    <li><strong>Localiser la liquidite</strong> -- ou sont les pools BSL et SSL les plus proches ? Le prix va-t-il les chercher ?</li>
+    <li><strong>Attendre la manipulation</strong> -- le prix a-t-il sweep un pool de liquidite ? Si non, attendre.</li>
+    <li><strong>Confirmer le retournement</strong> -- apres le sweep, y a-t-il un CHoCH ou BOS dans la direction attendue ?</li>
+    <li><strong>Identifier le POI</strong> -- apres la confirmation, identifier l'OB/FVG/Breaker ou entrer</li>
+    <li><strong>Verifier le R:R</strong> -- le ratio risque/recompense est-il d'au moins 3:1 ? Si non, passer.</li>
+    <li><strong>Executer</strong> -- placer l'ordre avec un SL serre et un TP au prochain pool de liquidite</li>
+  </ol>
+
+  <div class="sec">La patience comme arme</div>
+  <p>
+    Le trader informe passe la <strong>majorite de son temps a attendre</strong>. Il n'entre pas en position a chaque signal. Il attend que TOUTES les conditions soient reunies. Un bon trader ne prend que 2 a 5 trades par semaine -- pas 10 par jour.
+  </p>
+
+  <ul class="cl">
+    <li>Si vous devez vous convaincre qu'un trade est bon, <strong>il ne l'est pas</strong></li>
+    <li>Si le setup ne saute pas aux yeux en 30 secondes, <strong>passez au suivant</strong></li>
+    <li>Le marche offre des opportunites tous les jours -- il n'y a aucune urgence</li>
+    <li><strong>Ne pas trader est une position</strong> -- et souvent la meilleure</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Conseil pratique</div>
+    <p>Creez une checklist ecrite avec les 7 etapes du protocole anti-pieges. Avant chaque trade, cochez chaque etape. Si une seule n'est pas validee, ne prenez pas le trade. La discipline mecanique elimine les erreurs emotionnelles.</p>
+  </div>
+</section>
+
+
+<!-- =========================================== -->
+<!-- MODULE 11 — Identification en Temps Reel   -->
+<!-- =========================================== -->
+<section class="mod" id="m11">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 11</span>
+    <h2>Identification des Pieges en Temps Reel</h2>
+  </div>
+
+  <p>
+    Identifier un piege <strong>pendant qu'il se forme</strong> est une competence qui s'acquiert avec la pratique. Voici les signaux concrets a surveiller en temps reel.
+  </p>
+
+  <div class="sec">Signaux de manipulation en cours</div>
+  <ul class="cl">
+    <li><strong>Meche longue</strong> qui depasse un niveau cle puis revient -- le sweep est en cours</li>
+    <li><strong>Volume anormal</strong> suivi d'un retour rapide -- les stops ont ete touches</li>
+    <li><strong>Rejet immediat</strong> apres le breakout -- le prix ne tient pas au-dela du niveau</li>
+    <li><strong>Bougie d'engloutissement</strong> juste apres le breakout -- signal de retournement</li>
+    <li><strong>Divergence de momentum</strong> -- le prix fait un nouveau high mais le RSI/MACD ne confirme pas</li>
+  </ul>
+
+  <div class="sec">Chronologie du piege type</div>
+  <ol class="nl">
+    <li><strong>T+0 min</strong> : le prix approche d'un niveau de liquidite important</li>
+    <li><strong>T+5 min</strong> : acceleration soudaine -- le prix casse le niveau</li>
+    <li><strong>T+8 min</strong> : meche au-dela du niveau, les stops sont touches</li>
+    <li><strong>T+12 min</strong> : le prix revient a l'interieur du range precedent</li>
+    <li><strong>T+15 min</strong> : bougie de confirmation (engloutissement ou forte bougie dans la direction opposee)</li>
+    <li><strong>T+20 min</strong> : le mouvement directionnel reel commence</li>
+  </ol>
+
+  <div class="box box-bl">
+    <div class="box-title">Exercice recommande</div>
+    <p>Repassez vos graphiques en mode replay. Identifiez les 4 phases du cycle sur 20 exemples consecutifs. Marquez les sweeps, les retournements, les BOS. Cette pratique deliberee est le seul moyen de developper l'oeil pour l'identification en temps reel.</p>
+  </div>
+
+  <div class="sec">Confirmation apres le sweep</div>
+  <p>
+    Le sweep seul ne suffit pas. Il faut attendre la <strong>confirmation</strong> que le mouvement reel a commence. Sans confirmation, le prix peut continuer dans la direction du breakout (parfois le breakout est reel).
+  </p>
+  <ul class="cl">
+    <li><strong>CHoCH sur LTF</strong> -- changement de structure sur M5/M1 apres le sweep</li>
+    <li><strong>Displacement</strong> -- bougie impulsive forte qui montre l'intention institutionnelle</li>
+    <li><strong>FVG creee</strong> -- un gap se forme dans la direction reelle</li>
+    <li><strong>Rejet du niveau sweept</strong> -- le prix refuse de retester le niveau casse</li>
+  </ul>
+</section>
+
+
+<!-- =========================================== -->
+<!-- MODULE 12 — Les Types d'Inducement         -->
+<!-- =========================================== -->
+<section class="mod" id="m12">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 12</span>
+    <h2>Inducement et Entrees</h2>
+  </div>
+
+  <p>
+    L'inducement est le mecanisme par lequel le marche <strong>incite</strong> les traders a prendre des positions avant le mouvement reel. Comprendre les types d'inducement permet de les utiliser comme signal d'entree plutot que comme piege.
+  </p>
+
+  <div class="sec">Inducement simple</div>
+  <p>
+    Un seul niveau de liquidite est cible. Le prix sweep un high ou low unique, recupere les stops, puis se retourne. C'est la forme la plus basique de manipulation.
+  </p>
+  <ul class="cl">
+    <li>Un swing high est casse par une meche puis le prix revient</li>
+    <li>Les buy stops sont declenches, fournissant la contrepartie</li>
+    <li>Le prix se retourne et commence le mouvement reel baissier</li>
+  </ul>
+
+  <div class="sec">Inducement double</div>
+  <p>
+    Deux niveaux de liquidite consecutifs sont cibles. Le prix sweep un premier niveau, fait un petit pullback, puis sweep le second avant de se retourner. C'est plus trompeur car les traders pensent que le premier sweep est la manipulation alors qu'il y en a deux.
+  </p>
+  <ul class="cl">
+    <li>Premier sweep -- les traders informes pensent que c'est le signal</li>
+    <li>Le prix revient et sweep un deuxieme niveau juste au-dessus/en-dessous</li>
+    <li>Apres le double sweep, le mouvement reel commence</li>
+    <li>Solution : verifier s'il y a un autre pool de liquidite tres proche du premier</li>
+  </ul>
+
+  <div class="box box-re">
+    <div class="box-title">Regle mecanique</div>
+    <p>Le marche DOIT prendre la liquidite avant de bouger -- c'est mecanique, pas optionnel. S'il reste de la liquidite a proximite immediate du premier sweep, attendez-vous a un second sweep. Ne vous precipitez pas.</p>
+  </div>
+
+  <div class="sec">Protocole d'entree post-inducement</div>
+  <ol class="nl">
+    <li><strong>Le sweep a eu lieu</strong> -- la liquidite a ete prise (confirmee par la meche au-dela du niveau)</li>
+    <li><strong>CHoCH ou BOS</strong> -- la structure a change sur le LTF dans la direction opposee au sweep</li>
+    <li><strong>Identifier le POI</strong> -- reperer l'OB, FVG ou Breaker cree par le mouvement de confirmation</li>
+    <li><strong>Attendre le retour</strong> -- le prix revient tester le POI (pullback)</li>
+    <li><strong>Entrer au POI</strong> -- placer l'ordre au 50% de l'OB ou a l'entree du FVG</li>
+    <li><strong>SL sous le sweep</strong> -- le stop se place juste sous le point le plus bas du sweep (pour un long)</li>
+    <li><strong>TP au prochain pool</strong> -- le take profit cible le prochain pool de liquidite dans la direction du trade</li>
+  </ol>
+
+  <table class="tbl">
+    <tr><th>Element</th><th>Approche Retail</th><th>Approche Institutionnelle</th></tr>
+    <tr><td>Signal d'entree</td><td class="col-bad">Indicateur (croisement MA, RSI)</td><td class="col-good">Sweep de liquidite + confirmation</td></tr>
+    <tr><td>Timing</td><td class="col-bad">Entrer immediatement au signal</td><td class="col-good">Attendre manipulation + pullback</td></tr>
+    <tr><td>Stop Loss</td><td class="col-bad">Nombre fixe de pips</td><td class="col-good">Sous/au-dessus du point de sweep</td></tr>
+    <tr><td>Take Profit</td><td class="col-bad">Ratio fixe (1:1 ou 1:2)</td><td class="col-good">Prochain pool de liquidite</td></tr>
+    <tr><td>Contexte</td><td class="col-bad">Le meme setup partout</td><td class="col-good">Uniquement dans le contexte du cycle</td></tr>
+    <tr><td>Timeframe</td><td class="col-bad">Un seul TF</td><td class="col-good">Alignement HTF/MTF/LTF</td></tr>
+    <tr><td>Frequence</td><td class="col-bad">10+ trades/jour</td><td class="col-good">2-5 trades/semaine</td></tr>
+  </table>
+</section>
+
+
+<!-- =========================================== -->
+<!-- MODULE 13 — Confirmation                   -->
+<!-- =========================================== -->
+<section class="mod" id="m13">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 13</span>
+    <h2>Confirmation du Trade</h2>
+  </div>
+
+  <p>
+    La confirmation est l'etape qui <strong>separe les traders informes des joueurs</strong>. Entrer sans confirmation, meme apres avoir identifie le sweep, c'est encore du gambling. La confirmation transforme une hypothese en setup valide.
+  </p>
+
+  <div class="sec">Les 4 niveaux de confirmation</div>
+
+  <div class="subsec">Niveau 1 : Confirmation structurelle</div>
+  <ul class="cl">
+    <li><strong>CHoCH</strong> (Change of Character) -- la structure casse dans la direction opposee au sweep</li>
+    <li>Un swing low est casse apres un sweep haussier (confirmation baissiere)</li>
+    <li>Un swing high est casse apres un sweep baissier (confirmation haussiere)</li>
+  </ul>
+
+  <div class="subsec">Niveau 2 : Confirmation par displacement</div>
+  <ul class="cl">
+    <li>Une <strong>bougie impulsive forte</strong> dans la direction attendue</li>
+    <li>Corps plein, peu ou pas de meche dans la direction du mouvement</li>
+    <li>Cette bougie <strong>cree un FVG</strong> (Fair Value Gap) -- signe d'agressivite institutionnelle</li>
+  </ul>
+
+  <div class="subsec">Niveau 3 : Confirmation par le POI</div>
+  <ul class="cl">
+    <li>Le prix revient au <strong>POI</strong> (OB, FVG, Breaker) cree par le displacement</li>
+    <li>Le prix <strong>reagit</strong> au POI (rejet, bougie d'engloutissement, pattern de retournement)</li>
+    <li>Le volume augmente au niveau du POI</li>
+  </ul>
+
+  <div class="subsec">Niveau 4 : Confirmation par le contexte</div>
+  <ul class="cl">
+    <li>Le <strong>HTF confirme</strong> la direction (pas de conflit entre les timeframes)</li>
+    <li>La <strong>session</strong> est propice (London ou NY, pas pendant un rollover ou un weekend)</li>
+    <li>Pas de <strong>news majeure</strong> imminente qui pourrait invalider le setup</li>
+  </ul>
+
+  <div class="box box-em">
+    <div class="box-title">Checklist de confirmation</div>
+    <p>Liquidite prise (sweep confirme) + CHoCH/BOS dans la bonne direction + Displacement clair + POI identifie + HTF aligne + Session active = <strong>Trade valide</strong>. Il manque un element ? Pas de trade.</p>
+  </div>
+
+  <div class="sec">Confirmation vs Prediction</div>
+  <table class="tbl">
+    <tr><th>Prediction (a eviter)</th><th>Confirmation (a pratiquer)</th></tr>
+    <tr><td class="col-bad">"Je pense que le prix va monter"</td><td class="col-good">"La liquidite a ete prise et la structure a confirme"</td></tr>
+    <tr><td class="col-bad">"L'OB devrait tenir"</td><td class="col-good">"Le prix a reagi a l'OB avec un displacement"</td></tr>
+    <tr><td class="col-bad">"C'est un bon niveau pour shorter"</td><td class="col-good">"Le sweep du BSL est confirme par un CHoCH baissier"</td></tr>
+    <tr><td class="col-bad">"Le marche est suracheté"</td><td class="col-good">"La liquidite acheteuse a ete epuisee apres le sweep"</td></tr>
+  </table>
+</section>
+
+
+<!-- =========================================== -->
+<!-- MODULE 14 — Gestion du Trade               -->
+<!-- =========================================== -->
+<section class="mod" id="m14">
+  <div class="mod-head">
+    <span class="mod-tag">MOD 14</span>
+    <h2>Gestion du Trade</h2>
+  </div>
+
+  <p>
+    Entrer au bon moment ne represente que <strong>50% du travail</strong>. La gestion du trade -- placement du SL, TP, partials et protection du capital -- determine si un bon trade se transforme en profit reel ou en perte evitable.
+  </p>
+
+  <div class="sec">Placement du Stop Loss</div>
+  <ul class="cl">
+    <li><strong>Pour un long</strong> : SL place juste en-dessous du point le plus bas du sweep (la meche la plus basse)</li>
+    <li><strong>Pour un short</strong> : SL place juste au-dessus du point le plus haut du sweep (la meche la plus haute)</li>
+    <li>Ajoutez 1-2 pips de marge au-dela du sweep pour eviter les retests precis</li>
+    <li>Le SL ne doit <strong>jamais</strong> etre elargi une fois place -- si la logique du trade est invalidee, acceptez la perte</li>
+  </ul>
+
+  <div class="sec">Placement du Take Profit</div>
+  <ul class="cl">
+    <li>Le TP principal se place au <strong>prochain pool de liquidite</strong> dans la direction du trade</li>
+    <li>Pour un long : TP au prochain BSL (equal highs, old high, session high)</li>
+    <li>Pour un short : TP au prochain SSL (equal lows, old low, session low)</li>
+    <li>Si plusieurs pools sont proches, cibler le <strong>plus important</strong> (HTF > LTF)</li>
+  </ul>
+
+  <div class="box box-am">
+    <div class="box-title">Regle du R:R minimum</div>
+    <p>Ne prenez jamais un trade avec un ratio risque/recompense inferieur a <strong>3:1</strong>. Idealement, visez 5:1 ou plus. Avec un taux de reussite de 40% et un R:R de 5:1, vous etes largement rentable sur le long terme.</p>
+  </div>
+
+  <div class="sec">Gestion des partials</div>
+  <ol class="nl">
+    <li><strong>A 2R</strong> : prendre 30% de la position et deplacer le SL au Break Even</li>
+    <li><strong>A 3R</strong> : prendre 30% supplementaires -- il reste 40% en course</li>
+    <li><strong>Au TP final</strong> : fermer les 40% restants au prochain pool de liquidite</li>
+    <li>Alternative : ne prendre aucun partial et laisser le trade atteindre le TP ou le SL -- plus simple, plus disciplin e</li>
+  </ol>
+
+  <div class="sec">Quand couper un trade</div>
+  <ul class="cl">
+    <li>Le prix cree un <strong>nouveau BOS contre votre direction</strong> sur le meme timeframe d'entree</li>
+    <li>Un <strong>news event majeur</strong> imprevue change le contexte fondamental</li>
+    <li>Le prix <strong>ne progresse pas</strong> apres 2x la duree attendue (le momentum est mort)</li>
+    <li>Vous avez fait une <strong>erreur d'analyse</strong> que vous identifiez apres coup -- coupez immediatement</li>
+  </ul>
+
+  <div class="sec">Synthese : Retail vs Institutionnel</div>
+  <table class="tbl">
+    <tr><th>Critere</th><th>Trader Retail</th><th>Trader Informe</th></tr>
+    <tr><td>Lecture du marche</td><td class="col-bad">Patterns, indicateurs, news</td><td class="col-good">Liquidite, cycles, cause-effet</td></tr>
+    <tr><td>Timing</td><td class="col-bad">Entrer au premier signal</td><td class="col-good">Attendre sweep + confirmation</td></tr>
+    <tr><td>Stop Loss</td><td class="col-bad">Fixe (20 pips, 1 ATR)</td><td class="col-good">Logique (sous le sweep)</td></tr>
+    <tr><td>Take Profit</td><td class="col-bad">Fixe (1:1, 1:2)</td><td class="col-good">Prochain pool de liquidite</td></tr>
+    <tr><td>Frequence</td><td class="col-bad">Overtrading quotidien</td><td class="col-good">Selection stricte (2-5/semaine)</td></tr>
+    <tr><td>Gestion</td><td class="col-bad">Emotionnelle</td><td class="col-good">Mecanique, basee sur les regles</td></tr>
+    <tr><td>Psychologie</td><td class="col-bad">Peur, cupidite, revanche</td><td class="col-good">Discipline, patience, acceptation</td></tr>
+    <tr><td>Resultat</td><td class="col-bad">Pertes chroniques</td><td class="col-good">Rentabilite consistante</td></tr>
+  </table>
+
+  <div class="box box-em">
+    <div class="box-title">Message final</div>
+    <p>Le marche n'est pas votre ennemi. C'est un systeme mecanique qui obeit a des regles precises. Comprenez la mecanique, lisez le plan de liquidite, attendez la confirmation, et executez avec discipline. Le reste -- les profits -- est une consequence naturelle du processus.</p>
+  </div>
+</section>
+
+
+<!-- -- FOOTER -- -->
+<footer id="footer">
+  <p>Liquidite Algorithmique -- Algorithmic Academy -- 14 Modules -- Cause-Effet -- Cycles -- Traps -- Execution</p>
+  <p style="margin-top:8px;color:var(--border)">Le trading comporte des risques. Ce cours est educatif uniquement.</p>
+</footer>
+
+</main>
+
+<script>
+// Progress bar
+const pf = document.getElementById('pfill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  pf.style.width = (window.scrollY / h * 100) + '%';
+}, { passive: true });
+
+// Fade in modules
+const io = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.05 });
+document.querySelectorAll('.mod').forEach(m => io.observe(m));
+
+// Active nav
+const secs = [...document.querySelectorAll('[id]')];
+const links = document.querySelectorAll('.sb-link');
+function updateNav() {
+  const y = window.scrollY + 110;
+  let cur = secs[0]?.id;
+  for (const s of secs) { if (s.offsetTop <= y) cur = s.id; }
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+</script>
+<script src="../auth.js"></script>
+<script src="../nav.js"></script>
+</body>
+</html>
