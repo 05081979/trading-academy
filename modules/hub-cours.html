@@ -798,354 +798,213 @@
 
 <!-- Grid -->
 <div class="grid-wrap">
-  <div class="grid" id="courseGrid">
+  <div class="grid" id="courseGrid" style="grid-template-columns:1fr;gap:24px;">
 
-    <!-- ═══════════════════════════════════════════ -->
-    <!-- SECTION: FONDATIONS & BASES SMC             -->
-    <!-- ═══════════════════════════════════════════ -->
-
-    <div style="grid-column:1/-1;padding:32px 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;">
-      <div style="color:var(--gold);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:6px;">Niveau 1</div>
-      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#000000;">Fondations & Bases</div>
-      <div style="color:#1a1a1a;font-size:12px;margin-top:4px;">Structure de marche, liquidite, PD Arrays, AMD — le socle indispensable</div>
-    </div>
-
-    <div class="card cat-smc" data-category="smc" data-tier="starter" data-keywords="SMC smc ipda drt fvg order blocks breaker smt structure iofed bpr amd liquidite">
+    <!-- ═══ BLOC 1: BASES SMC & STRUCTURE ═══ -->
+    <div class="card cat-smc" data-category="smc" data-tier="starter" data-keywords="smc structure liquidite fvg order blocks breaker dealing range pd arrays mtf premium discount ranges fractals" style="padding:32px;">
       <div class="card-header"><div>
-        <div class="card-tag tag-smc">Fondations</div>
-        <div class="card-level">Debutant &rarr; Expert</div>
+        <div class="card-tag tag-smc" style="font-size:11px;padding:5px 14px;">Fondations</div>
+        <span class="tier-badge tier-starter">STARTER</span>
       </div></div>
-      <div class="card-title">Les Bases SMC — Cours Complet</div>
-      <div class="card-author">Par <span>Algorithmic Academy</span> · 11 modules</div>
-      <div class="card-desc">IPDA, Dealing Ranges, AMD, FVG et ses familles (IFVG, BPR, IOFED), Order Blocks, Breaker Blocks, SMT, Structure de marche, Killzones. Le framework institutionnel complet de A a Z.</div>
-      <div class="card-modules">
-        <span class="module-pill">IPDA</span><span class="module-pill">Dealing Range</span><span class="module-pill">AMD</span><span class="module-pill">FVG / BPR</span><span class="module-pill">OB / BB</span><span class="module-pill">SMT</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><strong>11</strong> modules · Framework complet</div>
-        <span class="card-arrow">&rarr;</span>
+      <div class="card-title" style="font-size:24px;margin-bottom:8px;">Bases SMC & Structure du Prix</div>
+      <div class="card-desc" style="font-size:14px;margin-bottom:24px;">Tout le socle : structure de marche, PD Arrays, Dealing Ranges, FVG, Order Blocks, Breakers, analyse multi-timeframe et ranges fractals.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <a href="fondamentaux-smc.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#2563eb';this.style.background='#eef2ff'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#2563eb;min-width:24px;">01</span>
+          <span style="font-size:13px;font-weight:600;">Fondamentaux SMC</span>
+        </a>
+        <a href="zones-de-prix.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#2563eb';this.style.background='#eef2ff'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#2563eb;min-width:24px;">02</span>
+          <span style="font-size:13px;font-weight:600;">Zones de Prix & Dealing Ranges</span>
+        </a>
+        <a href="candle-range-theory.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#2563eb';this.style.background='#eef2ff'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#2563eb;min-width:24px;">03</span>
+          <span style="font-size:13px;font-weight:600;">Bougies, Ranges & Profils</span>
+        </a>
+        <a href="ranges-fractals.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#2563eb';this.style.background='#eef2ff'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#2563eb;min-width:24px;">04</span>
+          <span style="font-size:13px;font-weight:600;">Ranges & Fractales</span>
+        </a>
+        <a href="analyse-mtf-avancee.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#2563eb';this.style.background='#eef2ff'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#2563eb;min-width:24px;">05</span>
+          <span style="font-size:13px;font-weight:600;">Analyse Multi-Timeframe</span>
+        </a>
+        <a href="fiches-reference.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#fff8ee;border:1px solid #f0dbb8;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#d97706';this.style.background='#fef3c7'" onmouseout="this.style.borderColor='#f0dbb8';this.style.background='#fff8ee'">
+          <span style="font-size:11px;font-weight:700;color:#d97706;min-width:24px;">F</span>
+          <span style="font-size:13px;font-weight:600;">Fiches de Reference</span>
+        </a>
       </div>
     </div>
 
-    <div class="card cat-fondations" data-category="fondations" data-tier="starter" data-keywords="liquidite algorithmique cycles traps cause effet institutions manipulation contrepartie inducement">
+    <!-- ═══ BLOC 2: LIQUIDITE & INDUCEMENTS ═══ -->
+    <div class="card cat-smc" data-category="smc" data-tier="starter" data-keywords="liquidite inducement traps cycles cause effet pieges manipulation contrepartie" style="padding:32px;">
       <div class="card-header"><div>
-        <div class="card-tag tag-foundations">Fondations</div>
-        <div class="card-level">Tous niveaux</div>
+        <div class="card-tag tag-smc" style="font-size:11px;padding:5px 14px;">Fondations</div>
+        <span class="tier-badge tier-starter">STARTER</span>
       </div></div>
-      <div class="card-title">Comprendre la Liquidite</div>
-      <div class="card-author">Par <span>Algorithmic Academy</span> · Cycles & Traps</div>
-      <div class="card-desc">Mecanique profonde du marche, loi de cause a effet, cycles de liquidite, identification des pieges, inducement. Comprendre le PLAN avant les outils.</div>
-      <div class="card-modules">
-        <span class="module-pill">Mecanique</span><span class="module-pill">Cause-Effet</span><span class="module-pill">Cycles</span><span class="module-pill">Traps</span><span class="module-pill">Inducement</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><strong>14</strong> modules · Liquidite complete</div>
-        <span class="card-arrow">&rarr;</span>
+      <div class="card-title" style="font-size:24px;margin-bottom:8px;">Liquidite & Inducements</div>
+      <div class="card-desc" style="font-size:14px;margin-bottom:24px;">Comprendre la mecanique profonde du marche : cycles de liquidite, loi de cause a effet, pieges, inducements et modeles d'entree.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <a href="comprendre-liquidite.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#2563eb';this.style.background='#eef2ff'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#2563eb;min-width:24px;">01</span>
+          <span style="font-size:13px;font-weight:600;">Comprendre la Liquidite</span>
+        </a>
+        <a href="inducement-theorem.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#2563eb';this.style.background='#eef2ff'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#2563eb;min-width:24px;">02</span>
+          <span style="font-size:13px;font-weight:600;">Pieges & Inducements</span>
+        </a>
       </div>
     </div>
 
-    <div class="card cat-smc" data-category="smc" data-tier="starter" data-keywords="inducement liquidity structure htf bias entry sessions asia london ny">
+    <!-- ═══ BLOC 3: QUARTERLY THEORY ═══ -->
+    <div class="card cat-foundations" data-category="foundations" data-tier="starter" data-keywords="quarterly theory qt ssmt true opens amdx xamd gb time aoi precision swing daily bias freedom" style="padding:32px;">
       <div class="card-header"><div>
-        <div class="card-tag tag-smc">Fondations</div>
-        <div class="card-level">Debutant &rarr; Avance</div>
+        <div class="card-tag tag-foundations" style="font-size:11px;padding:5px 14px;">Quarterly Theory</div>
+        <span class="tier-badge tier-starter">STARTER</span>
       </div></div>
-      <div class="card-title">Pieges & Inducements — Cours Complet</div>
-      <div class="card-author">Par <span>Algorithmic Academy</span> · 8 modules</div>
-      <div class="card-desc">Le modele Inducement High/Low complet. Biais directionnel HTF, deux modeles d'entree, gestion des sessions, risk management. Le piege comme signal d'entree.</div>
-      <div class="card-modules">
-        <span class="module-pill">Inducement H/L</span><span class="module-pill">Biais HTF</span><span class="module-pill">Entry #1 & #2</span><span class="module-pill">Sessions</span><span class="module-pill">Risk Mgmt</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><strong>8</strong> modules + Glossaire + Checklist</div>
-        <span class="card-arrow">&rarr;</span>
+      <div class="card-title" style="font-size:24px;margin-bottom:8px;">Quarterly Theory</div>
+      <div class="card-desc" style="font-size:14px;margin-bottom:24px;">Le temps est fractal. True Opens, SSMT, AMDX/XAMD, AOI, Precision Swing Points, Daily Bias et modeles d'entree.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <a href="trainer-interactif.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#2563eb';this.style.background='#eef2ff'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#2563eb;min-width:24px;">01</span>
+          <span style="font-size:13px;font-weight:600;">Quarterly Theory — Cours Complet</span>
+        </a>
+        <a href="trainer-interactif.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#fff8ee;border:1px solid #f0dbb8;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#d97706';this.style.background='#fef3c7'" onmouseout="this.style.borderColor='#f0dbb8';this.style.background='#fff8ee'">
+          <span style="font-size:11px;font-weight:700;color:#d97706;min-width:24px;">Q</span>
+          <span style="font-size:13px;font-weight:600;">Quiz & Flashcards</span>
+        </a>
       </div>
     </div>
 
-    <div class="card cat-fiches" data-category="fiches" data-tier="starter" data-keywords="fiches revision smc market structure fvg order block liquidity premium discount psychologie">
+    <!-- ═══ BLOC 4: TIME CYCLES ═══ -->
+    <div class="card cat-strategies" data-category="strategies" data-tier="starter" data-keywords="time cycles sessions killzones macros opening range ndog profils livraison digital time theory temps prix" style="padding:32px;">
       <div class="card-header"><div>
-        <div class="card-tag tag-fiches">Fiches</div>
-        <div class="card-level">Tous niveaux</div>
+        <div class="card-tag tag-strategies" style="font-size:11px;padding:5px 14px;">Time Cycles</div>
+        <span class="tier-badge tier-starter">STARTER</span>
       </div></div>
-      <div class="card-title">Fiches de Revision</div>
-      <div class="card-author">Par <span>Algorithmic Academy</span> · 12 concepts</div>
-      <div class="card-desc">Fiches condensees couvrant les concepts fondamentaux. Definition, timing, regles et application pratique pour chaque concept. Revision rapide avant session.</div>
-      <div class="card-modules">
-        <span class="module-pill">Structure</span><span class="module-pill">FVG</span><span class="module-pill">Order Block</span><span class="module-pill">Liquidite</span><span class="module-pill">Premium/Discount</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta">12 concepts · Format fiche rapide</div>
-        <span class="card-arrow">&rarr;</span>
+      <div class="card-title" style="font-size:24px;margin-bottom:8px;">Time Cycles & Sessions</div>
+      <div class="card-desc" style="font-size:14px;margin-bottom:24px;">Sessions, Killzones, Macros 20 minutes, Opening Range, NDOG, profils de livraison, 4 bougies de 6 heures et theorie du temps numerique.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <a href="sessions-killzones.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#0d9488';this.style.background='#f0fdfa'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#0d9488;min-width:24px;">01</span>
+          <span style="font-size:13px;font-weight:600;">Sessions, Killzones & Macros</span>
+        </a>
+        <a href="digital-time-theory.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#0d9488';this.style.background='#f0fdfa'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#0d9488;min-width:24px;">02</span>
+          <span style="font-size:13px;font-weight:600;">Theorie du Temps Numerique</span>
+        </a>
+        <a href="temps-prix-protocole.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#0d9488';this.style.background='#f0fdfa'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#0d9488;min-width:24px;">03</span>
+          <span style="font-size:13px;font-weight:600;">Temps & Prix — Protocole</span>
+        </a>
+        <a href="macros-annonces.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#fff8ee;border:1px solid #f0dbb8;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#d97706';this.style.background='#fef3c7'" onmouseout="this.style.borderColor='#f0dbb8';this.style.background='#fff8ee'">
+          <span style="font-size:11px;font-weight:700;color:#d97706;min-width:24px;">F</span>
+          <span style="font-size:13px;font-weight:600;">Macros & Annonces</span>
+        </a>
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════ -->
-    <!-- SECTION: STRUCTURE DU PRIX & DEALING RANGES -->
-    <!-- ═══════════════════════════════════════════ -->
-
-    <div style="grid-column:1/-1;padding:32px 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;">
-      <div style="color:var(--accent-blue);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:6px;">Niveau 2</div>
-      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#000000;">Structure du Prix & Dealing Ranges</div>
-      <div style="color:#1a1a1a;font-size:12px;margin-top:4px;">Zones de prix, types de Dealing Range, PD Arrays, IRL/ERL — lire le prix</div>
-    </div>
-
-    <div class="card cat-smc" data-category="smc" data-tier="starter" data-keywords="dealing range theory drt pd arrays liquidity smt intermarket killzones algorithme">
+    <!-- ═══ BLOC 5: PO3 & ARCHITECTURE INSTITUTIONNELLE ═══ -->
+    <div class="card cat-advanced" data-category="advanced" data-tier="premium" data-keywords="po3 fix cme hippo imp nodes niveaux algorithmiques sequences fractales fibonacci ipda architecture mathematique institutionnel" style="padding:32px;">
       <div class="card-header"><div>
-        <div class="card-tag tag-smc">Structure</div>
-        <div class="card-level">Intermediaire &rarr; Expert</div>
+        <div class="card-tag tag-advanced" style="font-size:11px;padding:5px 14px;">Architecture</div>
+        <span class="tier-badge tier-premium">PREMIUM</span>
       </div></div>
-      <div class="card-title">Dealing Range & PD Arrays — Cours Complet</div>
-      <div class="card-author">Par <span>Algorithmic Academy</span> · 15 modules</div>
-      <div class="card-desc">Le Dealing Range comme coeur du systeme. Algorithme, liquidite, PD Arrays, SMT Divergence, analyse intermarchee, Kill Zones, modele en 6 etapes, structures avancees, execution.</div>
-      <div class="card-modules">
-        <span class="module-pill">Algorithme</span><span class="module-pill">Dealing Range</span><span class="module-pill">PD Arrays</span><span class="module-pill">SMT</span><span class="module-pill">Kill Zones</span><span class="module-pill">6 Etapes</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><strong>15</strong> modules · Dealing Range complet</div>
-        <span class="card-arrow">&rarr;</span>
+      <div class="card-title" style="font-size:24px;margin-bottom:8px;">PO3 & Architecture Institutionnelle</div>
+      <div class="card-desc" style="font-size:14px;margin-bottom:24px;">Le systeme mathematique cache : PO3, Fix CME, HIPPO, IMP Nodes, GB Time, niveaux algorithmiques, sequences fractales Fibonacci et algorithme de livraison du prix.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <a href="architecture-niveaux.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#7c3aed';this.style.background='#f5f3ff'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#7c3aed;min-width:24px;">01</span>
+          <span style="font-size:13px;font-weight:600;">Architecture des Niveaux</span>
+        </a>
+        <a href="cycles-temporels.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#7c3aed';this.style.background='#f5f3ff'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#7c3aed;min-width:24px;">02</span>
+          <span style="font-size:13px;font-weight:600;">GB Time & Temps Algorithmique</span>
+        </a>
+        <a href="niveaux-algorithmiques.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#7c3aed';this.style.background='#f5f3ff'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#7c3aed;min-width:24px;">03</span>
+          <span style="font-size:13px;font-weight:600;">Niveaux Algorithmiques</span>
+        </a>
+        <a href="sequences-fractales.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#7c3aed';this.style.background='#f5f3ff'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#7c3aed;min-width:24px;">04</span>
+          <span style="font-size:13px;font-weight:600;">Sequences & Fractales</span>
+        </a>
+        <a href="ipda-trainer.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#fff8ee;border:1px solid #f0dbb8;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#d97706';this.style.background='#fef3c7'" onmouseout="this.style.borderColor='#f0dbb8';this.style.background='#fff8ee'">
+          <span style="font-size:11px;font-weight:700;color:#d97706;min-width:24px;">T</span>
+          <span style="font-size:13px;font-weight:600;">Algorithme de Livraison — Trainer</span>
+        </a>
       </div>
     </div>
 
-    <div class="card cat-strategies" data-category="strategies" data-tier="starter" data-keywords="zones de prix drt avance type 1 2 3 irl erl pd arrays fvg ob breaker ndog premium discount">
+    <!-- ═══ BLOC 6: MODELES & EXECUTION ═══ -->
+    <div class="card cat-strategies" data-category="strategies" data-tier="premium" data-keywords="modeles marche market maker mmbm mmsm quads smt unicorn protocole playbooks strategie entree execution etudes cas live" style="padding:32px;">
       <div class="card-header"><div>
-        <div class="card-tag tag-strategies">Structure</div>
-        <div class="card-level">Intermediaire &rarr; Expert</div>
+        <div class="card-tag tag-strategies" style="font-size:11px;padding:5px 14px;">Execution</div>
+        <span class="tier-badge tier-premium">PREMIUM</span>
       </div></div>
-      <div class="card-title">Zones de Prix — Types 1, 2, 3</div>
-      <div class="card-author">Par <span>Algorithmic Academy</span> · 16 sections</div>
-      <div class="card-desc">Les 3 types de Dealing Range (Continuation, Reversal, Consolidation), pendule IRL-ERL, PD Arrays, NDOG, 4 bougies de 6 heures, protocole d'execution.</div>
-      <div class="card-modules">
-        <span class="module-pill">Type 1/2/3</span><span class="module-pill">IRL-ERL</span><span class="module-pill">PD Arrays</span><span class="module-pill">NDOG</span><span class="module-pill">4 Bougies 6H</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><strong>16</strong> sections · Zones de prix complet</div>
-        <span class="card-arrow">&rarr;</span>
+      <div class="card-title" style="font-size:24px;margin-bottom:8px;">Modeles de Marche & Execution</div>
+      <div class="card-desc" style="font-size:14px;margin-bottom:24px;">Market Maker Models, protocoles complets, playbooks, strategies d'entree, etudes de cas et sessions live.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <a href="modeles-de-marche.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#ea580c';this.style.background='#fff7ed'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#ea580c;min-width:24px;">01</span>
+          <span style="font-size:13px;font-weight:600;">Modeles de Marche</span>
+        </a>
+        <a href="protocole-trading.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#ea580c';this.style.background='#fff7ed'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#ea580c;min-width:24px;">02</span>
+          <span style="font-size:13px;font-weight:600;">Protocole Complet</span>
+        </a>
+        <a href="modeles-execution.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#ea580c';this.style.background='#fff7ed'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#ea580c;min-width:24px;">03</span>
+          <span style="font-size:13px;font-weight:600;">Playbooks & Modeles</span>
+        </a>
+        <a href="strategie-entree.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#ea580c';this.style.background='#fff7ed'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#ea580c;min-width:24px;">04</span>
+          <span style="font-size:13px;font-weight:600;">Strategies d'Entree</span>
+        </a>
+        <a href="execution-avancee.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#ea580c';this.style.background='#fff7ed'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#ea580c;min-width:24px;">05</span>
+          <span style="font-size:13px;font-weight:600;">Execution Avancee</span>
+        </a>
+        <a href="etudes-de-cas.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#fff8ee;border:1px solid #f0dbb8;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#d97706';this.style.background='#fef3c7'" onmouseout="this.style.borderColor='#f0dbb8';this.style.background='#fff8ee'">
+          <span style="font-size:11px;font-weight:700;color:#d97706;min-width:24px;">E</span>
+          <span style="font-size:13px;font-weight:600;">Etudes de Cas</span>
+        </a>
+        <a href="execution-live-series.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#fff8ee;border:1px solid #f0dbb8;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#d97706';this.style.background='#fef3c7'" onmouseout="this.style.borderColor='#f0dbb8';this.style.background='#fff8ee'">
+          <span style="font-size:11px;font-weight:700;color:#d97706;min-width:24px;">L</span>
+          <span style="font-size:13px;font-weight:600;">Sessions Live</span>
+        </a>
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════ -->
-    <!-- SECTION: QUARTERLY THEORY & TEMPS FRACTAL   -->
-    <!-- ═══════════════════════════════════════════ -->
-
-    <div style="grid-column:1/-1;padding:32px 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;">
-      <div style="color:var(--accent-teal);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:6px;">Niveau 3</div>
-      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#000000;">Quarterly Theory & Temps Fractal</div>
-      <div style="color:#1a1a1a;font-size:12px;margin-top:4px;">True Opens, SSMT, AMDX/XAMD, profils, GB Time — le temps est fractal</div>
-    </div>
-
-    <div class="card cat-foundations" data-category="foundations" data-tier="starter" data-keywords="quarterly theory QT ssmt true opens precision swing points smt fill daily bias freedom model tcisd amdx xamd">
+    <!-- ═══ BLOC 7: PSYCHOLOGIE & OUTILS ═══ -->
+    <div class="card cat-fondations" data-category="fondations" data-tier="starter" data-keywords="psychologie discipline emotions journal calculatrice outils news role" style="padding:32px;">
       <div class="card-header"><div>
-        <div class="card-tag tag-foundations">Quarterly Theory</div><span class="tier-badge tier-starter">Starter</span>
-        <div class="card-level">Intermediaire &rarr; Expert</div>
+        <div class="card-tag tag-foundations" style="font-size:11px;padding:5px 14px;">Outils</div>
+        <span class="tier-badge tier-starter">STARTER</span>
       </div></div>
-      <div class="card-title">Quarterly Theory — Cours Complet</div>
-      <div class="card-author">Par <span>Algorithmic Academy</span> · 9 chapitres</div>
-      <div class="card-desc">True Opens, Sequential SMT, TCISD, Precision Swing Points, SMT Fill, Hidden SSMT, Daily Bias par candle closures, modeles d'entree. Le temps est fractal — de A a Z.</div>
-      <div class="card-modules">
-        <span class="module-pill">True Opens</span><span class="module-pill">SSMT</span><span class="module-pill">TCISD</span><span class="module-pill">PSP</span><span class="module-pill">Daily Bias</span><span class="module-pill">Freedom Model</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><strong>9</strong> chapitres · A &rarr; Z complet</div>
-        <span class="card-arrow">&rarr;</span>
-      </div>
-    </div>
-
-    <div class="card cat-advanced" data-category="advanced" data-tier="starter" data-keywords="cycles temporels gb time amdx xamd aoi true opens sessions algorithmique zurich quarterly theory avance">
-      <div class="card-header"><div>
-        <div class="card-tag tag-advanced">Quarterly Theory</div>
-        <div class="card-level">Expert</div>
-      </div></div>
-      <div class="card-title">Cycles Temporels & Temps Algorithmique</div>
-      <div class="card-author">Par <span>Algorithmic Academy</span> · GB Time</div>
-      <div class="card-desc">QT avancee : profils AMDX/XAMD, GB Time (temps algorithmique en heure de Zurich), AOI et invalidation. Sessions 6h, quarters 90min, micro sessions. Predire les swings a la minute.</div>
-      <div class="card-modules">
-        <span class="module-pill">AMDX/XAMD</span><span class="module-pill">GB Time</span><span class="module-pill">AOI</span><span class="module-pill">True Opens</span><span class="module-pill">Micro Sessions</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><strong>7</strong> sections · Temps algorithmique</div>
-        <span class="card-arrow">&rarr;</span>
-      </div>
-    </div>
-
-    <div class="card cat-advanced" data-category="advanced" data-tier="starter" data-keywords="sessions killzones macros opening range ndog profils livraison 4 bougies 6h london ny asia">
-      <div class="card-header"><div>
-        <div class="card-tag tag-advanced">Quarterly Theory</div>
-        <div class="card-level">Intermediaire &rarr; Expert</div>
-      </div></div>
-      <div class="card-title">Sessions, Killzones & Macros</div>
-      <div class="card-author">Par <span>Algorithmic Academy</span> · 8 sections</div>
-      <div class="card-desc">4 bougies de 6 heures, killzones (London/NY/Asia), macros de precision 20 minutes, Opening Range, NDOG, profils de livraison, regles speciales (vendredi, news).</div>
-      <div class="card-modules">
-        <span class="module-pill">4 Bougies 6H</span><span class="module-pill">Killzones</span><span class="module-pill">Macros 20min</span><span class="module-pill">Opening Range</span><span class="module-pill">NDOG</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><strong>8</strong> sections · Timing complet</div>
-        <span class="card-arrow">&rarr;</span>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════════════════════ -->
-    <!-- SECTION: ARCHITECTURE MATHEMATIQUE          -->
-    <!-- ═══════════════════════════════════════════ -->
-
-    <div data-section-tier="premium" style="grid-column:1/-1;padding:32px 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;">
-      <div style="color:var(--accent-purple);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:6px;">Niveau 4</div>
-      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#000000;">Architecture Mathematique</div>
-      <div style="color:#1a1a1a;font-size:12px;margin-top:4px;">PO3, Fix CME, IMP Nodes, HIPPO, niveaux institutionnels — la structure cachee des prix</div>
-    </div>
-
-    <div class="card cat-advanced" data-category="advanced" data-tier="premium" data-keywords="po3 fix cme hippo imp nodes dealing range institutionnel niveaux architecture mathematique">
-      <div class="card-header"><div>
-        <div class="card-tag tag-advanced">Architecture</div>
-        <div class="card-level">Expert</div>
-      </div></div>
-      <div class="card-title">Architecture des Niveaux — Systeme Complet</div>
-      <div class="card-author">Par <span>Algorithmic Academy</span> · 10 sections</div>
-      <div class="card-desc">PO3, niveaux institutionnels, Fix CME 16h, HIPPO, IMP Nodes. Architecture mathematique des dealing ranges et niveaux de prix algorithmiques. Le systeme NQ complet.</div>
-      <div class="card-modules">
-        <span class="module-pill">PO3</span><span class="module-pill">Niveaux</span><span class="module-pill">Fix CME</span><span class="module-pill">HIPPO</span><span class="module-pill">IMP Nodes</span><span class="module-pill">Temps</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><strong>10</strong> sections · Architecture complete</div>
-        <span class="card-arrow">&rarr;</span>
-      </div>
-    </div>
-
-    <div class="card cat-advanced" data-category="advanced" data-tier="premium" data-keywords="sequences fractales fibonacci nodes cls bis algorithme hft temps prix 2-1-2 5-3-5 8-5-8">
-      <div class="card-header"><div>
-        <div class="card-tag tag-advanced">Architecture</div>
-        <div class="card-level">Expert</div>
-      </div></div>
-      <div class="card-title">Sequences & Fractales de Temps</div>
-      <div class="card-author">Par <span>Algorithmic Academy</span> · 9 sections</div>
-      <div class="card-desc">Sequences algorithmiques 2-1-2, 5-3-5, 8-5-8. Niveaux Fibonacci specifiques, nodes prix/temps, architecture CLS/BIS. Le modele fractal qui decode les algorithmes.</div>
-      <div class="card-modules">
-        <span class="module-pill">Sequences</span><span class="module-pill">Fibonacci</span><span class="module-pill">Nodes</span><span class="module-pill">CLS</span><span class="module-pill">BIS</span><span class="module-pill">Protocole</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><strong>9</strong> sections · Fractales avance</div>
-        <span class="card-arrow">&rarr;</span>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════════════════════ -->
-    <!-- SECTION: MODELES DE MARCHE & EXECUTION      -->
-    <!-- ═══════════════════════════════════════════ -->
-
-    <div data-section-tier="premium" style="grid-column:1/-1;padding:32px 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;">
-      <div style="color:var(--accent-red);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:6px;">Niveau 5</div>
-      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#000000;">Modeles de Marche & Execution</div>
-      <div style="color:#1a1a1a;font-size:12px;margin-top:4px;">Market Maker Models, SMT, Unicorn, entries, protocoles — passer a l'action</div>
-    </div>
-
-    <div class="card cat-strategies" data-category="strategies" data-tier="premium" data-keywords="modeles marche market maker quads ipda smt unicorn three candle poi execution gestion mmbm mmsm">
-      <div class="card-header"><div>
-        <div class="card-tag tag-strategies">Execution</div>
-        <div class="card-level">Avance &rarr; Expert</div>
-      </div></div>
-      <div class="card-title">Modeles de Marche & Execution Avancee</div>
-      <div class="card-author">Par <span>Algorithmic Academy</span> · 16 modules</div>
-      <div class="card-desc">MMBM/MMSM, systeme QUADS, SMT comme confirmation, Unicorn Model, Three Candle Model. Protocole 6 couches de la selection d'environnement a la gestion du trade.</div>
-      <div class="card-modules">
-        <span class="module-pill">MMBM/MMSM</span><span class="module-pill">QUADS</span><span class="module-pill">SMT</span><span class="module-pill">Unicorn</span><span class="module-pill">3 Candle</span><span class="module-pill">Gestion</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><strong>16</strong> modules · Execution algorithmique</div>
-        <span class="card-arrow">&rarr;</span>
-      </div>
-    </div>
-
-    <div class="card cat-strategies" data-category="strategies" data-tier="premium" data-keywords="protocole complet checklist flowchart routine sessions plan execution journal biais htf ltf">
-      <div class="card-header"><div>
-        <div class="card-tag tag-strategies">Execution</div>
-        <div class="card-level">Tous niveaux</div>
-      </div></div>
-      <div class="card-title">Protocole Complet de Trading</div>
-      <div class="card-author">Par <span>Algorithmic Academy</span> · Checklists interactives</div>
-      <div class="card-desc">Routine pre-session, biais HTF (5 methodes), protocole HTF/LTF, execution, gestion. Flowchart 9 etapes et checklists interactives avec sauvegarde.</div>
-      <div class="card-modules">
-        <span class="module-pill">Routine</span><span class="module-pill">Biais HTF</span><span class="module-pill">Execution</span><span class="module-pill">Flowchart</span><span class="module-pill">Checklists</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><strong>17</strong> sections · Protocole integral</div>
-        <span class="card-arrow">&rarr;</span>
-      </div>
-    </div>
-
-    <div class="card cat-strategies" data-category="strategies" data-tier="premium" data-keywords="playbooks modeles execution backtesting a+ checklist fractal scoring intraday swing">
-      <div class="card-header"><div>
-        <div class="card-tag tag-strategies">Execution</div>
-        <div class="card-level">Avance</div>
-      </div></div>
-      <div class="card-title">Playbooks & Modeles d'Execution</div>
-      <div class="card-author">Par <span>Algorithmic Academy</span> · 4 Playbooks</div>
-      <div class="card-desc">4 playbooks complets, modele d'entree A+ avec scoring 12 points, modele fractal, comparatif des approches, protocole de backtesting 100 trades.</div>
-      <div class="card-modules">
-        <span class="module-pill">Intraday</span><span class="module-pill">Order Blocks</span><span class="module-pill">Liquidite</span><span class="module-pill">A+ Scoring</span><span class="module-pill">Backtesting</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><strong>10</strong> sections · Execution pro</div>
-        <span class="card-arrow">&rarr;</span>
-      </div>
-    </div>
-
-    <div class="card cat-strategies" data-category="strategies" data-tier="starter" data-keywords="execution live trading temps reel patience gestion position signatures algorithmiques cycles 90 minutes">
-      <div class="card-header"><div>
-        <div class="card-tag tag-strategies">Execution</div><span class="tier-badge tier-starter">Starter</span>
-        <div class="card-level">Intermediaire &rarr; Expert</div>
-      </div></div>
-      <div class="card-title">Sessions Live & Execution en Temps Reel</div>
-      <div class="card-author">Par <span>Algorithmic Academy</span> · 12 sessions</div>
-      <div class="card-desc">12 sessions de trading en temps reel. Patience, signatures algorithmiques, cycles 90 minutes, gestion de position, timing des news, execution micro timeframes.</div>
-      <div class="card-modules">
-        <span class="module-pill">Signatures Algo</span><span class="module-pill">Cycles 90min</span><span class="module-pill">Gestion</span><span class="module-pill">CPI Trading</span><span class="module-pill">SMT / CSD</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><strong>12</strong> modules · Sessions live</div>
-        <span class="card-arrow">&rarr;</span>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════════════════════ -->
-    <!-- SECTION: PSYCHOLOGIE & OUTILS               -->
-    <!-- ═══════════════════════════════════════════ -->
-
-    <div style="grid-column:1/-1;padding:32px 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;">
-      <div style="color:var(--gold);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:6px;">Transversal</div>
-      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#000000;">Psychologie & Outils</div>
-      <div style="color:#1a1a1a;font-size:12px;margin-top:4px;">Mindset, journal, calculatrice, trainer — les outils du trader complet</div>
-    </div>
-
-    <div class="card cat-fondations" data-category="fondations" data-tier="starter" data-keywords="psychologie discipline emotions journal mental trading fomo revenge freeze routine">
-      <div class="card-header"><div>
-        <div class="card-tag tag-foundations">Psychologie</div>
-        <div class="card-level">Tous niveaux</div>
-      </div></div>
-      <div class="card-title">Psychologie du Trader</div>
-      <div class="card-author">Par <span>Algorithmic Academy</span> · 18 modules</div>
-      <div class="card-desc">Les 7 problemes psychologiques, systeme mental 5 etapes, cartographie emotionnelle, discipline, journal complet, 10 regles d'or. Du mode survie au mode createur.</div>
-      <div class="card-modules">
-        <span class="module-pill">7 Problemes</span><span class="module-pill">Emotions</span><span class="module-pill">Discipline</span><span class="module-pill">Journal</span><span class="module-pill">10 Regles</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><strong>18</strong> modules · Psychologie complete</div>
-        <span class="card-arrow">&rarr;</span>
-      </div>
-    </div>
-
-    <div class="card cat-advanced" data-category="advanced" data-tier="starter" data-keywords="ipda trainer interactif flashcards quiz time cycles price cycles pd arrays smt csd entry">
-      <div class="card-header"><div>
-        <div class="card-tag tag-advanced">Outils</div><span class="tier-badge tier-starter">Starter</span>
-        <div class="card-level">Expert · Interactif</div>
-      </div></div>
-      <div class="card-title">Trainer Interactif — Quiz & Flashcards</div>
-      <div class="card-author">Par <span>Algorithmic Academy</span> · IPDA Framework</div>
-      <div class="card-desc">Trainer interactif : Price Cycles, Time Cycles, PD Arrays, IOF HTF, Draw on Liquidity, SMT, CSD, Entry Patterns, Trade Management. Flashcards et Quiz integres.</div>
-      <div class="card-modules">
-        <span class="module-pill">Price Cycles</span><span class="module-pill">Time Cycles</span><span class="module-pill">PD Arrays</span><span class="module-pill">SMT / CSD</span><span class="module-pill">Flashcards</span><span class="module-pill">Quiz</span>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><strong>12</strong> modules · Quiz + Flashcards</div>
-        <span class="card-arrow">&rarr;</span>
+      <div class="card-title" style="font-size:24px;margin-bottom:8px;">Psychologie & Outils</div>
+      <div class="card-desc" style="font-size:14px;margin-bottom:24px;">Mindset du trader, journal de trading, calculatrice de position, news en direct et outils pratiques.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <a href="psychologie-trader.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#b8860b';this.style.background='#fffbeb'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#b8860b;min-width:24px;">01</span>
+          <span style="font-size:13px;font-weight:600;">Psychologie du Trader</span>
+        </a>
+        <a href="journal-trading.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#b8860b';this.style.background='#fffbeb'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#b8860b;min-width:24px;">02</span>
+          <span style="font-size:13px;font-weight:600;">Journal de Trading</span>
+        </a>
+        <a href="calculatrice.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#b8860b';this.style.background='#fffbeb'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#b8860b;min-width:24px;">03</span>
+          <span style="font-size:13px;font-weight:600;">Calculatrice de Position</span>
+        </a>
+        <a href="role-outils.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f8f9fb;border:1px solid #e2e5ea;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#b8860b';this.style.background='#fffbeb'" onmouseout="this.style.borderColor='#e2e5ea';this.style.background='#f8f9fb'">
+          <span style="font-size:11px;font-weight:700;color:#b8860b;min-width:24px;">04</span>
+          <span style="font-size:13px;font-weight:600;">Role de Chaque Outil</span>
+        </a>
+        <a href="financial-juice.html" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#fff8ee;border:1px solid #f0dbb8;border-radius:8px;text-decoration:none;color:#000;transition:all 0.2s;" onmouseover="this.style.borderColor='#d97706';this.style.background='#fef3c7'" onmouseout="this.style.borderColor='#f0dbb8';this.style.background='#fff8ee'">
+          <span style="font-size:11px;font-weight:700;color:#d97706;min-width:24px;">N</span>
+          <span style="font-size:13px;font-weight:600;">News en Direct</span>
+        </a>
       </div>
     </div>
 
@@ -2076,27 +1935,17 @@ function tabSwitch(name) {
 const overlay    = document.getElementById('modalOverlay');
 const modalClose = document.getElementById('modalClose');
 
-var cardToCourse = [1, 19, 10, 5, 2, 22, 12, 18, 26, 17, 20, 21, 24, 25, 16, 23, 15];
-
-// Build set of premium courseData indices for modal/viewer blocking
+// Build set of premium card indices for modal/viewer blocking
 const premiumCourseIndices = new Set();
 cards.forEach((card, idx) => {
   if ((card.dataset.tier || 'premium') === 'premium') {
-    var ci = cardToCourse[idx] !== undefined ? cardToCourse[idx] : idx;
-    premiumCourseIndices.add(ci);
+    premiumCourseIndices.add(idx);
   }
 });
 
+// Cards now have direct chapter links inside - no card-level click needed
 cards.forEach((card, i) => {
-  card.addEventListener('click', () => {
-    const cardTier = card.dataset.tier || 'premium';
-    if (userTier === 'starter' && cardTier === 'premium') return;
-    var ci = cardToCourse[i] !== undefined ? cardToCourse[i] : i;
-    var d = courseData[ci];
-    if (d && d.isTrainer) { openTrainer(); return; }
-    if (d && d.url) { window.location.href = d.url; return; }
-    openModal(ci);
-  });
+  card.style.cursor = 'default';
 });
 
 function openModal(i) {
