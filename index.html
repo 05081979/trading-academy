@@ -5,454 +5,504 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="auth.js"></script>
 <title>Algorithmic Academy</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,700;1,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-  :root {
-    --bg: #060a12;
-    --bg2: #0b1120;
-    --bg3: #101828;
-    --border: #162040;
-    --border2: #1e2d55;
-    --blue: #4a7cff;
-    --blue2: #6b9aff;
-    --blue-dim: rgba(74,124,255,0.08);
-    --blue-dim2: rgba(74,124,255,0.15);
-    --gold: #d4a44a;
-    --gold2: #f0c060;
-    --text: #e4e8f2;
-    --text2: #8892a8;
-    --text3: #3d4a65;
-    --sans: 'Inter', system-ui, sans-serif;
-    --serif: 'Playfair Display', Georgia, serif;
-  }
+:root {
+  --bg: #060a12;
+  --bg2: #0b1120;
+  --bg3: #101828;
+  --border: #162040;
+  --border2: #1e2d55;
+  --blue: #4a7cff;
+  --blue2: #6b9aff;
+  --blue-dim: rgba(74,124,255,0.08);
+  --gold: #d4a44a;
+  --gold2: #f0c060;
+  --green: #2dd67a;
+  --teal: #38c9b0;
+  --purple: #9b7fe8;
+  --red: #e05030;
+  --text: #e4e8f2;
+  --text2: #8892a8;
+  --text3: #3d4a65;
+  --sans: 'Inter', system-ui, sans-serif;
+  --serif: 'Playfair Display', Georgia, serif;
+  --transition: 0.3s ease;
+}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-  }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
 
-  /* ── PARTICLES CANVAS ── */
-  #particles {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-  }
+/* ── PARTICLES ── */
+#particles {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
 
-  /* ── NAVBAR ── */
-  .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    padding: 0 48px;
-    height: 72px;
-    display: flex;
-    align-items: center;
-    background: rgba(6,10,18,0.7);
-    backdrop-filter: blur(20px) saturate(1.2);
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-    transition: all 0.3s;
-  }
+/* ── FADE IN ── */
+.fade-in {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
-  .navbar.scrolled {
-    background: rgba(6,10,18,0.92);
-    border-bottom-color: var(--border);
-  }
+/* ── NAVBAR ── */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0 48px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  background: rgba(6,10,18,0.6);
+  backdrop-filter: blur(24px) saturate(1.2);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: all var(--transition);
+}
+.navbar.scrolled {
+  background: rgba(6,10,18,0.94);
+  border-bottom-color: var(--border);
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+}
+.nav-logo svg { width: 36px; height: 36px; }
+.nav-logo-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.nav-logo-text span { color: var(--blue); }
+.nav-links {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all var(--transition);
+}
+.nav-link:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-cta {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--blue);
+  padding: 9px 22px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all var(--transition);
+  margin-left: 8px;
+}
+.nav-cta:hover { background: var(--blue2); transform: translateY(-1px); }
 
-  .nav-logo {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    text-decoration: none;
-  }
+/* ── HERO ── */
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 24px 80px;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 200px;
+  background: linear-gradient(to top, var(--bg), transparent);
+  pointer-events: none;
+}
+.hero-glow {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 420px;
+  background: radial-gradient(ellipse, rgba(74,124,255,0.07), transparent 70%);
+  pointer-events: none;
+}
+.hero-logo { margin-bottom: 36px; }
+.hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(36px, 6vw, 64px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+  max-width: 780px;
+}
+.hero h1 em { font-style: italic; color: var(--blue); }
+.hero-sub {
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--text2);
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+.hero-buttons {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 56px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--blue);
+  padding: 14px 30px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all var(--transition);
+  box-shadow: 0 4px 24px rgba(74,124,255,0.25);
+}
+.btn-primary:hover {
+  background: var(--blue2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(74,124,255,0.35);
+}
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text2);
+  background: transparent;
+  padding: 14px 30px;
+  border-radius: 10px;
+  text-decoration: none;
+  border: 1px solid var(--border2);
+  transition: all var(--transition);
+}
+.btn-outline:hover {
+  color: var(--text);
+  border-color: var(--blue);
+  background: var(--blue-dim);
+  transform: translateY(-2px);
+}
 
-  .nav-logo-icon {
-    position: relative;
-    width: 38px;
-    height: 38px;
-  }
+/* ── STATS ── */
+.hero-stats {
+  display: flex;
+  gap: 48px;
+  position: relative;
+  z-index: 1;
+}
+.hero-stats .stat {
+  text-align: center;
+}
+.hero-stats .stat-value {
+  font-family: var(--serif);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
+.hero-stats .stat-label {
+  color: var(--text3);
+  font-size: 12px;
+  margin-top: 6px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.hero-stats .divider {
+  width: 1px;
+  background: var(--border);
+  align-self: stretch;
+}
 
-  .nav-logo-icon svg {
-    width: 38px;
-    height: 38px;
-  }
+/* ── SECTIONS ── */
+.section {
+  position: relative;
+  z-index: 1;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 100px 24px;
+}
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+.section-label::before {
+  content: '';
+  width: 20px;
+  height: 1px;
+  background: var(--gold);
+}
+.section-title {
+  font-family: var(--serif);
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 48px;
+}
 
-  .nav-logo-text {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text);
-    letter-spacing: -0.01em;
-  }
+/* ── PARCOURS CARDS ── */
+.parcours-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.p-card {
+  position: relative;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px 28px 28px;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: all var(--transition);
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+.p-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--card-accent);
+}
+.p-card:hover {
+  border-color: var(--border2);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px rgba(0,0,0,0.4), 0 0 24px color-mix(in srgb, var(--card-accent) 12%, transparent);
+}
+.p-card-number {
+  position: absolute;
+  top: 20px; right: 24px;
+  font-family: var(--serif);
+  font-size: 56px;
+  font-weight: 800;
+  color: var(--text);
+  opacity: 0.04;
+  line-height: 1;
+  pointer-events: none;
+}
+.p-card-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+.badge-starter {
+  background: rgba(45,214,122,0.1);
+  color: var(--green);
+}
+.badge-premium {
+  background: rgba(212,164,74,0.12);
+  color: var(--gold);
+}
+.p-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  transition: color var(--transition);
+}
+.p-card:hover .p-card-title { color: var(--blue2); }
+.p-card-desc {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.65;
+}
+.p-card-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+.p-tag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+.p-card-arrow {
+  position: absolute;
+  bottom: 28px; right: 28px;
+  color: var(--text3);
+  font-size: 18px;
+  transition: all var(--transition);
+}
+.p-card:hover .p-card-arrow { color: var(--blue); transform: translateX(4px); }
 
-  .nav-logo-text span {
-    color: var(--blue);
-  }
+/* ── ACCES RAPIDE ── */
+.quick-section {
+  position: relative;
+  z-index: 1;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 24px 100px;
+}
+.quick-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+}
+.quick-scroll::-webkit-scrollbar { display: none; }
+.quick-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 20px;
+  text-decoration: none;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.quick-pill:hover {
+  color: #fff;
+  border-color: var(--blue);
+  background: rgba(74,124,255,0.08);
+}
+.quick-pill .arrow {
+  font-size: 14px;
+  transition: transform var(--transition);
+}
+.quick-pill:hover .arrow { transform: translateX(3px); }
 
-  .nav-links {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+/* ── ABOUT ── */
+.about {
+  position: relative;
+  z-index: 1;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 80px 24px 100px;
+  display: flex;
+  align-items: flex-start;
+  gap: 64px;
+}
+.about-visual {
+  flex-shrink: 0;
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.about-logo-box {
+  width: 120px;
+  height: 120px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--bg2), var(--bg3));
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 60px rgba(74,124,255,0.06);
+}
+.about-visual h3 {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+}
+.about-visual h3 em { color: var(--blue); font-style: italic; }
+.about-content p {
+  font-size: 15px;
+  color: var(--text2);
+  line-height: 1.75;
+  margin-bottom: 14px;
+  max-width: 540px;
+}
+.about-sig {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--blue);
+  margin-top: 24px;
+}
 
-  .nav-link {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text2);
-    text-decoration: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    transition: all 0.2s;
-  }
+/* ── FOOTER ── */
+footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 40px 24px;
+  border-top: 1px solid var(--border);
+}
+footer p {
+  font-size: 12px;
+  color: var(--text3);
+}
+footer span { color: var(--blue); font-weight: 600; }
 
-  .nav-link:hover { color: var(--text); background: rgba(255,255,255,0.04); }
-
-  .nav-cta {
-    font-size: 13px;
-    font-weight: 600;
-    color: #fff;
-    background: var(--blue);
-    padding: 9px 22px;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: all 0.2s;
-    margin-left: 8px;
-  }
-
-  .nav-cta:hover { background: var(--blue2); transform: translateY(-1px); }
-
-  /* ── HERO ── */
-  .hero {
-    position: relative;
-    z-index: 1;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 120px 24px 80px;
-  }
-
-  .hero::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 200px;
-    background: linear-gradient(to top, var(--bg), transparent);
-    pointer-events: none;
-  }
-
-  .hero-glow {
-    position: absolute;
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 700px;
-    height: 400px;
-    background: radial-gradient(ellipse, rgba(74,124,255,0.08), transparent 70%);
-    pointer-events: none;
-  }
-
-  .hero h1 {
-    font-family: var(--serif);
-    font-size: clamp(40px, 7vw, 72px);
-    font-weight: 800;
-    line-height: 1.08;
-    letter-spacing: -0.02em;
-    margin-bottom: 24px;
-    max-width: 800px;
-  }
-
-  .hero h1 em {
-    font-style: italic;
-    color: var(--blue);
-  }
-
-  .hero-sub {
-    font-size: 17px;
-    font-weight: 400;
-    color: var(--text2);
-    max-width: 540px;
-    line-height: 1.7;
-    margin-bottom: 40px;
-  }
-
-  .hero-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 15px;
-    font-weight: 600;
-    color: #fff;
-    background: var(--blue);
-    padding: 14px 32px;
-    border-radius: 10px;
-    text-decoration: none;
-    transition: all 0.25s;
-    box-shadow: 0 4px 24px rgba(74,124,255,0.25);
-  }
-
-  .hero-cta:hover {
-    background: var(--blue2);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(74,124,255,0.35);
-  }
-
-  .hero-cta svg {
-    width: 18px;
-    height: 18px;
-    transition: transform 0.2s;
-  }
-
-  .hero-cta:hover svg { transform: translateX(3px); }
-
-  /* ── SECTION TITLE ── */
-  .section {
-    position: relative;
-    z-index: 1;
-    max-width: 1140px;
-    margin: 0 auto;
-    padding: 60px 24px;
-  }
-
-  .section-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--blue);
-    margin-bottom: 16px;
-  }
-
-  .section-label::before {
-    content: '';
-    width: 20px;
-    height: 1px;
-    background: var(--blue);
-  }
-
-  .section h2 {
-    font-family: var(--serif);
-    font-size: clamp(28px, 4vw, 42px);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    margin-bottom: 12px;
-  }
-
-  .section h2 em { font-style: italic; color: var(--blue); }
-
-  .section-desc {
-    font-size: 15px;
-    color: var(--text2);
-    max-width: 500px;
-    line-height: 1.6;
-    margin-bottom: 40px;
-  }
-
-  /* ── CARDS ── */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 18px;
-  }
-
-  .card {
-    position: relative;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px;
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    transition: all 0.3s ease;
-    overflow: hidden;
-  }
-
-  .card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 16px;
-    background: linear-gradient(135deg, rgba(74,124,255,0.04), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .card:hover {
-    border-color: var(--border2);
-    transform: translateY(-6px);
-    box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(74,124,255,0.08);
-  }
-
-  .card:hover::before { opacity: 1; }
-
-  .card-head {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .card-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    flex-shrink: 0;
-    background: var(--icon-bg);
-    border: 1px solid var(--icon-border);
-  }
-
-  .card-name {
-    font-size: 17px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    transition: color 0.2s;
-  }
-
-  .card:hover .card-name { color: var(--blue2); }
-
-  .card-sub {
-    font-size: 12px;
-    color: var(--text3);
-    font-weight: 500;
-    margin-top: 2px;
-  }
-
-  .card-body {
-    font-size: 14px;
-    color: var(--text2);
-    line-height: 1.65;
-    position: relative;
-    z-index: 1;
-  }
-
-  .card-tags {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-top: auto;
-    position: relative;
-    z-index: 1;
-  }
-
-  .tag {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    padding: 4px 10px;
-    border-radius: 6px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--border);
-    color: var(--text2);
-  }
-
-  .card-arrow {
-    position: absolute;
-    top: 28px;
-    right: 28px;
-    color: var(--text3);
-    font-size: 20px;
-    transition: all 0.25s;
-    z-index: 1;
-  }
-
-  .card:hover .card-arrow { color: var(--blue); transform: translateX(4px); }
-
-  /* ── WHY SECTION ── */
-  .why {
-    position: relative;
-    z-index: 1;
-    max-width: 1140px;
-    margin: 0 auto;
-    padding: 80px 24px;
-    display: flex;
-    align-items: center;
-    gap: 60px;
-  }
-
-  .why-visual {
-    flex-shrink: 0;
-    width: 200px;
-    height: 200px;
-    border-radius: 24px;
-    background: linear-gradient(135deg, var(--bg2), var(--bg3));
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 72px;
-    box-shadow: 0 0 60px rgba(74,124,255,0.06);
-  }
-
-  .why-content h2 {
-    font-family: var(--serif);
-    font-size: 32px;
-    font-weight: 800;
-    margin-bottom: 16px;
-  }
-
-  .why-content p {
-    font-size: 15px;
-    color: var(--text2);
-    line-height: 1.75;
-    margin-bottom: 12px;
-    max-width: 520px;
-  }
-
-  .why-sig {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 16px;
-    color: var(--blue);
-    margin-top: 20px;
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    padding: 40px 24px;
-    border-top: 1px solid var(--border);
-  }
-
-  footer p {
-    font-size: 12px;
-    color: var(--text3);
-  }
-
-  footer span { color: var(--blue); font-weight: 600; }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 768px) {
-    .navbar { padding: 0 20px; height: 60px; }
-    .nav-links { display: none; }
-    .hero { padding: 100px 20px 60px; }
-    .grid { grid-template-columns: 1fr; }
-    .why { flex-direction: column; text-align: center; padding: 60px 20px; }
-    .why-visual { width: 140px; height: 140px; font-size: 52px; }
-  }
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .parcours-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .navbar { padding: 0 20px; height: 60px; }
+  .nav-links { display: none; }
+  .hero { padding: 100px 20px 60px; }
+  .hero-stats { gap: 28px; }
+  .hero-stats .stat-value { font-size: 24px; }
+  .parcours-grid { grid-template-columns: 1fr; }
+  .about { flex-direction: column; align-items: center; text-align: center; padding: 60px 20px; }
+  .about-content p { max-width: 100%; }
+  .quick-section { padding: 0 20px 80px; }
+}
 </style>
 </head>
 <body>
@@ -462,8 +512,179 @@
 <!-- NAVBAR -->
 <nav class="navbar" id="navbar">
   <a href="#" class="nav-logo">
-    <div class="nav-logo-icon">
-      <svg viewBox="0 0 40 40" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="20,4 36,13 36,27 20,36 4,27 4,13" fill="rgba(10,14,26,0.95)" stroke="#4a7cff" stroke-width="1.5"/>
+      <text x="20" y="24" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="16" font-weight="800">A</text>
+      <ellipse cx="20" cy="18" rx="18" ry="7" fill="none" stroke="#3455a8" stroke-width="0.6" transform="rotate(-25 20 18)" opacity="0.5"/>
+      <circle cx="8" cy="14" r="1.5" fill="#4a7cff" opacity="0.7"/>
+      <circle cx="32" cy="16" r="1.5" fill="#e05030" opacity="0.7"/>
+    </svg>
+    <div class="nav-logo-text"><span>Algorithmic</span> Academy</div>
+  </a>
+  <div class="nav-links">
+    <a href="#parcours" class="nav-link">Parcours</a>
+    <a href="#about" class="nav-link">A propos</a>
+    <a href="modules/hub-cours.html" class="nav-cta">Commencer</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+
+  <div class="hero-logo">
+    <svg viewBox="0 0 400 400" width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="200,120 260,150 260,210 200,240 140,210 140,150" fill="rgba(10,14,26,0.95)" stroke="#4a7cff" stroke-width="3"/>
+      <polygon points="200,130 252,155 252,205 200,230 148,205 148,155" fill="none" stroke="#253a6a" stroke-width="1" opacity="0.5"/>
+      <text x="200" y="198" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="52" font-weight="800" opacity="0.9">A</text>
+      <ellipse cx="200" cy="175" rx="100" ry="40" fill="none" stroke="#3455a8" stroke-width="1" transform="rotate(-25 200 175)" opacity="0.4"/>
+      <circle cx="135" cy="155" r="3" fill="#4a7cff" opacity="0.6"/>
+      <circle cx="265" cy="165" r="3" fill="#e05030" opacity="0.6"/>
+    </svg>
+  </div>
+
+  <h1>La Formation Trading<br>Derriere les <em>Algorithmes</em></h1>
+  <p class="hero-sub">Maitrisez la structure algorithmique du marche. Du debutant au trader operationnel.</p>
+
+  <div class="hero-buttons">
+    <a href="modules/hub-cours.html" class="btn-primary">
+      Commencer le Parcours
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a href="#parcours" class="btn-outline">Explorer les Modules</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-value counter" data-target="32">0</div>
+      <div class="stat-label">Cours</div>
+    </div>
+    <div class="divider"></div>
+    <div class="stat">
+      <div class="stat-value counter" data-target="250" data-suffix="+">0</div>
+      <div class="stat-label">Modules</div>
+    </div>
+    <div class="divider"></div>
+    <div class="stat">
+      <div class="stat-value counter" data-target="6">0</div>
+      <div class="stat-label">Indicateurs</div>
+    </div>
+  </div>
+</section>
+
+<!-- PARCOURS -->
+<section class="section" id="parcours">
+  <div class="fade-in">
+    <div class="section-label">Votre Formation</div>
+    <h2 class="section-title">Un Parcours Structure</h2>
+  </div>
+
+  <div class="parcours-grid">
+
+    <a href="modules/hub-cours.html" class="p-card fade-in" style="--card-accent: #2dd67a;">
+      <span class="p-card-number">01</span>
+      <span class="p-card-badge badge-starter">Starter</span>
+      <div class="p-card-title">Fondations & Bases</div>
+      <div class="p-card-desc">Structure de marche, liquidite, pieges, fiches de reference</div>
+      <div class="p-card-tags">
+        <span class="p-tag">SMC</span>
+        <span class="p-tag">Liquidite</span>
+        <span class="p-tag">Inducements</span>
+      </div>
+      <span class="p-card-arrow">&rarr;</span>
+    </a>
+
+    <a href="modules/hub-cours.html" class="p-card fade-in" style="--card-accent: #4a7cff;">
+      <span class="p-card-number">02</span>
+      <span class="p-card-badge badge-starter">Starter</span>
+      <div class="p-card-title">Structure du Prix</div>
+      <div class="p-card-desc">Dealing Ranges, zones de prix, PD Arrays, analyse multi-timeframe</div>
+      <div class="p-card-tags">
+        <span class="p-tag">Dealing Range</span>
+        <span class="p-tag">Zones de Prix</span>
+        <span class="p-tag">MTF</span>
+      </div>
+      <span class="p-card-arrow">&rarr;</span>
+    </a>
+
+    <a href="modules/hub-cours.html" class="p-card fade-in" style="--card-accent: #38c9b0;">
+      <span class="p-card-number">03</span>
+      <span class="p-card-badge badge-starter">Starter</span>
+      <div class="p-card-title">Temps & Cycles</div>
+      <div class="p-card-desc">Quarterly Theory, sessions, killzones, macros, GB Time</div>
+      <div class="p-card-tags">
+        <span class="p-tag">QT</span>
+        <span class="p-tag">Sessions</span>
+        <span class="p-tag">Macros</span>
+      </div>
+      <span class="p-card-arrow">&rarr;</span>
+    </a>
+
+    <a href="modules/hub-cours.html" class="p-card fade-in" style="--card-accent: #9b7fe8;">
+      <span class="p-card-number">04</span>
+      <span class="p-card-badge badge-premium">Premium</span>
+      <div class="p-card-title">Architecture Mathematique</div>
+      <div class="p-card-desc">PO3, Fix CME, HIPPO, IMP Nodes, niveaux algorithmiques</div>
+      <div class="p-card-tags">
+        <span class="p-tag">PO3</span>
+        <span class="p-tag">Fix CME</span>
+        <span class="p-tag">HIPPO</span>
+      </div>
+      <span class="p-card-arrow">&rarr;</span>
+    </a>
+
+    <a href="modules/hub-cours.html" class="p-card fade-in" style="--card-accent: #e05030;">
+      <span class="p-card-number">05</span>
+      <span class="p-card-badge badge-premium">Premium</span>
+      <div class="p-card-title">Modeles & Execution</div>
+      <div class="p-card-desc">Market Maker Models, protocoles, playbooks, strategies d'entree</div>
+      <div class="p-card-tags">
+        <span class="p-tag">MMBM</span>
+        <span class="p-tag">Protocole</span>
+        <span class="p-tag">Playbooks</span>
+      </div>
+      <span class="p-card-arrow">&rarr;</span>
+    </a>
+
+    <a href="modules/hub-cours.html" class="p-card fade-in" style="--card-accent: #d4a44a;">
+      <span class="p-card-number">06</span>
+      <span class="p-card-badge badge-starter">Starter</span>
+      <div class="p-card-title">Psychologie & Outils</div>
+      <div class="p-card-desc">Mindset, journal, calculatrice, trainer interactif, news en direct</div>
+      <div class="p-card-tags">
+        <span class="p-tag">Psychologie</span>
+        <span class="p-tag">Journal</span>
+        <span class="p-tag">Outils</span>
+      </div>
+      <span class="p-card-arrow">&rarr;</span>
+    </a>
+
+  </div>
+</section>
+
+<!-- ACCES RAPIDE -->
+<div class="quick-section">
+  <div class="fade-in">
+    <div class="section-label" style="color: var(--blue);">Modules Populaires</div>
+    <h2 class="section-title" style="font-size: clamp(24px, 3vw, 32px); margin-bottom: 28px;">Acces Rapide</h2>
+  </div>
+  <div class="quick-scroll fade-in">
+    <a href="modules/fondamentaux-smc.html" class="quick-pill">Bases SMC <span class="arrow">&rarr;</span></a>
+    <a href="modules/comprendre-liquidite.html" class="quick-pill">Liquidite <span class="arrow">&rarr;</span></a>
+    <a href="modules/cycles-temporels.html" class="quick-pill">Quarterly Theory <span class="arrow">&rarr;</span></a>
+    <a href="modules/sessions-killzones.html" class="quick-pill">Sessions & Killzones <span class="arrow">&rarr;</span></a>
+    <a href="modules/zones-de-prix.html" class="quick-pill">Zones de Prix <span class="arrow">&rarr;</span></a>
+    <a href="modules/psychologie-trader.html" class="quick-pill">Psychologie <span class="arrow">&rarr;</span></a>
+    <a href="modules/protocole-trading.html" class="quick-pill">Protocole <span class="arrow">&rarr;</span></a>
+    <a href="modules/architecture-niveaux.html" class="quick-pill">Architecture <span class="arrow">&rarr;</span></a>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about fade-in" id="about">
+  <div class="about-visual">
+    <div class="about-logo-box">
+      <svg viewBox="0 0 40 40" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
         <polygon points="20,4 36,13 36,27 20,36 4,27 4,13" fill="rgba(10,14,26,0.95)" stroke="#4a7cff" stroke-width="1.5"/>
         <text x="20" y="24" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="16" font-weight="800">A</text>
         <ellipse cx="20" cy="18" rx="18" ry="7" fill="none" stroke="#3455a8" stroke-width="0.6" transform="rotate(-25 20 18)" opacity="0.5"/>
@@ -471,194 +692,13 @@
         <circle cx="32" cy="16" r="1.5" fill="#e05030" opacity="0.7"/>
       </svg>
     </div>
-    <div class="nav-logo-text"><span>Algorithmic</span> Academy</div>
-  </a>
-  <div class="nav-links">
-    <a href="#parcours" class="nav-link">Parcours</a>
-    <a href="#bibliotheque" class="nav-link">Bibliotheque</a>
-    <a href="#protocole" class="nav-link">Protocole</a>
-    <a href="#psycho" class="nav-link">Psychologie</a>
-    <a href="#tools" class="nav-link">Outils</a>
-    <a href="#indicateurs" class="nav-link">Indicateurs</a>
-    <a href="#about" class="nav-link">A propos</a>
-    <a href="#parcours" class="nav-cta">Commencer</a>
+    <h3>Pourquoi<br><em>Algorithmic<br>Academy</em></h3>
   </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-glow"></div>
-  <div style="margin-bottom:32px;">
-    <svg viewBox="0 0 400 400" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="200" cy="200" r="195" fill="#0a0e1a"/>
-      <circle cx="200" cy="200" r="195" fill="none" stroke="#141e35" stroke-width="1"/>
-      <text x="80" y="145" fill="#2a3a5c" font-family="monospace" font-size="10" opacity="0.6">10110</text>
-      <text x="300" y="140" fill="#2a3a5c" font-family="monospace" font-size="10" opacity="0.6">01001</text>
-      <text x="70" y="260" fill="#2a3a5c" font-family="monospace" font-size="10" opacity="0.6">0101</text>
-      <text x="100" y="340" fill="#2a3a5c" font-family="monospace" font-size="10" opacity="0.6">11010</text>
-      <text x="290" y="345" fill="#2a3a5c" font-family="monospace" font-size="10" opacity="0.6">10111</text>
-      <ellipse cx="200" cy="185" rx="145" ry="65" fill="none" stroke="#3455a8" stroke-width="1.2" transform="rotate(-30 200 185)" opacity="0.7"/>
-      <ellipse cx="200" cy="185" rx="120" ry="55" fill="none" stroke="#d04830" stroke-width="1" stroke-dasharray="6 4" transform="rotate(35 200 185)" opacity="0.6"/>
-      <ellipse cx="200" cy="185" rx="130" ry="50" fill="none" stroke="#1e3060" stroke-width="1" stroke-dasharray="8 5" transform="rotate(-60 200 185)" opacity="0.5"/>
-      <circle cx="120" cy="155" r="5" fill="#4a7cff"/>
-      <circle cx="185" cy="135" r="4" fill="#4a7cff"/>
-      <circle cx="165" cy="310" r="4.5" fill="#4a7cff"/>
-      <circle cx="265" cy="155" r="5" fill="#e05030"/>
-      <circle cx="230" cy="215" r="3.5" fill="#e05030"/>
-      <circle cx="290" cy="305" r="5" fill="#e05030"/>
-      <circle cx="255" cy="175" r="2.5" fill="#8892a8"/>
-      <circle cx="145" cy="195" r="2.5" fill="#8892a8"/>
-      <polygon points="200,145 235,165 235,200 200,220 165,200 165,165" fill="rgba(15,25,50,0.9)" stroke="#3455a8" stroke-width="2"/>
-      <polygon points="200,152 229,169 229,197 200,214 171,197 171,169" fill="none" stroke="#253a6a" stroke-width="0.8" opacity="0.5"/>
-      <text x="200" y="198" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="42" font-weight="800" opacity="0.9">A</text>
-      <text x="200" y="266" text-anchor="middle" fill="#e4e8f2" font-family="Inter,sans-serif" font-size="28" font-weight="800" letter-spacing="3">ALGORITHMIC</text>
-      <text x="200" y="290" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="14" font-weight="600" letter-spacing="8">ACADEMY</text>
-      <text x="200" y="320" text-anchor="middle" fill="#2a3a5c" font-family="monospace" font-size="10" opacity="0.5">v2.0 :: build_2026</text>
-    </svg>
-  </div>
-  <h1>La Formation Trading<br>Derriere les <em>Algorithmes</em></h1>
-  <p class="hero-sub">Maitrisez les Smart Money Concepts, les Time Cycles et les strategies institutionnelles. 31 cours structures du debutant au trader operationnel.</p>
-  <a href="modules/hub-cours.html" class="hero-cta">
-    Acceder aux Cours
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-  </a>
-</section>
-
-<!-- SHOWCASE SECTION -->
-<section class="section" id="parcours" style="padding:80px 48px;position:relative;z-index:1;">
-
-  <div style="display:flex;justify-content:center;gap:60px;margin-bottom:64px;flex-wrap:wrap;">
-    <div style="text-align:center;">
-      <div class="counter" data-target="31" style="font-family:var(--serif);font-size:56px;font-weight:800;color:var(--blue);line-height:1;">0</div>
-      <div style="color:var(--text2);font-size:13px;margin-top:8px;letter-spacing:2px;text-transform:uppercase;">Cours</div>
-    </div>
-    <div style="text-align:center;">
-      <div class="counter" data-target="250" style="font-family:var(--serif);font-size:56px;font-weight:800;color:var(--gold);line-height:1;">0</div>
-      <div style="color:var(--text2);font-size:13px;margin-top:8px;letter-spacing:2px;text-transform:uppercase;">Modules</div>
-    </div>
-    <div style="text-align:center;">
-      <div class="counter" data-target="6" style="font-family:var(--serif);font-size:56px;font-weight:800;color:#2dd67a;line-height:1;">0</div>
-      <div style="color:var(--text2);font-size:13px;margin-top:8px;letter-spacing:2px;text-transform:uppercase;">Indicateurs</div>
-    </div>
-  </div>
-
-  <div style="text-align:center;margin-bottom:48px;">
-    <div style="color:var(--gold);font-size:11px;letter-spacing:4px;text-transform:uppercase;margin-bottom:12px;">Ce qui vous attend</div>
-    <h2 style="font-family:var(--serif);font-size:36px;font-weight:800;color:#fff;line-height:1.2;">Un Parcours Structure<br>du <em style="color:var(--blue);">Debutant</em> au <em style="color:var(--gold);">Trader Operationnel</em></h2>
-  </div>
-
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1100px;margin:0 auto 48px;">
-    <div class="pillar-card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:36px 28px;text-align:center;transition:all 0.4s;cursor:default;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#2dd67a,transparent);opacity:0;transition:opacity 0.4s;" class="pillar-glow"></div>
-      <div style="font-size:40px;margin-bottom:16px;">&#x1F3AF;</div>
-      <h3 style="color:#fff;font-size:18px;font-weight:700;margin-bottom:12px;">Fondations</h3>
-      <p style="color:var(--text2);font-size:13px;line-height:1.7;">Market Structure, Liquidite, SMT, Order Blocks, Breaker, Time Cycles. Les bases solides pour comprendre les marches.</p>
-      <div style="margin-top:16px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
-        <span style="background:rgba(45,214,122,0.1);color:#2dd67a;font-size:10px;padding:3px 8px;border-radius:4px;">SMC/Institutionnel</span>
-        <span style="background:rgba(45,214,122,0.1);color:#2dd67a;font-size:10px;padding:3px 8px;border-radius:4px;">Structure</span>
-        <span style="background:rgba(45,214,122,0.1);color:#2dd67a;font-size:10px;padding:3px 8px;border-radius:4px;">Liquidite</span>
-      </div>
-    </div>
-    <div class="pillar-card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:36px 28px;text-align:center;transition:all 0.4s;cursor:default;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--blue),transparent);opacity:0;transition:opacity 0.4s;" class="pillar-glow"></div>
-      <div style="font-size:40px;margin-bottom:16px;">&#x26A1;</div>
-      <h3 style="color:#fff;font-size:18px;font-weight:700;margin-bottom:12px;">Execution</h3>
-      <p style="color:var(--text2);font-size:13px;line-height:1.7;">Time Cycles, Quarterly Theory, Signatures Algorithmiques, Sessions Live. Apprenez a executer avec precision.</p>
-      <div style="margin-top:16px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
-        <span style="background:rgba(74,124,255,0.1);color:var(--blue);font-size:10px;padding:3px 8px;border-radius:4px;">Time Cycles</span>
-        <span style="background:rgba(74,124,255,0.1);color:var(--blue);font-size:10px;padding:3px 8px;border-radius:4px;">QT</span>
-        <span style="background:rgba(74,124,255,0.1);color:var(--blue);font-size:10px;padding:3px 8px;border-radius:4px;">Live Trading</span>
-      </div>
-    </div>
-    <div class="pillar-card" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:36px 28px;text-align:center;transition:all 0.4s;cursor:default;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity 0.4s;" class="pillar-glow"></div>
-      <div style="font-size:40px;margin-bottom:16px;">&#x1F48E;</div>
-      <h3 style="color:#fff;font-size:18px;font-weight:700;margin-bottom:12px;">Maitrise</h3>
-      <p style="color:var(--text2);font-size:13px;line-height:1.7;">Indicateurs exclusifs, IPDA avance, Dealing Ranges, Psychologie du trader, Gestion du risque.</p>
-      <div style="margin-top:16px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
-        <span style="background:rgba(212,164,74,0.1);color:var(--gold);font-size:10px;padding:3px 8px;border-radius:4px;">Indicateurs</span>
-        <span style="background:rgba(212,164,74,0.1);color:var(--gold);font-size:10px;padding:3px 8px;border-radius:4px;">IPDA</span>
-        <span style="background:rgba(212,164,74,0.1);color:var(--gold);font-size:10px;padding:3px 8px;border-radius:4px;">Psychologie</span>
-      </div>
-    </div>
-  </div>
-
-  <div style="overflow:hidden;margin:40px -48px;padding:16px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);">
-    <div style="display:flex;gap:48px;animation:scrollTicker 25s linear infinite;white-space:nowrap;">
-      <span style="color:var(--text3);font-size:12px;letter-spacing:3px;">IPDA</span>
-      <span style="color:var(--text3);font-size:12px;letter-spacing:3px;">SMT</span>
-      <span style="color:var(--text3);font-size:12px;letter-spacing:3px;">TIME CYCLES</span>
-      <span style="color:var(--text3);font-size:12px;letter-spacing:3px;">QUARTERLY THEORY</span>
-      <span style="color:var(--text3);font-size:12px;letter-spacing:3px;">ORDER FLOW</span>
-      <span style="color:var(--text3);font-size:12px;letter-spacing:3px;">DEALING RANGES</span>
-      <span style="color:var(--text3);font-size:12px;letter-spacing:3px;">MARKET STRUCTURE</span>
-      <span style="color:var(--text3);font-size:12px;letter-spacing:3px;">CSD</span>
-      <span style="color:var(--text3);font-size:12px;letter-spacing:3px;">BREAKER BLOCKS</span>
-      <span style="color:var(--text3);font-size:12px;letter-spacing:3px;">FVG</span>
-      <span style="color:var(--text3);font-size:12px;letter-spacing:3px;">KILL ZONES</span>
-      <span style="color:var(--text3);font-size:12px;letter-spacing:3px;">IPDA</span>
-      <span style="color:var(--text3);font-size:12px;letter-spacing:3px;">SMT</span>
-      <span style="color:var(--text3);font-size:12px;letter-spacing:3px;">TIME CYCLES</span>
-      <span style="color:var(--text3);font-size:12px;letter-spacing:3px;">QUARTERLY THEORY</span>
-      <span style="color:var(--text3);font-size:12px;letter-spacing:3px;">ORDER FLOW</span>
-    </div>
-  </div>
-
-  <div style="text-align:center;margin-top:48px;">
-    <a href="modules/hub-cours.html" style="display:inline-flex;align-items:center;gap:12px;padding:18px 40px;background:var(--blue);color:#fff;text-decoration:none;border-radius:12px;font-size:16px;font-weight:700;transition:all 0.3s;box-shadow:0 8px 32px rgba(74,124,255,0.3);" onmouseover="this.style.background='#6b9aff';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#4a7cff';this.style.transform='translateY(0)'">
-      Acceder a tous les cours
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
-    <p style="color:var(--text3);font-size:12px;margin-top:16px;">31 cours - 250+ modules - Quiz - Flashcards - Indicateurs</p>
-  </div>
-
-</section>
-
-<style>
-  @keyframes scrollTicker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-  .pillar-card:hover { transform:translateY(-6px);border-color:var(--border2);box-shadow:0 16px 48px rgba(0,0,0,0.4); }
-  .pillar-card:hover .pillar-glow { opacity:1; }
-  @media(max-width:800px) { div[style*="grid-template-columns:repeat(3"] { grid-template-columns:1fr !important; } }
-</style>
-
-<script>
-var counters = document.querySelectorAll('.counter');
-var cObserver = new IntersectionObserver(function(entries) {
-  entries.forEach(function(entry) {
-    if (entry.isIntersecting) {
-      var el = entry.target;
-      var target = parseInt(el.dataset.target);
-      var current = 0;
-      var step = Math.max(1, Math.floor(target / 40));
-      var timer = setInterval(function() {
-        current += step;
-        if (current >= target) { current = target; clearInterval(timer); }
-        el.textContent = current + '+';
-      }, 30);
-      cObserver.unobserve(el);
-    }
-  });
-}, {threshold:0.5});
-counters.forEach(function(c) { cObserver.observe(c); });
-</script>
-
-<!-- ABOUT -->
-<section class="why" id="about">
-  <div class="why-visual">
-    <svg viewBox="0 0 40 40" width="80" height="80" xmlns="http://www.w3.org/2000/svg">
-      <polygon points="20,4 36,13 36,27 20,36 4,27 4,13" fill="rgba(10,14,26,0.95)" stroke="#4a7cff" stroke-width="1.5"/>
-      <text x="20" y="24" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="16" font-weight="800">A</text>
-      <ellipse cx="20" cy="18" rx="18" ry="7" fill="none" stroke="#3455a8" stroke-width="0.6" transform="rotate(-25 20 18)" opacity="0.5"/>
-      <circle cx="8" cy="14" r="1.5" fill="#4a7cff" opacity="0.7"/>
-      <circle cx="32" cy="16" r="1.5" fill="#e05030" opacity="0.7"/>
-    </svg>
-  </div>
-  <div class="why-content">
-    <h2>Pourquoi <em>Algorithmic Academy</em></h2>
-    <p>La majorite de ce qui est enseigne en ligne n'est que du bruit — des tactiques recyclees, des formations superficielles et des programmes menes par des influenceurs.</p>
+  <div class="about-content">
+    <p>La majorite de ce qui est enseigne en ligne n'est que du bruit -- des tactiques recyclees, des formations superficielles et des programmes menes par des influenceurs.</p>
     <p>Algorithmic Academy existe pour changer ca. Une approche basee sur la structure algorithmique du marche, les cycles temporels et la livraison institutionnelle du prix.</p>
-    <p>Si vous tradez deja mais que vous voulez trader plus proprement, plus efficacement et a plus grande echelle — vous etes au bon endroit.</p>
-    <div class="why-sig">Algorithmic Academy</div>
+    <p>Si vous tradez deja mais que vous voulez trader plus proprement, plus efficacement et a plus grande echelle -- vous etes au bon endroit.</p>
+    <div class="about-sig">Algorithmic Academy</div>
   </div>
 </section>
 
@@ -666,69 +706,443 @@ counters.forEach(function(c) { cObserver.observe(c); });
   <p><span>Algorithmic Academy</span> &mdash; Formation Trading Institutionnel & Algorithmique &mdash; 2026</p>
 </footer>
 
-<!-- PARTICLES -->
+<!-- SCRIPTS -->
 <script>
 (function() {
-  const c = document.getElementById('particles');
-  const ctx = c.getContext('2d');
-  let w, h, particles = [];
+  // ── ALGORITHMIC TRADING MATRIX ANIMATION ──
+  var c = document.getElementById('particles');
+  var ctx = c.getContext('2d');
+  var w, h;
+  var scrollY_anim = 0;
+  var animFrame = 0;
+  var isMobile = window.innerWidth < 768;
 
-  function resize() {
+  // Config
+  var GRID_LINES = 12;
+  var CANDLE_COUNT = isMobile ? 18 : 35;
+  var PARTICLE_COUNT = isMobile ? 30 : 70;
+  var CONNECT_DIST = isMobile ? 100 : 160;
+  var DATA_COLUMNS = isMobile ? 4 : 8;
+
+  // State
+  var particles = [];
+  var candles = [];
+  var candleTimer = 0;
+  var dataColumns = [];
+  var gridLevels = [];
+  var liquidityLines = [];
+  var fibCurves = [];
+
+  // Trading numbers for data stream
+  var tradingNums = [
+    '1.0845','1.0650','19450','0.618','0.786','1.272','0.500',
+    '1.1020','0.382','2.618','19800','1.0500','0.236','1.618',
+    '19200','1.0730','0.707','3.618','20100','1.0920','0.886',
+    '19650','1.0480','4.236','20350','0.146','19980','1.0770'
+  ];
+
+  function animResize() {
     w = c.width = window.innerWidth;
     h = c.height = window.innerHeight * 3;
+    isMobile = window.innerWidth < 768;
+    CANDLE_COUNT = isMobile ? 18 : 35;
+    PARTICLE_COUNT = isMobile ? 30 : 70;
+    CONNECT_DIST = isMobile ? 100 : 160;
+    DATA_COLUMNS = isMobile ? 4 : 8;
+    initAllLayers();
   }
 
-  function init() {
-    resize();
+  function initAllLayers() {
+    initParticles();
+    initCandles();
+    initDataCols();
+    initGrid();
+    initLiquidity();
+    initFib();
+  }
+
+  function initParticles() {
     particles = [];
-    const count = Math.floor((w * h) / 18000);
-    for (let i = 0; i < count; i++) {
+    for (var i = 0; i < PARTICLE_COUNT; i++) {
       particles.push({
         x: Math.random() * w,
-        y: Math.random() * h,
-        r: Math.random() * 1.2 + 0.3,
-        dx: (Math.random() - 0.5) * 0.15,
-        dy: (Math.random() - 0.5) * 0.1,
-        o: Math.random() * 0.5 + 0.1,
+        y: Math.random() * h * 0.5,
+        r: Math.random() * 1.5 + 0.5,
+        dx: (Math.random() - 0.5) * 0.2,
+        dy: (Math.random() - 0.5) * 0.12,
+        isGold: Math.random() > 0.5,
+        o: Math.random() * 0.4 + 0.1
       });
     }
   }
 
-  function draw() {
-    ctx.clearRect(0, 0, w, h);
-    for (const p of particles) {
-      p.x += p.dx;
-      p.y += p.dy;
-      if (p.x < 0) p.x = w;
-      if (p.x > w) p.x = 0;
-      if (p.y < 0) p.y = h;
-      if (p.y > h) p.y = 0;
+  function initCandles() {
+    candles = [];
+    candleTimer = 0;
+    var startX = w * 0.08;
+    var endX = w * 0.92;
+    var step = (endX - startX) / CANDLE_COUNT;
+    var baseY = h * 0.15;
+    var price = 200;
+
+    for (var i = 0; i < CANDLE_COUNT; i++) {
+      var trend = Math.sin(i * 0.18) * 30 + (i * 2.5);
+      var noise = (Math.random() - 0.45) * 25;
+      price = 200 + trend + noise;
+
+      var open = price + (Math.random() - 0.5) * 15;
+      var close = price + (Math.random() - 0.5) * 15;
+      var high = Math.max(open, close) + Math.random() * 10;
+      var low = Math.min(open, close) - Math.random() * 10;
+
+      candles.push({
+        x: startX + i * step,
+        w: Math.max(step * 0.55, 3),
+        open: open, close: close, high: high, low: low,
+        bullish: close >= open,
+        baseY: baseY,
+        scale: 0.7,
+        opacity: 0,
+        targetOpacity: 0.35,
+        revealed: false
+      });
+    }
+  }
+
+  function initGrid() {
+    gridLevels = [];
+    var heroH = h * 0.3;
+    for (var i = 0; i < GRID_LINES; i++) {
+      gridLevels.push({
+        y: (heroH * 0.05) + (heroH * 0.9) * (i / (GRID_LINES - 1)),
+        opacity: 0,
+        targetOpacity: Math.random() * 0.06 + 0.02,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function initLiquidity() {
+    liquidityLines = [
+      { y: h * 0.08, label: 'PDH', glowTimer: 0, baseOpacity: 0.12 },
+      { y: h * 0.22, label: 'PDL', glowTimer: 0, baseOpacity: 0.12 },
+      { y: h * 0.14, label: 'EQ',  glowTimer: 0, baseOpacity: 0.08 }
+    ];
+  }
+
+  function initDataCols() {
+    dataColumns = [];
+    for (var i = 0; i < DATA_COLUMNS; i++) {
+      var chars = [];
+      var count = isMobile ? 8 : 14;
+      for (var j = 0; j < count; j++) {
+        chars.push({
+          value: tradingNums[Math.floor(Math.random() * tradingNums.length)],
+          opacity: Math.random() * 0.15,
+          speed: Math.random() * 0.3 + 0.1
+        });
+      }
+      dataColumns.push({
+        x: w * (0.05 + (i / DATA_COLUMNS) * 0.9 + Math.random() * 0.05),
+        chars: chars,
+        speed: Math.random() * 0.4 + 0.2,
+        offset: Math.random() * 500
+      });
+    }
+  }
+
+  function initFib() {
+    fibCurves = [];
+    for (var i = 0; i < 3; i++) {
+      fibCurves.push({
+        cx: w * (0.3 + Math.random() * 0.4),
+        cy: h * (0.05 + Math.random() * 0.2),
+        startAngle: Math.random() * Math.PI,
+        radius: 60 + Math.random() * 120,
+        opacity: 0,
+        targetOpacity: 0.06 + Math.random() * 0.06,
+        phase: Math.random() * Math.PI * 2,
+        golden: 1.618
+      });
+    }
+  }
+
+  // Scroll listener for parallax
+  window.addEventListener('scroll', function() {
+    scrollY_anim = window.scrollY || window.pageYOffset;
+  }, { passive: true });
+
+  // --- DRAW: Grid Lines ---
+  function drawGrid() {
+    var px = scrollY_anim * 0.15;
+    for (var i = 0; i < gridLevels.length; i++) {
+      var g = gridLevels[i];
+      g.opacity += (g.targetOpacity - g.opacity) * 0.02;
+      var pulse = Math.sin(animFrame * 0.008 + g.phase) * 0.02;
+      var y = g.y + px;
+      if (y < 0 || y > h) continue;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(74,124,255,${p.o})`;
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
+      ctx.strokeStyle = 'rgba(74,124,255,' + (g.opacity + pulse) + ')';
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+    }
+  }
+
+  // --- DRAW: Candlestick Trail ---
+  function drawCandles() {
+    candleTimer += 0.6;
+    var revealIndex = Math.floor(candleTimer / 8) % (CANDLE_COUNT + 15);
+    var px = scrollY_anim * 0.1;
+
+    for (var i = 0; i < candles.length; i++) {
+      var cd = candles[i];
+      if (i <= revealIndex) cd.revealed = true;
+
+      // Cycle: fade out then restart
+      if (revealIndex >= CANDLE_COUNT + 14) {
+        cd.opacity *= 0.97;
+        if (cd.opacity < 0.01) { candleTimer = 0; initCandles(); return; }
+      } else if (cd.revealed) {
+        cd.opacity += (cd.targetOpacity - cd.opacity) * 0.08;
+      }
+      if (cd.opacity < 0.005) continue;
+
+      var yBase = cd.baseY + px;
+      var bodyTop = yBase - Math.max(cd.open, cd.close) * cd.scale;
+      var bodyBot = yBase - Math.min(cd.open, cd.close) * cd.scale;
+      var wickTop = yBase - cd.high * cd.scale;
+      var wickBot = yBase - cd.low * cd.scale;
+
+      var color = cd.bullish
+        ? 'rgba(38,166,91,' + cd.opacity + ')'
+        : 'rgba(214,68,56,' + cd.opacity + ')';
+
+      // Wick
+      ctx.beginPath();
+      ctx.moveTo(cd.x + cd.w / 2, wickTop);
+      ctx.lineTo(cd.x + cd.w / 2, wickBot);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Body
+      var bodyH = Math.max(Math.abs(bodyTop - bodyBot), 1);
+      ctx.fillStyle = color;
+      ctx.fillRect(cd.x, Math.min(bodyTop, bodyBot), cd.w, bodyH);
+    }
+  }
+
+  // --- DRAW: Liquidity Lines ---
+  function drawLiquidityLines() {
+    var px = scrollY_anim * 0.12;
+    for (var li = 0; li < liquidityLines.length; li++) {
+      var ll = liquidityLines[li];
+      var y = ll.y + px;
+      if (y < 0 || y > h * 0.4) continue;
+
+      // Glow when candlestick reaches the level
+      for (var ci = 0; ci < candles.length; ci++) {
+        var cd = candles[ci];
+        if (cd.revealed && cd.opacity > 0.1) {
+          var candleY = cd.baseY + px - cd.close * cd.scale;
+          if (Math.abs(candleY - y) < 15) ll.glowTimer = 60;
+        }
+      }
+
+      if (ll.glowTimer > 0) ll.glowTimer--;
+      var glow = ll.glowTimer > 0 ? 0.15 + (ll.glowTimer / 60) * 0.2 : ll.baseOpacity;
+
+      ctx.beginPath();
+      ctx.setLineDash([8, 6]);
+      ctx.moveTo(w * 0.06, y);
+      ctx.lineTo(w * 0.94, y);
+      ctx.strokeStyle = 'rgba(212,164,74,' + glow + ')';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Label
+      if (glow > 0.1) {
+        ctx.font = '9px Inter, monospace';
+        ctx.fillStyle = 'rgba(212,164,74,' + (glow * 1.2) + ')';
+        ctx.fillText(ll.label, w * 0.94 + 6, y + 3);
+      }
+    }
+  }
+
+  // --- DRAW: Constellation Particles ---
+  function drawParticles() {
+    var px = scrollY_anim * 0.05;
+    var slowFactor = 1 - Math.min(scrollY_anim / 1000, 0.7);
+
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      p.x += p.dx * slowFactor;
+      p.y += p.dy * slowFactor;
+      if (p.x < -10) p.x = w + 10;
+      if (p.x > w + 10) p.x = -10;
+      if (p.y < -10) p.y = h * 0.5 + 10;
+      if (p.y > h * 0.5 + 10) p.y = -10;
+
+      var drawY = p.y + px;
+      ctx.beginPath();
+      ctx.arc(p.x, drawY, p.r, 0, Math.PI * 2);
+      var rgb = p.isGold ? '212,164,74' : '74,124,255';
+      ctx.fillStyle = 'rgba(' + rgb + ',' + p.o + ')';
       ctx.fill();
     }
+
+    // Connection lines
+    ctx.lineWidth = 0.4;
+    for (var i = 0; i < particles.length; i++) {
+      for (var j = i + 1; j < particles.length; j++) {
+        var a = particles[i], b = particles[j];
+        var dx = a.x - b.x, dy = a.y - b.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < CONNECT_DIST) {
+          var alpha = (1 - dist / CONNECT_DIST) * 0.12;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y + px);
+          ctx.lineTo(b.x, b.y + px);
+          ctx.strokeStyle = 'rgba(74,124,255,' + alpha + ')';
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  // --- DRAW: Fibonacci Arcs ---
+  function drawFibCurves() {
+    var px = scrollY_anim * 0.08;
+    for (var i = 0; i < fibCurves.length; i++) {
+      var f = fibCurves[i];
+      var pulse = Math.sin(animFrame * 0.004 + f.phase);
+      f.opacity += (f.targetOpacity * (0.5 + pulse * 0.5) - f.opacity) * 0.01;
+      if (f.opacity < 0.005) continue;
+
+      ctx.beginPath();
+      var steps = 60;
+      for (var s = 0; s <= steps; s++) {
+        var t = (s / steps) * Math.PI * 1.5;
+        var r = f.radius * Math.pow(f.golden, t / (Math.PI * 2));
+        var clampedR = Math.min(r, 300);
+        var x = f.cx + Math.cos(t + f.startAngle) * clampedR;
+        var y = f.cy + Math.sin(t + f.startAngle) * clampedR * 0.6 + px;
+        if (s === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = 'rgba(212,164,74,' + f.opacity + ')';
+      ctx.lineWidth = 0.6;
+      ctx.stroke();
+    }
+  }
+
+  // --- DRAW: Data Stream (Matrix-style trading numbers) ---
+  function drawDataStream() {
+    var px = scrollY_anim * 0.03;
+    ctx.font = '10px monospace';
+
+    for (var c_i = 0; c_i < dataColumns.length; c_i++) {
+      var col = dataColumns[c_i];
+      var time = animFrame * col.speed + col.offset;
+      for (var j = 0; j < col.chars.length; j++) {
+        var ch = col.chars[j];
+        var y = ((j * 38 + time * 0.5) % (h * 0.35)) + px;
+        if (y < 0 || y > h * 0.4) continue;
+
+        var fadeDist = h * 0.35;
+        var localY = (j * 38 + time * 0.5) % fadeDist;
+        var fade = localY < 40 ? localY / 40 : localY > fadeDist - 40 ? (fadeDist - localY) / 40 : 1;
+        var o = ch.opacity * fade;
+        if (o < 0.005) continue;
+
+        ctx.fillStyle = 'rgba(74,124,255,' + o + ')';
+        ctx.fillText(ch.value, col.x, y);
+
+        // Slowly cycle values
+        if (Math.random() < 0.001) {
+          ch.value = tradingNums[Math.floor(Math.random() * tradingNums.length)];
+          ch.opacity = Math.random() * 0.12 + 0.03;
+        }
+      }
+    }
+  }
+
+  // --- MAIN ANIMATION LOOP ---
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    animFrame++;
+
+    drawGrid();
+    drawDataStream();
+    drawFibCurves();
+    drawCandles();
+    drawLiquidityLines();
+    drawParticles();
+
     requestAnimationFrame(draw);
   }
 
-  window.addEventListener('resize', init);
-  init();
+  animResize();
   draw();
-})();
+  window.addEventListener('resize', animResize);
 
-// Navbar scroll effect
-window.addEventListener('scroll', () => {
-  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
-});
-
-// Smooth scroll
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    e.preventDefault();
-    const t = document.querySelector(a.getAttribute('href'));
-    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // ── NAVBAR SCROLL ──
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', function() {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
   });
-});
+
+  // ── SMOOTH SCROLL ──
+  document.querySelectorAll('a[href^="#"]').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // ── COUNTER ANIMATION ──
+  const counters = document.querySelectorAll('.counter');
+  const counterObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        let current = 0;
+        const step = Math.max(1, Math.floor(target / 45));
+        const timer = setInterval(function() {
+          current += step;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          el.textContent = current + suffix;
+        }, 28);
+        counterObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(function(c) { counterObserver.observe(c); });
+
+  // ── FADE IN ON SCROLL ──
+  const fadeEls = document.querySelectorAll('.fade-in');
+  const fadeObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        fadeObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  fadeEls.forEach(function(el) { fadeObserver.observe(el); });
+
+})();
 </script>
 
 </body>
