@@ -1055,6 +1055,56 @@ code {
 
   <div class="section-divider"></div>
 
+  <!-- SECTION 11 - COUCHE DE LIQUIDITE -->
+  <h2 class="sec">La Couche de Liquidite</h2>
+  <p>
+    La couche de liquidite est l'un des mecanismes les plus precis du systeme. Trois niveaux institutionnels sont actifs a l'interieur de chaque dealing range. Cette couche definit comment le prix interagit avec la liquidite interne et externe du range.
+  </p>
+
+  <h3 class="subsec">Fonctionnement de la Couche</h3>
+  <p>
+    Quand le prix approche un extremite du range (le high ou le low), le marche cree deliberement un swing pour generer de la liquidite. Ce swing forme ce qu'on appelle l'<strong>IRV (Internal Range Validity)</strong> — la validite interne du range.
+  </p>
+  <p>
+    Les traders retail se positionnent a l'achat, placant leurs stop-loss juste au-dela du swing nouvellement forme. Le prix inverse ensuite, balaie cette liquidite de stops, puis est typiquement propulse au minimum jusqu'a l'extremite opposee du range.
+  </p>
+
+  <h3 class="subsec">Au-dela du Range : l'ERD</h3>
+  <p>
+    Le plus souvent, le prix depasse le range et se dirige vers les niveaux du dealing range suivant. On appelle cela l'<strong>ERD (External Range Delimit)</strong> — la delimitation externe du range.
+  </p>
+  <p>A ce point, deux scenarios se presentent :</p>
+  <ol class="nl">
+    <li><strong>Rejet :</strong> Le prix rejette la liquidite externe et inverse — il retourne dans le range d'origine</li>
+    <li><strong>Continuation :</strong> Le prix echoue a rentrer dans le range precedent, rejette l'extremite et commence a trader dans le nouveau dealing range</li>
+  </ol>
+
+  <div class="box box-am">
+    <strong>Regle de transition</strong>
+    <p>Quand le scenario 2 se produit (continuation), il faut basculer vers un range PO3 plus large. Cela donne une vision plus claire de la structure de marche globale.</p>
+  </div>
+
+  <h3 class="subsec">Le Troisieme Niveau : le GIP</h3>
+  <p>
+    Au sein de la couche de liquidite, il existe un troisieme niveau cle : le <strong>GIP (Point d'Inversion Institutionnel)</strong>. Ce niveau a une nature speciale — c'est le point ou le prix a la plus forte probabilite d'inversion dans le cycle.
+  </p>
+
+  <h3 class="subsec">Fractalite de la Couche</h3>
+  <p>
+    Ce mecanisme IRV → ERD fonctionne egalement sur les ranges fractals qui se situent entre deux niveaux institutionnels, a condition que la taille du range PO3 soit suffisamment grande pour que les niveaux soient exploitables.
+  </p>
+
+  <table class="tbl">
+    <thead><tr><th>Concept</th><th>Definition</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td><strong>IRV</strong></td><td>Internal Range Validity</td><td>Swing interne qui genere la liquidite (stops des retail)</td></tr>
+      <tr><td><strong>ERD</strong></td><td>External Range Delimit</td><td>Zone au-dela du range ou le prix chasse la liquidite externe</td></tr>
+      <tr><td><strong>GIP</strong></td><td>Point d'Inversion Institutionnel</td><td>Niveau special avec la plus forte probabilite d'inversion</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-divider"></div>
+
   <!-- SYNTHESE FINALE -->
   <div class="box box-em" style="margin-top:32px;">
     <strong>Synthese du Framework Architecture des Niveaux</strong>
