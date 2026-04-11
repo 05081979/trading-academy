@@ -10,25 +10,25 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: #060a12;
-  --bg2: #0b1120;
-  --bg3: #101828;
-  --border: #162040;
-  --border2: #1e2d55;
-  --blue: #4a7cff;
-  --blue2: #6b9aff;
-  --blue-dim: rgba(74,124,255,0.08);
-  --gold: #d4a44a;
-  --gold2: #f0c060;
-  --green: #2dd67a;
-  --teal: #38c9b0;
-  --purple: #9b7fe8;
-  --red: #e05030;
-  --text: #e4e8f2;
-  --text2: #8892a8;
-  --text3: #3d4a65;
+  --bg: #f5f7fa;
+  --white: #ffffff;
+  --border: #e5e7eb;
+  --blue: #2563eb;
+  --blue-hover: #1d4ed8;
+  --blue-light: rgba(37,99,235,0.06);
+  --gold: #d97706;
+  --green: #10b981;
+  --teal: #0d9488;
+  --purple: #7c3aed;
+  --orange: #ea580c;
+  --text: #1a1a2e;
+  --text2: #6b7280;
+  --text3: #9ca3af;
   --sans: 'Inter', system-ui, sans-serif;
   --serif: 'Playfair Display', Georgia, serif;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
   --transition: 0.3s ease;
 }
 
@@ -40,18 +40,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── PARTICLES ── */
-#particles {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
 /* ── FADE IN ── */
 .fade-in {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(24px);
   transition: opacity 0.7s ease, transform 0.7s ease;
 }
 .fade-in.visible {
@@ -65,25 +57,26 @@ body {
   top: 0; left: 0; right: 0;
   z-index: 1000;
   padding: 0 48px;
-  height: 72px;
+  height: 68px;
   display: flex;
   align-items: center;
-  background: rgba(6,10,18,0.6);
-  backdrop-filter: blur(24px) saturate(1.2);
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid transparent;
   transition: all var(--transition);
 }
 .navbar.scrolled {
-  background: rgba(6,10,18,0.94);
+  background: rgba(255,255,255,0.96);
   border-bottom-color: var(--border);
+  box-shadow: 0 1px 8px rgba(0,0,0,0.04);
 }
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   text-decoration: none;
 }
-.nav-logo svg { width: 36px; height: 36px; }
+.nav-logo svg { width: 34px; height: 34px; }
 .nav-logo-text {
   font-size: 15px;
   font-weight: 700;
@@ -98,428 +91,343 @@ body {
   gap: 6px;
 }
 .nav-link {
-  font-size: 13px;
+  padding: 8px 16px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--text2);
   text-decoration: none;
-  padding: 8px 16px;
   border-radius: 8px;
   transition: all var(--transition);
 }
-.nav-link:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-link:hover { color: var(--text); background: var(--blue-light); }
 .nav-cta {
-  font-size: 13px;
+  margin-left: 12px;
+  padding: 9px 22px;
+  font-size: 14px;
   font-weight: 600;
   color: #fff;
   background: var(--blue);
-  padding: 9px 22px;
+  border: none;
   border-radius: 8px;
   text-decoration: none;
+  cursor: pointer;
   transition: all var(--transition);
-  margin-left: 8px;
 }
-.nav-cta:hover { background: var(--blue2); transform: translateY(-1px); }
+.nav-cta:hover { background: var(--blue-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,0.25); }
 
 /* ── HERO ── */
 .hero {
   position: relative;
-  z-index: 1;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  padding: 160px 48px 100px;
   text-align: center;
-  padding: 120px 24px 80px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
 }
-.hero::after {
-  content: '';
+#waveCanvas {
   position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 200px;
-  background: linear-gradient(to top, var(--bg), transparent);
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
 }
-.hero-glow {
-  position: absolute;
-  top: 8%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 700px;
-  height: 420px;
-  background: radial-gradient(ellipse, rgba(74,124,255,0.07), transparent 70%);
-  pointer-events: none;
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 720px;
+  margin: 0 auto;
 }
-.hero-logo { margin-bottom: 36px; }
+.hero-logo { width: 80px; height: 80px; margin-bottom: 32px; }
 .hero h1 {
   font-family: var(--serif);
-  font-size: clamp(36px, 6vw, 64px);
+  font-size: 48px;
   font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--text);
   margin-bottom: 20px;
-  max-width: 780px;
+  letter-spacing: -0.02em;
 }
-.hero h1 em { font-style: italic; color: var(--blue); }
+.hero h1 em {
+  font-style: italic;
+  color: var(--blue);
+}
 .hero-sub {
-  font-size: 17px;
-  font-weight: 400;
+  font-size: 18px;
   color: var(--text2);
-  max-width: 520px;
   line-height: 1.7;
-  margin-bottom: 40px;
+  max-width: 540px;
+  margin: 0 auto 36px;
 }
-.hero-buttons {
+.hero-btns {
   display: flex;
+  justify-content: center;
   gap: 14px;
   margin-bottom: 56px;
-  flex-wrap: wrap;
-  justify-content: center;
 }
 .btn-primary {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  padding: 14px 32px;
   font-size: 15px;
   font-weight: 600;
   color: #fff;
   background: var(--blue);
-  padding: 14px 30px;
+  border: none;
   border-radius: 10px;
   text-decoration: none;
+  cursor: pointer;
   transition: all var(--transition);
-  box-shadow: 0 4px 24px rgba(74,124,255,0.25);
 }
-.btn-primary:hover {
-  background: var(--blue2);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(74,124,255,0.35);
-}
+.btn-primary:hover { background: var(--blue-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37,99,235,0.3); }
 .btn-outline {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  padding: 14px 32px;
   font-size: 15px;
   font-weight: 600;
-  color: var(--text2);
+  color: var(--blue);
   background: transparent;
-  padding: 14px 30px;
+  border: 2px solid var(--blue);
   border-radius: 10px;
   text-decoration: none;
-  border: 1px solid var(--border2);
+  cursor: pointer;
   transition: all var(--transition);
 }
-.btn-outline:hover {
-  color: var(--text);
-  border-color: var(--blue);
-  background: var(--blue-dim);
-  transform: translateY(-2px);
-}
-
-/* ── STATS ── */
+.btn-outline:hover { background: var(--blue-light); transform: translateY(-2px); }
 .hero-stats {
   display: flex;
+  justify-content: center;
   gap: 48px;
-  position: relative;
-  z-index: 1;
 }
-.hero-stats .stat {
-  text-align: center;
-}
-.hero-stats .stat-value {
-  font-family: var(--serif);
-  font-size: 32px;
+.stat { text-align: center; }
+.stat-num {
+  font-size: 36px;
   font-weight: 800;
   color: var(--text);
-  line-height: 1;
+  letter-spacing: -0.02em;
 }
-.hero-stats .stat-label {
-  color: var(--text3);
-  font-size: 12px;
-  margin-top: 6px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-.hero-stats .divider {
-  width: 1px;
-  background: var(--border);
-  align-self: stretch;
-}
+.stat-num .suffix { font-size: 20px; font-weight: 600; color: var(--blue); }
+.stat-label { font-size: 13px; color: var(--text2); margin-top: 4px; font-weight: 500; letter-spacing: 0.02em; text-transform: uppercase; }
 
-/* ── SECTIONS ── */
+/* ── SECTION ── */
 .section {
-  position: relative;
-  z-index: 1;
-  max-width: 1140px;
+  padding: 96px 48px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 100px 24px;
-}
-.section-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 16px;
-}
-.section-label::before {
-  content: '';
-  width: 20px;
-  height: 1px;
-  background: var(--gold);
 }
 .section-title {
   font-family: var(--serif);
-  font-size: clamp(28px, 4vw, 42px);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-bottom: 48px;
-}
-
-/* ── PARCOURS CARDS ── */
-.parcours-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-.p-card {
-  position: relative;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 32px 28px 28px;
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  transition: all var(--transition);
-  overflow: hidden;
-  backdrop-filter: blur(8px);
-}
-.p-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: var(--card-accent);
-}
-.p-card:hover {
-  border-color: var(--border2);
-  transform: translateY(-6px);
-  box-shadow: 0 20px 48px rgba(0,0,0,0.4), 0 0 24px color-mix(in srgb, var(--card-accent) 12%, transparent);
-}
-.p-card-number {
-  position: absolute;
-  top: 20px; right: 24px;
-  font-family: var(--serif);
-  font-size: 56px;
+  font-size: 36px;
   font-weight: 800;
   color: var(--text);
-  opacity: 0.04;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+.section-sub {
+  font-size: 16px;
+  color: var(--text2);
+  margin-bottom: 48px;
+  max-width: 520px;
+}
+
+/* ── CARDS GRID ── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.card {
+  position: relative;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--blue);
+  border-radius: 12px;
+  padding: 32px 28px;
+  text-decoration: none;
+  color: inherit;
+  transition: all var(--transition);
+  overflow: hidden;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: transparent;
+  border-left-width: 4px;
+}
+.card-num {
+  font-size: 56px;
+  font-weight: 800;
+  color: rgba(0,0,0,0.04);
+  position: absolute;
+  top: 12px; right: 20px;
   line-height: 1;
   pointer-events: none;
 }
-.p-card-badge {
-  display: inline-flex;
-  align-self: flex-start;
+.card-badge {
+  display: inline-block;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 4px 10px;
   border-radius: 6px;
+  margin-bottom: 14px;
 }
-.badge-starter {
-  background: rgba(45,214,122,0.1);
-  color: var(--green);
-}
-.badge-premium {
-  background: rgba(212,164,74,0.12);
-  color: var(--gold);
-}
-.p-card-title {
-  font-size: 18px;
+.badge-starter { background: rgba(16,185,129,0.1); color: var(--green); }
+.badge-premium { background: rgba(217,119,6,0.1); color: var(--gold); }
+.card h3 {
+  font-size: 17px;
   font-weight: 700;
-  letter-spacing: -0.01em;
-  transition: color var(--transition);
+  color: var(--text);
+  margin-bottom: 10px;
+  line-height: 1.3;
 }
-.p-card:hover .p-card-title { color: var(--blue2); }
-.p-card-desc {
+.card p {
   font-size: 14px;
   color: var(--text2);
-  line-height: 1.65;
+  line-height: 1.6;
+  margin-bottom: 16px;
 }
-.p-card-tags {
+.card-tags {
   display: flex;
-  gap: 6px;
   flex-wrap: wrap;
-  margin-top: auto;
+  gap: 6px;
+  margin-bottom: 12px;
 }
-.p-tag {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  padding: 4px 10px;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--border);
+.card-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  background: var(--bg);
   color: var(--text2);
+  border-radius: 20px;
 }
-.p-card-arrow {
-  position: absolute;
-  bottom: 28px; right: 28px;
-  color: var(--text3);
-  font-size: 18px;
-  transition: all var(--transition);
+.card-arrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--blue);
+  transition: gap var(--transition);
 }
-.p-card:hover .p-card-arrow { color: var(--blue); transform: translateX(4px); }
+.card:hover .card-arrow { gap: 10px; }
 
-/* ── ACCES RAPIDE ── */
-.quick-section {
-  position: relative;
-  z-index: 1;
-  max-width: 1140px;
+/* ── QUICK ACCESS ── */
+.quick-access {
+  padding: 0 48px 64px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 24px 100px;
 }
-.quick-scroll {
+.quick-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 20px;
+}
+.pills {
   display: flex;
   gap: 10px;
   overflow-x: auto;
   padding-bottom: 8px;
   scrollbar-width: none;
 }
-.quick-scroll::-webkit-scrollbar { display: none; }
-.quick-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
+.pills::-webkit-scrollbar { display: none; }
+.pill {
+  flex-shrink: 0;
+  padding: 10px 20px;
   font-size: 13px;
   font-weight: 500;
   color: var(--text2);
-  background: var(--bg2);
+  background: var(--white);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 20px;
+  border-radius: 24px;
   text-decoration: none;
+  white-space: nowrap;
   transition: all var(--transition);
-  flex-shrink: 0;
 }
-.quick-pill:hover {
-  color: #fff;
+.pill:hover {
+  color: var(--blue);
   border-color: var(--blue);
-  background: rgba(74,124,255,0.08);
+  background: var(--blue-light);
 }
-.quick-pill .arrow {
-  font-size: 14px;
-  transition: transform var(--transition);
-}
-.quick-pill:hover .arrow { transform: translateX(3px); }
 
 /* ── ABOUT ── */
 .about {
-  position: relative;
-  z-index: 1;
-  max-width: 1140px;
+  padding: 96px 48px;
+  background: var(--white);
+}
+.about-inner {
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 80px 24px 100px;
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 200px 1fr;
   gap: 64px;
+  align-items: start;
 }
-.about-visual {
-  flex-shrink: 0;
-  width: 180px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
-.about-logo-box {
-  width: 120px;
-  height: 120px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, var(--bg2), var(--bg3));
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 60px rgba(74,124,255,0.06);
-}
-.about-visual h3 {
+.about-logo { width: 120px; height: 120px; margin-top: 8px; }
+.about h2 {
   font-family: var(--serif);
-  font-size: 16px;
-  font-weight: 700;
-  text-align: center;
-  line-height: 1.4;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 20px;
 }
-.about-visual h3 em { color: var(--blue); font-style: italic; }
-.about-content p {
+.about p {
   font-size: 15px;
   color: var(--text2);
-  line-height: 1.75;
-  margin-bottom: 14px;
-  max-width: 540px;
-}
-.about-sig {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 16px;
-  color: var(--blue);
-  margin-top: 24px;
+  line-height: 1.8;
+  margin-bottom: 16px;
+  max-width: 600px;
 }
 
 /* ── FOOTER ── */
-footer {
-  position: relative;
-  z-index: 1;
+.footer {
+  padding: 48px;
   text-align: center;
-  padding: 40px 24px;
+  background: #eef0f4;
   border-top: 1px solid var(--border);
 }
-footer p {
-  font-size: 12px;
-  color: var(--text3);
+.footer p {
+  font-size: 13px;
+  color: var(--text2);
 }
-footer span { color: var(--blue); font-weight: 600; }
+.footer a { color: var(--blue); text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
-  .parcours-grid { grid-template-columns: repeat(2, 1fr); }
+  .cards-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero h1 { font-size: 36px; }
+  .navbar { padding: 0 24px; }
+  .section, .quick-access, .hero { padding-left: 24px; padding-right: 24px; }
+  .about-inner { grid-template-columns: 1fr; gap: 32px; }
+  .about-logo { width: 80px; height: 80px; }
 }
-@media (max-width: 768px) {
-  .navbar { padding: 0 20px; height: 60px; }
-  .nav-links { display: none; }
-  .hero { padding: 100px 20px 60px; }
-  .hero-stats { gap: 28px; }
-  .hero-stats .stat-value { font-size: 24px; }
-  .parcours-grid { grid-template-columns: 1fr; }
-  .about { flex-direction: column; align-items: center; text-align: center; padding: 60px 20px; }
-  .about-content p { max-width: 100%; }
-  .quick-section { padding: 0 20px 80px; }
+@media (max-width: 600px) {
+  .cards-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 28px; }
+  .hero-stats { gap: 24px; }
+  .stat-num { font-size: 28px; }
+  .hero-btns { flex-direction: column; align-items: center; }
+  .nav-links .nav-link { display: none; }
 }
 </style>
 </head>
 <body>
 
-<canvas id="particles"></canvas>
-
 <!-- NAVBAR -->
 <nav class="navbar" id="navbar">
-  <a href="#" class="nav-logo">
-    <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-      <polygon points="20,4 36,13 36,27 20,36 4,27 4,13" fill="rgba(10,14,26,0.95)" stroke="#4a7cff" stroke-width="1.5"/>
-      <text x="20" y="24" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="16" font-weight="800">A</text>
-      <ellipse cx="20" cy="18" rx="18" ry="7" fill="none" stroke="#3455a8" stroke-width="0.6" transform="rotate(-25 20 18)" opacity="0.5"/>
-      <circle cx="8" cy="14" r="1.5" fill="#4a7cff" opacity="0.7"/>
-      <circle cx="32" cy="16" r="1.5" fill="#e05030" opacity="0.7"/>
+  <a href="index.html" class="nav-logo">
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="50,2 93,27 93,73 50,98 7,73 7,27" fill="#2563eb" opacity="0.1" stroke="#2563eb" stroke-width="2"/>
+      <polygon points="50,18 78,35 78,65 50,82 22,65 22,35" fill="#2563eb" opacity="0.15"/>
+      <text x="50" y="58" text-anchor="middle" font-family="Inter,sans-serif" font-size="26" font-weight="800" fill="#2563eb">A</text>
     </svg>
-    <div class="nav-logo-text"><span>Algorithmic</span> Academy</div>
+    <span class="nav-logo-text"><span>Algorithmic</span> Academy</span>
   </a>
   <div class="nav-links">
     <a href="#parcours" class="nav-link">Parcours</a>
@@ -530,44 +438,32 @@ footer span { color: var(--blue); font-weight: 600; }
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-glow"></div>
-
-  <div class="hero-logo">
-    <svg viewBox="0 0 400 400" width="100" height="100" xmlns="http://www.w3.org/2000/svg">
-      <polygon points="200,120 260,150 260,210 200,240 140,210 140,150" fill="rgba(10,14,26,0.95)" stroke="#4a7cff" stroke-width="3"/>
-      <polygon points="200,130 252,155 252,205 200,230 148,205 148,155" fill="none" stroke="#253a6a" stroke-width="1" opacity="0.5"/>
-      <text x="200" y="198" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="52" font-weight="800" opacity="0.9">A</text>
-      <ellipse cx="200" cy="175" rx="100" ry="40" fill="none" stroke="#3455a8" stroke-width="1" transform="rotate(-25 200 175)" opacity="0.4"/>
-      <circle cx="135" cy="155" r="3" fill="#4a7cff" opacity="0.6"/>
-      <circle cx="265" cy="165" r="3" fill="#e05030" opacity="0.6"/>
+  <canvas id="waveCanvas"></canvas>
+  <div class="hero-content fade-in">
+    <svg class="hero-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="50,2 93,27 93,73 50,98 7,73 7,27" fill="#2563eb" opacity="0.1" stroke="#2563eb" stroke-width="2.5"/>
+      <polygon points="50,18 78,35 78,65 50,82 22,65 22,35" fill="#2563eb" opacity="0.18"/>
+      <text x="50" y="60" text-anchor="middle" font-family="Inter,sans-serif" font-size="30" font-weight="800" fill="#2563eb">A</text>
     </svg>
-  </div>
-
-  <h1>La Formation Trading<br>Derriere les <em>Algorithmes</em></h1>
-  <p class="hero-sub">Maitrisez la structure algorithmique du marche. Du debutant au trader operationnel.</p>
-
-  <div class="hero-buttons">
-    <a href="modules/hub-cours.html" class="btn-primary">
-      Commencer le Parcours
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
-    <a href="#parcours" class="btn-outline">Explorer les Modules</a>
-  </div>
-
-  <div class="hero-stats">
-    <div class="stat">
-      <div class="stat-value counter" data-target="32">0</div>
-      <div class="stat-label">Cours</div>
+    <h1>La Formation Trading<br>Derriere les <em>Algorithmes</em></h1>
+    <p class="hero-sub">Maitrisez les cycles, la structure du prix et les modeles mathematiques utilises par les algorithmes institutionnels.</p>
+    <div class="hero-btns">
+      <a href="modules/hub-cours.html" class="btn-primary">Commencer le Parcours <span>&rarr;</span></a>
+      <a href="#parcours" class="btn-outline">Explorer</a>
     </div>
-    <div class="divider"></div>
-    <div class="stat">
-      <div class="stat-value counter" data-target="250" data-suffix="+">0</div>
-      <div class="stat-label">Modules</div>
-    </div>
-    <div class="divider"></div>
-    <div class="stat">
-      <div class="stat-value counter" data-target="6">0</div>
-      <div class="stat-label">Indicateurs</div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num"><span class="counter" data-target="32">0</span></div>
+        <div class="stat-label">Cours</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num"><span class="counter" data-target="250">0</span><span class="suffix">+</span></div>
+        <div class="stat-label">Modules</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num"><span class="counter" data-target="6">0</span></div>
+        <div class="stat-label">Indicateurs</div>
+      </div>
     </div>
   </div>
 </section>
@@ -575,575 +471,238 @@ footer span { color: var(--blue); font-weight: 600; }
 <!-- PARCOURS -->
 <section class="section" id="parcours">
   <div class="fade-in">
-    <div class="section-label">Votre Formation</div>
-    <h2 class="section-title">Un Parcours Structure</h2>
+    <h2 class="section-title">Parcours Complet</h2>
+    <p class="section-sub">Six etapes progressives, des fondations jusqu'a l'execution en temps reel.</p>
   </div>
+  <div class="cards-grid">
 
-  <div class="parcours-grid">
-
-    <a href="modules/hub-cours.html" class="p-card fade-in" style="--card-accent: #2dd67a;">
-      <span class="p-card-number">01</span>
-      <span class="p-card-badge badge-starter">Starter</span>
-      <div class="p-card-title">Fondations & Bases</div>
-      <div class="p-card-desc">Structure de marche, liquidite, pieges, fiches de reference</div>
-      <div class="p-card-tags">
-        <span class="p-tag">SMC</span>
-        <span class="p-tag">Liquidite</span>
-        <span class="p-tag">Inducements</span>
-      </div>
-      <span class="p-card-arrow">&rarr;</span>
+    <a href="modules/hub-cours.html" class="card fade-in" style="border-left-color: #10b981">
+      <span class="card-num">01</span>
+      <span class="card-badge badge-starter">Starter</span>
+      <h3>Fondations & Bases</h3>
+      <p>Les concepts essentiels : structure de marche, sessions, liquidite et biais directionnel.</p>
+      <div class="card-tags"><span class="card-tag">ICT</span><span class="card-tag">Sessions</span><span class="card-tag">Liquidite</span></div>
+      <span class="card-arrow">Acceder &rarr;</span>
     </a>
 
-    <a href="modules/hub-cours.html" class="p-card fade-in" style="--card-accent: #4a7cff;">
-      <span class="p-card-number">02</span>
-      <span class="p-card-badge badge-starter">Starter</span>
-      <div class="p-card-title">Structure du Prix</div>
-      <div class="p-card-desc">Dealing Ranges, zones de prix, PD Arrays, analyse multi-timeframe</div>
-      <div class="p-card-tags">
-        <span class="p-tag">Dealing Range</span>
-        <span class="p-tag">Zones de Prix</span>
-        <span class="p-tag">MTF</span>
-      </div>
-      <span class="p-card-arrow">&rarr;</span>
+    <a href="modules/hub-cours.html" class="card fade-in" style="border-left-color: #2563eb">
+      <span class="card-num">02</span>
+      <span class="card-badge badge-starter">Starter</span>
+      <h3>Structure du Prix</h3>
+      <p>Order blocks, FVG, breakers, CISD et la lecture institutionnelle du prix.</p>
+      <div class="card-tags"><span class="card-tag">OB</span><span class="card-tag">FVG</span><span class="card-tag">CISD</span></div>
+      <span class="card-arrow">Acceder &rarr;</span>
     </a>
 
-    <a href="modules/hub-cours.html" class="p-card fade-in" style="--card-accent: #38c9b0;">
-      <span class="p-card-number">03</span>
-      <span class="p-card-badge badge-starter">Starter</span>
-      <div class="p-card-title">Temps & Cycles</div>
-      <div class="p-card-desc">Quarterly Theory, sessions, killzones, macros, GB Time</div>
-      <div class="p-card-tags">
-        <span class="p-tag">QT</span>
-        <span class="p-tag">Sessions</span>
-        <span class="p-tag">Macros</span>
-      </div>
-      <span class="p-card-arrow">&rarr;</span>
+    <a href="modules/hub-cours.html" class="card fade-in" style="border-left-color: #0d9488">
+      <span class="card-num">03</span>
+      <span class="card-badge badge-starter">Starter</span>
+      <h3>Temps & Cycles</h3>
+      <p>Quarterly Theory, macro times, cycles algorithmiques et la dimension temporelle.</p>
+      <div class="card-tags"><span class="card-tag">QT</span><span class="card-tag">Macros</span><span class="card-tag">Cycles</span></div>
+      <span class="card-arrow">Acceder &rarr;</span>
     </a>
 
-    <a href="modules/hub-cours.html" class="p-card fade-in" style="--card-accent: #9b7fe8;">
-      <span class="p-card-number">04</span>
-      <span class="p-card-badge badge-premium">Premium</span>
-      <div class="p-card-title">Architecture Mathematique</div>
-      <div class="p-card-desc">PO3, Fix CME, HIPPO, IMP Nodes, niveaux algorithmiques</div>
-      <div class="p-card-tags">
-        <span class="p-tag">PO3</span>
-        <span class="p-tag">Fix CME</span>
-        <span class="p-tag">HIPPO</span>
-      </div>
-      <span class="p-card-arrow">&rarr;</span>
+    <a href="modules/hub-cours.html" class="card fade-in" style="border-left-color: #7c3aed">
+      <span class="card-num">04</span>
+      <span class="card-badge badge-premium">Premium</span>
+      <h3>Architecture Mathematique</h3>
+      <p>Goldbach, Fibonacci fractale, PO3 sequences et les modeles mathematiques avances.</p>
+      <div class="card-tags"><span class="card-tag">Goldbach</span><span class="card-tag">Fib</span><span class="card-tag">PO3</span></div>
+      <span class="card-arrow">Acceder &rarr;</span>
     </a>
 
-    <a href="modules/hub-cours.html" class="p-card fade-in" style="--card-accent: #e05030;">
-      <span class="p-card-number">05</span>
-      <span class="p-card-badge badge-premium">Premium</span>
-      <div class="p-card-title">Modeles & Execution</div>
-      <div class="p-card-desc">Market Maker Models, protocoles, playbooks, strategies d'entree</div>
-      <div class="p-card-tags">
-        <span class="p-tag">MMBM</span>
-        <span class="p-tag">Protocole</span>
-        <span class="p-tag">Playbooks</span>
-      </div>
-      <span class="p-card-arrow">&rarr;</span>
+    <a href="modules/hub-cours.html" class="card fade-in" style="border-left-color: #ea580c">
+      <span class="card-num">05</span>
+      <span class="card-badge badge-premium">Premium</span>
+      <h3>Modeles & Execution</h3>
+      <p>SMT divergence, DRT, confluences multi-timeframe et strategies d'entree.</p>
+      <div class="card-tags"><span class="card-tag">SMT</span><span class="card-tag">DRT</span><span class="card-tag">Execution</span></div>
+      <span class="card-arrow">Acceder &rarr;</span>
     </a>
 
-    <a href="modules/hub-cours.html" class="p-card fade-in" style="--card-accent: #d4a44a;">
-      <span class="p-card-number">06</span>
-      <span class="p-card-badge badge-starter">Starter</span>
-      <div class="p-card-title">Psychologie & Outils</div>
-      <div class="p-card-desc">Mindset, journal, calculatrice, trainer interactif, news en direct</div>
-      <div class="p-card-tags">
-        <span class="p-tag">Psychologie</span>
-        <span class="p-tag">Journal</span>
-        <span class="p-tag">Outils</span>
-      </div>
-      <span class="p-card-arrow">&rarr;</span>
+    <a href="modules/hub-cours.html" class="card fade-in" style="border-left-color: #d97706">
+      <span class="card-num">06</span>
+      <span class="card-badge badge-starter">Starter</span>
+      <h3>Psychologie & Outils</h3>
+      <p>Gestion du risque, journal de trading, indicateurs Pine Script et discipline.</p>
+      <div class="card-tags"><span class="card-tag">Risk</span><span class="card-tag">Journal</span><span class="card-tag">Pine</span></div>
+      <span class="card-arrow">Acceder &rarr;</span>
     </a>
 
   </div>
 </section>
 
 <!-- ACCES RAPIDE -->
-<div class="quick-section">
-  <div class="fade-in">
-    <div class="section-label" style="color: var(--blue);">Modules Populaires</div>
-    <h2 class="section-title" style="font-size: clamp(24px, 3vw, 32px); margin-bottom: 28px;">Acces Rapide</h2>
-  </div>
-  <div class="quick-scroll fade-in">
-    <a href="modules/fondamentaux-smc.html" class="quick-pill">Bases SMC <span class="arrow">&rarr;</span></a>
-    <a href="modules/comprendre-liquidite.html" class="quick-pill">Liquidite <span class="arrow">&rarr;</span></a>
-    <a href="modules/cycles-temporels.html" class="quick-pill">Quarterly Theory <span class="arrow">&rarr;</span></a>
-    <a href="modules/sessions-killzones.html" class="quick-pill">Sessions & Killzones <span class="arrow">&rarr;</span></a>
-    <a href="modules/zones-de-prix.html" class="quick-pill">Zones de Prix <span class="arrow">&rarr;</span></a>
-    <a href="modules/psychologie-trader.html" class="quick-pill">Psychologie <span class="arrow">&rarr;</span></a>
-    <a href="modules/protocole-trading.html" class="quick-pill">Protocole <span class="arrow">&rarr;</span></a>
-    <a href="modules/architecture-niveaux.html" class="quick-pill">Architecture <span class="arrow">&rarr;</span></a>
+<div class="quick-access fade-in">
+  <p class="quick-title">Acces Rapide</p>
+  <div class="pills">
+    <a href="modules/hub-cours.html" class="pill">ICT Fondamentaux</a>
+    <a href="modules/hub-cours.html" class="pill">Order Blocks</a>
+    <a href="modules/hub-cours.html" class="pill">Quarterly Theory</a>
+    <a href="modules/hub-cours.html" class="pill">Goldbach Trifecta</a>
+    <a href="modules/hub-cours.html" class="pill">PO3 Sequences</a>
+    <a href="modules/hub-cours.html" class="pill">SMT Divergence</a>
+    <a href="modules/hub-cours.html" class="pill">DRT Multi-TF</a>
+    <a href="modules/hub-cours.html" class="pill">Indicateurs Pine</a>
   </div>
 </div>
 
 <!-- ABOUT -->
-<section class="about fade-in" id="about">
-  <div class="about-visual">
-    <div class="about-logo-box">
-      <svg viewBox="0 0 40 40" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="20,4 36,13 36,27 20,36 4,27 4,13" fill="rgba(10,14,26,0.95)" stroke="#4a7cff" stroke-width="1.5"/>
-        <text x="20" y="24" text-anchor="middle" fill="#4a7cff" font-family="Inter,sans-serif" font-size="16" font-weight="800">A</text>
-        <ellipse cx="20" cy="18" rx="18" ry="7" fill="none" stroke="#3455a8" stroke-width="0.6" transform="rotate(-25 20 18)" opacity="0.5"/>
-        <circle cx="8" cy="14" r="1.5" fill="#4a7cff" opacity="0.7"/>
-        <circle cx="32" cy="16" r="1.5" fill="#e05030" opacity="0.7"/>
+<section class="about" id="about">
+  <div class="about-inner fade-in">
+    <div>
+      <svg class="about-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="50,2 93,27 93,73 50,98 7,73 7,27" fill="#2563eb" opacity="0.08" stroke="#2563eb" stroke-width="2"/>
+        <polygon points="50,18 78,35 78,65 50,82 22,65 22,35" fill="#2563eb" opacity="0.12"/>
+        <text x="50" y="58" text-anchor="middle" font-family="Inter,sans-serif" font-size="26" font-weight="800" fill="#2563eb">A</text>
       </svg>
     </div>
-    <h3>Pourquoi<br><em>Algorithmic<br>Academy</em></h3>
-  </div>
-  <div class="about-content">
-    <p>La majorite de ce qui est enseigne en ligne n'est que du bruit -- des tactiques recyclees, des formations superficielles et des programmes menes par des influenceurs.</p>
-    <p>Algorithmic Academy existe pour changer ca. Une approche basee sur la structure algorithmique du marche, les cycles temporels et la livraison institutionnelle du prix.</p>
-    <p>Si vous tradez deja mais que vous voulez trader plus proprement, plus efficacement et a plus grande echelle -- vous etes au bon endroit.</p>
-    <div class="about-sig">Algorithmic Academy</div>
+    <div>
+      <h2>Pourquoi Algorithmic Academy</h2>
+      <p>Les marches financiers sont diriges par des algorithmes. Comprendre leur logique, c'est arreter de trader contre eux et commencer a trader avec eux.</p>
+      <p>Cette formation couvre la structure du prix, les cycles temporels, les modeles mathematiques comme Goldbach et PO3, et les outils d'execution concrets avec des indicateurs Pine Script prets a l'emploi.</p>
+      <p>Du debutant au trader avance, chaque module est construit pour vous donner un avantage mesurable et reproductible.</p>
+    </div>
   </div>
 </section>
 
-<footer>
-  <p><span>Algorithmic Academy</span> &mdash; Formation Trading Institutionnel & Algorithmique &mdash; 2026</p>
+<!-- FOOTER -->
+<footer class="footer">
+  <p>&copy; 2026 Algorithmic Academy. Tous droits reserves. | <a href="modules/hub-cours.html">Acces aux cours</a></p>
 </footer>
 
-<!-- SCRIPTS -->
 <script>
+// ── WAVE CANVAS ANIMATION ──
 (function() {
-  // ── ALGORITHMIC TRADING MATRIX ANIMATION ──
-  var c = document.getElementById('particles');
-  var ctx = c.getContext('2d');
-  var w, h;
-  var scrollY_anim = 0;
-  var animFrame = 0;
-  var isMobile = window.innerWidth < 768;
+  const canvas = document.getElementById('waveCanvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, time = 0, dots = [];
 
-  // Config
-  var GRID_LINES = 12;
-  var CANDLE_COUNT = isMobile ? 18 : 35;
-  var PARTICLE_COUNT = isMobile ? 30 : 70;
-  var CONNECT_DIST = isMobile ? 100 : 160;
-  var DATA_COLUMNS = isMobile ? 4 : 8;
+  function resize() {
+    const hero = canvas.parentElement;
+    w = canvas.width = hero.offsetWidth;
+    h = canvas.height = hero.offsetHeight;
+  }
 
-  // State
-  var particles = [];
-  var candles = [];
-  var candleTimer = 0;
-  var dataColumns = [];
-  var gridLevels = [];
-  var liquidityLines = [];
-  var fibCurves = [];
+  window.addEventListener('resize', resize);
+  resize();
 
-  // Trading numbers for data stream
-  var tradingNums = [
-    '1.0845','1.0650','19450','0.618','0.786','1.272','0.500',
-    '1.1020','0.382','2.618','19800','1.0500','0.236','1.618',
-    '19200','1.0730','0.707','3.618','20100','1.0920','0.886',
-    '19650','1.0480','4.236','20350','0.146','19980','1.0770'
+  // Wave configuration: 4 layers
+  const waves = [
+    { amplitude: 40, frequency: 0.008, speed: 0.012, yOffset: 0.45, color: '37,99,235',  opacity: 0.07 },
+    { amplitude: 30, frequency: 0.012, speed: 0.008, yOffset: 0.50, color: '13,148,136', opacity: 0.06 },
+    { amplitude: 35, frequency: 0.006, speed: 0.015, yOffset: 0.55, color: '217,119,6',  opacity: 0.05 },
+    { amplitude: 25, frequency: 0.010, speed: 0.010, yOffset: 0.48, color: '37,99,235',  opacity: 0.05 }
   ];
 
-  function animResize() {
-    w = c.width = window.innerWidth;
-    h = c.height = window.innerHeight * 3;
-    isMobile = window.innerWidth < 768;
-    CANDLE_COUNT = isMobile ? 18 : 35;
-    PARTICLE_COUNT = isMobile ? 30 : 70;
-    CONNECT_DIST = isMobile ? 100 : 160;
-    DATA_COLUMNS = isMobile ? 4 : 8;
-    initAllLayers();
+  // Generate dots that ride the waves
+  for (let i = 0; i < 18; i++) {
+    dots.push({
+      waveIndex: Math.floor(Math.random() * waves.length),
+      xPos: Math.random() * 1.2 - 0.1,
+      radius: 2 + Math.random() * 2.5,
+      glowRadius: 8 + Math.random() * 6
+    });
   }
 
-  function initAllLayers() {
-    initParticles();
-    initCandles();
-    initDataCols();
-    initGrid();
-    initLiquidity();
-    initFib();
+  function getWaveY(wave, x, t) {
+    return wave.yOffset * h + Math.sin(x * wave.frequency + t * wave.speed) * wave.amplitude
+         + Math.sin(x * wave.frequency * 0.5 + t * wave.speed * 1.3) * wave.amplitude * 0.4;
   }
 
-  function initParticles() {
-    particles = [];
-    for (var i = 0; i < PARTICLE_COUNT; i++) {
-      particles.push({
-        x: Math.random() * w,
-        y: Math.random() * h * 0.5,
-        r: Math.random() * 1.5 + 0.5,
-        dx: (Math.random() - 0.5) * 0.2,
-        dy: (Math.random() - 0.5) * 0.12,
-        isGold: Math.random() > 0.5,
-        o: Math.random() * 0.4 + 0.1
-      });
-    }
-  }
-
-  function initCandles() {
-    candles = [];
-    candleTimer = 0;
-    var startX = w * 0.08;
-    var endX = w * 0.92;
-    var step = (endX - startX) / CANDLE_COUNT;
-    var baseY = h * 0.15;
-    var price = 200;
-
-    for (var i = 0; i < CANDLE_COUNT; i++) {
-      var trend = Math.sin(i * 0.18) * 30 + (i * 2.5);
-      var noise = (Math.random() - 0.45) * 25;
-      price = 200 + trend + noise;
-
-      var open = price + (Math.random() - 0.5) * 15;
-      var close = price + (Math.random() - 0.5) * 15;
-      var high = Math.max(open, close) + Math.random() * 10;
-      var low = Math.min(open, close) - Math.random() * 10;
-
-      candles.push({
-        x: startX + i * step,
-        w: Math.max(step * 0.55, 3),
-        open: open, close: close, high: high, low: low,
-        bullish: close >= open,
-        baseY: baseY,
-        scale: 0.7,
-        opacity: 0,
-        targetOpacity: 0.35,
-        revealed: false
-      });
-    }
-  }
-
-  function initGrid() {
-    gridLevels = [];
-    var heroH = h * 0.3;
-    for (var i = 0; i < GRID_LINES; i++) {
-      gridLevels.push({
-        y: (heroH * 0.05) + (heroH * 0.9) * (i / (GRID_LINES - 1)),
-        opacity: 0,
-        targetOpacity: Math.random() * 0.06 + 0.02,
-        phase: Math.random() * Math.PI * 2
-      });
-    }
-  }
-
-  function initLiquidity() {
-    liquidityLines = [
-      { y: h * 0.08, label: 'PDH', glowTimer: 0, baseOpacity: 0.12 },
-      { y: h * 0.22, label: 'PDL', glowTimer: 0, baseOpacity: 0.12 },
-      { y: h * 0.14, label: 'EQ',  glowTimer: 0, baseOpacity: 0.08 }
-    ];
-  }
-
-  function initDataCols() {
-    dataColumns = [];
-    for (var i = 0; i < DATA_COLUMNS; i++) {
-      var chars = [];
-      var count = isMobile ? 8 : 14;
-      for (var j = 0; j < count; j++) {
-        chars.push({
-          value: tradingNums[Math.floor(Math.random() * tradingNums.length)],
-          opacity: Math.random() * 0.15,
-          speed: Math.random() * 0.3 + 0.1
-        });
-      }
-      dataColumns.push({
-        x: w * (0.05 + (i / DATA_COLUMNS) * 0.9 + Math.random() * 0.05),
-        chars: chars,
-        speed: Math.random() * 0.4 + 0.2,
-        offset: Math.random() * 500
-      });
-    }
-  }
-
-  function initFib() {
-    fibCurves = [];
-    for (var i = 0; i < 3; i++) {
-      fibCurves.push({
-        cx: w * (0.3 + Math.random() * 0.4),
-        cy: h * (0.05 + Math.random() * 0.2),
-        startAngle: Math.random() * Math.PI,
-        radius: 60 + Math.random() * 120,
-        opacity: 0,
-        targetOpacity: 0.06 + Math.random() * 0.06,
-        phase: Math.random() * Math.PI * 2,
-        golden: 1.618
-      });
-    }
-  }
-
-  // Scroll listener for parallax
-  window.addEventListener('scroll', function() {
-    scrollY_anim = window.scrollY || window.pageYOffset;
-  }, { passive: true });
-
-  // --- DRAW: Grid Lines ---
-  function drawGrid() {
-    var px = scrollY_anim * 0.15;
-    for (var i = 0; i < gridLevels.length; i++) {
-      var g = gridLevels[i];
-      g.opacity += (g.targetOpacity - g.opacity) * 0.02;
-      var pulse = Math.sin(animFrame * 0.008 + g.phase) * 0.02;
-      var y = g.y + px;
-      if (y < 0 || y > h) continue;
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(w, y);
-      ctx.strokeStyle = 'rgba(74,124,255,' + (g.opacity + pulse) + ')';
-      ctx.lineWidth = 0.5;
-      ctx.stroke();
-    }
-  }
-
-  // --- DRAW: Candlestick Trail ---
-  function drawCandles() {
-    candleTimer += 0.6;
-    var revealIndex = Math.floor(candleTimer / 8) % (CANDLE_COUNT + 15);
-    var px = scrollY_anim * 0.1;
-
-    for (var i = 0; i < candles.length; i++) {
-      var cd = candles[i];
-      if (i <= revealIndex) cd.revealed = true;
-
-      // Cycle: fade out then restart
-      if (revealIndex >= CANDLE_COUNT + 14) {
-        cd.opacity *= 0.97;
-        if (cd.opacity < 0.01) { candleTimer = 0; initCandles(); return; }
-      } else if (cd.revealed) {
-        cd.opacity += (cd.targetOpacity - cd.opacity) * 0.08;
-      }
-      if (cd.opacity < 0.005) continue;
-
-      var yBase = cd.baseY + px;
-      var bodyTop = yBase - Math.max(cd.open, cd.close) * cd.scale;
-      var bodyBot = yBase - Math.min(cd.open, cd.close) * cd.scale;
-      var wickTop = yBase - cd.high * cd.scale;
-      var wickBot = yBase - cd.low * cd.scale;
-
-      var color = cd.bullish
-        ? 'rgba(38,166,91,' + cd.opacity + ')'
-        : 'rgba(214,68,56,' + cd.opacity + ')';
-
-      // Wick
-      ctx.beginPath();
-      ctx.moveTo(cd.x + cd.w / 2, wickTop);
-      ctx.lineTo(cd.x + cd.w / 2, wickBot);
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      // Body
-      var bodyH = Math.max(Math.abs(bodyTop - bodyBot), 1);
-      ctx.fillStyle = color;
-      ctx.fillRect(cd.x, Math.min(bodyTop, bodyBot), cd.w, bodyH);
-    }
-  }
-
-  // --- DRAW: Liquidity Lines ---
-  function drawLiquidityLines() {
-    var px = scrollY_anim * 0.12;
-    for (var li = 0; li < liquidityLines.length; li++) {
-      var ll = liquidityLines[li];
-      var y = ll.y + px;
-      if (y < 0 || y > h * 0.4) continue;
-
-      // Glow when candlestick reaches the level
-      for (var ci = 0; ci < candles.length; ci++) {
-        var cd = candles[ci];
-        if (cd.revealed && cd.opacity > 0.1) {
-          var candleY = cd.baseY + px - cd.close * cd.scale;
-          if (Math.abs(candleY - y) < 15) ll.glowTimer = 60;
-        }
-      }
-
-      if (ll.glowTimer > 0) ll.glowTimer--;
-      var glow = ll.glowTimer > 0 ? 0.15 + (ll.glowTimer / 60) * 0.2 : ll.baseOpacity;
-
-      ctx.beginPath();
-      ctx.setLineDash([8, 6]);
-      ctx.moveTo(w * 0.06, y);
-      ctx.lineTo(w * 0.94, y);
-      ctx.strokeStyle = 'rgba(212,164,74,' + glow + ')';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      // Label
-      if (glow > 0.1) {
-        ctx.font = '9px Inter, monospace';
-        ctx.fillStyle = 'rgba(212,164,74,' + (glow * 1.2) + ')';
-        ctx.fillText(ll.label, w * 0.94 + 6, y + 3);
-      }
-    }
-  }
-
-  // --- DRAW: Constellation Particles ---
-  function drawParticles() {
-    var px = scrollY_anim * 0.05;
-    var slowFactor = 1 - Math.min(scrollY_anim / 1000, 0.7);
-
-    for (var i = 0; i < particles.length; i++) {
-      var p = particles[i];
-      p.x += p.dx * slowFactor;
-      p.y += p.dy * slowFactor;
-      if (p.x < -10) p.x = w + 10;
-      if (p.x > w + 10) p.x = -10;
-      if (p.y < -10) p.y = h * 0.5 + 10;
-      if (p.y > h * 0.5 + 10) p.y = -10;
-
-      var drawY = p.y + px;
-      ctx.beginPath();
-      ctx.arc(p.x, drawY, p.r, 0, Math.PI * 2);
-      var rgb = p.isGold ? '212,164,74' : '74,124,255';
-      ctx.fillStyle = 'rgba(' + rgb + ',' + p.o + ')';
-      ctx.fill();
-    }
-
-    // Connection lines
-    ctx.lineWidth = 0.4;
-    for (var i = 0; i < particles.length; i++) {
-      for (var j = i + 1; j < particles.length; j++) {
-        var a = particles[i], b = particles[j];
-        var dx = a.x - b.x, dy = a.y - b.y;
-        var dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < CONNECT_DIST) {
-          var alpha = (1 - dist / CONNECT_DIST) * 0.12;
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y + px);
-          ctx.lineTo(b.x, b.y + px);
-          ctx.strokeStyle = 'rgba(74,124,255,' + alpha + ')';
-          ctx.stroke();
-        }
-      }
-    }
-  }
-
-  // --- DRAW: Fibonacci Arcs ---
-  function drawFibCurves() {
-    var px = scrollY_anim * 0.08;
-    for (var i = 0; i < fibCurves.length; i++) {
-      var f = fibCurves[i];
-      var pulse = Math.sin(animFrame * 0.004 + f.phase);
-      f.opacity += (f.targetOpacity * (0.5 + pulse * 0.5) - f.opacity) * 0.01;
-      if (f.opacity < 0.005) continue;
-
-      ctx.beginPath();
-      var steps = 60;
-      for (var s = 0; s <= steps; s++) {
-        var t = (s / steps) * Math.PI * 1.5;
-        var r = f.radius * Math.pow(f.golden, t / (Math.PI * 2));
-        var clampedR = Math.min(r, 300);
-        var x = f.cx + Math.cos(t + f.startAngle) * clampedR;
-        var y = f.cy + Math.sin(t + f.startAngle) * clampedR * 0.6 + px;
-        if (s === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = 'rgba(212,164,74,' + f.opacity + ')';
-      ctx.lineWidth = 0.6;
-      ctx.stroke();
-    }
-  }
-
-  // --- DRAW: Data Stream (Matrix-style trading numbers) ---
-  function drawDataStream() {
-    var px = scrollY_anim * 0.03;
-    ctx.font = '10px monospace';
-
-    for (var c_i = 0; c_i < dataColumns.length; c_i++) {
-      var col = dataColumns[c_i];
-      var time = animFrame * col.speed + col.offset;
-      for (var j = 0; j < col.chars.length; j++) {
-        var ch = col.chars[j];
-        var y = ((j * 38 + time * 0.5) % (h * 0.35)) + px;
-        if (y < 0 || y > h * 0.4) continue;
-
-        var fadeDist = h * 0.35;
-        var localY = (j * 38 + time * 0.5) % fadeDist;
-        var fade = localY < 40 ? localY / 40 : localY > fadeDist - 40 ? (fadeDist - localY) / 40 : 1;
-        var o = ch.opacity * fade;
-        if (o < 0.005) continue;
-
-        ctx.fillStyle = 'rgba(74,124,255,' + o + ')';
-        ctx.fillText(ch.value, col.x, y);
-
-        // Slowly cycle values
-        if (Math.random() < 0.001) {
-          ch.value = tradingNums[Math.floor(Math.random() * tradingNums.length)];
-          ch.opacity = Math.random() * 0.12 + 0.03;
-        }
-      }
-    }
-  }
-
-  // --- MAIN ANIMATION LOOP ---
   function draw() {
     ctx.clearRect(0, 0, w, h);
-    animFrame++;
+    time++;
 
-    drawGrid();
-    drawDataStream();
-    drawFibCurves();
-    drawCandles();
-    drawLiquidityLines();
-    drawParticles();
+    // Draw each wave
+    waves.forEach(function(wave) {
+      ctx.beginPath();
+      ctx.moveTo(0, h);
+      for (let x = 0; x <= w; x += 3) {
+        const y = getWaveY(wave, x, time);
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(w, h);
+      ctx.closePath();
+
+      const grad = ctx.createLinearGradient(0, 0, w, 0);
+      grad.addColorStop(0, 'rgba(' + wave.color + ',' + (wave.opacity * 0.5) + ')');
+      grad.addColorStop(0.5, 'rgba(' + wave.color + ',' + wave.opacity + ')');
+      grad.addColorStop(1, 'rgba(' + wave.color + ',' + (wave.opacity * 0.3) + ')');
+      ctx.fillStyle = grad;
+      ctx.fill();
+    });
+
+    // Draw glowing dots on wave peaks
+    dots.forEach(function(dot) {
+      const wave = waves[dot.waveIndex];
+      const scrollX = (dot.xPos + time * wave.speed * 0.001) % 1.2 - 0.1;
+      const px = scrollX * w;
+      const py = getWaveY(wave, px, time);
+
+      // Glow
+      const glow = ctx.createRadialGradient(px, py, 0, px, py, dot.glowRadius);
+      glow.addColorStop(0, 'rgba(' + wave.color + ',0.25)');
+      glow.addColorStop(1, 'rgba(' + wave.color + ',0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(px, py, dot.glowRadius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Dot core
+      ctx.fillStyle = 'rgba(' + wave.color + ',0.5)';
+      ctx.beginPath();
+      ctx.arc(px, py, dot.radius, 0, Math.PI * 2);
+      ctx.fill();
+    });
 
     requestAnimationFrame(draw);
   }
 
-  animResize();
   draw();
-  window.addEventListener('resize', animResize);
-
-  // ── NAVBAR SCROLL ──
-  const navbar = document.getElementById('navbar');
-  window.addEventListener('scroll', function() {
-    navbar.classList.toggle('scrolled', window.scrollY > 40);
-  });
-
-  // ── SMOOTH SCROLL ──
-  document.querySelectorAll('a[href^="#"]').forEach(function(link) {
-    link.addEventListener('click', function(e) {
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-  });
-
-  // ── COUNTER ANIMATION ──
-  const counters = document.querySelectorAll('.counter');
-  const counterObserver = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        const el = entry.target;
-        const target = parseInt(el.dataset.target);
-        const suffix = el.dataset.suffix || '';
-        let current = 0;
-        const step = Math.max(1, Math.floor(target / 45));
-        const timer = setInterval(function() {
-          current += step;
-          if (current >= target) {
-            current = target;
-            clearInterval(timer);
-          }
-          el.textContent = current + suffix;
-        }, 28);
-        counterObserver.unobserve(el);
-      }
-    });
-  }, { threshold: 0.5 });
-  counters.forEach(function(c) { counterObserver.observe(c); });
-
-  // ── FADE IN ON SCROLL ──
-  const fadeEls = document.querySelectorAll('.fade-in');
-  const fadeObserver = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        fadeObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-  fadeEls.forEach(function(el) { fadeObserver.observe(el); });
-
 })();
-</script>
 
+// ── NAVBAR SCROLL ──
+window.addEventListener('scroll', function() {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// ── SMOOTH SCROLL ──
+document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+  a.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// ── FADE IN ON SCROLL ──
+const fadeObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) { e.target.classList.add('visible'); fadeObs.unobserve(e.target); }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.fade-in').forEach(function(el) { fadeObs.observe(el); });
+
+// ── COUNTER ANIMATION ──
+const counterObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const target = parseInt(el.dataset.target);
+      let current = 0;
+      const step = Math.max(1, Math.floor(target / 40));
+      const interval = setInterval(function() {
+        current += step;
+        if (current >= target) { current = target; clearInterval(interval); }
+        el.textContent = current;
+      }, 30);
+      counterObs.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.counter').forEach(function(el) { counterObs.observe(el); });
+</script>
 </body>
 </html>
