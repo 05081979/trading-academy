@@ -17,13 +17,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Bump cache version on CSS/JS
+      - name: Bump cache version
         run: |
           VER=$(date +%Y%m%d%H%M%S)
           echo "Using cache version: $VER"
-          # Remplace ?v=... sur les CSS/JS locaux dans tous les HTML
+          echo "$VER" > version.txt
+          # Bump ?v=... sur les CSS/JS locaux dans tous les HTML
           find . -name "*.html" -not -path "./.github/*" -print0 | \
-            xargs -0 sed -i -E "s/(\.(css|js))\?v=[0-9]+/\1?v=$VER/g"
+            xargs -0 sed -i -E "s/(\.(css|js))\?v=[^\"' ]+/\1?v=$VER/g"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: '.'

@@ -1,6 +1,28 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script>
+(function(){
+  // Auto-reload si nouvelle version déployée (évite cache navigateur élèves)
+  try {
+    fetch((location.pathname.includes('/modules/')?'../':'')+'version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v = (v||'').trim();
+        if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){
+          localStorage.setItem(k,v);
+          var u=location.pathname+'?_cb='+v+location.hash;
+          location.replace(u);
+        } else {
+          localStorage.setItem(k,v);
+        }
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
+
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
