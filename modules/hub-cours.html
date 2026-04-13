@@ -506,20 +506,32 @@
 
   /* ───── SLOGAN ───── */
   .slogan-bar {
-    background: linear-gradient(90deg, rgba(37,99,235,0.04) 0%, rgba(201,168,76,0.04) 50%, rgba(37,99,235,0.04) 100%);
+    background: linear-gradient(90deg, rgba(37,99,235,0.05) 0%, rgba(201,168,76,0.08) 50%, rgba(37,99,235,0.05) 100%);
     border-bottom: 1px solid var(--border);
-    padding: 14px 24px;
+    padding: 26px 24px;
     text-align: center;
   }
   .slogan-text {
-    font-family: 'Instrument Serif', serif;
-    font-size: 15px;
-    letter-spacing: 0.02em;
-    color: #1a1a2e;
+    font-family: 'Syne', 'Instrument Serif', serif;
+    font-weight: 800;
+    font-size: clamp(24px, 3vw, 38px);
+    letter-spacing: 0.08em;
+    color: #0f172a;
+    text-transform: uppercase;
+    line-height: 1.1;
+    background: linear-gradient(90deg, #1a1a2e 0%, #b8860b 50%, #1a1a2e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   .slogan-text em {
-    font-style: italic;
-    color: var(--gold);
+    font-style: normal;
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    color: #b8860b;
+    -webkit-text-fill-color: #b8860b;
+    margin: 0 10px;
+    font-size: 0.9em;
   }
 
   /* ───── TICKER (legacy) ───── */
@@ -777,7 +789,7 @@
 
 <!-- Slogan -->
 <div class="slogan-bar">
-  <span class="slogan-text">Lire le marché comme l'algorithme le livre — <em>Time · Price · Structure</em></span>
+  <span class="slogan-text">Détermination <em>·</em> Discipline <em>·</em> Travail</span>
 </div>
 
 <!-- Header -->

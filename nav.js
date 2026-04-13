@@ -45,7 +45,6 @@
       { id: 'journal-trading',    label: 'Journal de Trading' },
       { id: 'financial-juice',    label: 'News en Direct' },
       { id: 'macros-annonces',    label: 'Macros & Annonces' },
-      { id: 'index-cours',        label: 'Index des Cours' },
     ]},
   ];
 
