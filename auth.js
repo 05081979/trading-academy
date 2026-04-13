@@ -239,27 +239,7 @@
     // Admin = pas de watermark, pas de restrictions
     if (username === 'Admin') return;
 
-    // 1. WATERMARK visible — pseudo + date/heure pour tracer toute capture
-    function makeWatermark() {
-      var existing = document.getElementById('aa-watermark');
-      if (existing) existing.remove();
-      var wm = document.createElement('div');
-      wm.id = 'aa-watermark';
-      wm.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;overflow:hidden;opacity:0.06;mix-blend-mode:multiply;';
-      var stamp = new Date().toISOString().replace('T',' ').slice(0,16);
-      var tag = username + ' · ' + stamp;
-      var wmText = '';
-      for (var i = 0; i < 18; i++) {
-        wmText += '<div style="white-space:nowrap;transform:rotate(-28deg);color:#000;font-size:12px;font-weight:500;font-family:monospace;letter-spacing:5px;line-height:110px;margin-left:' + ((i%3)*-120) + 'px;">';
-        for (var j = 0; j < 5; j++) { wmText += tag + ' &nbsp;&nbsp;&nbsp; '; }
-        wmText += '</div>';
-      }
-      wm.innerHTML = wmText;
-      document.body.appendChild(wm);
-    }
-    makeWatermark();
-    // Refresh toutes les 30s pour nouveau timestamp (les captures deviennent datées)
-    setInterval(makeWatermark, 30000);
+    // 1. WATERMARK : désactivé (demande utilisateur — pas de filigrane visible)
 
     // 2. ANTI-SCREENSHOT
     var shield = document.createElement('div');
