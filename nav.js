@@ -15,6 +15,7 @@
     ]},
     { name: 'Temps & Cycles', items: [
       { id: 'sessions-killzones',  label: 'Sessions, Killzones & Macros' },
+      { id: 'cycles-temporels',    label: 'Cycles Temporels' },
       { id: 'digital-time-theory', label: 'Theorie du Temps Numerique' },
       { id: 'temps-prix-protocole',label: 'Temps & Prix — Protocole' },
       { id: 'sequences-fractales', label: 'Sequences & Fractales' },
@@ -22,7 +23,7 @@
     { name: 'Architecture', items: [
       { id: 'architecture-niveaux',    label: 'Architecture des Niveaux' },
       { id: 'niveaux-algorithmiques',  label: 'Niveaux Algorithmiques' },
-      { id: 'cycles-temporels',        label: 'GB Time & Cycles Temporels' },
+      { id: 'gb-time',                 label: 'GB Time', href: 'cycles-temporels.html#gb-time' },
       { id: 'ipda-trainer',            label: 'Algorithme de Livraison du Prix' },
     ]},
     { name: 'Execution', items: [
@@ -68,9 +69,10 @@
   function buildDropdowns() {
     return CATS.map(cat => {
       const active = isActive(cat);
-      const items = cat.items.map(m =>
-        `<a href="${m.id}.html" class="aa-drop-item ${filename === m.id ? 'aa-on' : ''}">${m.label}</a>`
-      ).join('');
+      const items = cat.items.map(m => {
+        const href = m.href || (m.id + '.html');
+        return `<a href="${href}" class="aa-drop-item ${filename === m.id ? 'aa-on' : ''}">${m.label}</a>`;
+      }).join('');
       return `<div class="aa-dropdown">
         <button class="aa-cat ${active ? 'aa-cat-on' : ''}">${cat.name}${ARROW}</button>
         <div class="aa-drop-menu">${items}</div>
