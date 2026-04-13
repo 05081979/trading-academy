@@ -83,13 +83,35 @@
   try { savedAllow = JSON.parse(sessionStorage.getItem(ALLOW_KEY) || '[]'); } catch(e) {}
 
   // Si la session active correspond à un token révoqué, on force un relogin
-  if (savedAuth === 'valid' && savedUser && savedTier && isRevoked(savedUser, savedTier)) {
-    sessionStorage.removeItem(SESSION_KEY);
-    sessionStorage.removeItem(TIER_KEY);
-    sessionStorage.removeItem(USER_KEY);
-    sessionStorage.removeItem(ALLOW_KEY);
-    savedAuth = null;
+  function forceLogout() {
+    try {
+      sessionStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(TIER_KEY);
+      sessionStorage.removeItem(USER_KEY);
+      sessionStorage.removeItem(ALLOW_KEY);
+      // Aussi les anciennes clés par précaution
+      sessionStorage.removeItem('aa_auth');
+      localStorage.removeItem('aa_auth');
+      localStorage.removeItem('aa_tier');
+      localStorage.removeItem('aa_user');
+    } catch(e) {}
   }
+
+  if (savedAuth === 'valid' && savedUser && savedTier && isRevoked(savedUser, savedTier)) {
+    forceLogout();
+    location.reload();
+    return;
+  }
+
+  // Back-forward cache: re-vérifier à chaque retour de page
+  window.addEventListener('pageshow', function(e) {
+    var t = sessionStorage.getItem(TIER_KEY);
+    var u = sessionStorage.getItem(USER_KEY);
+    if (u && t && isRevoked(u, t)) {
+      forceLogout();
+      location.reload();
+    }
+  });
 
   if (savedAuth === 'valid' && savedTier && savedUser) {
     window.AA_TIER = savedTier;
