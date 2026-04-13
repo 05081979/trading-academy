@@ -40,11 +40,9 @@
       { id: 'psychologie-trader',  label: 'Psychologie du Trader' },
     ]},
     { name: 'Outils', items: [
-      { id: 'role-outils',        label: 'Role de Chaque Outil' },
       { id: 'calculatrice',       label: 'Calculatrice de Position' },
       { id: 'journal-trading',    label: 'Journal de Trading' },
       { id: 'financial-juice',    label: 'News en Direct' },
-      { id: 'macros-annonces',    label: 'Macros & Annonces' },
     ]},
   ];
 
