@@ -504,7 +504,25 @@
     font-size:12px; color:var(--text-dim); line-height:1.4;
   }
 
-  /* ───── TICKER ───── */
+  /* ───── SLOGAN ───── */
+  .slogan-bar {
+    background: linear-gradient(90deg, rgba(37,99,235,0.04) 0%, rgba(201,168,76,0.04) 50%, rgba(37,99,235,0.04) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    text-align: center;
+  }
+  .slogan-text {
+    font-family: 'Instrument Serif', serif;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    color: #1a1a2e;
+  }
+  .slogan-text em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  /* ───── TICKER (legacy) ───── */
   .ticker-bar {
     background:var(--surface2);
     border-bottom:1px solid var(--border);
@@ -757,35 +775,9 @@
 </head>
 <body>
 
-<!-- Ticker -->
-<div class="ticker-bar">
-  <div class="ticker-inner" id="ticker">
-    <span class="ticker-item">FIX PRICE <span class="sep">◆</span> <span class="val">CME Settlement 16h ET</span></span>
-    <span class="ticker-item">IPDA <span class="sep">◆</span> <span class="val">Interbank Price Delivery Algorithm</span></span>
-    <span class="ticker-item">PO3 <span class="sep">◆</span> <span class="val">Architecture institutionnelle</span></span>
-    <span class="ticker-item">FVG <span class="sep">◆</span> <span class="val">Fair Value Gap</span></span>
-    <span class="ticker-item">SMT <span class="sep">◆</span> <span class="val">Smart Money Technique</span></span>
-    <span class="ticker-item">AMD <span class="sep">◆</span> <span class="val">Accumulation · Manipulation · Distribution</span></span>
-    <span class="ticker-item">PO3 <span class="sep">◆</span> <span class="val">Power of Three</span></span>
-    <span class="ticker-item">CSD <span class="sep">◆</span> <span class="val">Change in State of Delivery</span></span>
-    <span class="ticker-item">QUARTERLY THEORY <span class="sep">◆</span> <span class="val">Cycles fractals</span></span>
-    <span class="ticker-item">Zones de Prix <span class="sep">◆</span> <span class="val">Daily Range Theory</span></span>
-    <span class="ticker-item">BREAKER BLOCK <span class="sep">◆</span> <span class="val">Inversion structurelle</span></span>
-    <span class="ticker-item">HIPPO <span class="sep">◆</span> <span class="val">PD Array institutionnel</span></span>
-    <!-- duplicate for seamless loop -->
-    <span class="ticker-item">FIX PRICE <span class="sep">◆</span> <span class="val">CME Settlement 16h ET</span></span>
-    <span class="ticker-item">IPDA <span class="sep">◆</span> <span class="val">Interbank Price Delivery Algorithm</span></span>
-    <span class="ticker-item">PO3 <span class="sep">◆</span> <span class="val">Architecture institutionnelle</span></span>
-    <span class="ticker-item">FVG <span class="sep">◆</span> <span class="val">Fair Value Gap</span></span>
-    <span class="ticker-item">SMT <span class="sep">◆</span> <span class="val">Smart Money Technique</span></span>
-    <span class="ticker-item">AMD <span class="sep">◆</span> <span class="val">Accumulation · Manipulation · Distribution</span></span>
-    <span class="ticker-item">PO3 <span class="sep">◆</span> <span class="val">Power of Three</span></span>
-    <span class="ticker-item">CSD <span class="sep">◆</span> <span class="val">Change in State of Delivery</span></span>
-    <span class="ticker-item">QUARTERLY THEORY <span class="sep">◆</span> <span class="val">Cycles fractals</span></span>
-    <span class="ticker-item">Zones de Prix <span class="sep">◆</span> <span class="val">Daily Range Theory</span></span>
-    <span class="ticker-item">BREAKER BLOCK <span class="sep">◆</span> <span class="val">Inversion structurelle</span></span>
-    <span class="ticker-item">HIPPO <span class="sep">◆</span> <span class="val">PD Array institutionnel</span></span>
-  </div>
+<!-- Slogan -->
+<div class="slogan-bar">
+  <span class="slogan-text">Lire le marché comme l'algorithme le livre — <em>Time · Price · Structure</em></span>
 </div>
 
 <!-- Header -->
