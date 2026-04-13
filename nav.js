@@ -35,8 +35,10 @@
       { id: 'execution-live-series',label: 'Sessions Live' },
       { id: 'etudes-de-cas',       label: 'Etudes de Cas' },
     ]},
-    { name: 'Outils', items: [
+    { name: 'Psychologie', items: [
       { id: 'psychologie-trader',  label: 'Psychologie du Trader' },
+    ]},
+    { name: 'Outils', items: [
       { id: 'trainer-interactif',  label: 'Trainer Interactif' },
       { id: 'role-outils',        label: 'Role de Chaque Outil' },
       { id: 'calculatrice',       label: 'Calculatrice de Position' },
