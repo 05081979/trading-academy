@@ -1,6 +1,10 @@
 /* ── ALGORITHMIC ACADEMY — Shared Navigation Bar (Dropdown Categories) ── */
 (function() {
-  const CATS = [
+  // Tier de l'utilisateur (starter / premium / admin via sessionStorage.aa_tier)
+  const USER_TIER = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('aa_tier')) || 'premium';
+  const IS_STARTER = USER_TIER === 'starter';
+
+  const CATS_RAW = [
     { name: 'Fondations', items: [
       { id: 'fondamentaux-smc',     label: 'Les Bases SMC' },
       { id: 'comprendre-liquidite', label: 'Comprendre la Liquidite' },
@@ -24,7 +28,7 @@
       { id: 'execution-avancee',   label: 'Execution Avancee' },
       { id: 'execution-live-series',label: 'Sessions Live' },
     ]},
-    { name: 'Architecture', items: [
+    { name: 'Architecture', premium: true, items: [
       { id: 'architecture-niveaux',    label: 'Architecture des Niveaux' },
       { id: 'niveaux-algorithmiques',  label: 'Niveaux Algorithmiques' },
       { id: 'hippo',                   label: 'HIPPO', href: 'architecture-niveaux.html#s5' },
@@ -45,6 +49,9 @@
       { id: 'financial-juice',    label: 'News en Direct' },
     ]},
   ];
+
+  // Filtre: cache les catégories Premium aux Starter
+  const CATS = CATS_RAW.filter(c => !(c.premium && IS_STARTER));
 
   const filename = window.location.pathname.split('/').pop().replace('.html', '');
 

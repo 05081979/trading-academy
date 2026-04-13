@@ -37,19 +37,11 @@
     window.AA_TIER = savedTier;
     window.AA_USER = savedUser;
 
-    // Block starter from premium pages
+    // Block starter from premium pages — redirection silencieuse (aucun indice)
     var pageTier = document.documentElement.getAttribute('data-tier');
     if (pageTier === 'premium' && savedTier === 'starter') {
-      document.documentElement.style.display = 'none';
-      window.addEventListener('DOMContentLoaded', function() {
-        document.documentElement.style.display = '';
-        document.body.innerHTML = '';
-        document.body.style.cssText = 'margin:0;min-height:100vh;background:#f5f7fa;display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,sans-serif;';
-        var box = document.createElement('div');
-        box.style.cssText = 'text-align:center;padding:60px 40px;max-width:500px;';
-        box.innerHTML = '<div style="font-size:48px;margin-bottom:20px;">&#x1F512;</div><h2 style="color:#111;font-size:24px;margin-bottom:12px;">Contenu Premium</h2><p style="color:#555;font-size:14px;line-height:1.7;margin-bottom:24px;">Ce cours est reserve aux membres <span style="color:#b8860b;font-weight:700;">Premium</span>.<br>Ton abonnement actuel est <span style="color:#059669;font-weight:700;">Starter</span>.</p><a href="hub-cours.html" style="display:inline-block;padding:12px 28px;background:#2563eb;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:14px;">Retour au Hub</a>';
-        document.body.appendChild(box);
-      });
+      var redirect = location.pathname.includes('/modules/') ? 'hub-cours.html' : 'index.html';
+      location.replace(redirect);
       return;
     }
 
