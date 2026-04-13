@@ -6,6 +6,7 @@
   const SESSION_KEY = 'aa_auth';
   const TIER_KEY = 'aa_tier';
   const USER_KEY = 'aa_user';
+  const ALLOW_KEY = 'aa_allow';
 
   async function sha256(text) {
     const data = new TextEncoder().encode(text);
@@ -13,39 +14,64 @@
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
-  // Decode unique token: AA-TIER-base64(username)
+  // Decode unique token:
+  //   AA-S-<b64(username)>              → Starter (full starter access)
+  //   AA-P-<b64(username)>              → Premium (full premium access)
+  //   AA-C-<b64(username|slug1,slug2)>  → Custom Premium (partiel - whitelist de slugs)
   function decodeToken(pwd) {
     try {
       if (!pwd.startsWith('AA-')) return null;
       var parts = pwd.split('-');
       if (parts.length < 3) return null;
-      var tier = parts[1].toLowerCase(); // S or P
+      var tier = parts[1].toLowerCase();
       var encoded = parts.slice(2).join('-');
-      var username = atob(encoded);
-      if (!username || username.length < 2) return null;
+      var decoded = atob(encoded);
+      if (!decoded || decoded.length < 2) return null;
+
+      if (tier === 'c') {
+        // Format: username|slug1,slug2,slug3
+        var pipe = decoded.indexOf('|');
+        if (pipe < 0) return null;
+        var username = decoded.slice(0, pipe);
+        var slugs = decoded.slice(pipe + 1).split(',').filter(function(x){ return x.trim().length > 0; });
+        return { username: username, tier: 'custom', allow: slugs };
+      }
       var t = tier === 'p' ? 'premium' : 'starter';
-      return { username: username, tier: t };
+      return { username: decoded, tier: t, allow: [] };
     } catch(e) { return null; }
+  }
+
+  // Helper: page slug depuis l'URL
+  function getPageSlug() {
+    return (location.pathname.split('/').pop() || '').replace('.html', '');
   }
 
   // Already logged in?
   var savedAuth = sessionStorage.getItem(SESSION_KEY);
   var savedTier = sessionStorage.getItem(TIER_KEY);
   var savedUser = sessionStorage.getItem(USER_KEY);
+  var savedAllow = [];
+  try { savedAllow = JSON.parse(sessionStorage.getItem(ALLOW_KEY) || '[]'); } catch(e) {}
 
   if (savedAuth === 'valid' && savedTier && savedUser) {
     window.AA_TIER = savedTier;
     window.AA_USER = savedUser;
+    window.AA_ALLOW = savedAllow;
 
-    // Block starter from premium pages — redirection silencieuse (aucun indice)
+    // Blocage pages Premium — redirection silencieuse
     var pageTier = document.documentElement.getAttribute('data-tier');
-    if (pageTier === 'premium' && savedTier === 'starter') {
-      var redirect = location.pathname.includes('/modules/') ? 'hub-cours.html' : 'index.html';
-      location.replace(redirect);
-      return;
+    if (pageTier === 'premium') {
+      var pageSlug = getPageSlug();
+      var denied = false;
+      if (savedTier === 'starter') denied = true;
+      if (savedTier === 'custom' && savedAllow.indexOf(pageSlug) === -1) denied = true;
+      if (denied) {
+        var redirect = location.pathname.includes('/modules/') ? 'hub-cours.html' : 'index.html';
+        location.replace(redirect);
+        return;
+      }
     }
 
-    // Add watermark + anti-screenshot after DOM loads
     window.addEventListener('DOMContentLoaded', function() { addProtection(savedUser); });
     return;
   }
@@ -94,12 +120,13 @@
         return;
       }
 
-      // Unique token (AA-S-base64 or AA-P-base64)
+      // Unique token (AA-S-/AA-P-/AA-C-)
       var decoded = decodeToken(pwd);
       if (decoded) {
         sessionStorage.setItem(SESSION_KEY, 'valid');
         sessionStorage.setItem(TIER_KEY, decoded.tier);
         sessionStorage.setItem(USER_KEY, decoded.username);
+        sessionStorage.setItem(ALLOW_KEY, JSON.stringify(decoded.allow || []));
         location.reload();
         return;
       }

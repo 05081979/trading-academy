@@ -1,8 +1,11 @@
 /* ── ALGORITHMIC ACADEMY — Shared Navigation Bar (Dropdown Categories) ── */
 (function() {
-  // Tier de l'utilisateur (starter / premium / admin via sessionStorage.aa_tier)
+  // Tier (starter / premium / custom) et whitelist éventuelle
   const USER_TIER = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('aa_tier')) || 'premium';
   const IS_STARTER = USER_TIER === 'starter';
+  const IS_CUSTOM = USER_TIER === 'custom';
+  let USER_ALLOW = [];
+  try { USER_ALLOW = JSON.parse((typeof sessionStorage !== 'undefined' && sessionStorage.getItem('aa_allow')) || '[]'); } catch(e) {}
 
   const CATS_RAW = [
     { name: 'Fondations', items: [
@@ -52,7 +55,18 @@
   ];
 
   // Filtre: cache les catégories Premium aux Starter
-  const CATS = CATS_RAW.filter(c => !(c.premium && IS_STARTER));
+  // Pour Custom: garde la catégorie Premium mais filtre les items hors whitelist
+  const CATS = CATS_RAW
+    .filter(c => !(c.premium && IS_STARTER))
+    .map(c => {
+      if (c.premium && IS_CUSTOM && c.items) {
+        const filtered = c.items.filter(m => USER_ALLOW.indexOf(m.id) !== -1);
+        if (filtered.length === 0) return null;
+        return Object.assign({}, c, { items: filtered });
+      }
+      return c;
+    })
+    .filter(c => c !== null);
 
   const filename = window.location.pathname.split('/').pop().replace('.html', '');
 
