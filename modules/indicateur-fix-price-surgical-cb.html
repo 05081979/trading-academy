@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html data-tier="indicator" lang="fr">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(function(){
+  try {
+    fetch('../version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v=(v||'').trim(); if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){ localStorage.setItem(k,v); location.replace(location.pathname+'?_cb='+v+location.hash); }
+        else localStorage.setItem(k,v);
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="../auth.js?v=v20260413-revoke2"></script>
+<title>Fix Price, Surgical &amp; CB Intraday &mdash; Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#f5f7fa; color:#1a1a2e; font-family:'Inter',sans-serif; line-height:1.6; }
+.hero { background:linear-gradient(135deg,#d4a017 0%,#b8860b 100%); color:#fff; padding:60px 40px 40px; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top right, rgba(255,255,255,0.15) 0%, transparent 60%); pointer-events:none; }
+.hero-inner { max-width:1100px; margin:0 auto; position:relative; z-index:1; }
+.back-link { display:inline-flex; align-items:center; gap:8px; color:rgba(255,255,255,0.85); text-decoration:none; font-size:13px; margin-bottom:24px; }
+.back-link:hover { color:#fff; }
+.hero-icon { font-size:48px; margin-bottom:16px; }
+.hero h1 { font-family:'Syne',sans-serif; font-size:clamp(28px,4vw,44px); font-weight:800; letter-spacing:-0.01em; margin-bottom:12px; }
+.hero p { font-size:16px; max-width:700px; opacity:0.95; }
+.container { max-width:1100px; margin:0 auto; padding:40px 24px; }
+.section { background:#fff; border-radius:14px; padding:28px 32px; margin-bottom:20px; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid #e2e5ea; }
+.section-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:#1a1a2e; margin-bottom:18px; display:flex; align-items:center; gap:10px; }
+.section-title::before { content:''; width:6px; height:24px; background:#d4a017; border-radius:3px; }
+.features-list { list-style:none; }
+.features-list li { padding:10px 0; border-bottom:1px solid #f1f5f9; display:flex; gap:12px; align-items:flex-start; }
+.features-list li:last-child { border-bottom:none; }
+.features-list li::before { content:'\2713'; color:#d4a017; font-weight:700; flex-shrink:0; }
+.steps { counter-reset:step; list-style:none; }
+.steps li { padding:12px 0 12px 44px; position:relative; border-bottom:1px solid #f1f5f9; color:#334155; }
+.steps li:last-child { border-bottom:none; }
+.steps li::before { counter-increment:step; content:counter(step); position:absolute; left:0; top:12px; width:28px; height:28px; background:#d4a017; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; font-family:'JetBrains Mono',monospace; }
+table.levels { width:100%; border-collapse:collapse; font-size:13px; margin-top:10px; }
+table.levels th { text-align:left; padding:10px 12px; background:#f8fafc; color:#b8860b; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1px; border-bottom:1px solid #e2e5ea; }
+table.levels td { padding:10px 12px; border-bottom:1px solid #f1f5f9; color:#334155; }
+table.levels tr:hover td { background:#fafbfc; }
+.chip { display:inline-block; padding:2px 8px; border-radius:4px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; }
+.chip-teal{background:rgba(38,166,154,.12);color:#26A69A;}
+.chip-blue{background:rgba(66,165,245,.12);color:#42A5F5;}
+.chip-purp{background:rgba(171,71,188,.12);color:#AB47BC;}
+.chip-red{background:rgba(239,83,80,.12);color:#EF5350;}
+.chip-ora{background:rgba(234,88,12,.12);color:#ea580c;}
+.chip-gray{background:rgba(148,163,184,.15);color:#64748b;}
+.callout { padding:14px 18px; border-radius:10px; margin-top:14px; font-size:13px; line-height:1.7; }
+.callout.gold { background:linear-gradient(90deg,rgba(212,160,23,0.08),rgba(212,160,23,0.02)); border-left:4px solid #d4a017; color:#6b4f04; }
+.callout.blue { background:linear-gradient(90deg,rgba(66,165,245,0.08),rgba(66,165,245,0.02)); border-left:4px solid #42A5F5; color:#0b4a8f; }
+.callout.red  { background:linear-gradient(90deg,rgba(239,83,80,0.08),rgba(239,83,80,0.02));   border-left:4px solid #EF5350; color:#8c1f1c; }
+.inputs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:14px; }
+.input-card { padding:14px 16px; background:#f8fafc; border:1px solid #e2e5ea; border-radius:10px; }
+.input-name { font-weight:700; color:#b8860b; font-size:12px; margin-bottom:4px; font-family:'JetBrains Mono',monospace; }
+.input-desc { font-size:12.5px; color:#475569; line-height:1.55; }
+.code-warn { padding:12px 16px; background:linear-gradient(90deg,#fee2e2,#fecaca); border-radius:10px; font-size:12px; color:#991b1b; font-weight:600; margin-bottom:12px; text-align:center; }
+.code-box { background:#0f172a; color:#e2e8f0; border-radius:10px; padding:20px; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.5; overflow-x:auto; max-height:500px; overflow-y:auto; white-space:pre; }
+.copy-code-btn { margin-top:10px; padding:10px 18px; background:#d4a017; color:#fff; border:none; border-radius:8px; font-family:inherit; font-weight:600; font-size:13px; cursor:pointer; }
+.copy-code-btn:hover { filter:brightness(1.1); }
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+
+<div class="hero">
+  <div class="hero-inner">
+    <a href="indicateurs.html" class="back-link">&larr; Retour aux indicateurs</a>
+    <div class="hero-icon">&#x1F3AF;</div>
+    <h1>Fix Price, Surgical &amp; CB Intraday</h1>
+    <p>Fix Price automatique &agrave; 16:00 ET, niveaux Surgical (N6/N7/N8) et bandes CB Intraday (Base, Expand I/II/III) en pourcentage autour du FP. Labels dynamiques, pas d'&eacute;tiquettes noires.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <div class="section-title">Concept</div>
+    <p style="color:#475569;line-height:1.75;font-size:14px;">L'indicateur trace autour d'un <strong>Fix Price</strong> de r&eacute;f&eacute;rence (open de la bougie 16:00 New York par d&eacute;faut) deux familles de niveaux :</p>
+    <ul class="features-list" style="margin-top:10px;">
+      <li><strong>Surgical Levels (N6/N7/N8)</strong> &mdash; niveaux institutionnels fixes &agrave; &plusmn;0.4375 %, &plusmn;0.875 %, &plusmn;1.75 % du Fix Price. Id&eacute;aux pour identifier les extensions chirurgicales intra-session.</li>
+      <li><strong>CB Intraday (Base / Expand I / II / III)</strong> &mdash; bandes param&eacute;trables (d&eacute;fauts 0.7 %, 1.3 %, 2 %, 3.5 %). Servent de niveaux de target et d'invalidation pour l'expansion.</li>
+      <li><strong>Fix Price automatique</strong> &mdash; se cale sur l'open de la bougie 16:00 ET, peu importe le fuseau du chart. Mode manuel disponible.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Grille des niveaux</div>
+    <table class="levels">
+      <thead><tr><th>FAMILLE</th><th>NIVEAU</th><th>% DU FP</th><th>USAGE</th></tr></thead>
+      <tbody>
+        <tr><td><span class="chip chip-gray">R&eacute;f&eacute;rence</span></td><td>FP</td><td>0 %</td><td>Point pivot &mdash; biais long/short selon position du prix</td></tr>
+        <tr><td><span class="chip chip-teal">Surgical</span></td><td>N6</td><td>&plusmn;0.4375 %</td><td>Extension rapide, premier target intra-session</td></tr>
+        <tr><td><span class="chip chip-ora">Surgical</span></td><td>N7</td><td>&plusmn;0.875 %</td><td>Extension normale, target de session calme</td></tr>
+        <tr><td><span class="chip chip-red">Surgical</span></td><td>N8</td><td>&plusmn;1.75 %</td><td>Extension profonde, target de session directionnelle</td></tr>
+        <tr><td><span class="chip chip-teal">CB</span></td><td>Base</td><td>&plusmn;0.7 %</td><td>Premi&egrave;re zone d'expansion &mdash; confirmation du move</td></tr>
+        <tr><td><span class="chip chip-blue">CB</span></td><td>Expand I</td><td>&plusmn;1.3 %</td><td>Deuxi&egrave;me zone &mdash; continuation sous impulsion</td></tr>
+        <tr><td><span class="chip chip-purp">CB</span></td><td>Expand II</td><td>&plusmn;2 %</td><td>Troisi&egrave;me zone &mdash; sortie d'une news ou expansion HTF</td></tr>
+        <tr><td><span class="chip chip-red">CB</span></td><td>Expand III</td><td>&plusmn;3.5 %</td><td>Zone extr&ecirc;me &mdash; d&eacute;viation majeure, mean-reversion probable</td></tr>
+      </tbody>
+    </table>
+    <div class="callout gold">Les niveaux Surgical (0.4375 / 0.875 / 1.75 %) sont <strong>fixes</strong> &mdash; ce sont des constantes institutionnelles. Les niveaux CB sont <strong>param&eacute;trables</strong> via les inputs pour s'adapter &agrave; ton instrument.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Mode d'emploi &mdash; &eacute;tape par &eacute;tape</div>
+    <ol class="steps">
+      <li><strong>Ajoute l'indicateur</strong> sur un chart NQ / ES (ou ton future favori). Timeframe conseill&eacute; : 1 min &agrave; 15 min pour la d&eacute;tection automatique du Fix Price.</li>
+      <li><strong>Laisse le mode automatique activ&eacute;</strong> &mdash; le Fix Price se cale sur l'open de la bougie 16:00 New York Time. Si tu es sur 4H/Daily, bascule en mode manuel et entre le FP &agrave; la main.</li>
+      <li><strong>Lis le contexte</strong> : prix au-dessus du FP = biais long, en-dessous = biais short. La distance au FP te dit quelle zone est active (Base, Expand I, II, III).</li>
+      <li><strong>Utilise les Surgical comme filtres chirurgicaux</strong> : N6/N7 servent de targets rapides, N8 est un seuil de surextension.</li>
+      <li><strong>Utilise les CB comme carte de l'expansion</strong> : cassure nette de CB Base avec volume = continuation probable vers Expand I, puis II. Expand III = zone de retournement statistique.</li>
+      <li><strong>Combine avec ton biais</strong> (True Opens, SSMT, sessions) : trader vers CB Base/E-I/E-II dans le sens du biais HTF, utiliser Expand III comme invalidation ou sortie forc&eacute;e.</li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Param&egrave;tres (Inputs)</div>
+    <div class="inputs-grid">
+      <div class="input-card"><div class="input-name">Mode automatique</div><div class="input-desc">Active la d&eacute;tection auto du FP &agrave; 16:00 ET. D&eacute;coche pour entrer un prix manuel.</div></div>
+      <div class="input-card"><div class="input-name">Fix Price manuel</div><div class="input-desc">Utilis&eacute; si le mode auto est d&eacute;coch&eacute;. Step 0.25 pour coller aux ticks NQ/ES.</div></div>
+      <div class="input-card"><div class="input-name">Afficher Surgical Levels</div><div class="input-desc">Toggle pour masquer/afficher FP + N6/N7/N8.</div></div>
+      <div class="input-card"><div class="input-name">Afficher CB Intraday</div><div class="input-desc">Toggle pour masquer/afficher les bandes CB.</div></div>
+      <div class="input-card"><div class="input-name">Afficher les labels</div><div class="input-desc">Active l'affichage des labels (texte transparent, pas d'&eacute;tiquette de fond).</div></div>
+      <div class="input-card"><div class="input-name">Longueur des traits</div><div class="input-desc">Nombre de bougies sur lesquelles les lignes s'&eacute;tendent (d&eacute;faut 100).</div></div>
+      <div class="input-card"><div class="input-name">Position label</div><div class="input-desc">Droite / Gauche / Centre / sur le trait &mdash; pour &eacute;viter les chevauchements.</div></div>
+      <div class="input-card"><div class="input-name">CB Base / E-I / E-II / E-III (%)</div><div class="input-desc">Pourcentages des bandes CB. Valeurs par d&eacute;faut 0.7 / 1.3 / 2 / 3.5. Modifiables.</div></div>
+      <div class="input-card"><div class="input-name">Expansion Trigger %</div><div class="input-desc">Seuil de d&eacute;clenchement d'expansion (0.1 %) &mdash; param&egrave;tre r&eacute;serv&eacute; &agrave; la logique, pas trac&eacute;.</div></div>
+      <div class="input-card"><div class="input-name">Couleurs / &Eacute;paisseur / Style</div><div class="input-desc">Personnalisables pour chaque niveau (FP, N6/N7/N8, CB Base/E-I/II/III).</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Conseils d'utilisation</div>
+    <div class="callout blue"><strong>Timeframe de d&eacute;tection :</strong> utilise 1m, 5m, 15m, 30m ou 1H pour que le mode auto capture l'open 16:00 ET. En 4H/Daily/Weekly, bascule sur manuel.</div>
+    <div class="callout gold"><strong>Trader avec les CB :</strong> pense les CB comme un <em>ladder</em>. Prix franchit Base avec conviction &rarr; objectif Expand I. Franchit Expand I &rarr; objectif Expand II. Expand III = zone de retournement (ne jamais y rentrer dans le sens du mouvement).</div>
+    <div class="callout red"><strong>Pi&egrave;ge &agrave; &eacute;viter :</strong> en mode manuel, pense &agrave; mettre &agrave; jour le FP chaque jour (sinon les niveaux restent calcul&eacute;s sur un vieux prix et deviennent faux).</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Timeframes &amp; March&eacute;s</div>
+    <div class="callout blue"><strong>Con&ccedil;u pour :</strong> NQ, ES, futures indices US. Fonctionne aussi sur forex/crypto en mode manuel. TF 1m&ndash;15m pour la d&eacute;tection auto.</div>
+  </div>
+
+  <div class="section" id="codeSection" style="display:none;">
+    <div class="section-title">&#x1F512; Code source (Admin)</div>
+    <div class="code-warn">R&eacute;serv&eacute; &agrave; l'admin. Ne jamais partager ce code avec les &eacute;l&egrave;ves.</div>
+    <pre class="code-box" id="codeBox"></pre>
+    <button class="copy-code-btn" onclick="copyPineCode()">Copier le code Pine</button>
+  </div>
+
+</div>
+
+<script>
+var PINE_B64 = "Ly9AdmVyc2lvbj02CmluZGljYXRvcigiQWxnb3JpdGhtaWMgQWNhZGVteSAtIEZpeCBQcmljZSwgU3VyZ2ljYWwgJiBDQiBJbnRyYWRheSIsCiAgICAgICAgICBvdmVybGF5ICAgICAgICAgID0gdHJ1ZSwKICAgICAgICAgIG1heF9saW5lc19jb3VudCAgPSA1MDAsCiAgICAgICAgICBtYXhfbGFiZWxzX2NvdW50ID0gNTAwLAogICAgICAgICAgbWF4X2JhcnNfYmFjayAgICA9IDUwMDApCgovLyDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZAKLy8gRklYIFBSSUNFIMK3IFNVUkdJQ0FMIExFVkVMUyDCtyBDQiBJTlRSQURBWQovLyDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZDilZAKCi8vIOKUgOKUgCBGaXggUHJpY2Ug4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACmF1dG9fbW9kZSAgPSBpbnB1dC5ib29sKHRydWUsICAiTW9kZSBhdXRvbWF0aXF1ZSAob3BlbiAxNmgwMCBFVCkiLCBncm91cCA9ICJGaXggUHJpY2UiKQpmcF9tYW51YWwgID0gaW5wdXQuZmxvYXQoMC4wLCAgIkZpeCBQcmljZSBtYW51ZWwgKHNpIG1vZGUgbWFudWVsKSIsIHN0ZXAgPSAwLjI1LCBncm91cCA9ICJGaXggUHJpY2UiKQoKdmFyIGZsb2F0IGZwX2F1dG8gPSBuYQpoX2V0ID0gaG91cih0aW1lLCAgICJBbWVyaWNhL05ld19Zb3JrIikKbV9ldCA9IG1pbnV0ZSh0aW1lLCAiQW1lcmljYS9OZXdfWW9yayIpCmlmIGhfZXQgPT0gMTYgYW5kIG1fZXQgPT0gMAogICAgZnBfYXV0byA6PSBvcGVuCmZwID0gYXV0b19tb2RlID8gZnBfYXV0byA6IGZwX21hbnVhbAoKLy8g4pSA4pSAIEFmZmljaGFnZSBnw6luw6lyYWwg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACnNob3dfc3VyZ2ljYWwgPSBpbnB1dC5ib29sKHRydWUsICAiQWZmaWNoZXIgU3VyZ2ljYWwgTGV2ZWxzIiwgZ3JvdXAgPSAiQWZmaWNoYWdlIikKc2hvd19jYiAgICAgICA9IGlucHV0LmJvb2wodHJ1ZSwgICJBZmZpY2hlciBDQiBJbnRyYWRheSIsICAgICBncm91cCA9ICJBZmZpY2hhZ2UiKQpzaG93X2xhYmVscyAgID0gaW5wdXQuYm9vbCh0cnVlLCAgIkFmZmljaGVyIGxlcyBsYWJlbHMiLCAgICAgIGdyb3VwID0gIkFmZmljaGFnZSIpCmxpbmVfbGVuZ3RoICAgPSBpbnB1dC5pbnQoMTAwLCAgICAiTG9uZ3VldXIgZGVzIHRyYWl0cyIsICAgICAgbWludmFsID0gMSwgbWF4dmFsID0gNTAwLCBncm91cCA9ICJBZmZpY2hhZ2UiKQpsYWJlbF9vZmZzZXQgID0gaW5wdXQuaW50KDUsICAgICAgIkTDqWNhbGFnZSBsYWJlbCIsICAgICAgICAgICBtaW52YWwgPSAxLCBtYXh2YWwgPSA1MCwgIGdyb3VwID0gIkFmZmljaGFnZSIpCmxhYmVsX3BvcyAgICAgPSBpbnB1dC5zdHJpbmcoIkRyb2l0ZSIsICJQb3NpdGlvbiBsYWJlbCIsCiAgICAgb3B0aW9ucyA9IFsiRHJvaXRlIiwiR2F1Y2hlIiwiQ2VudHJlIiwiR2F1Y2hlIHN1ciBsZSB0cmFpdCIsIkRyb2l0ZSBzdXIgbGUgdHJhaXQiXSwKICAgICBncm91cCA9ICJBZmZpY2hhZ2UiKQoKLy8g4pSA4pSAIExhYmVscyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAKbGFiZWxfc2FtZV9jb2xvciA9IGlucHV0LmJvb2wodHJ1ZSwgICAiVGV4dGUgPSBtw6ptZSBjb3VsZXVyIHF1ZSBsZSBuaXZlYXUiLCAgICAgIGdyb3VwID0gIkxhYmVscyIpCmxhYmVsX3R4dF9jb2xvciAgPSBpbnB1dC5jb2xvcihjb2xvci5uZXcoY29sb3IuYmxhY2ssIDApLCAiQ291bGV1ciB0ZXh0ZSBmaXhlIiwgIGdyb3VwID0gIkxhYmVscyIpCmxhYmVsX3NpemVfc3RyICAgPSBpbnB1dC5zdHJpbmcoIm5vcm1hbCIsICJUYWlsbGUgZHUgdGV4dGUiLAogICAgIG9wdGlvbnMgPSBbInRpbnkiLCJzbWFsbCIsIm5vcm1hbCIsImxhcmdlIiwiaHVnZSJdLCAgICAgICAgICAgICAgICAgICAgICAgICAgZ3JvdXAgPSAiTGFiZWxzIikKCi8vIOKUgOKUgCBTdXJnaWNhbCDigJQgQ291bGV1cnMgLyDDiXBhaXNzZXVyIC8gU3R5bGUg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACmNvbF9mcCAgPSBpbnB1dC5jb2xvcihjb2xvci5uZXcoY29sb3IueWVsbG93LCAwKSwgIkZpeCBQcmljZSIsIGdyb3VwID0gIlN1cmdpY2FsIOKAlCBDb3VsZXVycyIpCmNvbF9uNiAgPSBpbnB1dC5jb2xvcihjb2xvci5uZXcoY29sb3IudGVhbCwgICAwKSwgIk42IiwgICAgICAgIGdyb3VwID0gIlN1cmdpY2FsIOKAlCBDb3VsZXVycyIpCmNvbF9uNyAgPSBpbnB1dC5jb2xvcihjb2xvci5uZXcoY29sb3Iub3JhbmdlLCAwKSwgIk43IiwgICAgICAgIGdyb3VwID0gIlN1cmdpY2FsIOKAlCBDb3VsZXVycyIpCmNvbF9uOCAgPSBpbnB1dC5jb2xvcihjb2xvci5uZXcoY29sb3IucmVkLCAgICAwKSwgIk44IiwgICAgICAgIGdyb3VwID0gIlN1cmdpY2FsIOKAlCBDb3VsZXVycyIpCgp3X2ZwICAgID0gaW5wdXQuaW50KDIsICLDiXBhaXNzZXVyIEZpeCBQcmljZSIsIG1pbnZhbCA9IDEsIG1heHZhbCA9IDUsIGdyb3VwID0gIlN1cmdpY2FsIOKAlCDDiXBhaXNzZXVyIikKd19uNiAgICA9IGlucHV0LmludCgxLCAiw4lwYWlzc2V1ciBONiIsICAgICAgICBtaW52YWwgPSAxLCBtYXh2YWwgPSA1LCBncm91cCA9ICJTdXJnaWNhbCDigJQgw4lwYWlzc2V1ciIpCndfbjcgICAgPSBpbnB1dC5pbnQoMSwgIsOJcGFpc3NldXIgTjciLCAgICAgICAgbWludmFsID0gMSwgbWF4dmFsID0gNSwgZ3JvdXAgPSAiU3VyZ2ljYWwg4oCUIMOJcGFpc3NldXIiKQp3X244ICAgID0gaW5wdXQuaW50KDEsICLDiXBhaXNzZXVyIE44IiwgICAgICAgIG1pbnZhbCA9IDEsIG1heHZhbCA9IDUsIGdyb3VwID0gIlN1cmdpY2FsIOKAlCDDiXBhaXNzZXVyIikKCnN0X2ZwICAgPSBpbnB1dC5zdHJpbmcoInNvbGlkIiwgICJTdHlsZSBGaXggUHJpY2UiLCBvcHRpb25zID0gWyJzb2xpZCIsImRhc2hlZCIsImRvdHRlZCJdLCBncm91cCA9ICJTdXJnaWNhbCDigJQgU3R5bGUiKQpzdF9zdXJnID0gaW5wdXQuc3RyaW5nKCJkYXNoZWQiLCAiU3R5bGUgU3VyZ2ljYWwiLCAgb3B0aW9ucyA9IFsic29saWQiLCJkYXNoZWQiLCJkb3R0ZWQiXSwgZ3JvdXAgPSAiU3VyZ2ljYWwg4oCUIFN0eWxlIikKCi8vIOKUgOKUgCBDQiBJbnRyYWRheSDigJQgUG91cmNlbnRhZ2VzIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgApjYl9iYXNlX3BjdCA9IGlucHV0LmZsb2F0KDAuNywgIkNCIEJhc2UgKCUpIiwgICAgICAgc3RlcCA9IDAuMSwgZ3JvdXAgPSAiQ0IgSW50cmFkYXkiKQpjYl9lMV9wY3QgICA9IGlucHV0LmZsb2F0KDEuMywgIkNCIEV4cGFuZCBJICglKSIsICAgc3RlcCA9IDAuMSwgZ3JvdXAgPSAiQ0IgSW50cmFkYXkiKQpjYl9lMl9wY3QgICA9IGlucHV0LmZsb2F0KDIuMCwgIkNCIEV4cGFuZCBJSSAoJSkiLCAgc3RlcCA9IDAuMSwgZ3JvdXAgPSAiQ0IgSW50cmFkYXkiKQpjYl9lM19wY3QgICA9IGlucHV0LmZsb2F0KDMuNSwgIkNCIEV4cGFuZCBJSUkgKCUpIiwgc3RlcCA9IDAuMSwgZ3JvdXAgPSAiQ0IgSW50cmFkYXkiKQpjYl90cmlnX3BjdCA9IGlucHV0LmZsb2F0KDAuMSwgIkV4cGFuc2lvbiBUcmlnZ2VyICUiLCBzdGVwID0gMC4wNSwgZ3JvdXAgPSAiQ0IgSW50cmFkYXkiKQoKLy8g4pSA4pSAIENCIEludHJhZGF5IOKAlCBDb3VsZXVycyAvIMOJcGFpc3NldXIgLyBTdHlsZSDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAKY29sX2NiX2Jhc2UgPSBpbnB1dC5jb2xvcihjb2xvci5uZXcoIzI2QTY5QSwgMCksICJDQiBCYXNlIiwgICAgICAgZ3JvdXAgPSAiQ0IgSW50cmFkYXkg4oCUIENvdWxldXJzIikKY29sX2NiX2UxICAgPSBpbnB1dC5jb2xvcihjb2xvci5uZXcoIzQyQTVGNSwgMCksICJDQiBFeHBhbmQgSSIsICAgZ3JvdXAgPSAiQ0IgSW50cmFkYXkg4oCUIENvdWxldXJzIikKY29sX2NiX2UyICAgPSBpbnB1dC5jb2xvcihjb2xvci5uZXcoI0FCNDdCQywgMCksICJDQiBFeHBhbmQgSUkiLCAgZ3JvdXAgPSAiQ0IgSW50cmFkYXkg4oCUIENvdWxldXJzIikKY29sX2NiX2UzICAgPSBpbnB1dC5jb2xvcihjb2xvci5uZXcoI0VGNTM1MCwgMCksICJDQiBFeHBhbmQgSUlJIiwgZ3JvdXAgPSAiQ0IgSW50cmFkYXkg4oCUIENvdWxldXJzIikKCndfY2JfYmFzZSAgID0gaW5wdXQuaW50KDEsICLDiXBhaXNzZXVyIENCIEJhc2UiLCAgICAgICBtaW52YWwgPSAxLCBtYXh2YWwgPSA1LCBncm91cCA9ICJDQiBJbnRyYWRheSDigJQgw4lwYWlzc2V1ciIpCndfY2JfZTEgICAgID0gaW5wdXQuaW50KDEsICLDiXBhaXNzZXVyIENCIEV4cGFuZCBJIiwgICBtaW52YWwgPSAxLCBtYXh2YWwgPSA1LCBncm91cCA9ICJDQiBJbnRyYWRheSDigJQgw4lwYWlzc2V1ciIpCndfY2JfZTIgICAgID0gaW5wdXQuaW50KDEsICLDiXBhaXNzZXVyIENCIEV4cGFuZCBJSSIsICBtaW52YWwgPSAxLCBtYXh2YWwgPSA1LCBncm91cCA9ICJDQiBJbnRyYWRheSDigJQgw4lwYWlzc2V1ciIpCndfY2JfZTMgICAgID0gaW5wdXQuaW50KDEsICLDiXBhaXNzZXVyIENCIEV4cGFuZCBJSUkiLCBtaW52YWwgPSAxLCBtYXh2YWwgPSA1LCBncm91cCA9ICJDQiBJbnRyYWRheSDigJQgw4lwYWlzc2V1ciIpCgpzdF9jYiAgICAgICA9IGlucHV0LnN0cmluZygiZGFzaGVkIiwgIlN0eWxlIENCIiwgb3B0aW9ucyA9IFsic29saWQiLCJkYXNoZWQiLCJkb3R0ZWQiXSwgZ3JvdXAgPSAiQ0IgSW50cmFkYXkg4oCUIFN0eWxlIikKCi8vIOKUgOKUgCBTdG9ja2FnZSDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAKdmFyIGxpbmVbXSAgYWxsX2xpbmVzICA9IGFycmF5Lm5ld19saW5lKCkKdmFyIGxhYmVsW10gYWxsX2xhYmVscyA9IGFycmF5Lm5ld19sYWJlbCgpCgovLyDilIDilIAgVXRpbGl0YWlyZXMg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACmZfc3R5bGVfZnAocykgPT4KICAgIHMgPT0gImRhc2hlZCIgPyBsaW5lLnN0eWxlX2Rhc2hlZCA6IHMgPT0gImRvdHRlZCIgPyBsaW5lLnN0eWxlX2RvdHRlZCA6IGxpbmUuc3R5bGVfc29saWQKCmZfbHNpemUocykgPT4KICAgIHMgPT0gInRpbnkiICAgPyBzaXplLnRpbnkgICA6CiAgICAgcyA9PSAic21hbGwiICA/IHNpemUuc21hbGwgIDoKICAgICBzID09ICJub3JtYWwiID8gc2l6ZS5ub3JtYWwgOgogICAgIHMgPT0gImxhcmdlIiAgPyBzaXplLmxhcmdlICA6IHNpemUuaHVnZQoKZl9wY3QoeCkgPT4KICAgIC8vIEZvcm1hdGUgdW4gJSBzYW5zIHrDqXJvcyBpbnV0aWxlcyAoMC43IOKGkiAiMC43IiwgMi4wIOKGkiAiMiIsIDMuNSDihpIgIjMuNSIpCiAgICBzID0gc3RyLnRvc3RyaW5nKHgsICIjLiMjIikKICAgIHMKCmZfZHJhd0ZQKHByaWNlLCBjb2wsIHcsIHN0LCBsYmwpID0+CiAgICBsbiA9IGxpbmUubmV3KGJhcl9pbmRleCwgcHJpY2UsIGJhcl9pbmRleCArIGxpbmVfbGVuZ3RoLCBwcmljZSwKICAgICAgICAgICAgICAgICAgY29sb3IgPSBjb2wsIHdpZHRoID0gdywgc3R5bGUgPSBzdCwgZXh0ZW5kID0gZXh0ZW5kLm5vbmUpCiAgICBhcnJheS5wdXNoKGFsbF9saW5lcywgbG4pCiAgICBpZiBzaG93X2xhYmVscwogICAgICAgIHR4dF9jb2wgPSBsYWJlbF9zYW1lX2NvbG9yID8gY29sIDogbGFiZWxfdHh0X2NvbG9yCiAgICAgICAgaW50IGx4ICA9IG5hCiAgICAgICAgaWYgbGFiZWxfcG9zID09ICJEcm9pdGUiCiAgICAgICAgICAgIGx4IDo9IGJhcl9pbmRleCArIGxpbmVfbGVuZ3RoICsgbGFiZWxfb2Zmc2V0CiAgICAgICAgZWxzZSBpZiBsYWJlbF9wb3MgPT0gIkdhdWNoZSIKICAgICAgICAgICAgbHggOj0gYmFyX2luZGV4IC0gbGFiZWxfb2Zmc2V0CiAgICAgICAgZWxzZSBpZiBsYWJlbF9wb3MgPT0gIkNlbnRyZSIKICAgICAgICAgICAgbHggOj0gYmFyX2luZGV4ICsgbWF0aC5yb3VuZChsaW5lX2xlbmd0aCAvIDIpCiAgICAgICAgZWxzZSBpZiBsYWJlbF9wb3MgPT0gIkdhdWNoZSBzdXIgbGUgdHJhaXQiCiAgICAgICAgICAgIGx4IDo9IGJhcl9pbmRleCArIGxhYmVsX29mZnNldAogICAgICAgIGVsc2UgaWYgbGFiZWxfcG9zID09ICJEcm9pdGUgc3VyIGxlIHRyYWl0IgogICAgICAgICAgICBseCA6PSBiYXJfaW5kZXggKyBsaW5lX2xlbmd0aCAtIGxhYmVsX29mZnNldAogICAgICAgIGxiID0gbGFiZWwubmV3KGx4LCBwcmljZSwgbGJsLAogICAgICAgICAgICAgICAgICAgICAgIGNvbG9yICAgICA9IGNvbG9yLm5ldyhjb2xvci5ibGFjaywgMTAwKSwKICAgICAgICAgICAgICAgICAgICAgICB0ZXh0Y29sb3IgPSB0eHRfY29sLAogICAgICAgICAgICAgICAgICAgICAgIHN0eWxlICAgICA9IGxhYmVsLnN0eWxlX25vbmUsCiAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSAgICAgID0gZl9sc2l6ZShsYWJlbF9zaXplX3N0cikpCiAgICAgICAgYXJyYXkucHVzaChhbGxfbGFiZWxzLCBsYikKCi8vIOKUgOKUgCBDYWxjdWxzIFN1cmdpY2FsIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgApuNmggPSBmcCAqIDEuMDA0Mzc1Cm42bCA9IGZwICogMC45OTU2MjUKbjdoID0gZnAgKiAxLjAwODc1Cm43bCA9IGZwICogMC45OTEyNQpuOGggPSBmcCAqIDEuMDE3NQpuOGwgPSBmcCAqIDAuOTgyNQoKLy8g4pSA4pSAIENhbGN1bHMgQ0IgSW50cmFkYXkg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACmNiX2Jhc2VfaCA9IGZwICogKDEgKyBjYl9iYXNlX3BjdCAvIDEwMC4wKQpjYl9iYXNlX2wgPSBmcCAqICgxIC0gY2JfYmFzZV9wY3QgLyAxMDAuMCkKY2JfZTFfaCAgID0gZnAgKiAoMSArIGNiX2UxX3BjdCAgIC8gMTAwLjApCmNiX2UxX2wgICA9IGZwICogKDEgLSBjYl9lMV9wY3QgICAvIDEwMC4wKQpjYl9lMl9oICAgPSBmcCAqICgxICsgY2JfZTJfcGN0ICAgLyAxMDAuMCkKY2JfZTJfbCAgID0gZnAgKiAoMSAtIGNiX2UyX3BjdCAgIC8gMTAwLjApCmNiX2UzX2ggICA9IGZwICogKDEgKyBjYl9lM19wY3QgICAvIDEwMC4wKQpjYl9lM19sICAgPSBmcCAqICgxIC0gY2JfZTNfcGN0ICAgLyAxMDAuMCkKCi8vIOKUgOKUgCBUcmFjw6kgKGJhcnN0YXRlLmlzbGFzdCkg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACmlmIGJhcnN0YXRlLmlzbGFzdCBhbmQgbm90IG5hKGZwKSBhbmQgZnAgPiAwCiAgICBmb3IgbG4gaW4gYWxsX2xpbmVzCiAgICAgICAgbGluZS5kZWxldGUobG4pCiAgICBhcnJheS5jbGVhcihhbGxfbGluZXMpCiAgICBmb3IgbGIgaW4gYWxsX2xhYmVscwogICAgICAgIGxhYmVsLmRlbGV0ZShsYikKICAgIGFycmF5LmNsZWFyKGFsbF9sYWJlbHMpCgogICAgc3MgPSBmX3N0eWxlX2ZwKHN0X3N1cmcpCiAgICBzZiA9IGZfc3R5bGVfZnAoc3RfZnApCiAgICBzYyA9IGZfc3R5bGVfZnAoc3RfY2IpCgogICAgaWYgc2hvd19zdXJnaWNhbAogICAgICAgIGZfZHJhd0ZQKGZwLCAgY29sX2ZwLCB3X2ZwLCBzZiwgIkZQIikKICAgICAgICBmX2RyYXdGUChuNmgsIGNvbF9uNiwgd19uNiwgc3MsICJONiIpCiAgICAgICAgZl9kcmF3RlAobjZsLCBjb2xfbjYsIHdfbjYsIHNzLCAiTjYiKQogICAgICAgIGZfZHJhd0ZQKG43aCwgY29sX243LCB3X243LCBzcywgIk43IikKICAgICAgICBmX2RyYXdGUChuN2wsIGNvbF9uNywgd19uNywgc3MsICJONyIpCiAgICAgICAgZl9kcmF3RlAobjhoLCBjb2xfbjgsIHdfbjgsIHNzLCAiTjgiKQogICAgICAgIGZfZHJhd0ZQKG44bCwgY29sX244LCB3X244LCBzcywgIk44IikKCiAgICBpZiBzaG93X2NiCiAgICAgICAgbGJsX2Jhc2UgPSAiQ0IgIiArIGZfcGN0KGNiX2Jhc2VfcGN0KSArICIlIgogICAgICAgIGxibF9lMSAgID0gIkNCICIgKyBmX3BjdChjYl9lMV9wY3QpICAgKyAiJSIKICAgICAgICBsYmxfZTIgICA9ICJDQiAiICsgZl9wY3QoY2JfZTJfcGN0KSAgICsgIiUiCiAgICAgICAgbGJsX2UzICAgPSAiQ0IgIiArIGZfcGN0KGNiX2UzX3BjdCkgICArICIlIgogICAgICAgIGZfZHJhd0ZQKGNiX2Jhc2VfaCwgY29sX2NiX2Jhc2UsIHdfY2JfYmFzZSwgc2MsIGxibF9iYXNlKQogICAgICAgIGZfZHJhd0ZQKGNiX2Jhc2VfbCwgY29sX2NiX2Jhc2UsIHdfY2JfYmFzZSwgc2MsIGxibF9iYXNlKQogICAgICAgIGZfZHJhd0ZQKGNiX2UxX2gsICAgY29sX2NiX2UxLCAgIHdfY2JfZTEsICAgc2MsIGxibF9lMSkKICAgICAgICBmX2RyYXdGUChjYl9lMV9sLCAgIGNvbF9jYl9lMSwgICB3X2NiX2UxLCAgIHNjLCBsYmxfZTEpCiAgICAgICAgZl9kcmF3RlAoY2JfZTJfaCwgICBjb2xfY2JfZTIsICAgd19jYl9lMiwgICBzYywgbGJsX2UyKQogICAgICAgIGZfZHJhd0ZQKGNiX2UyX2wsICAgY29sX2NiX2UyLCAgIHdfY2JfZTIsICAgc2MsIGxibF9lMikKICAgICAgICBmX2RyYXdGUChjYl9lM19oLCAgIGNvbF9jYl9lMywgICB3X2NiX2UzLCAgIHNjLCBsYmxfZTMpCiAgICAgICAgZl9kcmF3RlAoY2JfZTNfbCwgICBjb2xfY2JfZTMsICAgd19jYl9lMywgICBzYywgbGJsX2UzKQoKcGxvdChmcCwgIkZQIHV0aWxpc8OpIiwgY29sb3IgPSBjb2xfZnAsIGRpc3BsYXkgPSBkaXNwbGF5LnN0YXR1c19saW5lKQo=";
+function decodePine() {
+  try { return decodeURIComponent(escape(atob(PINE_B64))); } catch(e) { return atob(PINE_B64); }
+}
+window.addEventListener('DOMContentLoaded', function() {
+  var isAdmin = (sessionStorage.getItem('aa_user') === 'Admin');
+  if (isAdmin) {
+    document.getElementById('codeSection').style.display = 'block';
+    document.getElementById('codeBox').textContent = decodePine();
+  }
+});
+function copyPineCode() {
+  var txt = decodePine();
+  navigator.clipboard.writeText(txt).then(function() {
+    var btn = document.querySelector('.copy-code-btn');
+    var old = btn.textContent;
+    btn.textContent = 'Copie !';
+    setTimeout(function() { btn.textContent = old; }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>
