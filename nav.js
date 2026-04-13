@@ -17,6 +17,7 @@
       { id: 'cycles-temporels',    label: 'Cycles Temporels' },
       { id: 'temps-prix-protocole',label: 'Temps & Prix — Protocole' },
       { id: 'ipda-trainer',        label: 'Algorithme de Livraison du Prix' },
+      { id: 'trainer-interactif',  label: 'Algorithme de Livraison — Trainer' },
       { id: 'modeles-de-marche',   label: 'Modeles de Marche' },
       { id: 'protocole-trading',   label: 'Protocole Complet' },
       { id: 'modeles-execution',   label: 'Playbooks & Modeles' },
@@ -26,6 +27,7 @@
     { name: 'Architecture', items: [
       { id: 'architecture-niveaux',    label: 'Architecture des Niveaux' },
       { id: 'niveaux-algorithmiques',  label: 'Niveaux Algorithmiques' },
+      { id: 'hippo',                   label: 'HIPPO', href: 'architecture-niveaux.html#s5' },
       { id: 'ranges-fractals',         label: 'Ranges & Fractales' },
       { id: 'gb-time',                 label: 'GB Time', href: 'cycles-temporels.html#gb-time' },
       { id: 'digital-time-theory',     label: 'Theorie du Temps Numerique' },
@@ -38,7 +40,6 @@
       { id: 'psychologie-trader',  label: 'Psychologie du Trader' },
     ]},
     { name: 'Outils', items: [
-      { id: 'trainer-interactif',  label: 'Trainer Interactif' },
       { id: 'role-outils',        label: 'Role de Chaque Outil' },
       { id: 'calculatrice',       label: 'Calculatrice de Position' },
       { id: 'journal-trading',    label: 'Journal de Trading' },
