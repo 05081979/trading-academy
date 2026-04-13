@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="starter">
+<head>
+<meta charset="UTF-8">
+<script src="../auth.js"></script>
+<script src="../pine-guard.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA — Quarterly Theory Cycles</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #07080b;
+    --s1: #0e1116;
+    --s2: #13171e;
+    --s3: #191e27;
+    --bd: #1c2230;
+    --bd2: #232c3a;
+    --gold: #c8a228;
+    --gold2: #e5bc3c;
+    --blue: #3d82e0;
+    --green: #2ec974;
+    --red: #e05050;
+    --orange: #e08830;
+    --purple: #9b72e0;
+    --cyan: #28bfcf;
+    --text: #cdd5e2;
+    --t2: #8594a8;
+    --t3: #4a5668;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; }
+
+  .banner { background: var(--s1); border-bottom: 1px solid var(--bd2); padding: 36px 56px 32px; position: relative; }
+  .banner::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg, transparent 0%, var(--gold) 30%, var(--gold2) 50%, var(--gold) 70%, transparent 100%); }
+  .banner-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+  .banner h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: #fff; line-height: 1.1; }
+  .banner h1 em { color: var(--gold2); font-style: normal; }
+  .banner-sub { margin-top: 10px; color: var(--t2); font-size: 13px; max-width: 700px; line-height: 1.6; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 40px; }
+
+  .section { background: var(--s1); border: 1px solid var(--bd); border-radius: 10px; padding: 28px 32px; margin-bottom: 24px; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section-title .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  @media(max-width:800px) { .concept-grid { grid-template-columns: 1fr; } .container { padding: 16px; } .banner { padding: 24px; } }
+
+  .concept-card { background: var(--s2); border: 1px solid var(--bd); border-radius: 8px; padding: 18px 20px; }
+  .concept-card h3 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--gold2); margin-bottom: 8px; }
+  .concept-card p { color: var(--t2); line-height: 1.7; font-size: 12px; }
+  .concept-card.full { grid-column: 1 / -1; }
+
+  .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 9px; padding: 2px 8px; border-radius: 4px; margin-right: 4px; margin-bottom: 4px; }
+  .tag-blue { background: rgba(61,130,224,0.12); color: var(--blue); }
+  .tag-green { background: rgba(46,201,116,0.10); color: var(--green); }
+  .tag-orange { background: rgba(224,136,48,0.10); color: var(--orange); }
+  .tag-red { background: rgba(224,80,80,0.10); color: var(--red); }
+  .tag-purple { background: rgba(155,114,224,0.10); color: var(--purple); }
+  .tag-cyan { background: rgba(40,191,207,0.10); color: var(--cyan); }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 12px; }
+  th { text-align: left; padding: 8px 12px; background: var(--s2); color: var(--gold); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1px; border-bottom: 1px solid var(--bd); }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--bd); color: var(--t2); }
+  tr:hover td { color: var(--text); background: rgba(255,255,255,0.02); }
+
+  .btn-row { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+  .btn { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 10px 22px; border-radius: 6px; border: 1px solid var(--bd); background: var(--s2); color: var(--text); cursor: pointer; transition: all 0.15s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+  .btn:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-gold { border-color: var(--gold); color: var(--gold); }
+  .btn-gold:hover { background: rgba(200,162,40,0.1); }
+
+  .list-styled { padding-left: 20px; margin-top: 8px; }
+  .list-styled li { color: var(--t2); line-height: 1.8; font-size: 12px; }
+  .list-styled li strong { color: var(--text); }
+
+  .highlight { color: var(--gold2); font-weight: 500; }
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+<link rel="stylesheet" href="../readability.css">
+
+<div class="banner">
+  <div class="banner-eyebrow">Module 22 &mdash; Indicateur Pine Script</div>
+  <h1>AA &mdash; <em>Quarterly Theory Cycles</em></h1>
+  <p class="banner-sub">
+    Quarterly Theory complete avec pane visuel des sessions (Asia/London/NYAM/NYPM), cycles overlay du Yearly au Micro, True Opens pour chaque niveau de temps, et table Above/Below alignee sur 18:00 ET.
+  </p>
+  <div class="btn-row">
+    <a class="btn btn-gold" href="../pdf/qt-cycles-guide.html" target="_blank">Telecharger le Guide PDF</a>
+    <a class="btn btn-gold" href="../pine/qt-cycles.pine" download>Telecharger le .pine</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- CONCEPT -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--gold)"></span> Qu'est-ce que la Quarterly Theory ?</div>
+    <p style="color:var(--t2);line-height:1.7;">
+      La <span class="highlight">Quarterly Theory</span> divise chaque cycle de temps en <strong>4 quartiers</strong> (Q1 Accumulation, Q2 Distribution/Expansion, Q3 Re-accumulation, Q4 Distribution finale). Cette structure fractale se repete a tous les niveaux : annuel, mensuel, hebdomadaire, journalier, 90 minutes et micro (22 minutes).
+    </p>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3>Pane Sessions (Rich Bvwy)</h3>
+        <p>Un pane separateur affiche les <strong>sessions en blocs colores</strong> : Asia (18:00-00:00), London (00:00-06:00), NYAM (06:00-12:00) et NYPM (12:00-18:00). Chaque session est divisee en 4 quartiers de 90 minutes, eux-memes subdivises en quartiers micro de ~22 minutes.</p>
+      </div>
+      <div class="concept-card">
+        <h3>Cycles Overlay</h3>
+        <p>Des <strong>boxes</strong> sont tracees directement sur le chart (force_overlay) pour visualiser les cycles Yearly, Monthly, Weekly, Daily, 90M et Micro. Chaque cycle est colore selon son quartier (Q1-Q4) avec transparence configurable.</p>
+      </div>
+      <div class="concept-card">
+        <h3>True Opens</h3>
+        <p>Lignes horizontales marquant les <strong>True Opens</strong> de chaque niveau : TMO (Monthly), TWO (Weekly), TDO (Daily), 09:30 (NY Open), T90 (90M True Open) et TMSO (Micro True Open). Le prix par rapport au True Open donne le biais directionnel.</p>
+      </div>
+      <div class="concept-card">
+        <h3>Table Above/Below</h3>
+        <p>Un tableau recapitulatif affiche pour chaque cycle si le prix est <span style="color:var(--blue)">Above</span> ou <span style="color:var(--red)">Below</span> son True Open. L'alignement multi-niveaux donne la confluence pour le biais.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CYCLES -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--blue)"></span> Les 6 Niveaux de Cycles</div>
+    <table>
+      <tr><th>CYCLE</th><th>DIVISION</th><th>TRUE OPEN</th><th>USAGE</th></tr>
+      <tr><td><span class="tag tag-purple">Yearly</span></td><td>Q1-Q4 par trimestre</td><td>TMO (1er du mois)</td><td>Narratif macro, biais trimestriel</td></tr>
+      <tr><td><span class="tag tag-blue">Monthly</span></td><td>Semaines 1-4 du mois</td><td>TMO (Monthly Open)</td><td>Structure mensuelle, weekly ranges</td></tr>
+      <tr><td><span class="tag tag-green">Weekly</span></td><td>Lundi-Jeudi (aligne 18:00)</td><td>TWO (Weekly Open)</td><td>Biais hebdomadaire, day-of-week</td></tr>
+      <tr><td><span class="tag tag-orange">Daily</span></td><td>Asia/LDN/NYAM/NYPM</td><td>TDO + 09:30</td><td>Biais intraday, sessions</td></tr>
+      <tr><td><span class="tag tag-red">90 Minutes</span></td><td>4 x 90mn par session</td><td>T90 (90M Open)</td><td>Timing macro, fenetres d'execution</td></tr>
+      <tr><td><span class="tag tag-cyan">Micro</span></td><td>4 x ~22mn par 90M</td><td>TMSO (Micro Open)</td><td>Entrees precises, scalping</td></tr>
+    </table>
+  </div>
+
+  <!-- SESSIONS -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--orange)"></span> Sessions et Quartiers</div>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3 style="color:#9E9E9E">Q1 — Accumulation</h3>
+        <p>Premiere phase du cycle. Le prix construit un range, les institutions accumulent des positions. C'est la phase ou le marche "prepare" le mouvement. Couleur grise par defaut.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:#F44336">Q2 — Distribution / Expansion</h3>
+        <p>Le mouvement directionnel principal. Le prix sort du range Q1 dans une direction. C'est souvent la phase la plus volatile et profitable. Couleur rouge par defaut.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:#4CAF50">Q3 — Re-accumulation</h3>
+        <p>Phase de consolidation apres Q2. Le prix retrace ou consolide avant le dernier mouvement. Opportunite de re-entree dans la tendance. Couleur verte par defaut.</p>
+      </div>
+      <div class="concept-card">
+        <h3 style="color:#2196F3">Q4 — Distribution Finale</h3>
+        <p>Derniere phase du cycle. Le prix atteint son objectif final ou reverse. C'est le moment de prendre les profits. Couleur bleue par defaut.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- UTILISATION -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--green)"></span> Comment Utiliser</div>
+    <ul class="list-styled">
+      <li><strong>Above/Below True Open :</strong> Si le prix est au-dessus du True Open (TMO/TWO/TDO), le biais est haussier pour ce cycle. En-dessous, biais baissier.</li>
+      <li><strong>Confluence multi-niveaux :</strong> Quand tous les niveaux (Monthly, Weekly, Daily) sont "Above", la confluence est maximale pour un long. L'inverse pour un short.</li>
+      <li><strong>Timing avec les quartiers :</strong> Entrez en Q2 (expansion) dans la direction du biais. Evitez Q1 (accumulation — pas de direction claire) et Q4 (fin de mouvement).</li>
+      <li><strong>Pane visuel :</strong> Le pane en bas du chart montre visuellement ou vous etes dans la session et le quartier. Utile pour savoir combien de temps il reste avant le prochain quartier.</li>
+      <li><strong>Alignement 18:00 ET :</strong> La journee commence a 18:00 ET (debut session Asia). Tous les cycles sont alignes sur cette reference pour respecter la structure ICT.</li>
+      <li><strong>09:30 comme reference :</strong> Le True Open 09:30 (ouverture NYSE) est un niveau cle intraday. Le prix au-dessus = biais haussier pour NYAM/NYPM.</li>
+    </ul>
+  </div>
+
+  <!-- INPUTS -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--cyan)"></span> Parametres (Inputs)</div>
+    <table>
+      <tr><th>GROUPE</th><th>PARAMETRE</th><th>DESCRIPTION</th></tr>
+      <tr><td>Overlay Cycles</td><td>Yearly / Monthly / Weekly / Daily / 90M / Micro</td><td>Activer/desactiver chaque niveau de cycle (boxes sur le chart)</td></tr>
+      <tr><td>Micro Cycle</td><td>Show Micro + TMSO</td><td>Afficher les cycles micro et le True Open micro</td></tr>
+      <tr><td>Table Setting</td><td>Position / Size / Colors</td><td>Position du tableau, taille du texte, couleurs Above/Below/Background</td></tr>
+      <tr><td>Appearance</td><td>Transparency / Border / Label Size / 18:00 Divider</td><td>Transparence des boxes, style des bordures, taille des labels, ligne 18:00</td></tr>
+      <tr><td>HTF Cycle Colors</td><td>Q1-Q4 Colors (Yearly/Monthly/Weekly)</td><td>Couleurs par quartier pour les cycles HTF</td></tr>
+      <tr><td>Daily Cycle Colors</td><td>Q1-Q4 Colors (Daily)</td><td>Couleurs par quartier pour les sessions journalieres</td></tr>
+      <tr><td>90M Cycle Colors</td><td>Q1-Q4 Colors (90M)</td><td>Couleurs par quartier pour les quartiers 90 minutes</td></tr>
+      <tr><td>Micro Cycle Colors</td><td>Q1-Q4 Colors (Micro)</td><td>Couleurs par quartier pour les micro-quartiers</td></tr>
+      <tr><td>True Open Colors</td><td>09:30 / TMO / TWO / TDO / 90M / TMSO</td><td>Couleur de chaque ligne True Open</td></tr>
+    </table>
+  </div>
+
+  <!-- INSTALLATION -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Installation</div>
+    <ul class="list-styled">
+      <li><strong>1.</strong> Telechargez le fichier <code style="color:var(--cyan)">.pine</code> via le bouton ci-dessus</li>
+      <li><strong>2.</strong> Ouvrez TradingView et allez dans l'editeur Pine Script (icone <code style="color:var(--cyan)">{}</code> en bas)</li>
+      <li><strong>3.</strong> Creez un nouveau script, collez le code, et cliquez sur "Ajouter au graphique"</li>
+      <li><strong>4.</strong> L'indicateur s'affiche comme un <strong>pane separateur</strong> (overlay=false) avec les blocs de sessions</li>
+      <li><strong>5.</strong> Les cycles overlay (boxes) apparaissent directement sur le chart principal via force_overlay</li>
+      <li><strong>6.</strong> Configurez les cycles a afficher et les couleurs dans les parametres</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>
