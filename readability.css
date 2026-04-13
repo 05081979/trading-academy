@@ -20,6 +20,20 @@ h1, h2, h3, h4, h5, h6,
   color: #000 !important;
 }
 
+/* EXCEPTION: titres dans bannières/hero (fond sombre) restent blancs */
+#hero h1, #hero h2, #hero h3, #hero p, #hero span, #hero [class*="title"], #hero [class*="sub"],
+.hero h1, .hero h2, .hero h3, .hero p, .hero span, .hero [class*="title"], .hero [class*="sub"],
+.banner h1, .banner h2, .banner h3, .banner p, .banner span, .banner [class*="title"], .banner [class*="sub"],
+[class*="hero"] h1, [class*="hero"] h2, [class*="hero"] h3,
+[class*="banner"] h1, [class*="banner"] h2, [class*="banner"] h3 {
+  color: #fff !important;
+}
+#hero .em, .hero .em, .banner .em,
+#hero [class*="gold"], .hero [class*="gold"], .banner [class*="gold"] {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+}
+
 /* Tableaux */
 table td, table th {
   color: #000 !important;
