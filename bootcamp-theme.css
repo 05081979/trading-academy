@@ -1,24 +1,20 @@
 /* ═══════════════════════════════════════════════════════════
-   ALGORITHMIC ACADEMY — Bootcamp Theme
-   Style global inspiré interface "Bootcamp FH ICT"
-   Navy deep + boutons gradient (vert/cyan/violet-rose)
+   ALGORITHMIC ACADEMY — Bootcamp Theme (non-invasif)
+   Seulement des classes utilitaires bc-*, aucun override global.
    ═══════════════════════════════════════════════════════════ */
 
 :root {
-  --bc-bg:        #0a1526;
-  --bc-bg2:       #0f1d33;
-  --bc-bg3:       #152a48;
-  --bc-surface:   #13243f;
-  --bc-card:      #0f1d33;
-  --bc-border:    rgba(255,255,255,0.06);
-  --bc-border2:   rgba(255,255,255,0.10);
-  --bc-text:      #e8edf5;
-  --bc-text2:     #8a96ac;
-  --bc-text3:     #5a6680;
+  --bc-bg:        #0f1729;
+  --bc-card:      #17253f;
+  --bc-card2:     #1c2d4a;
+  --bc-border:    rgba(255,255,255,0.08);
+  --bc-text:      #ffffff;
+  --bc-text2:     #a8b4cc;
+  --bc-text3:     #6a7894;
   --bc-accent:    #3d7fe8;
   --bc-accent2:   #5a9bff;
 
-  --bc-btn-disabled-bg:   #1a2a45;
+  --bc-btn-disabled-bg:   #1e2d4a;
   --bc-btn-disabled-text: #6a7894;
 
   --bc-btn-green:  linear-gradient(90deg, #2fd67c 0%, #0ea89a 100%);
@@ -26,35 +22,21 @@
   --bc-btn-purple: linear-gradient(90deg, #9844e0 0%, #ee4d9a 100%);
   --bc-btn-orange: linear-gradient(90deg, #f59e0b 0%, #ef4444 100%);
 
-  --bc-shadow:    0 8px 32px rgba(0,0,0,0.4);
   --bc-shadow-sm: 0 2px 12px rgba(0,0,0,0.25);
   --bc-radius:    12px;
   --bc-radius-sm: 8px;
 }
 
-html, body {
-  background: var(--bc-bg) !important;
-  color: var(--bc-text) !important;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(ellipse at top, rgba(61,127,232,0.08) 0%, transparent 60%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.bc-card,
-.section:not(.banner):not(.hero),
-[class*="card"]:not([class*="nav"]):not([class*="discord"]) {
-  background: var(--bc-card) !important;
-  border: 1px solid var(--bc-border) !important;
-  border-radius: var(--bc-radius) !important;
+/* ── CARTES BOOTCAMP (opt-in via classe bc-card) ── */
+.bc-card {
+  background: var(--bc-card);
+  border: 1px solid var(--bc-border);
+  border-radius: var(--bc-radius);
   box-shadow: var(--bc-shadow-sm);
+  color: var(--bc-text);
 }
 
+/* ── EN-TÊTE DE COURS ── */
 .bc-course-header {
   display: flex;
   align-items: center;
@@ -64,8 +46,8 @@ body::before {
   border: 1px solid var(--bc-border);
   border-radius: var(--bc-radius);
   margin-bottom: 20px;
+  color: var(--bc-text);
 }
-
 .bc-course-icon {
   flex: 0 0 44px;
   width: 44px;
@@ -79,38 +61,31 @@ body::before {
   font-size: 22px;
   box-shadow: 0 4px 16px rgba(61,127,232,0.4);
 }
-
 .bc-course-title { flex: 1; min-width: 0; }
 .bc-course-title h1 {
-  font-size: 17px !important;
-  font-weight: 700 !important;
-  color: #fff !important;
-  margin: 0 0 4px !important;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
   line-height: 1.3;
 }
 .bc-course-title .bc-sub {
   font-size: 13px;
   color: var(--bc-text2);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+}
+.bc-course-title .bc-sub .sep {
+  color: var(--bc-text3);
+  margin: 0 6px;
 }
 
-.bc-video, .video-wrap {
-  background: #000 !important;
-  border: 1px solid var(--bc-border2) !important;
-  border-radius: var(--bc-radius) !important;
-  overflow: hidden;
-}
-
+/* ── BOUTONS ACTION (gradient style image) ── */
 .bc-btn-row {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin: 20px 0;
 }
-
-.bc-btn, button.bc-btn, a.bc-btn {
+.bc-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -125,10 +100,10 @@ body::before {
   color: #fff;
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+  transition: transform 0.15s, filter 0.15s, box-shadow 0.15s;
   box-shadow: var(--bc-shadow-sm);
 }
-.bc-btn:hover { transform: translateY(-1px); filter: brightness(1.08); box-shadow: var(--bc-shadow); }
+.bc-btn:hover { transform: translateY(-1px); filter: brightness(1.10); }
 .bc-btn:active { transform: translateY(0); }
 .bc-btn[disabled] { opacity: 0.6; cursor: not-allowed; }
 
@@ -138,17 +113,19 @@ body::before {
 .bc-btn-synth  { background: var(--bc-btn-purple); }
 .bc-btn-alt    { background: var(--bc-btn-orange); }
 
+/* ── LISTE ÉPISODES ── */
 .bc-episodes {
   background: var(--bc-card);
   border: 1px solid var(--bc-border);
   border-radius: var(--bc-radius);
   padding: 16px;
   margin-top: 20px;
+  color: var(--bc-text);
 }
 .bc-episodes-title {
   font-size: 14px;
   font-weight: 600;
-  color: var(--bc-text);
+  color: #fff;
   margin-bottom: 12px;
 }
 .bc-episode-item {
@@ -157,7 +134,7 @@ body::before {
   gap: 12px;
   padding: 12px;
   border-radius: var(--bc-radius-sm);
-  background: var(--bc-bg2);
+  background: var(--bc-card2);
   border: 1px solid var(--bc-border);
   margin-bottom: 8px;
   text-decoration: none;
@@ -165,30 +142,19 @@ body::before {
   transition: border-color 0.15s, transform 0.15s;
 }
 .bc-episode-item:hover { border-color: var(--bc-accent); transform: translateX(2px); }
-.bc-episode-item.active { border-color: var(--bc-accent); background: rgba(61,127,232,0.12); }
+.bc-episode-item.active { border-color: var(--bc-accent); background: rgba(61,127,232,0.15); }
 .bc-episode-num {
   flex: 0 0 32px; height: 32px;
-  background: var(--bc-bg3);
+  background: rgba(61,127,232,0.15);
   border-radius: 6px;
   display: flex; align-items: center; justify-content: center;
   font-size: 13px; font-weight: 700;
   color: var(--bc-accent2);
 }
-.bc-episode-name { flex: 1; font-size: 14px; }
-
-.btn-primary, button.primary, .cta-btn {
-  background: var(--bc-btn-teal) !important;
-  border: none !important;
-  color: #fff !important;
-}
-
-::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: var(--bc-bg); }
-::-webkit-scrollbar-thumb { background: var(--bc-bg3); border-radius: 5px; }
-::-webkit-scrollbar-thumb:hover { background: var(--bc-accent); }
+.bc-episode-name { flex: 1; font-size: 14px; color: #fff; }
 
 @media (max-width: 640px) {
   .bc-course-header { padding: 14px 16px; }
-  .bc-course-title h1 { font-size: 15px !important; }
+  .bc-course-title h1 { font-size: 15px; }
   .bc-btn { font-size: 14px; padding: 12px 16px; }
 }
