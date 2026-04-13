@@ -21,31 +21,19 @@
 <meta charset="UTF-8">
 <script src="../auth.js?v=v20260413-revoke2"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quarterly Theory — Algorithmic Academy</title>
+<title>Quarterly Theory — Cours Complet — Algorithmic Academy</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../readability.css?v=v20260413-revoke2">
 <link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
 <style>
   :root {
-    --bg: #f5f7fa;
-    --s1: #ffffff;
-    --s2: #f8fafc;
-    --s3: #eef2f7;
-    --bd: #e2e5ea;
-    --bd2: #d1d5db;
-    --gold: #b8860b;
-    --gold2: #d4a017;
-    --blue: #2563eb;
-    --green: #059669;
-    --red: #dc2626;
-    --orange: #ea580c;
-    --purple: #7c3aed;
-    --cyan: #0891b2;
-    --text: #1a1a2e;
-    --t2: #475569;
-    --t3: #94a3b8;
+    --bg: #f5f7fa; --s1: #ffffff; --s2: #f8fafc; --s3: #eef2f7;
+    --bd: #e2e5ea; --bd2: #d1d5db;
+    --gold: #b8860b; --gold2: #d4a017;
+    --blue: #2563eb; --green: #059669; --red: #dc2626;
+    --orange: #ea580c; --purple: #7c3aed; --cyan: #0891b2;
+    --text: #1a1a2e; --t2: #475569; --t3: #94a3b8;
   }
-
   * { margin:0; padding:0; box-sizing:border-box; }
   body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.6; }
 
@@ -56,164 +44,624 @@
   .banner h1 em { color: var(--gold2); font-style: normal; }
   .banner-sub { margin-top: 14px; color: rgba(255,255,255,0.75); font-size: 15px; max-width: 720px; line-height: 1.6; }
 
+  .toc { max-width: 1100px; margin: 0 auto; padding: 28px 32px 0; }
+  .toc-title { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--t3); text-transform:uppercase; margin-bottom:12px; }
+  .toc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  @media(max-width:800px){ .toc-grid{grid-template-columns:1fr 1fr;} }
+  .toc-item { display:flex; align-items:center; gap:10px; padding:10px 14px; background:var(--s1); border:1px solid var(--bd); border-radius:8px; text-decoration:none; color:var(--text); font-size:12px; transition:all .15s; }
+  .toc-item:hover { border-color: var(--gold); color: var(--gold); }
+  .toc-item .n { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--gold2); min-width:22px; }
+
   .container { max-width: 1100px; margin: 0 auto; padding: 40px 32px; }
 
-  .section { background: var(--s1); border: 1px solid var(--bd); border-radius: 14px; padding: 32px 36px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
-  .section-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
-  .section-title .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .module { margin-bottom: 36px; }
+  .mod-head { display:flex; align-items:center; gap:14px; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--bd); }
+  .mod-num { font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:2px; padding:4px 10px; border-radius:4px; background: rgba(184,134,11,0.12); color: var(--gold); }
+  .mod-head h2 { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; color:var(--text); letter-spacing:-0.01em; }
 
-  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
-  @media(max-width:800px) { .concept-grid { grid-template-columns: 1fr; } .container { padding: 20px 16px; } .banner { padding: 36px 24px; } }
+  .section { background: var(--s1); border: 1px solid var(--bd); border-radius: 14px; padding: 28px 32px; margin-bottom: 18px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+  .section-title { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .section-title .dot { width: 7px; height: 7px; border-radius: 50%; }
 
-  .concept-card { background: var(--s2); border: 1px solid var(--bd); border-radius: 10px; padding: 20px 22px; }
-  .concept-card h3 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--gold); margin-bottom: 10px; }
+  p.lede { color: var(--t2); line-height: 1.75; font-size: 14px; }
+  p.lede + p.lede { margin-top: 10px; }
+
+  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+  @media(max-width:800px) { .concept-grid { grid-template-columns: 1fr; } .container { padding: 24px 16px; } .banner { padding: 36px 24px; } .toc { padding: 20px 16px 0; } }
+  .concept-card { background: var(--s2); border: 1px solid var(--bd); border-radius: 10px; padding: 18px 20px; }
+  .concept-card h3 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--gold); margin-bottom: 8px; }
   .concept-card p { color: var(--t2); line-height: 1.7; font-size: 13px; }
+  .concept-card p + p { margin-top: 8px; }
   .concept-card.full { grid-column: 1 / -1; }
 
-  .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 3px 10px; border-radius: 5px; margin-right: 5px; margin-bottom: 5px; font-weight: 500; }
-  .tag-blue { background: rgba(37,99,235,0.10); color: var(--blue); }
-  .tag-green { background: rgba(5,150,105,0.10); color: var(--green); }
-  .tag-orange { background: rgba(234,88,12,0.10); color: var(--orange); }
-  .tag-red { background: rgba(220,38,38,0.10); color: var(--red); }
-  .tag-purple { background: rgba(155,114,224,0.10); color: var(--purple); }
-  .tag-cyan { background: rgba(40,191,207,0.10); color: var(--cyan); }
-
   table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 12px; }
-  th { text-align: left; padding: 8px 12px; background: var(--s2); color: var(--gold); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1px; border-bottom: 1px solid var(--bd); }
-  td { padding: 8px 12px; border-bottom: 1px solid var(--bd); color: var(--t2); }
-  tr:hover td { color: var(--text); background: rgba(255,255,255,0.02); }
-
-  .btn-row { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
-  .btn { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 10px 22px; border-radius: 6px; border: 1px solid var(--bd); background: var(--s2); color: var(--text); cursor: pointer; transition: all 0.15s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
-  .btn:hover { border-color: var(--gold); color: var(--gold); }
-  .btn-gold { border-color: var(--gold); color: var(--gold); }
-  .btn-gold:hover { background: rgba(200,162,40,0.1); }
+  th { text-align: left; padding: 9px 12px; background: var(--s2); color: var(--gold); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1px; border-bottom: 1px solid var(--bd); }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--bd); color: var(--t2); }
+  tr:hover td { color: var(--text); background: var(--s2); }
 
   .list-styled { padding-left: 20px; margin-top: 8px; }
-  .list-styled li { color: var(--t2); line-height: 1.8; font-size: 12px; }
+  .list-styled li { color: var(--t2); line-height: 1.8; font-size: 13px; }
   .list-styled li strong { color: var(--text); }
+  .list-styled li + li { margin-top: 3px; }
 
-  .highlight { color: var(--gold2); font-weight: 500; }
+  .highlight { color: var(--gold2); font-weight: 600; }
+  code.k { font-family:'IBM Plex Mono',monospace; font-size:12px; background:var(--s3); color:var(--text); padding:1px 6px; border-radius:4px; }
+
+  .callout { border-left: 3px solid var(--gold); background: rgba(212,160,23,0.06); padding: 14px 18px; border-radius: 0 8px 8px 0; margin-top: 14px; }
+  .callout.red { border-left-color: var(--red); background: rgba(220,38,38,0.05); }
+  .callout.green { border-left-color: var(--green); background: rgba(5,150,105,0.05); }
+  .callout.blue { border-left-color: var(--blue); background: rgba(37,99,235,0.05); }
+  .callout-title { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:6px; }
+  .callout.red .callout-title { color: var(--red); }
+  .callout.green .callout-title { color: var(--green); }
+  .callout.blue .callout-title { color: var(--blue); }
+  .callout p { color: var(--t2); font-size: 13px; line-height: 1.7; }
+
+  .quote { margin-top: 18px; padding: 20px 24px; background: linear-gradient(135deg, #1a1a2e 0%, #2d2d4a 100%); color: #fff; border-radius: 12px; }
+  .quote p { font-style: italic; font-size: 15px; line-height: 1.7; color: rgba(255,255,255,0.9); }
+  .quote cite { display: block; margin-top: 12px; font-family:'IBM Plex Mono',monospace; font-size: 10px; letter-spacing: 2px; color: var(--gold2); font-style: normal; }
+
+  .q-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }
+  @media(max-width:800px){ .q-grid{grid-template-columns:1fr 1fr;} }
+  .q-card { padding:14px; border-radius:8px; border:1px solid var(--bd); background:var(--s2); }
+  .q-card .q-name { font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--gold); }
+  .q-card .q-role { font-weight:700; margin:4px 0 6px; color:var(--text); font-size:14px; }
+  .q-card .q-note { font-size:12px; color:var(--t2); line-height:1.6; }
+  .q1{border-left:3px solid #9E9E9E;} .q2{border-left:3px solid var(--red);} .q3{border-left:3px solid var(--green);} .q4{border-left:3px solid var(--blue);}
 </style>
 </head>
 <body>
 <script src="../nav.js"></script>
 
 <div class="banner">
-  <div class="banner-eyebrow">Cours complet &mdash; Temps &amp; Cycles</div>
+  <div class="banner-eyebrow">Cours complet &mdash; 12 modules</div>
   <h1>Quarterly <em>Theory</em></h1>
   <p class="banner-sub">
-    Le temps est fractal. True Opens, AMDX/XAMD, cycles Yearly &rarr; Micro, SSMT, AOI et modeles d'entree. Le meme principe structurel se repete de l'annee au cycle de 22 minutes.
+    Le temps est la variable n&deg;1 du marche. Cycles fractals, True Opens, AMDX/XAMD, SSMT, PSP, TCISD, SMT Fill, modeles d'entree, Daily Bias, Killzones et narratif. Un cours structure pour passer de la lecture du chart a l'execution mecanique.
   </p>
 </div>
 
+<nav class="toc">
+  <div class="toc-title">Sommaire</div>
+  <div class="toc-grid">
+    <a class="toc-item" href="#m1"><span class="n">01</span>Fondations</a>
+    <a class="toc-item" href="#m2"><span class="n">02</span>Cycles Fractals</a>
+    <a class="toc-item" href="#m3"><span class="n">03</span>Phases AMDX / XAMD</a>
+    <a class="toc-item" href="#m4"><span class="n">04</span>True Opens</a>
+    <a class="toc-item" href="#m5"><span class="n">05</span>SSMT</a>
+    <a class="toc-item" href="#m6"><span class="n">06</span>PSP</a>
+    <a class="toc-item" href="#m7"><span class="n">07</span>TCISD</a>
+    <a class="toc-item" href="#m8"><span class="n">08</span>SMT Fill</a>
+    <a class="toc-item" href="#m9"><span class="n">09</span>Killzones QT</a>
+    <a class="toc-item" href="#m10"><span class="n">10</span>Modele 90min TCISD</a>
+    <a class="toc-item" href="#m11"><span class="n">11</span>Daily Bias &amp; Clotures</a>
+    <a class="toc-item" href="#m12"><span class="n">12</span>Narratif &amp; Checklist</a>
+  </div>
+</nav>
+
 <div class="container">
 
-  <!-- CONCEPT -->
+<!-- ==================== MODULE 1 ==================== -->
+<div class="module" id="m1">
+  <div class="mod-head"><span class="mod-num">MODULE 01</span><h2>Fondations &mdash; Pourquoi la QT ?</h2></div>
+
   <div class="section">
-    <div class="section-title"><span class="dot" style="background:var(--gold)"></span> Qu'est-ce que la Quarterly Theory ?</div>
-    <p style="color:var(--t2);line-height:1.7;">
-      La <span class="highlight">Quarterly Theory</span> divise chaque cycle de temps en <strong>4 quartiers</strong> (Q1 Accumulation, Q2 Distribution/Expansion, Q3 Re-accumulation, Q4 Distribution finale). Cette structure fractale se repete a tous les niveaux : annuel, mensuel, hebdomadaire, journalier, 90 minutes et micro (22 minutes).
+    <div class="section-title"><span class="dot" style="background:var(--gold)"></span> Le temps avant le prix</div>
+    <p class="lede">
+      La Quarterly Theory fait du <strong>temps</strong> la variable n&deg;1 du trading. La lecture ICT classique reponds a la question <em>&laquo; ou &raquo;</em> (niveaux de prix, PD arrays) ; la QT reponds a la question <em>&laquo; quand &raquo;</em>. Fusionner les deux donne un cadre d'execution extremement precis.
     </p>
-    <div class="concept-grid">
-      <div class="concept-card">
-        <h3>Pane Sessions (Rich Bvwy)</h3>
-        <p>Un pane separateur affiche les <strong>sessions en blocs colores</strong> : Asia (18:00-00:00), London (00:00-06:00), NYAM (06:00-12:00) et NYPM (12:00-18:00). Chaque session est divisee en 4 quartiers de 90 minutes, eux-memes subdivises en quartiers micro de ~22 minutes.</p>
-      </div>
-      <div class="concept-card">
-        <h3>Cycles Overlay</h3>
-        <p>Des <strong>boxes</strong> sont tracees directement sur le chart (force_overlay) pour visualiser les cycles Yearly, Monthly, Weekly, Daily, 90M et Micro. Chaque cycle est colore selon son quartier (Q1-Q4) avec transparence configurable.</p>
-      </div>
-      <div class="concept-card">
-        <h3>True Opens</h3>
-        <p>Lignes horizontales marquant les <strong>True Opens</strong> de chaque niveau : TMO (Monthly), TWO (Weekly), TDO (Daily), 09:30 (NY Open), T90 (90M True Open) et TMSO (Micro True Open). Le prix par rapport au True Open donne le biais directionnel.</p>
-      </div>
-      <div class="concept-card">
-        <h3>Table Above/Below</h3>
-        <p>Un tableau recapitulatif affiche pour chaque cycle si le prix est <span style="color:var(--blue)">Above</span> ou <span style="color:var(--red)">Below</span> son True Open. L'alignement multi-niveaux donne la confluence pour le biais.</p>
-      </div>
+    <p class="lede">
+      Les livraisons de prix ne sont pas aleatoires. L'algorithme qui pilote le marche distribue la liquidite selon une logique temporelle <strong>programmee et fractale</strong>. Comprendre cette logique, c'est arreter de reagir au prix et commencer a anticiper.
+    </p>
+    <div class="callout">
+      <div class="callout-title">Axiome n&deg;1</div>
+      <p>Pas de manipulation identifiee = pas de trade. Toute la QT repose sur l'idee que la manipulation precede toujours la distribution.</p>
+    </div>
+    <div class="callout red">
+      <div class="callout-title">Erreurs courantes</div>
+      <p><strong>1.</strong> Ignorer le temps et trader uniquement les niveaux de prix.<br>
+      <strong>2.</strong> Vouloir forcer chaque semaine dans le moule AMDX.<br>
+      <strong>3.</strong> Chercher le &laquo; pourquoi &raquo; institutionnel au lieu de respecter la structure observable.</p>
     </div>
   </div>
+</div>
 
-  <!-- CYCLES -->
+<!-- ==================== MODULE 2 ==================== -->
+<div class="module" id="m2">
+  <div class="mod-head"><span class="mod-num">MODULE 02</span><h2>Les 6 Cycles Fractals</h2></div>
+
   <div class="section">
-    <div class="section-title"><span class="dot" style="background:var(--blue)"></span> Les 6 Niveaux de Cycles</div>
+    <div class="section-title"><span class="dot" style="background:var(--blue)"></span> Le temps decoupe en quartiers</div>
+    <p class="lede">
+      Chaque cycle est divise en 4 quartiers egaux (Q1-Q4). Le meme principe structurel se repete a toutes les echelles : de l'annee au cycle de 22 minutes.
+    </p>
     <table>
-      <tr><th>CYCLE</th><th>DIVISION</th><th>TRUE OPEN</th><th>USAGE</th></tr>
-      <tr><td><span class="tag tag-purple">Yearly</span></td><td>Q1-Q4 par trimestre</td><td>TMO (1er du mois)</td><td>Narratif macro, biais trimestriel</td></tr>
-      <tr><td><span class="tag tag-blue">Monthly</span></td><td>Semaines 1-4 du mois</td><td>TMO (Monthly Open)</td><td>Structure mensuelle, weekly ranges</td></tr>
-      <tr><td><span class="tag tag-green">Weekly</span></td><td>Lundi-Jeudi (aligne 18:00)</td><td>TWO (Weekly Open)</td><td>Biais hebdomadaire, day-of-week</td></tr>
-      <tr><td><span class="tag tag-orange">Daily</span></td><td>Asia/LDN/NYAM/NYPM</td><td>TDO + 09:30</td><td>Biais intraday, sessions</td></tr>
-      <tr><td><span class="tag tag-red">90 Minutes</span></td><td>4 x 90mn par session</td><td>T90 (90M Open)</td><td>Timing macro, fenetres d'execution</td></tr>
-      <tr><td><span class="tag tag-cyan">Micro</span></td><td>4 x ~22mn par 90M</td><td>TMSO (Micro Open)</td><td>Entrees precises, scalping</td></tr>
+      <tr><th>CYCLE</th><th>DIVISION</th><th>DUREE D'UN Q</th><th>TIMEFRAME D'ANALYSE</th></tr>
+      <tr><td>Annuel</td><td>4 trimestres</td><td>3 mois</td><td>Mensuel</td></tr>
+      <tr><td>Mensuel</td><td>4 semaines</td><td>1 semaine</td><td>Hebdo / 4H</td></tr>
+      <tr><td>Hebdo</td><td>Lundi &rarr; Jeudi</td><td>1 jour</td><td>1H</td></tr>
+      <tr><td>Journalier</td><td>Asia / Londres / NY AM / NY PM</td><td>6 heures</td><td>15 min</td></tr>
+      <tr><td>90 Minutes</td><td>4 &times; 90 min dans une session</td><td>90 min</td><td>5 min</td></tr>
+      <tr><td>Micro</td><td>4 &times; 22min30 dans un 90M</td><td>22 min 30</td><td>1 min</td></tr>
     </table>
-  </div>
-
-  <!-- SESSIONS -->
-  <div class="section">
-    <div class="section-title"><span class="dot" style="background:var(--orange)"></span> Sessions et Quartiers</div>
-    <div class="concept-grid">
-      <div class="concept-card">
-        <h3 style="color:#9E9E9E">Q1 — Accumulation</h3>
-        <p>Premiere phase du cycle. Le prix construit un range, les institutions accumulent des positions. C'est la phase ou le marche "prepare" le mouvement. Couleur grise par defaut.</p>
-      </div>
-      <div class="concept-card">
-        <h3 style="color:#F44336">Q2 — Distribution / Expansion</h3>
-        <p>Le mouvement directionnel principal. Le prix sort du range Q1 dans une direction. C'est souvent la phase la plus volatile et profitable. Couleur rouge par defaut.</p>
-      </div>
-      <div class="concept-card">
-        <h3 style="color:#4CAF50">Q3 — Re-accumulation</h3>
-        <p>Phase de consolidation apres Q2. Le prix retrace ou consolide avant le dernier mouvement. Opportunite de re-entree dans la tendance. Couleur verte par defaut.</p>
-      </div>
-      <div class="concept-card">
-        <h3 style="color:#2196F3">Q4 — Distribution Finale</h3>
-        <p>Derniere phase du cycle. Le prix atteint son objectif final ou reverse. C'est le moment de prendre les profits. Couleur bleue par defaut.</p>
-      </div>
+    <div class="callout blue">
+      <div class="callout-title">Fonction de Vendredi</div>
+      <p>Vendredi n'est pas un Q du cycle hebdo (qui court Lundi &rarr; Jeudi). Son role est de <strong>retourner vers la range de la semaine</strong>, idealement vers le True Week Open, surtout quand un SSMT Jeudi &harr; Vendredi apparait.</p>
     </div>
   </div>
+</div>
 
-  <!-- UTILISATION -->
+<!-- ==================== MODULE 3 ==================== -->
+<div class="module" id="m3">
+  <div class="mod-head"><span class="mod-num">MODULE 03</span><h2>Phases AMDX / XAMD</h2></div>
+
   <div class="section">
-    <div class="section-title"><span class="dot" style="background:var(--green)"></span> Comment Utiliser</div>
+    <div class="section-title"><span class="dot" style="background:var(--red)"></span> Les 4 fonctions d'un quartier</div>
+    <div class="q-grid">
+      <div class="q-card q1"><div class="q-name">Q1</div><div class="q-role">Accumulation</div><div class="q-note">Construction silencieuse d'un range. Pas de direction claire.</div></div>
+      <div class="q-card q2"><div class="q-name">Q2</div><div class="q-role">Manipulation</div><div class="q-note">Faux mouvement, stop-run a travers un extreme du Q1.</div></div>
+      <div class="q-card q3"><div class="q-name">Q3</div><div class="q-role">Distribution</div><div class="q-note">Vrai mouvement, expansion directionnelle.</div></div>
+      <div class="q-card q4"><div class="q-name">Q4</div><div class="q-role">X (R ou C)</div><div class="q-note">Reversal si DoL atteint, Continuation sinon.</div></div>
+    </div>
+
+    <div class="section-title" style="margin-top:22px;"><span class="dot" style="background:var(--orange)"></span> AMDX vs XAMD</div>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3>Profil AMDX</h3>
+        <p><strong>Q1 Accumulation &rarr; Q2 Manipulation &rarr; Q3 Distribution &rarr; Q4 X.</strong></p>
+        <p>Signature : le Q2 prend la liquidite du Q1, le Q3 part dans la direction opposee au sweep. C'est la sequence standard.</p>
+      </div>
+      <div class="concept-card">
+        <h3>Profil XAMD</h3>
+        <p><strong>Q1 X (faux depart) &rarr; Q2 Accumulation &rarr; Q3 Manipulation &rarr; Q4 Distribution.</strong></p>
+        <p>Le Q1 donne un mouvement trompeur, l'accumulation reelle se fait en Q2, le vrai move arrive tardivement en Q4.</p>
+      </div>
+      <div class="concept-card full">
+        <h3>Regle du X</h3>
+        <p>Le Q4 depend du <strong>Draw on Liquidity</strong> (DoL). Si le DoL HTF est atteint avant Q4 &rarr; Reversal probable. Si le DoL n'est pas encore touche &rarr; Continuation probable.</p>
+      </div>
+    </div>
+    <div class="callout red">
+      <div class="callout-title">Toutes les semaines ne sont pas AMDX</div>
+      <p>Si Lundi = X et Mardi = M, la semaine peut etre XMDX ou une variante. Confirmer toujours le profil via un SSMT sur les deux premiers jours.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODULE 4 ==================== -->
+<div class="module" id="m4">
+  <div class="mod-head"><span class="mod-num">MODULE 04</span><h2>True Opens</h2></div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--cyan)"></span> Les vraies ouvertures</div>
+    <p class="lede">
+      Le <strong>True Open</strong> d'un cycle = la <strong>premiere bougie du Q2</strong> de ce cycle. C'est le filtre temporel cle pour juger la validite d'un Judas Swing ou d'un stop-run.
+    </p>
+    <table>
+      <tr><th>REFERENCE</th><th>DEFINITION</th><th>HEURE ET</th></tr>
+      <tr><td><code class="k">TYO</code> True Year Open</td><td>1er Lundi d'Avril</td><td>debut Q2 annuel</td></tr>
+      <tr><td><code class="k">TMO</code> True Month Open</td><td>2eme Lundi du mois</td><td>debut Q2 mensuel</td></tr>
+      <tr><td><code class="k">TWO</code> True Week Open</td><td>Lundi 18:00 (debut session Asia du mardi)</td><td>18:00 Lundi</td></tr>
+      <tr><td><code class="k">TDO</code> True Day Open</td><td>Minuit ET</td><td>00:00</td></tr>
+      <tr><td><code class="k">TSO Asia</code></td><td>Debut Q2 session Asia</td><td>19:30</td></tr>
+      <tr><td><code class="k">TSO Londres</code></td><td>Debut Q2 session Londres</td><td>01:30</td></tr>
+      <tr><td><code class="k">TSO NY AM</code></td><td>Debut Q2 session NY AM</td><td>07:30</td></tr>
+      <tr><td><code class="k">TSO NY PM</code></td><td>Debut Q2 session NY PM</td><td>13:30</td></tr>
+    </table>
+    <div class="callout">
+      <div class="callout-title">Regle directionnelle</div>
+      <p><strong>Biais haussier :</strong> la manipulation doit se former <strong>sous</strong> le True Open.<br>
+      <strong>Biais baissier :</strong> la manipulation doit se former <strong>au-dessus</strong> du True Open.</p>
+    </div>
+    <div class="callout red">
+      <div class="callout-title">Piege classique</div>
+      <p>Tracer le True Week Open sur Lundi minuit. Le bon repere est <strong>Lundi 18:00 ET</strong> (debut de la session Asia du mardi).</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODULE 5 ==================== -->
+<div class="module" id="m5">
+  <div class="mod-head"><span class="mod-num">MODULE 05</span><h2>SSMT &mdash; Sequential SMT</h2></div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Le concept n&deg;1 de la QT</div>
+    <p class="lede">
+      <strong>SMT</strong> : divergence entre deux actifs correles &mdash; un fait un plus-bas (ou plus-haut), l'autre echoue. <strong>SSMT</strong> : SMT survenant entre deux <strong>quartiers consecutifs</strong> (Q1&harr;Q2, Q2&harr;Q3, Q3&harr;Q4, Q4&harr;Q1), formee sur l'extreme du Q precedent.
+    </p>
+
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3>Triades d'actifs correles</h3>
+        <p><strong>Indices :</strong> NQ / ES / YM.<br><strong>Forex :</strong> EURUSD / GBPUSD / DXY (inverse).</p>
+        <p>Ideal : 3 actifs. Minimum : 2.</p>
+      </div>
+      <div class="concept-card">
+        <h3>Regles absolues</h3>
+        <p>Haussier &rarr; SSMT <strong>sous</strong> le True Open correspondant.<br>Baissier &rarr; SSMT <strong>au-dessus</strong>.</p>
+        <p>Haute probabilite : wick + cloture au-dela du plus-bas/plus-haut du Q precedent.</p>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:22px;"><span class="dot" style="background:var(--blue)"></span> 4 utilites du SSMT</div>
     <ul class="list-styled">
-      <li><strong>Above/Below True Open :</strong> Si le prix est au-dessus du True Open (TMO/TWO/TDO), le biais est haussier pour ce cycle. En-dessous, biais baissier.</li>
-      <li><strong>Confluence multi-niveaux :</strong> Quand tous les niveaux (Monthly, Weekly, Daily) sont "Above", la confluence est maximale pour un long. L'inverse pour un short.</li>
-      <li><strong>Timing avec les quartiers :</strong> Entrez en Q2 (expansion) dans la direction du biais. Evitez Q1 (accumulation — pas de direction claire) et Q4 (fin de mouvement).</li>
-      <li><strong>Pane visuel :</strong> Le pane en bas du chart montre visuellement ou vous etes dans la session et le quartier. Utile pour savoir combien de temps il reste avant le prochain quartier.</li>
-      <li><strong>Alignement 18:00 ET :</strong> La journee commence a 18:00 ET (debut session Asia). Tous les cycles sont alignes sur cette reference pour respecter la structure ICT.</li>
-      <li><strong>09:30 comme reference :</strong> Le True Open 09:30 (ouverture NYSE) est un niveau cle intraday. Le prix au-dessus = biais haussier pour NYAM/NYPM.</li>
+      <li><strong>Detecter la manipulation</strong> et anticiper le reversal du cycle en cours.</li>
+      <li><strong>Confirmer le profil</strong> de marche (AMDX vs XAMD) sur la semaine ou la session.</li>
+      <li><strong>Valider le biais</strong> journalier, hebdo ou mensuel selon le cycle ou le SSMT apparait.</li>
+      <li><strong>Base de chaque setup</strong> : aucun trade ne doit se prendre sans SSMT prealable.</li>
+    </ul>
+
+    <div class="section-title" style="margin-top:22px;"><span class="dot" style="background:var(--green)"></span> Alignement hierarchique</div>
+    <table>
+      <tr><th>SSMT SUR CYCLE</th><th>DONNE LE BIAIS</th></tr>
+      <tr><td>Mensuel</td><td>1 a 3 semaines</td></tr>
+      <tr><td>Hebdo</td><td>Intra-semaine</td></tr>
+      <tr><td>Journalier</td><td>Intra-jour</td></tr>
+      <tr><td>90 Minutes</td><td>Session en cours</td></tr>
+      <tr><td>Micro</td><td>Intra-session</td></tr>
+    </table>
+    <div class="callout blue">
+      <div class="callout-title">Haute probabilite</div>
+      <p>SSMT HTF et SSMT LTF alignes (max 2 cycles d'ecart) &rarr; setup premium. Anticiper via le calendrier economique : les jours a news red folder sont des jours probables de manipulation.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODULE 6 ==================== -->
+<div class="module" id="m6">
+  <div class="mod-head"><span class="mod-num">MODULE 06</span><h2>PSP &mdash; Precision Swing Points</h2></div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--red)"></span> Pattern 3 bougies haute precision</div>
+    <p class="lede">
+      Un <strong>PSP</strong> est un swing point classique (3 bougies) ou la bougie centrale (candle 2) <strong>cloture differemment</strong> entre actifs correles : l'un cloture bullish, l'autre bearish, a la meme heure. Si le swing formation est visible sur un actif mais pas sur l'autre, on parle de <strong>Precision Candle</strong>.
+    </p>
+
+    <table>
+      <tr><th>PSP TIMEFRAME</th><th>SSMT PROVOQUE</th></tr>
+      <tr><td>Weekly</td><td>Monthly cycle SSMT</td></tr>
+      <tr><td>Daily</td><td>Weekly cycle SSMT</td></tr>
+      <tr><td>4H</td><td>Daily cycle SSMT</td></tr>
+      <tr><td>1H</td><td>90M cycle SSMT</td></tr>
+      <tr><td>15m</td><td>Micro SSMT</td></tr>
+    </table>
+
+    <div class="section-title" style="margin-top:22px;"><span class="dot" style="background:var(--blue)"></span> 3 usages du PSP</div>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3>1. Confirmation d'un SSMT</h3>
+        <p>PSP sur la meme bougie que le SSMT (ou juste apres) : double validation.</p>
+      </div>
+      <div class="concept-card">
+        <h3>2. Anticipation d'un SSMT</h3>
+        <p>Si candle 2 est un PSP, candle 3 risque de balayer son extreme &rarr; SSMT en formation.</p>
+      </div>
+      <div class="concept-card full">
+        <h3>3. Continuation</h3>
+        <p>Les PSP alignes avec l'orderflow HTF servent de points d'entree type order block (wicks et corps comme zone de retest).</p>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:22px;"><span class="dot" style="background:var(--orange)"></span> 3 methodes d'entree</h3></div>
+    <ol class="list-styled">
+      <li><strong>Apres cloture de candle 3</strong> &mdash; stop sur le PSP high/low.</li>
+      <li><strong>Pendant candle 3 en anticipation</strong> &mdash; entree sur wick dans la zone de PSP.</li>
+      <li><strong>Sur le premier fair value gap</strong> forme apres le PSP.</li>
+    </ol>
+
+    <div class="callout green">
+      <div class="callout-title">True Order Block dans un PSP</h3></div>
+      <p>Descendre <strong>d'un timeframe</strong> dans la bougie 2.<br>
+      Bullish PSP &rarr; chercher la <strong>derniere bougie baissiere</strong> a l'interieur.<br>
+      Bearish PSP &rarr; chercher la <strong>derniere bougie haussiere</strong> a l'interieur.</p>
+    </div>
+
+    <div class="callout red">
+      <div class="callout-title">Piege</div>
+      <p>PSPs multiples et rapproches sans deplacement de prix = conditions de consolidation. Ne pas trader.</p>
+    </div>
+
+    <div class="callout blue">
+      <div class="callout-title">Astuce directionnelle</div>
+      <p>En scenario haussier, l'actif qui cloture <strong>bearish</strong> sur candle 2 est plus probablement balaye ; celui qui cloture bullish = force relative.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODULE 7 ==================== -->
+<div class="module" id="m7">
+  <div class="mod-head"><span class="mod-num">MODULE 07</span><h2>TCISD &mdash; True Change in State of Delivery</h2></div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--green)"></span> La confirmation ultime du SSMT</div>
+    <p class="lede">
+      Le <strong>TCISD</strong> est la <strong>cloture d'une bougie au-dessus (ou en-dessous) de la bougie qui a cree le SSMT</strong>. C'est la bougie de manipulation precise, pas toute la jambe.
+    </p>
+
+    <div class="section-title" style="margin-top:18px;"><span class="dot" style="background:var(--orange)"></span> Selection de la bougie de reference</div>
+    <ul class="list-styled">
+      <li><strong>SSMT baissier</strong> &rarr; on veut une bougie <strong>haussiere</strong> qui balaye le high precedent. Si elle cloture baissiere, reculer jusqu'a la derniere bougie up-close avant le SSMT.</li>
+      <li><strong>SSMT haussier</strong> &rarr; on veut une bougie <strong>baissiere</strong>. Si elle cloture haussiere, reculer jusqu'a la derniere bougie down-close.</li>
+    </ul>
+
+    <div class="section-title" style="margin-top:18px;"><span class="dot" style="background:var(--blue)"></span> Alignement timeframe</div>
+    <table>
+      <tr><th>SSMT CYCLE</th><th>TIMEFRAME TCISD</th></tr>
+      <tr><td>Daily</td><td>15 min</td></tr>
+      <tr><td>90 Minutes</td><td>5 min</td></tr>
+      <tr><td>Micro</td><td>1 min</td></tr>
+    </table>
+
+    <div class="section-title" style="margin-top:18px;"><span class="dot" style="background:var(--purple)"></span> Workflow complet</div>
+    <ol class="list-styled">
+      <li>SSMT apparait.</li>
+      <li>Marquer <strong>l'open</strong> (corps) de la bougie SSMT &mdash; preference : open plutot que wick.</li>
+      <li>Attendre la <strong>cloture de l'autre cote</strong> = validation TCISD.</li>
+      <li>Entree au <strong>retest du TCISD</strong> ou dans le <strong>premier fair value gap</strong> forme apres.</li>
+      <li>Stop sur le plus-haut/plus-bas du SSMT.</li>
+      <li>Target : DoL HTF le plus proche ou RR fixe (typique 3R).</li>
+    </ol>
+
+    <div class="callout green">
+      <div class="callout-title">Pourquoi le TCISD</div>
+      <p>La manipulation n'est pas finie tant qu'il n'y a pas de cloture inverse. Sans TCISD, on entre trop tot et on se fait sortir. Avec TCISD, on laisse la manipulation se terminer completement avant d'engager le capital.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODULE 8 ==================== -->
+<div class="module" id="m8">
+  <div class="mod-head"><span class="mod-num">MODULE 08</span><h2>SMT Fill &mdash; Divergence sur Fair Value Gap</h2></div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Definition</div>
+    <p class="lede">
+      Un <strong>fair value gap</strong> se forme au meme moment sur deux actifs correles (ou plus). L'un revient dans son gap, l'autre echoue (partiellement ou totalement) &rarr; <strong>SMT Fill</strong>.
+    </p>
+
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3>Variante 1</h3>
+        <p>Actif A retrade dans son gap ; actif B ne le touche pas du tout.</p>
+      </div>
+      <div class="concept-card">
+        <h3>Variante 2</h3>
+        <p>A depasse 50 % du gap ; B reste au-dessus/en-dessous du 50 %.</p>
+      </div>
+      <div class="concept-card full">
+        <h3>Variante 3</h3>
+        <p>A comble totalement le gap ; B ne le comble pas completement. C'est la plus forte des trois.</p>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:20px;"><span class="dot" style="background:var(--blue)"></span> 2 utilisations</div>
+    <ul class="list-styled">
+      <li><strong>Framer le biais HTF</strong> &mdash; un daily SMT Fill donne le biais des 1 a 2 jours suivants.</li>
+      <li><strong>Entry model</strong> &mdash; apres SSMT/PSP, chercher un SMT Fill dans le <strong>premier fair value gap</strong> presente.</li>
+    </ul>
+
+    <div class="callout">
+      <div class="callout-title">Combo haute probabilite</div>
+      <p>PSP &rarr; gap &rarr; SMT Fill. Ou : SSMT &rarr; first presented gap &rarr; SMT Fill. Trois confirmations, une entree.</p>
+    </div>
+    <div class="callout blue">
+      <div class="callout-title">Astuce triade</div>
+      <p>Si un actif d'une triade est totalement desynchronise sur la semaine, l'exclure et analyser uniquement les deux autres.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODULE 9 ==================== -->
+<div class="module" id="m9">
+  <div class="mod-head"><span class="mod-num">MODULE 09</span><h2>Killzones QT</h2></div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--orange)"></span> Superposition de quartiers = explosivite</div>
+    <p class="lede">
+      La fractalite du temps cree des <strong>zones ou plusieurs quartiers s'emboitent</strong>. Un Q2 weekly + Q2 daily + Q2 90M = triple manipulation. La probabilite d'un mouvement brutal augmente fortement.
+    </p>
+    <table>
+      <tr><th>KILLZONE</th><th>PROFIL</th><th>ALIGNEMENT</th></tr>
+      <tr><td>Manipulation</td><td>Q2 &rarr; Q2 &rarr; Q2</td><td>Mardi / Londres (01:30-07:30) / Q2 90M</td></tr>
+      <tr><td>Distribution</td><td>Q3 &rarr; Q3 &rarr; Q3</td><td>Mercredi / NY AM (07:30-13:30) / Q3 90M (09:00-10:30)</td></tr>
+      <tr><td>Reversal</td><td>Q4 &rarr; Q4 &rarr; Q4</td><td>Jeudi / NY PM (13:30-19:30) / Q4 90M</td></tr>
+    </table>
+    <div class="callout red">
+      <div class="callout-title">Regle d'utilisation</div>
+      <p>Toute configuration SSMT/PSP/SMT Fill <strong>hors killzone</strong> est de probabilite plus faible. Dans la killzone, la probabilite monte sensiblement &mdash; ce n'est jamais une garantie, mais c'est un filtre de qualite.</p>
+    </div>
+    <div class="callout">
+      <div class="callout-title">Pro tip</div>
+      <p>Plus de quartiers alignes = plus fort. Monthly Q3 + Weekly Q3 + Daily Q3 + 90M Q3 + Micro Q3 = setup explosif (rare mais reperable).</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODULE 10 ==================== -->
+<div class="module" id="m10">
+  <div class="mod-head"><span class="mod-num">MODULE 10</span><h2>Modele 90min TCISD</h2></div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--green)"></span> Un modele mecanique, 90 minutes par jour</div>
+    <p class="lede">
+      Fenetre exacte : <strong>09:00 &ndash; 10:30 ET</strong> = Q3 du daily AM &oplus; Q3 du 90M cycle. Objectif : 1 a 2 trades maximum, puis on arrete.
+    </p>
+
+    <div class="section-title" style="margin-top:18px;"><span class="dot" style="background:var(--blue)"></span> 3 etapes obligatoires</div>
+    <ol class="list-styled">
+      <li><strong>SSMT</strong> dans la fenetre (daily / 90M / micro &mdash; au moins un niveau).</li>
+      <li><strong>TCISD</strong> : cloture au-dessus ou en-dessous de la bougie SSMT.</li>
+      <li><strong>Entree</strong> au retest du TCISD ou dans le premier fair value gap.</li>
+    </ol>
+
+    <div class="section-title" style="margin-top:18px;"><span class="dot" style="background:var(--purple)"></span> Logique if-then avant la fenetre</div>
+    <ul class="list-styled">
+      <li>Manipulation <strong>avant</strong> 09:30 &rarr; 09:30 distribuera.</li>
+      <li><strong>Pas</strong> de manipulation avant 09:30 &rarr; 09:30 manipulera.</li>
+      <li>Si 09:30 manipule &rarr; 10:00 expansion.</li>
+      <li>Si 09:30 distribue &rarr; 10:00 retracement ou reversal.</li>
+    </ul>
+
+    <div class="section-title" style="margin-top:18px;"><span class="dot" style="background:var(--orange)"></span> Contraintes True Open</div>
+    <ul class="list-styled">
+      <li>90M SSMT bullish &rarr; sous le True Session Open (07:30 pour AM).</li>
+      <li>Micro SSMT bullish &rarr; sous le True Micro Open du 22min30 en cours.</li>
+      <li>Daily SSMT bullish &rarr; sous le TDO (00:00).</li>
+    </ul>
+
+    <div class="section-title" style="margin-top:18px;"><span class="dot" style="background:var(--red)"></span> Entree, stop, target</div>
+    <ul class="list-styled">
+      <li><strong>Entree :</strong> attendre une rejection (wick, petite bougie swing) avant d'entrer. Jamais d'ordre limite sec sur le TCISD.</li>
+      <li><strong>Stop :</strong> plus-bas / plus-haut du SSMT. Si trop grand, affiner en timeframe 1 min.</li>
+      <li><strong>Target :</strong> 3R fixe, ou buy/sell-side liquidity la plus proche.</li>
+      <li><strong>Discipline :</strong> 1 a 2 trades maximum, puis on ferme la plateforme.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== MODULE 11 ==================== -->
+<div class="module" id="m11">
+  <div class="mod-head"><span class="mod-num">MODULE 11</span><h2>Daily Bias &amp; Clotures de Bougies</h2></div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--blue)"></span> Lire les bougies comme de petits cycles</div>
+    <p class="lede">
+      Chaque bougie est un cycle. Sa cloture par rapport a la bougie precedente donne une signature directionnelle. Fractalite : ces regles s'appliquent du chart 1 minute au chart weekly.
+    </p>
+
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3>1. Continuation</h3>
+        <p>Bougie 2 cloture <strong>au-dessus du wick</strong> de bougie 1 &rarr; bougie 3 livre dans la meme direction.</p>
+      </div>
+      <div class="concept-card">
+        <h3>2. Reversal</h3>
+        <p>Bougie 2 meche <strong>sous le wick</strong> de bougie 1 puis cloture <strong>dans la range</strong> de bougie 1 &rarr; reversal confirme, bougie 3 livre en sens inverse.</p>
+      </div>
+      <div class="concept-card full">
+        <h3>3. Consolidation</h3>
+        <p>Bougie 2 ne prend ni le high ni le low de bougie 1 &rarr; bougie 3 sera agressive (double-sided ou breakout net).</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">Combo avec SSMT</div>
+      <p>SSMT baissier + cloture bearish de la bougie de manipulation &rarr; haute probabilite de distribution.<br>
+      SSMT baissier + cloture bullish &rarr; mefiance, la manipulation n'est pas finie.<br>
+      Les deux doivent se confirmer mutuellement.</p>
+    </div>
+
+    <div class="section-title" style="margin-top:20px;"><span class="dot" style="background:var(--green)"></span> Workflow hebdomadaire</div>
+    <ol class="list-styled">
+      <li>Fin de Vendredi : analyser la cloture daily.</li>
+      <li>Attendre le weekly cycle SSMT (ideal : Lundi &harr; Mardi ou Vendredi &harr; Lundi).</li>
+      <li>Si Mardi wicke + cloture dans la range de Lundi + SSMT &rarr; Mercredi/Jeudi haussier.</li>
+      <li>Vendredi : retour vers TWO si SSMT Jeudi &harr; Vendredi apparait.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ==================== MODULE 12 ==================== -->
+<div class="module" id="m12">
+  <div class="mod-head"><span class="mod-num">MODULE 12</span><h2>Narratif, Draw on Liquidity &amp; Checklist</h2></div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Partie A &mdash; Les 5 elements du narratif</div>
+    <ul class="list-styled">
+      <li><strong>Cracks HTF</strong> &mdash; SSMT / PSP / SMT Fill sur monthly, yearly, quarterly.</li>
+      <li><strong>Liquidite</strong> &mdash; toujours trader vers un Draw on Liquidity (DoL) clair.</li>
+      <li><strong>Gaps HTF</strong> &mdash; dans un gap baissier daily &rarr; chercher des shorts ; cloture au-dessus &rarr; idee invalidee.</li>
+      <li><strong>Clotures de bougies</strong> &mdash; elles priment sur les cracks ambigus.</li>
+      <li><strong>Premium / Discount</strong> &mdash; toujours calcule sur le range du Q HTF precedent. Ne pas shorter un premium LTF si le HTF est encore en discount.</li>
     </ul>
   </div>
 
-  <!-- INPUTS -->
   <div class="section">
-    <div class="section-title"><span class="dot" style="background:var(--cyan)"></span> Parametres (Inputs)</div>
-    <table>
-      <tr><th>GROUPE</th><th>PARAMETRE</th><th>DESCRIPTION</th></tr>
-      <tr><td>Overlay Cycles</td><td>Yearly / Monthly / Weekly / Daily / 90M / Micro</td><td>Activer/desactiver chaque niveau de cycle (boxes sur le chart)</td></tr>
-      <tr><td>Micro Cycle</td><td>Show Micro + TMSO</td><td>Afficher les cycles micro et le True Open micro</td></tr>
-      <tr><td>Table Setting</td><td>Position / Size / Colors</td><td>Position du tableau, taille du texte, couleurs Above/Below/Background</td></tr>
-      <tr><td>Appearance</td><td>Transparency / Border / Label Size / 18:00 Divider</td><td>Transparence des boxes, style des bordures, taille des labels, ligne 18:00</td></tr>
-      <tr><td>HTF Cycle Colors</td><td>Q1-Q4 Colors (Yearly/Monthly/Weekly)</td><td>Couleurs par quartier pour les cycles HTF</td></tr>
-      <tr><td>Daily Cycle Colors</td><td>Q1-Q4 Colors (Daily)</td><td>Couleurs par quartier pour les sessions journalieres</td></tr>
-      <tr><td>90M Cycle Colors</td><td>Q1-Q4 Colors (90M)</td><td>Couleurs par quartier pour les quartiers 90 minutes</td></tr>
-      <tr><td>Micro Cycle Colors</td><td>Q1-Q4 Colors (Micro)</td><td>Couleurs par quartier pour les micro-quartiers</td></tr>
-      <tr><td>True Open Colors</td><td>09:30 / TMO / TWO / TDO / 90M / TMSO</td><td>Couleur de chaque ligne True Open</td></tr>
-    </table>
+    <div class="section-title"><span class="dot" style="background:var(--cyan)"></span> Partie B &mdash; Draw on Liquidity</div>
+    <p class="lede">Hierarchie des DoL, de la plus forte a la plus faible :</p>
+    <ul class="list-styled">
+      <li><strong>Previous X Highs/Lows</strong> (extremes du Q HTF precedent) &mdash; PWH/PWL, PDH/PDL, PSH/PSL.</li>
+      <li><strong>Gaps HTF non combles.</strong></li>
+      <li><strong>Previous SSMT/SMT highs/lows.</strong></li>
+      <li><strong>Equal Highs / Equal Lows.</strong></li>
+      <li><strong>Liquidite logee a l'interieur d'un gap</strong> (aimant combine).</li>
+    </ul>
+    <div class="callout blue">
+      <div class="callout-title">Regle du range</div>
+      <p>Prendre le range du Q HTF precedent, marquer la premiere liquidite <strong>premium</strong> et <strong>discount</strong> de part et d'autre. La bougie suivante visera l'une des deux en premier.</p>
+    </div>
   </div>
 
-  <!-- INSTALLATION -->
   <div class="section">
-    <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Installation</div>
-    <ul class="list-styled">
-      <li><strong>1.</strong> Telechargez le fichier <code style="color:var(--cyan)">.pine</code> via le bouton ci-dessus</li>
-      <li><strong>2.</strong> Ouvrez TradingView et allez dans l'editeur Pine Script (icone <code style="color:var(--cyan)">{}</code> en bas)</li>
-      <li><strong>3.</strong> Creez un nouveau script, collez le code, et cliquez sur "Ajouter au graphique"</li>
-      <li><strong>4.</strong> L'indicateur s'affiche comme un <strong>pane separateur</strong> (overlay=false) avec les blocs de sessions</li>
-      <li><strong>5.</strong> Les cycles overlay (boxes) apparaissent directement sur le chart principal via force_overlay</li>
-      <li><strong>6.</strong> Configurez les cycles a afficher et les couleurs dans les parametres</li>
-    </ul>
+    <div class="section-title"><span class="dot" style="background:var(--gold)"></span> Partie C &mdash; Checklist QT complete</div>
+
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3>HTF DoL</h3>
+        <p>Previous X Highs/Lows (W/D/S) &bull; Gaps HTF &bull; SSMT/SMT highs &amp; lows.</p>
+      </div>
+      <div class="concept-card">
+        <h3>HTF Orderflow</h3>
+        <p>Cycles yearly / monthly / weekly &bull; HTF PSPs (Weekly &rarr; biais semaine ; Daily &rarr; biais jour ; 4H &rarr; biais session) &bull; La bougie precedente : Turtle Soup ou cassure nette ?</p>
+      </div>
+      <div class="concept-card">
+        <h3>MTF (alignement)</h3>
+        <p>Alignement avec HTF ? Non &rarr; retrace HTF (chercher clear PDA). Manipulation MTF claire (SSMT) ? MTF CISD present ?</p>
+      </div>
+      <div class="concept-card">
+        <h3>LTF (au moins une crack)</h3>
+        <p>SSMT <strong>ou</strong> PSP <strong>ou</strong> SMT Fill.</p>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:22px;"><span class="dot" style="background:var(--green)"></span> Les 3 modeles d'entree au choix</div>
+    <table>
+      <tr><th>#</th><th>NOM</th><th>STRUCTURE</th></tr>
+      <tr><td>1</td><td>Entry Model 1</td><td>LTF SSMT + CISD</td></tr>
+      <tr><td>2</td><td>Entry Model 2</td><td>LTF SSMT + PSP &rarr; True Order Block</td></tr>
+      <tr><td>3</td><td>Entry Model 3</td><td>SSMT + First Presented Gap &rarr; SMT Fill</td></tr>
+    </table>
+
+    <div class="callout red">
+      <div class="callout-title">Regle d'or</div>
+      <p>Si l'un des 4 etages de la checklist (HTF DoL / HTF Orderflow / MTF / LTF) repond &laquo; non &raquo; &rarr; <strong>pas de trade</strong>. Tous &laquo; oui &raquo; + alignement MTF &harr; HTF &rarr; setup haute probabilite.</p>
+    </div>
   </div>
+
+  <div class="quote">
+    <p>Le temps et le prix sont des fractales. Quand on combine l'axe X (temps) avec l'axe Y (prix), on voit le marche d'une maniere completement differente. Une fois qu'on a vu ca, il n'y a pas de retour en arriere.</p>
+    <cite>QUARTERLY THEORY &mdash; COURS COMPLET &middot; 12 MODULES</cite>
+  </div>
+</div>
+
+<!-- ==================== GLOSSAIRE ==================== -->
+<div class="module" id="glossaire">
+  <div class="mod-head"><span class="mod-num">ANNEXE</span><h2>Glossaire rapide</h2></div>
+  <div class="section">
+    <table>
+      <tr><th>SIGLE</th><th>DEFINITION</th></tr>
+      <tr><td><code class="k">A / M / D / X</code></td><td>Accumulation, Manipulation, Distribution, Reversal/Continuation</td></tr>
+      <tr><td><code class="k">AMDX / XAMD</code></td><td>Sequences de quartiers standard</td></tr>
+      <tr><td><code class="k">BPR</code></td><td>Balanced Price Range</td></tr>
+      <tr><td><code class="k">CISD / TCISD</code></td><td>Change / True Change in State of Delivery</td></tr>
+      <tr><td><code class="k">DoL</code></td><td>Draw on Liquidity</td></tr>
+      <tr><td><code class="k">FVG</code></td><td>Fair Value Gap</td></tr>
+      <tr><td><code class="k">HTF / MTF / LTF</code></td><td>Higher / Mid / Lower Timeframe</td></tr>
+      <tr><td><code class="k">IPDA</code></td><td>Interbank Price Delivery Algorithm</td></tr>
+      <tr><td><code class="k">Killzone QT</code></td><td>Fenetre temporelle de superposition de quartiers</td></tr>
+      <tr><td><code class="k">MMXM</code></td><td>Market Maker Buy/Sell Model</td></tr>
+      <tr><td><code class="k">Precision Candle</code></td><td>Bougie de divergence non-swing</td></tr>
+      <tr><td><code class="k">PSP</code></td><td>Precision Swing Point</td></tr>
+      <tr><td><code class="k">Q1 / Q2 / Q3 / Q4</code></td><td>Quartier 1 a 4 d'un cycle</td></tr>
+      <tr><td><code class="k">SMT</code></td><td>Smart Money Technique (divergence inter-actifs)</td></tr>
+      <tr><td><code class="k">SSMT</code></td><td>Sequential SMT (entre 2 Q consecutifs)</td></tr>
+      <tr><td><code class="k">SMT Fill</code></td><td>Divergence sur fair value gap</td></tr>
+      <tr><td><code class="k">TDO / TMO / TSO / TWO / TYO</code></td><td>True Day / Month / Session / Week / Year Open</td></tr>
+      <tr><td><code class="k">TOB</code></td><td>True Order Block</td></tr>
+      <tr><td><code class="k">Turtle Soup</code></td><td>Prise de liquidite puis reversal</td></tr>
+    </table>
+  </div>
+</div>
 
 </div>
 </body>
