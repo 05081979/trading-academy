@@ -17,6 +17,11 @@
       { id: 'cycles-temporels',    label: 'Cycles Temporels' },
       { id: 'temps-prix-protocole',label: 'Temps & Prix — Protocole' },
       { id: 'ipda-trainer',        label: 'Algorithme de Livraison du Prix' },
+      { id: 'modeles-de-marche',   label: 'Modeles de Marche' },
+      { id: 'protocole-trading',   label: 'Protocole Complet' },
+      { id: 'modeles-execution',   label: 'Playbooks & Modeles' },
+      { id: 'execution-avancee',   label: 'Execution Avancee' },
+      { id: 'execution-live-series',label: 'Sessions Live' },
     ]},
     { name: 'Architecture', items: [
       { id: 'architecture-niveaux',    label: 'Architecture des Niveaux' },
@@ -25,17 +30,10 @@
       { id: 'gb-time',                 label: 'GB Time', href: 'cycles-temporels.html#gb-time' },
       { id: 'digital-time-theory',     label: 'Theorie du Temps Numerique' },
       { id: 'sequences-fractales',     label: 'Sequences & Fractales' },
+      { id: 'strategie-entree',        label: 'Strategies d\'Entree' },
+      { id: 'etudes-de-cas',           label: 'Etudes de Cas' },
     ]},
-    { name: 'Execution', items: [
-      { id: 'hub-cours',           label: 'Bibliotheque des Cours' },
-      { id: 'modeles-de-marche',   label: 'Modeles de Marche' },
-      { id: 'protocole-trading',   label: 'Protocole Complet' },
-      { id: 'modeles-execution',   label: 'Playbooks & Modeles' },
-      { id: 'strategie-entree',    label: 'Strategies d\'Entree' },
-      { id: 'execution-avancee',   label: 'Execution Avancee' },
-      { id: 'execution-live-series',label: 'Sessions Live' },
-      { id: 'etudes-de-cas',       label: 'Etudes de Cas' },
-    ]},
+    { name: 'Bibliotheque', link: 'hub-cours.html', id: 'hub-cours' },
     { name: 'Psychologie', items: [
       { id: 'psychologie-trader',  label: 'Psychologie du Trader' },
     ]},
@@ -63,12 +61,17 @@
   const ARROW = `<svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-left:4px;"><path d="M1 1l4 4 4-4"/></svg>`;
 
   function isActive(cat) {
+    if (cat.link) return cat.id === filename;
     return cat.items.some(m => m.id === filename);
   }
 
   function buildDropdowns() {
     return CATS.map(cat => {
       const active = isActive(cat);
+      // Lien direct (sans dropdown)
+      if (cat.link) {
+        return `<div class="aa-dropdown"><a href="${cat.link}" class="aa-cat ${active ? 'aa-cat-on' : ''}" style="text-decoration:none;">${cat.name}</a></div>`;
+      }
       const items = cat.items.map(m => {
         const href = m.href || (m.id + '.html');
         return `<a href="${href}" class="aa-drop-item ${filename === m.id ? 'aa-on' : ''}">${m.label}</a>`;
