@@ -168,20 +168,27 @@
     // Admin = pas de watermark, pas de restrictions
     if (username === 'Admin') return;
 
-    // 1. WATERMARK ultra-discret (uniquement pour les eleves)
-    var wm = document.createElement('div');
-    wm.id = 'aa-watermark';
-    wm.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;overflow:hidden;opacity:0.02;';
-    var wmText = '';
-    for (var i = 0; i < 15; i++) {
-      wmText += '<div style="white-space:nowrap;transform:rotate(-25deg);color:#000;font-size:11px;font-family:monospace;letter-spacing:6px;line-height:100px;margin-left:' + ((i%3)*-100) + 'px;">';
-      for (var j = 0; j < 5; j++) {
-        wmText += username + ' &nbsp;&nbsp;&nbsp;&nbsp; ';
+    // 1. WATERMARK visible — pseudo + date/heure pour tracer toute capture
+    function makeWatermark() {
+      var existing = document.getElementById('aa-watermark');
+      if (existing) existing.remove();
+      var wm = document.createElement('div');
+      wm.id = 'aa-watermark';
+      wm.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;overflow:hidden;opacity:0.12;';
+      var stamp = new Date().toISOString().replace('T',' ').slice(0,16);
+      var tag = username + ' · ' + stamp;
+      var wmText = '';
+      for (var i = 0; i < 20; i++) {
+        wmText += '<div style="white-space:nowrap;transform:rotate(-28deg);color:#000;font-size:13px;font-weight:600;font-family:monospace;letter-spacing:4px;line-height:90px;margin-left:' + ((i%3)*-120) + 'px;">';
+        for (var j = 0; j < 6; j++) { wmText += tag + ' &nbsp;&nbsp; '; }
+        wmText += '</div>';
       }
-      wmText += '</div>';
+      wm.innerHTML = wmText;
+      document.body.appendChild(wm);
     }
-    wm.innerHTML = wmText;
-    document.body.appendChild(wm);
+    makeWatermark();
+    // Refresh toutes les 30s pour nouveau timestamp (les captures deviennent datées)
+    setInterval(makeWatermark, 30000);
 
     // 2. ANTI-SCREENSHOT
     var shield = document.createElement('div');
@@ -192,19 +199,47 @@
 
     window.addEventListener('blur', function() { shield.style.display = 'flex'; });
     window.addEventListener('focus', function() { shield.style.display = 'none'; });
+    // Détecte aussi tab switch / alt+tab / perte de visibilité
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden) shield.style.display = 'flex';
+      else shield.style.display = 'none';
+    });
+    // Bloque impression via CSS (print media = vide total)
+    var printStyle = document.createElement('style');
+    printStyle.textContent = '@media print { html, body { display: none !important; visibility: hidden !important; } *, *::before, *::after { display: none !important; } }';
+    document.head.appendChild(printStyle);
+    // Flash le shield au beforeprint aussi
+    window.addEventListener('beforeprint', function() { shield.style.display = 'flex'; });
 
-    // 3. Protections clavier
+    // 3. Protections clavier (élargies)
     document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
     document.body.style.userSelect = 'none';
     document.body.style.webkitUserSelect = 'none';
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'PrintScreen') { e.preventDefault(); shield.style.display = 'flex'; }
-      if (e.ctrlKey && e.shiftKey && e.key === 'S') e.preventDefault();
-      if (e.ctrlKey && e.key === 'p') e.preventDefault();
-      if (e.ctrlKey && e.key === 's') e.preventDefault();
+      // Screenshot / capture
+      if (e.key === 'PrintScreen') { e.preventDefault(); shield.style.display = 'flex'; navigator.clipboard && navigator.clipboard.writeText(''); }
+      // Win+Shift+S (Snipping Tool Windows)
+      if (e.shiftKey && (e.key === 'S' || e.key === 's') && (e.metaKey || e.getModifierState('Meta'))) { e.preventDefault(); shield.style.display = 'flex'; }
+      if (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's')) { e.preventDefault(); shield.style.display = 'flex'; }
+      // Save / Print
+      if (e.ctrlKey && (e.key === 'p' || e.key === 'P')) { e.preventDefault(); shield.style.display = 'flex'; }
+      if (e.ctrlKey && (e.key === 's' || e.key === 'S')) e.preventDefault();
+      // Devtools
       if (e.key === 'F12') e.preventDefault();
-      if (e.ctrlKey && e.shiftKey && e.key === 'I') e.preventDefault();
-      if (e.ctrlKey && e.key === 'u') e.preventDefault();
+      if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) e.preventDefault();
+      if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) e.preventDefault();
+      if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) e.preventDefault();
+      // View source
+      if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) e.preventDefault();
+      // Copy (évite copier-coller gros blocs)
+      if (e.ctrlKey && (e.key === 'c' || e.key === 'C')) { /* laissé, sélection désactivée de toute façon */ }
     });
+    // Détection devtools ouverte via taille fenêtre — shield activé
+    var devtoolsCheck = setInterval(function() {
+      var threshold = 160;
+      if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
+        shield.style.display = 'flex';
+      }
+    }, 1000);
   }
 })();
