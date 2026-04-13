@@ -1,7 +1,8 @@
 /* ── ALGORITHMIC ACADEMY — Readability (Theme Clair) ── */
 
-/* Texte principal noir */
-body {
+/* Fond clair + texte noir */
+html, body {
+  background: #f5f7fa !important;
   color: #000 !important;
 }
 
