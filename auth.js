@@ -8,15 +8,25 @@
   const USER_KEY = 'aa_user';
   const ALLOW_KEY = 'aa_allow';
 
-  // Tokens révoqués (username + tier). Si un élève entre un token dans cette
-  // liste, il est rejeté comme invalide.
+  // Tokens révoqués par (username + tier) — bloque tous les tokens Premium/Starter d'un user
   const REVOKED = [
-    { user: 'elgavacho8421', tier: 'premium' }, // ancien token Premium révoqué
-    { user: 'elgavacho8421', tier: 'starter' }  // par précaution
+    { user: 'elgavacho8421', tier: 'premium' },
+    { user: 'elgavacho8421', tier: 'starter' }
+  ];
+  // Tokens complets révoqués (chaîne exacte AA-X-...) — pour révoquer un Custom précis
+  const REVOKED_TOKENS = [
+    // Ancien AA-C- de elgavacho8421 avec 2 modules (architecture-niveaux + niveaux-algorithmiques)
+    'AA-C-ZWxnYXZhY2hvODQyMXxhcmNoaXRlY3R1cmUtbml2ZWF1eCxuaXZlYXV4LWFsZ29yaXRobWlxdWVz'
   ];
   function isRevoked(username, tier) {
     for (var i = 0; i < REVOKED.length; i++) {
       if (REVOKED[i].user === username && REVOKED[i].tier === tier) return true;
+    }
+    return false;
+  }
+  function isRevokedToken(token) {
+    for (var i = 0; i < REVOKED_TOKENS.length; i++) {
+      if (REVOKED_TOKENS[i] === token) return true;
     }
     return false;
   }
@@ -49,6 +59,7 @@
   function decodeToken(pwd) {
     try {
       if (!pwd.startsWith('AA-')) return null;
+      if (isRevokedToken(pwd)) return null; // Token exact révoqué
       var parts = pwd.split('-');
       if (parts.length < 3) return null;
       var tier = parts[1].toLowerCase();
@@ -97,7 +108,20 @@
     } catch(e) {}
   }
 
-  if (savedAuth === 'valid' && savedUser && savedTier && isRevoked(savedUser, savedTier)) {
+  // Si la session correspond à un ancien Custom révoqué (même user + même liste)
+  function isRevokedCustomSession(user, tier, allow) {
+    if (tier !== 'custom') return false;
+    var signature = user + '|' + (allow || []).slice().sort().join(',');
+    var REVOKED_CUSTOM_SIG = [
+      'elgavacho8421|architecture-niveaux,niveaux-algorithmiques'
+    ];
+    for (var i = 0; i < REVOKED_CUSTOM_SIG.length; i++) {
+      if (REVOKED_CUSTOM_SIG[i] === signature) return true;
+    }
+    return false;
+  }
+
+  if (savedAuth === 'valid' && savedUser && savedTier && (isRevoked(savedUser, savedTier) || isRevokedCustomSession(savedUser, savedTier, savedAllow))) {
     forceLogout();
     location.reload();
     return;
@@ -107,7 +131,9 @@
   window.addEventListener('pageshow', function(e) {
     var t = sessionStorage.getItem(TIER_KEY);
     var u = sessionStorage.getItem(USER_KEY);
-    if (u && t && isRevoked(u, t)) {
+    var a = [];
+    try { a = JSON.parse(sessionStorage.getItem(ALLOW_KEY) || '[]'); } catch(e2) {}
+    if (u && t && (isRevoked(u, t) || isRevokedCustomSession(u, t, a))) {
       forceLogout();
       location.reload();
     }
