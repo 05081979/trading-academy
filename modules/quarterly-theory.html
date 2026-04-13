@@ -1,63 +1,80 @@
 <!DOCTYPE html>
 <html lang="fr" data-tier="starter">
 <head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(function(){
+  try {
+    fetch('../version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v=(v||'').trim(); if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){ localStorage.setItem(k,v); location.replace(location.pathname+'?_cb='+v+location.hash); }
+        else localStorage.setItem(k,v);
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
 <meta charset="UTF-8">
-<script src="../auth.js"></script>
-<script src="../pine-guard.js"></script>
+<script src="../auth.js?v=v20260413-revoke2"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AA — Quarterly Theory Cycles</title>
+<title>Quarterly Theory — Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../readability.css?v=v20260413-revoke2">
+<link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
-
   :root {
-    --bg: #07080b;
-    --s1: #0e1116;
-    --s2: #13171e;
-    --s3: #191e27;
-    --bd: #1c2230;
-    --bd2: #232c3a;
-    --gold: #c8a228;
-    --gold2: #e5bc3c;
-    --blue: #3d82e0;
-    --green: #2ec974;
-    --red: #e05050;
-    --orange: #e08830;
-    --purple: #9b72e0;
-    --cyan: #28bfcf;
-    --text: #cdd5e2;
-    --t2: #8594a8;
-    --t3: #4a5668;
+    --bg: #f5f7fa;
+    --s1: #ffffff;
+    --s2: #f8fafc;
+    --s3: #eef2f7;
+    --bd: #e2e5ea;
+    --bd2: #d1d5db;
+    --gold: #b8860b;
+    --gold2: #d4a017;
+    --blue: #2563eb;
+    --green: #059669;
+    --red: #dc2626;
+    --orange: #ea580c;
+    --purple: #7c3aed;
+    --cyan: #0891b2;
+    --text: #1a1a2e;
+    --t2: #475569;
+    --t3: #94a3b8;
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.6; }
 
-  .banner { background: var(--s1); border-bottom: 1px solid var(--bd2); padding: 36px 56px 32px; position: relative; }
-  .banner::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg, transparent 0%, var(--gold) 30%, var(--gold2) 50%, var(--gold) 70%, transparent 100%); }
-  .banner-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
-  .banner h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: #fff; line-height: 1.1; }
+  .banner { background: linear-gradient(135deg, #1a1a2e 0%, #2d2d4a 100%); color: #fff; padding: 56px 56px 44px; position: relative; overflow: hidden; }
+  .banner::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background: linear-gradient(90deg, transparent 0%, var(--gold) 30%, var(--gold2) 50%, var(--gold) 70%, transparent 100%); }
+  .banner-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--gold2); text-transform: uppercase; margin-bottom: 12px; }
+  .banner h1 { font-family: 'Syne', sans-serif; font-size: clamp(30px, 4vw, 44px); font-weight: 800; color: #fff; line-height: 1.1; letter-spacing: -0.01em; }
   .banner h1 em { color: var(--gold2); font-style: normal; }
-  .banner-sub { margin-top: 10px; color: var(--t2); font-size: 13px; max-width: 700px; line-height: 1.6; }
+  .banner-sub { margin-top: 14px; color: rgba(255,255,255,0.75); font-size: 15px; max-width: 720px; line-height: 1.6; }
 
-  .container { max-width: 1100px; margin: 0 auto; padding: 32px 40px; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 32px; }
 
-  .section { background: var(--s1); border: 1px solid var(--bd); border-radius: 10px; padding: 28px 32px; margin-bottom: 24px; }
-  .section-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section { background: var(--s1); border: 1px solid var(--bd); border-radius: 14px; padding: 32px 36px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+  .section-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
   .section-title .dot { width: 8px; height: 8px; border-radius: 50%; }
 
-  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
-  @media(max-width:800px) { .concept-grid { grid-template-columns: 1fr; } .container { padding: 16px; } .banner { padding: 24px; } }
+  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+  @media(max-width:800px) { .concept-grid { grid-template-columns: 1fr; } .container { padding: 20px 16px; } .banner { padding: 36px 24px; } }
 
-  .concept-card { background: var(--s2); border: 1px solid var(--bd); border-radius: 8px; padding: 18px 20px; }
-  .concept-card h3 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--gold2); margin-bottom: 8px; }
-  .concept-card p { color: var(--t2); line-height: 1.7; font-size: 12px; }
+  .concept-card { background: var(--s2); border: 1px solid var(--bd); border-radius: 10px; padding: 20px 22px; }
+  .concept-card h3 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--gold); margin-bottom: 10px; }
+  .concept-card p { color: var(--t2); line-height: 1.7; font-size: 13px; }
   .concept-card.full { grid-column: 1 / -1; }
 
-  .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 9px; padding: 2px 8px; border-radius: 4px; margin-right: 4px; margin-bottom: 4px; }
-  .tag-blue { background: rgba(61,130,224,0.12); color: var(--blue); }
-  .tag-green { background: rgba(46,201,116,0.10); color: var(--green); }
-  .tag-orange { background: rgba(224,136,48,0.10); color: var(--orange); }
-  .tag-red { background: rgba(224,80,80,0.10); color: var(--red); }
+  .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 3px 10px; border-radius: 5px; margin-right: 5px; margin-bottom: 5px; font-weight: 500; }
+  .tag-blue { background: rgba(37,99,235,0.10); color: var(--blue); }
+  .tag-green { background: rgba(5,150,105,0.10); color: var(--green); }
+  .tag-orange { background: rgba(234,88,12,0.10); color: var(--orange); }
+  .tag-red { background: rgba(220,38,38,0.10); color: var(--red); }
   .tag-purple { background: rgba(155,114,224,0.10); color: var(--purple); }
   .tag-cyan { background: rgba(40,191,207,0.10); color: var(--cyan); }
 
@@ -81,18 +98,13 @@
 </head>
 <body>
 <script src="../nav.js"></script>
-<link rel="stylesheet" href="../readability.css">
 
 <div class="banner">
-  <div class="banner-eyebrow">Module 22 &mdash; Indicateur Pine Script</div>
-  <h1>AA &mdash; <em>Quarterly Theory Cycles</em></h1>
+  <div class="banner-eyebrow">Cours complet &mdash; Temps &amp; Cycles</div>
+  <h1>Quarterly <em>Theory</em></h1>
   <p class="banner-sub">
-    Quarterly Theory complete avec pane visuel des sessions (Asia/London/NYAM/NYPM), cycles overlay du Yearly au Micro, True Opens pour chaque niveau de temps, et table Above/Below alignee sur 18:00 ET.
+    Le temps est fractal. True Opens, AMDX/XAMD, cycles Yearly &rarr; Micro, SSMT, AOI et modeles d'entree. Le meme principe structurel se repete de l'annee au cycle de 22 minutes.
   </p>
-  <div class="btn-row">
-    <a class="btn btn-gold" href="../pdf/qt-cycles-guide.html" target="_blank">Telecharger le Guide PDF</a>
-    <a class="btn btn-gold" href="../pine/qt-cycles.pine" download>Telecharger le .pine</a>
-  </div>
 </div>
 
 <div class="container">
