@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="starter">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(function(){
+  try {
+    fetch('../version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v=(v||'').trim(); if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){ localStorage.setItem(k,v); location.replace(location.pathname+'?_cb='+v+location.hash); }
+        else localStorage.setItem(k,v);
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<script src="../auth.js?v=v20260413-revoke2"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mental Game — Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../readability.css?v=v20260413-revoke2">
+<link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
+<style>
+:root {
+  --bg:#f5f7fa; --s1:#fff; --s2:#f8fafc; --bd:#e2e5ea;
+  --gold:#b8860b; --gold2:#d4a017;
+  --blue:#2563eb; --green:#059669; --red:#dc2626;
+  --orange:#ea580c; --purple:#7c3aed; --cyan:#0891b2;
+  --text:#1a1a2e; --t2:#475569; --t3:#94a3b8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;}
+.banner{background:linear-gradient(135deg,#1a1a2e 0%,#2d2d4a 100%);color:#fff;padding:56px 56px 44px;position:relative;overflow:hidden;}
+.banner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 0%,var(--gold) 30%,var(--gold2) 50%,var(--gold) 70%,transparent 100%);}
+.banner-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--gold2);text-transform:uppercase;margin-bottom:12px;}
+.banner h1{font-family:'Syne',sans-serif;font-size:clamp(30px,4vw,44px);font-weight:800;color:#fff;line-height:1.1;letter-spacing:-0.01em;}
+.banner h1 em{color:var(--gold2);font-style:normal;}
+.banner-sub{margin-top:14px;color:rgba(255,255,255,0.75);font-size:15px;max-width:720px;line-height:1.6;}
+.container{max-width:1100px;margin:0 auto;padding:40px 32px;}
+.module{margin-bottom:36px;}
+.mod-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd);}
+.mod-num{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;padding:4px 10px;border-radius:4px;background:rgba(184,134,11,0.12);color:var(--gold);}
+.mod-head h2{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text);letter-spacing:-0.01em;}
+.section{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:28px 32px;margin-bottom:18px;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.section-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.section-title .dot{width:7px;height:7px;border-radius:50%;}
+p.lede{color:var(--t2);line-height:1.75;font-size:14px;}
+p.lede + p.lede{margin-top:10px;}
+.concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
+@media(max-width:800px){.concept-grid{grid-template-columns:1fr;}.container{padding:24px 16px;}.banner{padding:36px 24px;}}
+.concept-card{background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:18px 20px;}
+.concept-card h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--gold);margin-bottom:8px;}
+.concept-card p{color:var(--t2);line-height:1.7;font-size:13px;}
+.concept-card p + p{margin-top:8px;}
+.concept-card.full{grid-column:1 / -1;}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px;}
+th{text-align:left;padding:9px 12px;background:var(--s2);color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;border-bottom:1px solid var(--bd);}
+td{padding:9px 12px;border-bottom:1px solid var(--bd);color:var(--t2);}
+.list-styled{padding-left:20px;margin-top:8px;}
+.list-styled li{color:var(--t2);line-height:1.8;font-size:13px;}
+.list-styled li strong{color:var(--text);}
+.highlight{color:var(--gold2);font-weight:600;}
+.callout{border-left:3px solid var(--gold);background:rgba(212,160,23,0.06);padding:14px 18px;border-radius:0 8px 8px 0;margin-top:14px;}
+.callout.red{border-left-color:var(--red);background:rgba(220,38,38,0.05);}
+.callout.green{border-left-color:var(--green);background:rgba(5,150,105,0.05);}
+.callout.blue{border-left-color:var(--blue);background:rgba(37,99,235,0.05);}
+.callout-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.callout.red .callout-title{color:var(--red);} .callout.green .callout-title{color:var(--green);} .callout.blue .callout-title{color:var(--blue);}
+.callout p{color:var(--t2);font-size:13px;line-height:1.7;}
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+<div class="banner">
+  <div class="banner-eyebrow">PSYCHOLOGIE — 3 MODULES</div>
+  <h1>Mental <em>Game</em></h1>
+  <p class="banner-sub">Backtesting structuré, tape reading, cartographie émotionnelle et responsabilisation — le système mental qui rend la méthode reproductible.</p>
+</div>
+<div class="container">
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 01</span><h2>Backtesting méthodique</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--gold)"></span>Sessions structurées</div>
+      <p class="lede">Le backtesting n'est pas une activité libre ou récréative. C'est une <strong>session de travail définie dans le temps, l'espace et le protocole</strong>. Sans structure, c'est du scroll qui imite le test sans en produire les bénéfices.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Durée</h3>
+          <p>90 minutes maximum par session. Au-delà, la qualité d'attention décline et les trades sont notés sans réflexion.</p>
+          <p>Deux sessions par jour maximum, avec pause de 2h minimum entre elles.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Volume</h3>
+          <p>Entre 10 et 25 trades par session selon le TF. Plus c'est HTF, plus chaque trade prend de temps à analyser.</p>
+          <p>Éviter la course au chiffre ; 15 trades bien notés valent 50 trades survolés.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Protocole</h3>
+          <p>Une seule stratégie par session. Pas de switch entre modèles.</p>
+          <p>Conditions figées (horaires, actif, TF, critères d'entrée), reproductible d'une session à l'autre.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Enregistrement</h3>
+          <p>Capture d'écran à l'entrée, à la sortie, au TP/SL.</p>
+          <p>Commentaire court (&lt; 50 mots) : contexte, raison d'entrée, résultat, apprentissage.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--blue)"></span>Métriques de suivi</div>
+      <table>
+        <thead><tr><th>Métrique</th><th>Formule</th><th>Cible</th></tr></thead>
+        <tbody>
+          <tr><td>Taux de réussite</td><td>Trades gagnants / total</td><td>&gt; 50% pour RR moyen 1:2</td></tr>
+          <tr><td>RR moyen</td><td>Somme gains / Somme pertes</td><td>&gt; 1.8:1</td></tr>
+          <tr><td>Profit factor</td><td>Total gains / total pertes</td><td>&gt; 1.5</td></tr>
+          <tr><td>Expectancy</td><td>(Win% × Avg win) − (Loss% × Avg loss)</td><td>Positive et stable</td></tr>
+          <tr><td>Max consecutive losses</td><td>Série perdante la plus longue</td><td>Comparer au DD supportable</td></tr>
+          <tr><td>Respect du plan</td><td>Trades conformes / total</td><td>&gt; 90%</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <div class="callout-title">Priorité</div>
+        <p>Le "respect du plan" est la métrique la plus importante. Une stratégie avec 60% de respect et 55% de winrate est une stratégie qu'on ne connaît pas vraiment.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--purple)"></span>Revue hebdomadaire</div>
+      <p class="lede">Chaque fin de semaine, une revue de 60 minutes minimum consolide les apprentissages. Sans revue, le backtest reste un amas de notes non actionnables.</p>
+      <ul class="list-styled">
+        <li><strong>Compter les trades par famille</strong> — setups A/B/C, TFs, heures.</li>
+        <li><strong>Identifier le pattern gagnant et le pattern perdant</strong> de la semaine.</li>
+        <li><strong>Écrire un apprentissage</strong> concret, actionnable, mesurable pour la semaine suivante.</li>
+        <li><strong>Mettre à jour les règles</strong> si un pattern perdant se répète 3+ fois.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--cyan)"></span>Tape Reading</div>
+      <p class="lede">Le tape reading est <strong>l'observation en temps réel</strong> du flux d'ordres et du comportement bougie par bougie, sans prendre de position. C'est l'entraînement le plus sous-estimé et l'un des plus puissants.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Objectif</h3>
+          <p>Développer l'intuition contextuelle : sentir quand le marché "respire", quand il accumule, quand il s'apprête à partir.</p>
+          <p>Cette lecture ne s'apprend pas sur livre, seulement par immersion.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Protocole</h3>
+          <p>30 à 60 minutes par jour, hors position, journal ouvert.</p>
+          <p>Noter 3 observations par session : une structure, une manipulation, une confluence.</p>
+        </div>
+      </div>
+      <div class="callout green">
+        <div class="callout-title">Bénéfice</div>
+        <p>Après 3 mois de tape reading quotidien, la qualité d'entrée en conditions réelles s'améliore mesurablement : moins d'entrées précoces, meilleurs stops, réduction des trades forcés.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 02</span><h2>Cartographie émotionnelle — tilt, peur, ego</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--red)"></span>Le tilt — reconnaissance et sortie</div>
+      <p class="lede">Le tilt est un <strong>état émotionnel altéré dans lequel la décision rationnelle n'est plus accessible</strong>. Il se déclenche typiquement après une perte non absorbée, une série perdante, ou un trade "injuste".</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Symptômes physiques</h3>
+          <p>Accélération cardiaque, mâchoire serrée, souffle court, agitation corporelle.</p>
+          <p>Ces signaux sont fiables : le corps alerte avant que la conscience ne reconnaisse l'état.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Symptômes comportementaux</h3>
+          <p>Ouverture de la plateforme sans plan, regard fixe sur le prix, envie de "revanche", justifications rapides pour entrer.</p>
+          <p>Multiplication des tabs, scroll frénétique, vérification obsessionnelle du compte.</p>
+        </div>
+      </div>
+      <div class="callout red">
+        <div class="callout-title">Protocole anti-tilt</div>
+        <p>Dès détection : fermeture plateforme, éloignement physique de l'écran, 20 minutes minimum hors trading, activité physique ou respiration. Pas de reprise le même jour si intensité forte.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--orange)"></span>La peur — les trois formes</div>
+      <table>
+        <thead><tr><th>Forme</th><th>Manifestation</th><th>Antidote</th></tr></thead>
+        <tbody>
+          <tr><td>Peur de perdre</td><td>Ne pas entrer sur un setup valide, coupes prématurées</td><td>Sizing juste, plan écrit, automation des exécutions</td></tr>
+          <tr><td>Peur de rater (FOMO)</td><td>Entrées hors plan, en retard sur le move</td><td>Accepter qu'un trade manqué n'a aucun coût réel</td></tr>
+          <tr><td>Peur de se tromper</td><td>Refus d'invalider, hold d'un trade perdant au-delà du SL</td><td>Rebaptiser "erreur" en "donnée", invalidation = information</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--purple)"></span>L'ego — le saboteur silencieux</div>
+      <p class="lede">L'ego n'est pas une émotion — c'est une <strong>structure d'identité</strong> qui cherche à se préserver. En trading, il pousse à avoir raison plutôt qu'à gagner, à montrer ses gains plutôt qu'à les protéger, à justifier ses pertes plutôt qu'à les analyser.</p>
+      <ul class="list-styled">
+        <li><strong>Symptôme 1 — refus de couper une perte</strong> : "le marché va revenir", en réalité "je ne veux pas avoir tort".</li>
+        <li><strong>Symptôme 2 — over-sizing après un gain</strong> : "j'ai compris le marché", en réalité "je veux prouver".</li>
+        <li><strong>Symptôme 3 — partage excessif des gains</strong> : visibilité sociale qui nourrit l'ego et déforme les décisions suivantes.</li>
+        <li><strong>Symptôme 4 — mépris des autres traders</strong> : signal typique d'un ego en surchauffe, souvent suivi d'un DD majeur.</li>
+      </ul>
+      <div class="callout blue">
+        <div class="callout-title">Remède</div>
+        <p>Pratiquer l'humilité mesurable : journaliser les pertes avec le même détail que les gains, ne pas annoncer ses positions, considérer chaque trade comme un échantillon sans importance dans un processus long.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--cyan)"></span>Systèmes de croyances limitants</div>
+      <p class="lede">Les croyances limitantes sont des <strong>phrases silencieuses que le trader se dit sans s'en rendre compte</strong> et qui sabotent ses décisions.</p>
+      <table>
+        <thead><tr><th>Croyance limitante</th><th>Conséquence</th><th>Reformulation</th></tr></thead>
+        <tbody>
+          <tr><td>"Je dois trader chaque jour"</td><td>Over-trading, DD récurrent</td><td>"Je trade quand l'environnement le justifie"</td></tr>
+          <tr><td>"Je dois récupérer ma perte"</td><td>Tilt, revenge trading</td><td>"Chaque trade est indépendant du précédent"</td></tr>
+          <tr><td>"Le marché me doit quelque chose"</td><td>Colère, mauvaise exécution</td><td>"Le marché est neutre, mes décisions sont ma seule variable"</td></tr>
+          <tr><td>"Les autres gagnent plus que moi"</td><td>Comparaison, déviation</td><td>"Mon chemin est indépendant, ma métrique est interne"</td></tr>
+          <tr><td>"Je ne suis pas fait pour ça"</td><td>Abandon, auto-sabotage</td><td>"La compétence s'acquiert par répétition structurée"</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 03</span><h2>Toolset mental & responsabilisation</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--green)"></span>Routine pré-session</div>
+      <p class="lede">Une routine pré-session de 15 à 20 minutes installe l'état optimal avant de toucher le marché. Sans routine, l'esprit arrive chargé d'émotions résiduelles et prend des décisions biaisées dès la première bougie.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Corps</h3>
+          <p>5 minutes de mouvement physique (marche, étirements, respiration).</p>
+          <p>Posture debout ou assise droite pendant la session, hydratation préparée.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Environnement</h3>
+          <p>Écran nettoyé, plateforme configurée, notifications non essentielles coupées.</p>
+          <p>Musique neutre ou silence, température stable.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Esprit</h3>
+          <p>Relire le plan de la journée à voix haute.</p>
+          <p>Visualiser deux scénarios : trade gagnant classique, trade perdant classique.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Intention</h3>
+          <p>Définir une intention qualitative (pas quantitative) : "respecter le plan", "attendre le setup A+".</p>
+          <p>Pas d'objectif en euros.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--orange)"></span>Debriefing post-session</div>
+      <p class="lede">La session ne se termine pas à la dernière bougie, mais <strong>20 minutes plus tard</strong>, une fois le debriefing écrit. Sans debriefing, chaque journée est indépendante et la progression s'arrête.</p>
+      <ul class="list-styled">
+        <li><strong>Factuel</strong> — combien de trades, quel P&amp;L, quels setups déclenchés.</li>
+        <li><strong>Qualitatif</strong> — respect du plan (%), émotions ressenties, qualité d'exécution.</li>
+        <li><strong>Apprentissage</strong> — une phrase qui formalise l'enseignement du jour.</li>
+        <li><strong>Action</strong> — un ajustement concret pour le lendemain.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--blue)"></span>Responsabilisation totale</div>
+      <p class="lede">La responsabilisation est le <strong>pilier sans lequel aucune progression n'est possible</strong>. Le marché n'est pas injuste, le broker n'est pas un ennemi, la volatilité n'est pas un piège. Toute perte est la conséquence d'une décision que le trader a prise ou d'une règle qu'il a enfreinte.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Refuser les excuses</h3>
+          <p>"Le marché a fait n'importe quoi", "la news a manipulé" — sont des excuses. Chaque trade a été pris par le trader seul.</p>
+          <p>La responsabilité est le pouvoir : si la perte vient de moi, je peux la corriger. Si elle vient du marché, je suis impuissant.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Journaliser sans filtre</h3>
+          <p>Écrire ce qui s'est réellement passé, pas ce qu'on voudrait y voir.</p>
+          <p>Un journal honnête, même douloureux, transforme les pertes en capital d'apprentissage.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Accepter la solitude du processus</h3>
+          <p>Aucune communauté, aucun mentor, aucune formation ne remplace le travail individuel.</p>
+          <p>Les outils externes accélèrent ; seule la répétition personnelle consolide.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Mesurer, pas juger</h3>
+          <p>Substituer "j'ai été nul" par "métrique X a chuté de Y%".</p>
+          <p>La mesure est actionnable, le jugement est paralysant.</p>
+        </div>
+      </div>
+      <div class="callout green">
+        <div class="callout-title">Principe directeur</div>
+        <p>Le trader mature ne se voit pas comme quelqu'un qui gagne ou perd de l'argent, mais comme quelqu'un qui exécute un processus. Le P&amp;L est le sous-produit de la qualité du processus, pas un objectif en soi.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--purple)"></span>Toolset quotidien minimal</div>
+      <table>
+        <thead><tr><th>Outil</th><th>Usage</th><th>Durée</th></tr></thead>
+        <tbody>
+          <tr><td>Journal de trading</td><td>Tous les trades, contexte, émotion, leçon</td><td>5 min / trade</td></tr>
+          <tr><td>Routine pré-session</td><td>Corps, environnement, esprit, intention</td><td>15-20 min</td></tr>
+          <tr><td>Debriefing post-session</td><td>Factuel, qualitatif, apprentissage, action</td><td>20 min</td></tr>
+          <tr><td>Revue hebdomadaire</td><td>Métriques, patterns, ajustements</td><td>60 min</td></tr>
+          <tr><td>Revue mensuelle</td><td>Synthèse, décisions de sizing, plan N+1</td><td>2-3h</td></tr>
+          <tr><td>Respiration / méditation</td><td>Régulation nerveuse avant/pendant</td><td>5-10 min quotidien</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <div class="callout-title">Règle</div>
+        <p>Un seul outil suffit à condition d'être appliqué tous les jours. Dix outils utilisés de manière irrégulière ne valent rien. Choisir la constance plutôt que la sophistication.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

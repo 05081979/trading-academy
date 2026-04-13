@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="starter">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(function(){
+  try {
+    fetch('../version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v=(v||'').trim(); if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){ localStorage.setItem(k,v); location.replace(location.pathname+'?_cb='+v+location.hash); }
+        else localStorage.setItem(k,v);
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<script src="../auth.js?v=v20260413-revoke2"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestion du risque & Invalidation — Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../readability.css?v=v20260413-revoke2">
+<link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
+<style>
+:root {
+  --bg:#f5f7fa; --s1:#fff; --s2:#f8fafc; --bd:#e2e5ea;
+  --gold:#b8860b; --gold2:#d4a017;
+  --blue:#2563eb; --green:#059669; --red:#dc2626;
+  --orange:#ea580c; --purple:#7c3aed; --cyan:#0891b2;
+  --text:#1a1a2e; --t2:#475569; --t3:#94a3b8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;}
+.banner{background:linear-gradient(135deg,#1a1a2e 0%,#2d2d4a 100%);color:#fff;padding:56px 56px 44px;position:relative;overflow:hidden;}
+.banner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 0%,var(--gold) 30%,var(--gold2) 50%,var(--gold) 70%,transparent 100%);}
+.banner-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--gold2);text-transform:uppercase;margin-bottom:12px;}
+.banner h1{font-family:'Syne',sans-serif;font-size:clamp(30px,4vw,44px);font-weight:800;color:#fff;line-height:1.1;letter-spacing:-0.01em;}
+.banner h1 em{color:var(--gold2);font-style:normal;}
+.banner-sub{margin-top:14px;color:rgba(255,255,255,0.75);font-size:15px;max-width:720px;line-height:1.6;}
+.container{max-width:1100px;margin:0 auto;padding:40px 32px;}
+.module{margin-bottom:36px;}
+.mod-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd);}
+.mod-num{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;padding:4px 10px;border-radius:4px;background:rgba(184,134,11,0.12);color:var(--gold);}
+.mod-head h2{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text);letter-spacing:-0.01em;}
+.section{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:28px 32px;margin-bottom:18px;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.section-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.section-title .dot{width:7px;height:7px;border-radius:50%;}
+p.lede{color:var(--t2);line-height:1.75;font-size:14px;}
+p.lede + p.lede{margin-top:10px;}
+.concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
+@media(max-width:800px){.concept-grid{grid-template-columns:1fr;}.container{padding:24px 16px;}.banner{padding:36px 24px;}}
+.concept-card{background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:18px 20px;}
+.concept-card h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--gold);margin-bottom:8px;}
+.concept-card p{color:var(--t2);line-height:1.7;font-size:13px;}
+.concept-card p + p{margin-top:8px;}
+.concept-card.full{grid-column:1 / -1;}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px;}
+th{text-align:left;padding:9px 12px;background:var(--s2);color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;border-bottom:1px solid var(--bd);}
+td{padding:9px 12px;border-bottom:1px solid var(--bd);color:var(--t2);}
+.list-styled{padding-left:20px;margin-top:8px;}
+.list-styled li{color:var(--t2);line-height:1.8;font-size:13px;}
+.list-styled li strong{color:var(--text);}
+.highlight{color:var(--gold2);font-weight:600;}
+.callout{border-left:3px solid var(--gold);background:rgba(212,160,23,0.06);padding:14px 18px;border-radius:0 8px 8px 0;margin-top:14px;}
+.callout.red{border-left-color:var(--red);background:rgba(220,38,38,0.05);}
+.callout.green{border-left-color:var(--green);background:rgba(5,150,105,0.05);}
+.callout.blue{border-left-color:var(--blue);background:rgba(37,99,235,0.05);}
+.callout-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.callout.red .callout-title{color:var(--red);} .callout.green .callout-title{color:var(--green);} .callout.blue .callout-title{color:var(--blue);}
+.callout p{color:var(--t2);font-size:13px;line-height:1.7;}
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+<div class="banner">
+  <div class="banner-eyebrow">PROTOCOLE — 4 MODULES</div>
+  <h1>Gestion du risque & <em>Invalidation</em></h1>
+  <p class="banner-sub">Sizing progressif, invalidation formelle temps/prix, sélection d'environnement et planification annuelle — le socle non négociable.</p>
+</div>
+<div class="container">
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 01</span><h2>Risk Management avancé</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--gold)"></span>Sizing progressif</div>
+      <p class="lede">Le sizing fixe (par exemple 1% par trade) est un modèle simpliste. Un <strong>sizing progressif</strong> adapte la taille à la qualité du setup, à la performance récente et à l'environnement macro du jour.</p>
+      <table>
+        <thead><tr><th>Qualité setup</th><th>Critères</th><th>Taille recommandée</th></tr></thead>
+        <tbody>
+          <tr><td>A+</td><td>Confluence HTF + CSD + intermarket + killzone</td><td>1.0% à 1.5% du capital</td></tr>
+          <tr><td>A</td><td>HTF bias + CSD LTF, sans intermarket</td><td>0.75% à 1.0%</td></tr>
+          <tr><td>B</td><td>Setup valide mais contexte moyen</td><td>0.5%</td></tr>
+          <tr><td>C</td><td>Setup limite, forcing, fatigue</td><td>Pas de trade</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--green)"></span>Règle 70/30 pour les partiels</div>
+      <p class="lede">Une gestion de trade professionnelle prend <strong>70% du risque</strong> à un premier objectif proche (typiquement 1:1 à 1:2), et laisse courir <strong>30%</strong> avec trailing structurel vers la cible lointaine.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Partiel 1 (70%)</h3>
+          <p>À 1R ou 2R selon la volatilité. Sécurise la majorité du gain potentiel.</p>
+          <p>Stop du runner déplacé à BE après le partiel.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Runner (30%)</h3>
+          <p>Objectif DoL HTF ou structure majeure.</p>
+          <p>Trailing par swings LTF : chaque nouvelle structure impaire décale le stop.</p>
+        </div>
+      </div>
+      <div class="callout blue">
+        <div class="callout-title">Pourquoi 70/30</div>
+        <p>Équilibre statistique entre lock-in et extension. Sur 100 trades gagnants, 70% garantissent la moyenne, 30% capturent les queues de distribution. Le ratio optimal varie entre 60/40 et 80/20 selon le style.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--purple)"></span>Trailing structurel</div>
+      <p class="lede">Un trailing structurel ne se fait pas sur ATR ou sur pourcentage mais sur <strong>structure</strong>. À chaque nouveau swing LTF imprimé dans le sens du trade, le stop se déplace juste sous/sur ce swing.</p>
+      <p class="lede">Résultat : le trade reste en vie tant que la structure le justifie. Il est éjecté au premier CSD contraire, pas avant.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--red)"></span>DD max journalier / hebdomadaire</div>
+      <table>
+        <thead><tr><th>Limite</th><th>Seuil</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>DD journalier</td><td>-2% du capital</td><td>Arrêt immédiat de la journée</td></tr>
+          <tr><td>DD hebdomadaire</td><td>-4% cumul</td><td>Arrêt jusqu'à la semaine suivante</td></tr>
+          <tr><td>DD mensuel</td><td>-8% cumul</td><td>Pause, revue complète du plan</td></tr>
+          <tr><td>DD trimestriel</td><td>-12%</td><td>Pause longue, remise en cause de la stratégie</td></tr>
+        </tbody>
+      </table>
+      <div class="callout red">
+        <div class="callout-title">Non négociable</div>
+        <p>Aucune exception aux limites. "Un trade de plus pour récupérer" est le réflexe qui tue les comptes. Le stop journalier existe pour protéger du tilt ; l'ignorer le nourrit.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 02</span><h2>Invalidation Levels — cadre formel</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--blue)"></span>Invalidation structurelle par modèle</div>
+      <p class="lede">Chaque modèle d'entrée a un point d'invalidation naturel, non arbitraire. Le stop ne se place pas "où ça fait mal le moins" mais <strong>là où la thèse du trade devient fausse</strong>.</p>
+      <table>
+        <thead><tr><th>Modèle</th><th>Invalidation prix</th><th>Invalidation temps</th></tr></thead>
+        <tbody>
+          <tr><td>FVG standard</td><td>Close au-delà du bord opposé du FVG</td><td>4 bougies TF de trigger sans suivi</td></tr>
+          <tr><td>OB swing</td><td>Close au-delà de l'extrême de l'OB</td><td>6 bougies sans réaction</td></tr>
+          <tr><td>Breaker</td><td>Close au-delà de l'OB flippé</td><td>5 bougies sans accélération</td></tr>
+          <tr><td>BPR</td><td>Close hors zone d'overlap</td><td>3 bougies, zone restreinte, réaction attendue vite</td></tr>
+          <tr><td>CSD retest</td><td>Close qui referme le FVG de cassure</td><td>4 bougies sans relais</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--orange)"></span>Invalidation temps vs prix</div>
+      <p class="lede">Un trade peut être invalidé <strong>avant</strong> d'avoir touché le SL, par le simple fait que le marché n'a pas réagi dans le temps attendu. Cette invalidation par le temps est le plus grand protecteur du capital.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Règle des 4 bougies</h3>
+          <p>Sur TF de trigger (M5 ou M15), si le trade n'a pas généré d'impulsion dans le sens attendu dans les 4 bougies, la thèse est probablement fausse.</p>
+          <p>Sortie manuelle à BE ou légère perte, pas au SL.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Règle de la killzone</h3>
+          <p>Si l'entrée a lieu en killzone et que le trade n'a pas abouti à 1R à la fin de la killzone, sortie manuelle.</p>
+          <p>Les setups valables accélèrent dans leur fenêtre temporelle.</p>
+        </div>
+      </div>
+      <div class="callout">
+        <div class="callout-title">Avantage</div>
+        <p>Invalidation temps = baisse du loss moyen. Au lieu de prendre -1R à chaque invalidation, on prend -0.3R à -0.5R sur une grosse proportion des trades perdants.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 03</span><h2>Environment Selection</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--green)"></span>Pré-filtre : ce qu'on trade vs ce qu'on évite</div>
+      <p class="lede">Un environnement de trading favorable est un environnement où les setups ont une probabilité statistique supérieure. Trader hors de ces fenêtres, c'est réduire volontairement son edge.</p>
+      <table>
+        <thead><tr><th>Élément</th><th>Trade autorisé</th><th>Trade interdit</th></tr></thead>
+        <tbody>
+          <tr><td>Calendrier éco</td><td>Pas de news rouge dans les 60 min</td><td>News rouge imminente (&lt; 30 min)</td></tr>
+          <tr><td>Session</td><td>Killzone Londres ou NY AM</td><td>Fin Asie, transition Londres→NY déjà terminée, après 16:00 ET</td></tr>
+          <tr><td>Jour</td><td>Mardi – jeudi</td><td>Lundi avant 10:00, vendredi après 12:00, veille de férié</td></tr>
+          <tr><td>Volatilité</td><td>ATR normal à élevé</td><td>ATR écrasé (souvent avant news majeure)</td></tr>
+          <tr><td>Volume</td><td>Volume réel (indices : session cash)</td><td>Volume fantôme (futures après 17:00 ET)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--red)"></span>No-trade days</div>
+      <ul class="list-styled">
+        <li><strong>Jours fériés US</strong> — marchés fermés ou volumes ridicules, tout setup est suspect.</li>
+        <li><strong>Veilles de férié</strong> — liquidité désertée, comportement erratique.</li>
+        <li><strong>Lendemain de FOMC matin</strong> — résolution en cours, narrative instable.</li>
+        <li><strong>Semaines OpEx, vendredi</strong> — pinning autour des strikes, signaux déformés.</li>
+        <li><strong>Jours avec NFP / CPI / FOMC</strong> — trader uniquement post-09:30 ET (ou post-15:15 pour FOMC).</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--cyan)"></span>Checklist environnement (5 secondes avant trade)</h2></div>
+      <ol class="list-styled">
+        <li>Suis-je en killzone valide ?</li>
+        <li>Pas de news rouge dans les 60 min ?</li>
+        <li>Jour de la semaine favorable ?</li>
+        <li>Volatilité normale (ATR cohérent) ?</li>
+        <li>Pas de DD journalier déjà atteint ?</li>
+      </ol>
+      <div class="callout green">
+        <div class="callout-title">Usage</div>
+        <p>Les 5 cases doivent être cochées avant d'envoyer l'ordre. Si une seule est rouge, annulation du trade. Le coût d'un trade manqué est nul ; le coût d'un trade forcé est récurrent.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 04</span><h2>Planification annuelle</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--gold)"></span>Objectifs structurés</div>
+      <p class="lede">Un plan annuel performant ne cible pas un rendement absolu mais une <strong>séquence de milestones qualitatifs et quantitatifs</strong>. Objectifs quantitatifs : rendement, profit factor, DD max. Objectifs qualitatifs : discipline, cohérence, respect du process.</p>
+      <table>
+        <thead><tr><th>Trimestre</th><th>Focus</th><th>Métriques clés</th></tr></thead>
+        <tbody>
+          <tr><td>Q1</td><td>Consolidation du process</td><td>Taux de respect du plan, journalisation complète</td></tr>
+          <tr><td>Q2</td><td>Optimisation setups</td><td>Profit factor par type de setup, élimination des setups C</td></tr>
+          <tr><td>Q3</td><td>Scaling contrôlé</td><td>Augmentation sizing progressive, maintien DD</td></tr>
+          <tr><td>Q4</td><td>Synthèse et planification N+1</td><td>Revue complète, remise en cause structurelle</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--blue)"></span>Phases de la courbe d'équité</div>
+      <p class="lede">Toute courbe d'équité suit quatre phases : <strong>apprentissage, cohérence, scaling, maturité</strong>. Identifier sa phase permet d'ajuster les attentes et le sizing.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Apprentissage</h3>
+          <p>Capital au minimum requis, objectif = maîtriser le process, pas générer du profit. DD serré, taille très réduite. Durée : 6 à 18 mois.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Cohérence</h3>
+          <p>Résultats réguliers mois par mois, profit factor stable. Objectif : ne pas casser la régularité. Augmentations de sizing minimes.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Scaling</h3>
+          <p>Augmentation progressive du capital et de la taille. Objectif : maintenir la même discipline avec plus d'argent en jeu. Risque psychologique principal : ego.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Maturité</h3>
+          <p>Trading "ennuyeux", décisions robotiques. Objectif : transmission, automatisation, préservation. Piège : lassitude et déviation tardive.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--purple)"></span>Flowcharts décisionnels par scénario</div>
+      <p class="lede">Pour chaque scénario majeur, un flowchart pré-défini court-circuite la décision en temps réel. Trois flowcharts à rédiger au minimum.</p>
+      <ul class="list-styled">
+        <li><strong>Flowchart A — Début de journée</strong> : checklist sessions, calendrier, niveaux HTF, définition du biais, sélection des actifs.</li>
+        <li><strong>Flowchart B — Pendant la killzone</strong> : arrivée d'un setup, vérification des conditions, sizing, exécution.</li>
+        <li><strong>Flowchart C — Après perte</strong> : respect du DD, pause obligatoire, revue du trade, reprise conditionnelle.</li>
+      </ul>
+      <div class="callout blue">
+        <div class="callout-title">Principe</div>
+        <p>Une décision préparée à froid est supérieure à 100 décisions improvisées à chaud. Le flowchart soustrait les émotions du processus d'exécution.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

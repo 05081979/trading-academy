@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="starter">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(function(){
+  try {
+    fetch('../version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v=(v||'').trim(); if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){ localStorage.setItem(k,v); location.replace(location.pathname+'?_cb='+v+location.hash); }
+        else localStorage.setItem(k,v);
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<script src="../auth.js?v=v20260413-revoke2"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modèles d'exécution avancés — Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../readability.css?v=v20260413-revoke2">
+<link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
+<style>
+:root {
+  --bg:#f5f7fa; --s1:#fff; --s2:#f8fafc; --bd:#e2e5ea;
+  --gold:#b8860b; --gold2:#d4a017;
+  --blue:#2563eb; --green:#059669; --red:#dc2626;
+  --orange:#ea580c; --purple:#7c3aed; --cyan:#0891b2;
+  --text:#1a1a2e; --t2:#475569; --t3:#94a3b8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;}
+.banner{background:linear-gradient(135deg,#1a1a2e 0%,#2d2d4a 100%);color:#fff;padding:56px 56px 44px;position:relative;overflow:hidden;}
+.banner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 0%,var(--gold) 30%,var(--gold2) 50%,var(--gold) 70%,transparent 100%);}
+.banner-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--gold2);text-transform:uppercase;margin-bottom:12px;}
+.banner h1{font-family:'Syne',sans-serif;font-size:clamp(30px,4vw,44px);font-weight:800;color:#fff;line-height:1.1;letter-spacing:-0.01em;}
+.banner h1 em{color:var(--gold2);font-style:normal;}
+.banner-sub{margin-top:14px;color:rgba(255,255,255,0.75);font-size:15px;max-width:720px;line-height:1.6;}
+.container{max-width:1100px;margin:0 auto;padding:40px 32px;}
+.module{margin-bottom:36px;}
+.mod-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd);}
+.mod-num{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;padding:4px 10px;border-radius:4px;background:rgba(184,134,11,0.12);color:var(--gold);}
+.mod-head h2{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text);letter-spacing:-0.01em;}
+.section{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:28px 32px;margin-bottom:18px;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.section-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.section-title .dot{width:7px;height:7px;border-radius:50%;}
+p.lede{color:var(--t2);line-height:1.75;font-size:14px;}
+p.lede + p.lede{margin-top:10px;}
+.concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
+@media(max-width:800px){.concept-grid{grid-template-columns:1fr;}.container{padding:24px 16px;}.banner{padding:36px 24px;}}
+.concept-card{background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:18px 20px;}
+.concept-card h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--gold);margin-bottom:8px;}
+.concept-card p{color:var(--t2);line-height:1.7;font-size:13px;}
+.concept-card p + p{margin-top:8px;}
+.concept-card.full{grid-column:1 / -1;}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px;}
+th{text-align:left;padding:9px 12px;background:var(--s2);color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;border-bottom:1px solid var(--bd);}
+td{padding:9px 12px;border-bottom:1px solid var(--bd);color:var(--t2);}
+.list-styled{padding-left:20px;margin-top:8px;}
+.list-styled li{color:var(--t2);line-height:1.8;font-size:13px;}
+.list-styled li strong{color:var(--text);}
+.highlight{color:var(--gold2);font-weight:600;}
+.callout{border-left:3px solid var(--gold);background:rgba(212,160,23,0.06);padding:14px 18px;border-radius:0 8px 8px 0;margin-top:14px;}
+.callout.red{border-left-color:var(--red);background:rgba(220,38,38,0.05);}
+.callout.green{border-left-color:var(--green);background:rgba(5,150,105,0.05);}
+.callout.blue{border-left-color:var(--blue);background:rgba(37,99,235,0.05);}
+.callout-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.callout.red .callout-title{color:var(--red);} .callout.green .callout-title{color:var(--green);} .callout.blue .callout-title{color:var(--blue);}
+.callout p{color:var(--t2);font-size:13px;line-height:1.7;}
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+<div class="banner">
+  <div class="banner-eyebrow">STRATÉGIES — 3 MODULES</div>
+  <h1>Modèles d'exécution <em>avancés</em></h1>
+  <p class="banner-sub">MMBM et MMSM en phases détaillées, règles strictes du contre-tendance, lecture pas-à-pas des news majeures — les modèles qui exigent précision et discipline.</p>
+</div>
+<div class="container">
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 01</span><h2>MMBM / MMSM en 6-8 phases</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--gold)"></span>Qu'est-ce qu'un Market Maker Model</div>
+      <p class="lede">Le Market Maker Buy Model (MMBM) et son symétrique Market Maker Sell Model (MMSM) décrivent la <strong>séquence complète d'un cycle directionnel majeur</strong>, de l'accumulation initiale à la distribution finale. Ils ne se déroulent pas en une session mais sur plusieurs jours ou semaines selon le TF de base.</p>
+      <p class="lede">Leur intérêt n'est pas prédictif bougie par bougie — c'est un <strong>framework narratif</strong>. Savoir où l'on se trouve dans les phases permet de filtrer les setups qui comptent et ignorer ceux qui vont dans le mauvais sens du cycle.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--blue)"></span>Les 8 phases du MMBM</div>
+      <table>
+        <thead><tr><th>Phase</th><th>Nom</th><th>Comportement prix</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Original Consolidation</td><td>Range étroit, accumulation discrète des positions longues</td></tr>
+          <tr><td>2</td><td>Original Low</td><td>Purge du bas du range, piège des vendeurs, prise de SSL</td></tr>
+          <tr><td>3</td><td>Accumulation proper</td><td>Rachat agressif à partir du low, impression des premiers FVG haussiers</td></tr>
+          <tr><td>4</td><td>Smart Money Reversal</td><td>Cassure de la structure précédente, CSD officiel, MSS H1/H4</td></tr>
+          <tr><td>5</td><td>Re-accumulation</td><td>Pull-back dans un FVG ou OB, refill de liquidité avant expansion</td></tr>
+          <tr><td>6</td><td>Expansion</td><td>Jambe principale haussière, déplacement objectif, amplitude Daily élevée</td></tr>
+          <tr><td>7</td><td>Terminus</td><td>Prise du DoL macro, BSL majeur consommé, signal d'épuisement</td></tr>
+          <tr><td>8</td><td>Distribution</td><td>Range au sommet, vente progressive, préparation du MMSM</td></tr>
+        </tbody>
+      </table>
+      <div class="callout blue">
+        <div class="callout-title">Phase à cibler</div>
+        <p>Les phases 4 à 6 offrent les meilleurs RR. Trader une phase 1 ou 8 revient à scalper dans du bruit pour un RR faible.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--red)"></span>Différences MMBM / MMSM</div>
+      <p class="lede">Le MMSM est l'image miroir exacte : <strong>consolidation haute, purge haut, distribution, CSD baissier, expansion baissière, terminus bas, ré-accumulation vers un nouveau MMBM</strong>. Les règles et la psychologie sont identiques, inversées.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Signature d'entrée de phase</h3>
+          <p>Au seuil d'un MMBM : sweep SSL majeur + FVG haussier frais.</p>
+          <p>Au seuil d'un MMSM : sweep BSL majeur + FVG baissier frais.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Durée typique</h3>
+          <p>Sur Daily : 8 à 20 sessions par cycle complet.</p>
+          <p>Sur H1 : 2 à 5 jours par cycle.</p>
+          <p>Sur M15 : quelques heures.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--green)"></span>Lecture pratique</div>
+      <ul class="list-styled">
+        <li><strong>Identifier la consolidation initiale</strong> sur le TF de base choisi (range clair sur 5+ sessions).</li>
+        <li><strong>Repérer la purge</strong> — une bougie qui prend l'extrême opposé au futur déplacement.</li>
+        <li><strong>Confirmer le Smart Money Reversal</strong> par MSS + FVG dans le sens nouveau.</li>
+        <li><strong>Exécuter en phase 5</strong> (ré-accumulation) avec stop au-delà de la purge.</li>
+        <li><strong>Sortir progressivement en phase 6-7</strong>, pas en phase 8 (trop tard).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 02</span><h2>Counter-Trend Playbook</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--purple)"></span>Quand le contre-tendance est légitime</div>
+      <p class="lede">Trader contre la tendance HTF n'est pas interdit — c'est <strong>conditionné</strong>. Cinq conditions doivent être réunies pour qu'un contre-tendance soit probabilistiquement acceptable.</p>
+      <table>
+        <thead><tr><th>#</th><th>Condition</th><th>Vérification</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>DoL HTF atteint</td><td>BSL/SSL Weekly ou Daily majeur consommé dans les 48h</td></tr>
+          <tr><td>2</td><td>Épuisement structurel</td><td>Dernière jambe d'expansion a amplitude inférieure à la précédente</td></tr>
+          <tr><td>3</td><td>Divergence intermarket</td><td>DXY, bonds ou actif corrélé ne confirme plus le trend</td></tr>
+          <tr><td>4</td><td>CSD LTF confirmé</td><td>MSS + FVG + sweep sur H1 minimum</td></tr>
+          <tr><td>5</td><td>Fenêtre temporelle favorable</td><td>Killzone propre, pas en milieu de range Asie</td></tr>
+        </tbody>
+      </table>
+      <div class="callout red">
+        <div class="callout-title">Filtre dur</div>
+        <p>Si moins de 4 conditions sur 5 sont réunies, le trade est refusé. Pas de négociation, pas d'exception.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--orange)"></span>Règles d'exécution spécifiques</div>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Taille réduite</h3>
+          <p>Un contre-tendance se prend à <strong>50% de la taille standard</strong> maximum. Le risque est asymétrique : même validé, le taux de réussite est inférieur à un trade dans le sens du HTF.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Stop serré</h3>
+          <p>Pas de stop "aéré" sur contre-tendance. Le stop se place juste au-delà de la structure qui valide le CSD. Si le prix y retourne, la thèse est cassée.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Target modeste</h3>
+          <p>Objectif typique : <strong>retour vers le point d'équilibre (50%)</strong> de la dernière jambe HTF, ou FVG HTF le plus proche. Pas de target "retournement complet".</p>
+        </div>
+        <div class="concept-card">
+          <h3>Invalidation rapide</h3>
+          <p>Si le trade ne performe pas dans les 4 bougies du TF de trigger, sortir. Un contre-tendance qui n'accélère pas est un contre-tendance mort.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--cyan)"></span>Pièges psychologiques</div>
+      <ul class="list-styled">
+        <li><strong>Chercher le top / bottom</strong> — la tentation de "caler" le sommet fait entrer trop tôt, avant épuisement réel.</li>
+        <li><strong>Moyenner à la baisse</strong> — aggravation systématique, viole la règle d'invalidation rapide.</li>
+        <li><strong>Tenir pour inversion totale</strong> — un contre-tendance valide livre un pull-back, pas un crash. Sortir à l'objectif prévu.</li>
+        <li><strong>Répéter après échec</strong> — deux contre-tendances perdants d'affilée = pause obligatoire, revue de la lecture HTF.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 03</span><h2>Breakdowns news pas-à-pas</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--gold)"></span>Anatomie d'une publication data</h2></div>
+      <p class="lede">Une news majeure n'est pas un événement ponctuel : elle s'étale sur <strong>une heure et demie d'orderflow</strong> structuré en trois phases distinctes. Chaque phase a une fonction algorithmique précise.</p>
+      <table>
+        <thead><tr><th>Heure ET</th><th>Phase</th><th>Fonction</th></tr></thead>
+        <tbody>
+          <tr><td>08:00 – 08:30</td><td>Pré-release</td><td>Positionnement, réduction de liquidité, spreads élargis</td></tr>
+          <tr><td>08:30 – 09:00</td><td>Manipulation initiale</td><td>Spike dans le sens contraire au vrai move, purge des stops</td></tr>
+          <tr><td>09:00 – 09:30</td><td>Transition</td><td>Retour vers le niveau d'avant-release, consolidation</td></tr>
+          <tr><td>09:30 – 11:00</td><td>Distribution / vraie jambe</td><td>Alignement avec la narrative HTF, mouvement propre</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--blue)"></span>NFP — le modèle classique</div>
+      <p class="lede">Le Non-Farm Payrolls (premier vendredi du mois, 08:30 ET) est la publication la plus manipulatrice. La réaction 08:30-08:35 est <strong>presque toujours contre-intuitive</strong> par rapport à la narrative qui suit.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Lecture</h3>
+          <p>Données fortes → premier spike baissier indices / haussier DXY.</p>
+          <p>Puis, si la narrative Weekly reste haussière indices, retournement à partir de 09:30 ET.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Exécution</h3>
+          <p>Ne jamais entrer sur la bougie 08:30.</p>
+          <p>Attendre 09:30 – 10:00 ET, un CSD M15 clair, une confluence intermarket.</p>
+          <p>Target : PDH / PDL selon le sens.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--green)"></span>CPI — la double réaction</div>
+      <p class="lede">Le CPI (généralement deuxième mercredi du mois, 08:30 ET) produit souvent une <strong>double réaction</strong> : réaction 1 sur le headline, réaction 2 sur le core ou sur les détails lus avec 5-10 minutes de retard.</p>
+      <div class="callout blue">
+        <div class="callout-title">Règle de patience</div>
+        <p>Sur CPI, ne jamais entrer avant 09:00 ET. Laisser les deux spikes se produire, laisser la volatilité absurde se consommer. Entrer uniquement sur la vraie jambe post-09:30.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--red)"></span>FOMC — la règle des 14:00</div>
+      <p class="lede">La décision FOMC (14:00 ET) et la conférence Powell (14:30 ET) constituent <strong>les deux événements les plus destructeurs pour un plan de trade mal préparé</strong>. Volatilité extrême, spreads élargis, manipulation sur 45 minutes.</p>
+      <table>
+        <thead><tr><th>Heure ET</th><th>Événement</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>13:30 – 14:00</td><td>Pré-release, range artificiel</td><td>Aucune nouvelle position</td></tr>
+          <tr><td>14:00 – 14:30</td><td>Release + début presse</td><td>Observation, lecture spike et réaction</td></tr>
+          <tr><td>14:30 – 15:15</td><td>Presse Powell</td><td>Zone de manipulation maximale, rester hors marché</td></tr>
+          <tr><td>15:15 – 16:00</td><td>Résolution</td><td>La vraie narrative émerge, premiers setups propres</td></tr>
+          <tr><td>Lendemain 09:30</td><td>Validation cash</td><td>Setup de confirmation le plus propre du cycle FOMC</td></tr>
+        </tbody>
+      </table>
+      <div class="callout red">
+        <div class="callout-title">Règle de survie</div>
+        <p>Aucune position ouverte à 14:00 ET jour FOMC. Aucune position prise entre 14:00 et 15:15 ET. Les traders qui enfreignent cette règle donnent au marché leur compte statistiquement sur un cycle de 12 mois.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--purple)"></span>Récapitulatif discipline news</div>
+      <ul class="list-styled">
+        <li><strong>Préparer la veille</strong> — repérer l'heure ET exacte, le consensus, les niveaux HTF à surveiller.</li>
+        <li><strong>Clôturer 30 min avant</strong> — aucune position ouverte à risque sur la release.</li>
+        <li><strong>Observer la première heure</strong> — pas de trade dans la fenêtre manipulation.</li>
+        <li><strong>Exécuter après 09:30 (ou 15:15 FOMC)</strong> — la vraie jambe est là.</li>
+        <li><strong>Réduire la taille</strong> — 50% du sizing habituel les jours data majeure.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="starter">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(function(){
+  try {
+    fetch('../version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v=(v||'').trim(); if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){ localStorage.setItem(k,v); location.replace(location.pathname+'?_cb='+v+location.hash); }
+        else localStorage.setItem(k,v);
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<script src="../auth.js?v=v20260413-revoke2"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profils Hebdo & Sessions — Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../readability.css?v=v20260413-revoke2">
+<link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
+<style>
+:root {
+  --bg:#f5f7fa; --s1:#fff; --s2:#f8fafc; --bd:#e2e5ea;
+  --gold:#b8860b; --gold2:#d4a017;
+  --blue:#2563eb; --green:#059669; --red:#dc2626;
+  --orange:#ea580c; --purple:#7c3aed; --cyan:#0891b2;
+  --text:#1a1a2e; --t2:#475569; --t3:#94a3b8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;}
+.banner{background:linear-gradient(135deg,#1a1a2e 0%,#2d2d4a 100%);color:#fff;padding:56px 56px 44px;position:relative;overflow:hidden;}
+.banner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 0%,var(--gold) 30%,var(--gold2) 50%,var(--gold) 70%,transparent 100%);}
+.banner-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--gold2);text-transform:uppercase;margin-bottom:12px;}
+.banner h1{font-family:'Syne',sans-serif;font-size:clamp(30px,4vw,44px);font-weight:800;color:#fff;line-height:1.1;letter-spacing:-0.01em;}
+.banner h1 em{color:var(--gold2);font-style:normal;}
+.banner-sub{margin-top:14px;color:rgba(255,255,255,0.75);font-size:15px;max-width:720px;line-height:1.6;}
+.container{max-width:1100px;margin:0 auto;padding:40px 32px;}
+.module{margin-bottom:36px;}
+.mod-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd);}
+.mod-num{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;padding:4px 10px;border-radius:4px;background:rgba(184,134,11,0.12);color:var(--gold);}
+.mod-head h2{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text);letter-spacing:-0.01em;}
+.section{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:28px 32px;margin-bottom:18px;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.section-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.section-title .dot{width:7px;height:7px;border-radius:50%;}
+p.lede{color:var(--t2);line-height:1.75;font-size:14px;}
+p.lede + p.lede{margin-top:10px;}
+.concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
+@media(max-width:800px){.concept-grid{grid-template-columns:1fr;}.container{padding:24px 16px;}.banner{padding:36px 24px;}}
+.concept-card{background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:18px 20px;}
+.concept-card h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--gold);margin-bottom:8px;}
+.concept-card p{color:var(--t2);line-height:1.7;font-size:13px;}
+.concept-card p + p{margin-top:8px;}
+.concept-card.full{grid-column:1 / -1;}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px;}
+th{text-align:left;padding:9px 12px;background:var(--s2);color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;border-bottom:1px solid var(--bd);}
+td{padding:9px 12px;border-bottom:1px solid var(--bd);color:var(--t2);}
+.list-styled{padding-left:20px;margin-top:8px;}
+.list-styled li{color:var(--t2);line-height:1.8;font-size:13px;}
+.list-styled li strong{color:var(--text);}
+.highlight{color:var(--gold2);font-weight:600;}
+.callout{border-left:3px solid var(--gold);background:rgba(212,160,23,0.06);padding:14px 18px;border-radius:0 8px 8px 0;margin-top:14px;}
+.callout.red{border-left-color:var(--red);background:rgba(220,38,38,0.05);}
+.callout.green{border-left-color:var(--green);background:rgba(5,150,105,0.05);}
+.callout.blue{border-left-color:var(--blue);background:rgba(37,99,235,0.05);}
+.callout-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.callout.red .callout-title{color:var(--red);} .callout.green .callout-title{color:var(--green);} .callout.blue .callout-title{color:var(--blue);}
+.callout p{color:var(--t2);font-size:13px;line-height:1.7;}
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+<div class="banner">
+  <div class="banner-eyebrow">FRAMEWORK — 3 MODULES</div>
+  <h1>Profils Hebdomadaires & <em>Sessions</em></h1>
+  <p class="banner-sub">Sept profils de semaine, lecture de la session asiatique, fenêtres saisonnières — le cadre temporel qui conditionne toute exécution intraday.</p>
+</div>
+<div class="container">
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 01</span><h2>Les 7 Weekly Profiles types</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--gold)"></span>Pourquoi classer les semaines</div>
+      <p class="lede">Chaque semaine n'est pas neuve. Elle appartient à l'une de <strong>sept familles de profils</strong> récurrents, chacune avec sa signature temporelle (quel jour produit le high/low), sa signature d'amplitude, et ses journées exploitables. Classer la semaine en cours, c'est savoir quels jours attaquer et lesquels éviter.</p>
+      <p class="lede">La classification se fait idéalement <strong>dès le dimanche soir ou lundi matin</strong>, à partir du biais Weekly HTF, du positionnement par rapport au PWH/PWL et du calendrier économique.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--blue)"></span>Classic Expansion</div>
+      <p class="lede">Profil le plus fréquent en trend markets. Lundi consolidation ou léger pull-back, mardi jambe d'expansion principale, mercredi continuation, jeudi/vendredi inertie puis prise de profits.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Signature</h3>
+          <p><strong>Low de la semaine</strong> imprimé lundi ou tôt mardi (si haussier).</p>
+          <p><strong>High</strong> imprimé jeudi ou vendredi matin.</p>
+          <p>Amplitude totale = 1.5 à 2.5× ATR Weekly.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Exploitation</h3>
+          <p>Attendre le pull-back lundi-mardi, trigger sur MSS H1 dans le sens du biais.</p>
+          <p>Target PWH ou niveau HTF non pris. Sortir partiellement jeudi.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--red)"></span>Seek & Destroy</div>
+      <p class="lede">Semaine de chasse bilatérale : le marché prend successivement le haut et le bas avant de clôturer proche du milieu de la semaine. Pas de vraie tendance, beaucoup de stops déclenchés.</p>
+      <div class="callout red">
+        <div class="callout-title">Piège</div>
+        <p>C'est la semaine la plus coûteuse pour un trader tendanciel. Si la semaine s'annonce en seek & destroy (calendrier vide, positionnement neutre), préférer <strong>réduire la taille ou ne pas trader</strong>.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--purple)"></span>Consolidation Week</div>
+      <p class="lede">Range étroit de cinq séances, amplitude Weekly inférieure à 0.7× ATR. Typique avant une donnée macro majeure la semaine suivante (NFP, FOMC).</p>
+      <p class="lede">Exploitation : scalp aux extrêmes du range avec SL serré, éviter tout breakout intraday ; le vrai breakout viendra la semaine suivante.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--green)"></span>Reversal Monday</div>
+      <p class="lede">Le lundi imprime un extrême directionnel <strong>contre le biais Weekly</strong>, puis la semaine reverse pour clôturer dans le sens opposé. Souvent déclenché par un gap d'ouverture dominicale mal positionné.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Lecture</h3>
+          <p>Lundi imprime high/low de la semaine en matinée Londres.</p>
+          <p>Revirement dès lundi après-midi ou mardi matin, puis tendance propre jusqu'à vendredi.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Trigger</h3>
+          <p>Attendre CSD M15 après l'extrême de lundi ; entrer dans le sens du renversement avec stop au-delà de l'extrême.</p>
+          <p>RR 1:5 à 1:8 sur une semaine entière.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--orange)"></span>Reversal Wednesday</div>
+      <p class="lede">Profil où <strong>mercredi marque le retournement de la semaine</strong>. Lundi-mardi continuent la tendance de la semaine précédente, mercredi casse la structure, jeudi-vendredi roulent dans le sens nouveau. Extrêmement fréquent en contexte macro chargé (FOMC mercredi).</p>
+      <table>
+        <thead><tr><th>Jour</th><th>Comportement</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>Lundi</td><td>Inertie semaine précédente</td><td>Observer, pas d'entrée majeure</td></tr>
+          <tr><td>Mardi</td><td>Extrême de la semaine (dans le sens initial)</td><td>Setup scalp court, SL très serré</td></tr>
+          <tr><td>Mercredi</td><td>CSD majeur H4</td><td>Entrée principale dans le sens nouveau</td></tr>
+          <tr><td>Jeudi-vendredi</td><td>Expansion finale</td><td>Trailing, partiels progressifs</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--cyan)"></span>Trend Continuation</div>
+      <p class="lede">Semaine où la tendance précédente se prolonge sans renversement notable. Pas d'extrême contre-tendance significatif, pull-backs peu profonds (entre 23.6% et 38.2% de la jambe Weekly précédente).</p>
+      <div class="callout green">
+        <div class="callout-title">Exploitation</div>
+        <p>Acheter les pull-backs au refill du FVG H4 du précédent swing. Cibles : PWH en fin de semaine. Pas de short contre-tendance toléré.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--gold)"></span>Sunday Gap (profil spécifique FX / indices)</div>
+      <p class="lede">La semaine ouvre sur un <strong>gap dimanche soir</strong> (18:00 ET). Le comportement du gap dans les 24 premières heures dicte le reste de la semaine : gap comblé = retour à la moyenne, gap défendu = continuation dans le sens du gap.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Gap comblé</h3>
+          <p>Dans les 24-48h, le prix revient sur le close de vendredi. Semaine souvent en seek & destroy ou consolidation.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Gap défendu</h3>
+          <p>Le gap n'est pas comblé, le prix rejette la zone de close vendredi. Semaine souvent en Classic Expansion ou Trend Continuation dans le sens du gap.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 02</span><h2>Asian Session Model</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--purple)"></span>La fonction de l'Asie</div>
+      <p class="lede">La session asiatique (19:00 ET – 02:00 ET environ) n'est pas une session de tendance mais une <strong>session d'accumulation</strong>. Volume réduit, spreads parfois élargis, l'algorithme construit un range qui servira de référence pour les extrêmes exploités à Londres.</p>
+      <p class="lede">Les extrêmes asiatiques (Asian High / Asian Low) deviennent des <strong>pool de liquidité</strong> majeurs. Ils sont presque systématiquement visités au moins une fois pendant la session de Londres, souvent dans les deux premières heures.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--blue)"></span>Trois schémas classiques</div>
+      <table>
+        <thead><tr><th>Schéma</th><th>Comportement Asie</th><th>Réaction Londres</th></tr></thead>
+        <tbody>
+          <tr><td>Range parfait</td><td>Range étroit entre 19:00 et 02:00</td><td>Purge d'un côté puis retournement, vrai move après 03:00</td></tr>
+          <tr><td>Range dérivé</td><td>Range avec pente directionnelle</td><td>Continuation Londres dans le sens de la pente</td></tr>
+          <tr><td>Asie expansive</td><td>Mouvement directionnel dès minuit</td><td>Pull-back Londres puis continuation (narrative Asie validée)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--green)"></span>Extrêmes asiatiques comme liquidité</div>
+      <p class="lede">Les règles de lecture sont simples : <strong>l'extrême asiatique opposé au biais Daily est prioritaire</strong>. Si biais Daily haussier, l'Asian Low est la cible liquidité la plus probable à Londres avant la jambe haussière réelle.</p>
+      <div class="callout blue">
+        <div class="callout-title">Setup récurrent</div>
+        <p>Asian Low purgé entre 02:00 et 04:00 ET + MSS haussier M15 + retour FVG → entrée long. Stop sous le low asiatique purgé, cible PDH ou BSL H1.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--red)"></span>Pièges de la session Asie</div>
+      <ul class="list-styled">
+        <li><strong>Trader à l'intérieur du range Asie</strong> — faible RR, risque de se faire sortir par le premier move de Londres.</li>
+        <li><strong>Prendre un breakout Asie sans confirmation</strong> — la plupart sont des faux breakouts destinés à créer de la liquidité pour Londres.</li>
+        <li><strong>Ignorer les jours fériés asiatiques</strong> — le range est artificiellement étroit et la lecture biaisée.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 03</span><h2>Tendances saisonnières</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--orange)"></span>Biais mensuels récurrents</div>
+      <p class="lede">Certains mois affichent des biais statistiquement significatifs sur plusieurs décennies. Ce ne sont pas des garanties, mais des <strong>inclinaisons probabilistes</strong> à intégrer au plan mensuel.</p>
+      <table>
+        <thead><tr><th>Mois</th><th>Biais typique indices US</th><th>Biais typique DXY</th></tr></thead>
+        <tbody>
+          <tr><td>Janvier</td><td>Haussier (effet rallye)</td><td>Mixte, dépend du cycle Fed</td></tr>
+          <tr><td>Février</td><td>Souvent correction courte</td><td>Haussier modéré</td></tr>
+          <tr><td>Avril</td><td>Haussier (un des meilleurs mois)</td><td>Baissier saisonnier</td></tr>
+          <tr><td>Mai</td><td>Volatilité accrue (sell in May)</td><td>Haussier</td></tr>
+          <tr><td>Août</td><td>Volumes faibles, volatilité piégeante</td><td>Mixte</td></tr>
+          <tr><td>Septembre</td><td>Baissier (le pire mois historique actions)</td><td>Haussier</td></tr>
+          <tr><td>Octobre</td><td>Volatilité extrême, capitulation puis rebond</td><td>Pic saisonnier</td></tr>
+          <tr><td>Novembre-Décembre</td><td>Haussier (fin d'année)</td><td>Baissier saisonnier</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--cyan)"></span>Fenêtres hebdomadaires saisonnières</div>
+      <p class="lede">Au-delà du mois, certaines semaines produisent des configurations récurrentes : <strong>première semaine du mois</strong> (NFP, souvent seek & destroy jusqu'au vendredi 08:30), <strong>semaine FOMC</strong> (consolidation avant, expansion après), <strong>semaines d'options expiry</strong> (pinning autour des strikes majeurs).</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Semaine NFP</h3>
+          <p>Amplitude réduite lundi-jeudi, tout se joue vendredi 08:30 ET.</p>
+          <p>Éviter les gros swings avant, préserver le capital pour le setup post-NFP.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Semaine FOMC</h3>
+          <p>Lundi-mardi souvent en range. Mercredi 14:00 ET marque le pivot. Jeudi-vendredi livrent la vraie jambe.</p>
+          <p>Reversal Wednesday est le profil dominant.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Options Expiry (OpEx)</h3>
+          <p>Troisième vendredi du mois pour les actions. Le marché a tendance à pinner autour des strikes majeurs.</p>
+          <p>Préférer les petits scalps techniques, éviter les grosses positions directionnelles.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Fin de mois / fin de trimestre</h3>
+          <p>Rebalancing des fonds. Flux d'ordres atypiques 15:00 – 16:00 ET sur les derniers jours.</p>
+          <p>Les configurations techniques peuvent être défigurées par le flux ; prudence.</p>
+        </div>
+      </div>
+      <div class="callout">
+        <div class="callout-title">Usage</div>
+        <p>Les biais saisonniers ne remplacent jamais l'analyse technique. Ils servent de <strong>filtre de sizing</strong> : taille pleine quand biais saisonnier aligne, taille réduite sinon.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

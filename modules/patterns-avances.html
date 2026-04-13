@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="starter">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(function(){
+  try {
+    fetch('../version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v=(v||'').trim(); if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){ localStorage.setItem(k,v); location.replace(location.pathname+'?_cb='+v+location.hash); }
+        else localStorage.setItem(k,v);
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<script src="../auth.js?v=v20260413-revoke2"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patterns Avancés — Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../readability.css?v=v20260413-revoke2">
+<link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
+<style>
+:root {
+  --bg:#f5f7fa; --s1:#fff; --s2:#f8fafc; --bd:#e2e5ea;
+  --gold:#b8860b; --gold2:#d4a017;
+  --blue:#2563eb; --green:#059669; --red:#dc2626;
+  --orange:#ea580c; --purple:#7c3aed; --cyan:#0891b2;
+  --text:#1a1a2e; --t2:#475569; --t3:#94a3b8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;}
+.banner{background:linear-gradient(135deg,#1a1a2e 0%,#2d2d4a 100%);color:#fff;padding:56px 56px 44px;position:relative;overflow:hidden;}
+.banner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 0%,var(--gold) 30%,var(--gold2) 50%,var(--gold) 70%,transparent 100%);}
+.banner-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--gold2);text-transform:uppercase;margin-bottom:12px;}
+.banner h1{font-family:'Syne',sans-serif;font-size:clamp(30px,4vw,44px);font-weight:800;color:#fff;line-height:1.1;letter-spacing:-0.01em;}
+.banner h1 em{color:var(--gold2);font-style:normal;}
+.banner-sub{margin-top:14px;color:rgba(255,255,255,0.75);font-size:15px;max-width:720px;line-height:1.6;}
+.container{max-width:1100px;margin:0 auto;padding:40px 32px;}
+.module{margin-bottom:36px;}
+.mod-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd);}
+.mod-num{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;padding:4px 10px;border-radius:4px;background:rgba(184,134,11,0.12);color:var(--gold);}
+.mod-head h2{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text);letter-spacing:-0.01em;}
+.section{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:28px 32px;margin-bottom:18px;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.section-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.section-title .dot{width:7px;height:7px;border-radius:50%;}
+p.lede{color:var(--t2);line-height:1.75;font-size:14px;}
+p.lede + p.lede{margin-top:10px;}
+.concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
+@media(max-width:800px){.concept-grid{grid-template-columns:1fr;}.container{padding:24px 16px;}.banner{padding:36px 24px;}}
+.concept-card{background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:18px 20px;}
+.concept-card h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--gold);margin-bottom:8px;}
+.concept-card p{color:var(--t2);line-height:1.7;font-size:13px;}
+.concept-card p + p{margin-top:8px;}
+.concept-card.full{grid-column:1 / -1;}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px;}
+th{text-align:left;padding:9px 12px;background:var(--s2);color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;border-bottom:1px solid var(--bd);}
+td{padding:9px 12px;border-bottom:1px solid var(--bd);color:var(--t2);}
+.list-styled{padding-left:20px;margin-top:8px;}
+.list-styled li{color:var(--t2);line-height:1.8;font-size:13px;}
+.list-styled li strong{color:var(--text);}
+.highlight{color:var(--gold2);font-weight:600;}
+.callout{border-left:3px solid var(--gold);background:rgba(212,160,23,0.06);padding:14px 18px;border-radius:0 8px 8px 0;margin-top:14px;}
+.callout.red{border-left-color:var(--red);background:rgba(220,38,38,0.05);}
+.callout.green{border-left-color:var(--green);background:rgba(5,150,105,0.05);}
+.callout.blue{border-left-color:var(--blue);background:rgba(37,99,235,0.05);}
+.callout-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.callout.red .callout-title{color:var(--red);} .callout.green .callout-title{color:var(--green);} .callout.blue .callout-title{color:var(--blue);}
+.callout p{color:var(--t2);font-size:13px;line-height:1.7;}
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+<div class="banner">
+  <div class="banner-eyebrow">STRATÉGIES — 4 MODULES</div>
+  <h1>Patterns <em>Avancés</em></h1>
+  <p class="banner-sub">Breakaway Gaps structurels, Low Resistance Liquidity, purges doubles et triples, et basculement de delivery multi-TF — les motifs qui séparent le trader tactique du trader stratégique.</p>
+</div>
+<div class="container">
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 01</span><h2>Breakaway Gaps & BPR</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--gold)"></span>Gaps d'impulsion structurels</div>
+      <p class="lede">Un Breakaway Gap est un FVG qui n'est pas un simple déséquilibre intra-journalier mais <strong>le signal d'un changement de régime</strong>. Il se forme lors de la cassure d'une zone de consolidation HTF (range Daily, Weekly, ou range macro) et marque le début d'une nouvelle phase directionnelle.</p>
+      <p class="lede">Contrairement à un FVG ordinaire qui sera refill dans les sessions suivantes, le Breakaway Gap est <strong>laissé partiellement ou totalement inmitigated</strong> pendant plusieurs jours voire semaines. Il devient un niveau de référence pour toute la phase d'expansion qui suit.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Critères d'identification</h3>
+          <p>1. Le gap casse une zone de consolidation de <strong>minimum 3 sessions</strong>.</p>
+          <p>2. La bougie qui imprime le gap a un range supérieur à 1.5× ATR Daily.</p>
+          <p>3. Close hors de la zone et pas de retour dans les 2 à 5 bougies suivantes.</p>
+          <p>4. Volume réel accompagnant le déplacement.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Rôle en mitigation</h3>
+          <p>Si le prix revient tester le bord du Breakaway Gap après plusieurs jours, cette zone agit comme <strong>support/résistance majeur</strong>.</p>
+          <p>Un retour qui respecte le bord = continuation ; un retour qui ferme au-delà = invalidation de la phase d'expansion.</p>
+        </div>
+      </div>
+      <div class="callout green">
+        <div class="callout-title">Setup haute probabilité</div>
+        <p>Breakaway Gap Daily + retest du bord en session Londres + MSS M15 dans le sens du gap = entrée RR 1:4 minimum. Stop au-delà de la bougie d'origine, cible sur le prochain swing HTF non pris.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--blue)"></span>BPR en aval du gap</div>
+      <p class="lede">Après un Breakaway Gap, le marché laisse souvent un <strong>BPR propre</strong> dans la foulée : la bougie d'origine devient un OB candidat et le gap lui-même sert de FVG. L'overlap des deux donne une zone d'entrée restreinte.</p>
+      <p class="lede">Cette combinaison est l'une des configurations de continuation les plus propres qui existent : narrative HTF validée par la cassure, zone LTF précise, invalidation claire.</p>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 02</span><h2>Low Resistance Liquidity & Failure Swings</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--green)"></span>Le concept de faible résistance</div>
+      <p class="lede">La Low Resistance Liquidity (LRL) désigne une <strong>poche de liquidité accessible avec peu d'obstacles structurels</strong>. Si le prix doit parcourir 50 pips pour atteindre un BSL sans rencontrer de FVG inverse, d'OB contraire ou de breaker, cette liquidité est "à faible résistance" — l'algorithme la cible en priorité.</p>
+      <p class="lede">Inversement, une liquidité séparée par trois FVG contraires, deux OB et un breaker est à haute résistance : elle finira par être prise, mais jamais en première intention.</p>
+      <table>
+        <thead><tr><th>Configuration</th><th>Obstacles entre prix et liquidité</th><th>Probabilité de run immédiat</th></tr></thead>
+        <tbody>
+          <tr><td>LRL pure</td><td>Aucun</td><td>Très élevée</td></tr>
+          <tr><td>LRL modérée</td><td>1 FVG contraire petit</td><td>Élevée</td></tr>
+          <tr><td>Mid-resistance</td><td>1 OB + 1 FVG contraires</td><td>Moyenne</td></tr>
+          <tr><td>High resistance</td><td>2+ zones contraires</td><td>Faible en première intention</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--red)"></span>Failure Swings comme filtre</div>
+      <p class="lede">Un Failure Swing se produit quand le prix <strong>échoue à prendre un swing attendu</strong> et revient brutalement. Sur un marché qui visait un BSL à 30 pips, un failure swing 10 pips avant indique que l'intention algorithmique a changé.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Failure haussier</h3>
+          <p>Le prix approche un BSL, <strong>ne le prend pas</strong>, imprime un MSS baissier sur LTF. Signal de retournement court terme.</p>
+          <p>Filtre : ne jamais shorter dans ce contexte si le HTF est haussier non épuisé.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Failure baissier</h3>
+          <p>Le prix approche un SSL, <strong>refuse</strong>, imprime un MSS haussier sur LTF.</p>
+          <p>Filtre : cohérence avec les divergences DXY / bonds si FX ; cohérence avec les yields si indices.</p>
+        </div>
+      </div>
+      <div class="callout red">
+        <div class="callout-title">Piège</div>
+        <p>Tout échec apparent n'est pas un failure swing. Un pull-back avant run réel ressemble à un failure. La distinction se fait par le temps passé sous/au-dessus du niveau et par la qualité du MSS LTF.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 03</span><h2>Double Purge / Triple Purge</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--purple)"></span>La purge bilatérale</div>
+      <p class="lede">Une Double Purge est un schéma où le prix <strong>prend d'abord un extrême (BSL ou SSL), puis l'extrême opposé</strong>, avant de partir dans la direction réelle du déplacement. C'est la signature d'une session de manipulation bilatérale conçue pour piéger les deux camps avant la vraie jambe.</p>
+      <p class="lede">La Triple Purge ajoute une couche supplémentaire : purge haut, purge bas, puis nouvelle purge haut (ou inverse), avant la vraie jambe. Ce schéma se rencontre principalement sur les journées de range Asie/Londres élargi qui précèdent une data US majeure.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--orange)"></span>Séquence type</div>
+      <table>
+        <thead><tr><th>Étape</th><th>Heure ET typique</th><th>Action prix</th></tr></thead>
+        <tbody>
+          <tr><td>1 — Accumulation</td><td>19:00 – 02:00</td><td>Range Asie serré</td></tr>
+          <tr><td>2 — Purge 1</td><td>02:00 – 04:00</td><td>Cassure haut du range Asie, prise BSL</td></tr>
+          <tr><td>3 — Purge 2</td><td>07:00 – 09:00</td><td>Retour et cassure bas du range, prise SSL</td></tr>
+          <tr><td>4 — Vraie jambe</td><td>09:30 – 11:00</td><td>Déplacement vers DoL Daily</td></tr>
+        </tbody>
+      </table>
+      <div class="callout blue">
+        <div class="callout-title">Utilisation</div>
+        <p>Ne jamais entrer sur la purge 1 pensant que le déplacement continue. Attendre la purge 2 et le MSS qui suit pour trigger.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--cyan)"></span>Triple Purge — contextes spécifiques</div>
+      <p class="lede">La Triple Purge apparaît principalement dans trois contextes : <strong>journées pré-NFP</strong>, <strong>mercredis FOMC</strong>, et <strong>journées d'options expiry</strong>. Le marché a besoin de plus de carburant pour la jambe finale et crée trois niveaux de liquidité à consommer successivement.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Lecture</h3>
+          <p>Si après deux purges le marché n'est toujours pas parti, attendre la troisième plutôt que forcer.</p>
+          <p>La confluence de trois extrêmes purgés dans la même session est rare mais très fiable quand elle se produit.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Invalidation</h3>
+          <p>Si la "troisième purge" dépasse de plus de 1.5× l'amplitude des deux précédentes, ce n'est plus une purge mais une cassure directionnelle.</p>
+          <p>Abandonner le scénario purge et relire la structure HTF.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 04</span><h2>Change in State of Delivery (CSD) multi-TF</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--gold)"></span>Définition</div>
+      <p class="lede">Le Change in State of Delivery est le <strong>basculement de la manière dont le prix est livré</strong>. Avant CSD : le marché livre en prenant les BSL et ignore les SSL. Après CSD : le marché livre en prenant les SSL et ignore les BSL. Ce basculement ne se produit pas au hasard — il se confirme par trois éléments simultanés.</p>
+      <div class="concept-grid">
+        <div class="concept-card full">
+          <h3>Signature CSD confirmée</h3>
+          <p>1. <strong>Prise d'un extrême récent</strong> (BSL ou SSL selon le sens entrant).</p>
+          <p>2. <strong>Cassure de structure (MSS)</strong> dans le sens opposé à la delivery précédente.</p>
+          <p>3. <strong>Impression d'un FVG</strong> dans la bougie de cassure ou la suivante.</p>
+          <p>Sans les trois, ce n'est pas un CSD, c'est un simple pull-back.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--blue)"></span>Lecture multi-timeframe</h2></div>
+      <table>
+        <thead><tr><th>TF</th><th>Rôle du CSD</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>Daily</td><td>Bascule de biais hebdomadaire</td><td>Redéfinir DoL, ajuster plan de la semaine</td></tr>
+          <tr><td>H4</td><td>Bascule intraday majeur</td><td>Attendre retest du FVG de cassure pour trigger</td></tr>
+          <tr><td>H1 / M15</td><td>Bascule de session</td><td>Refinement zone sur M5 pour entrée</td></tr>
+          <tr><td>M5 / M1</td><td>Trigger d'exécution</td><td>Entrée au retest du FVG M5, stop serré</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--green)"></span>Confluence CSD + MSS + FVG</h2></div>
+      <p class="lede">Le setup le plus puissant combine les trois niveaux : <strong>CSD Daily récent, MSS H1 dans le même sens, FVG M5 non mitigated</strong>. Dans cette configuration, les trois horizons de décision algorithmique sont alignés.</p>
+      <p class="lede">Le trigger LTF devient presque mécanique : attendre que le prix revienne dans le FVG M5, confirmer qu'une bougie M1 rejette le niveau, entrer avec stop au-delà de l'extrême de la bougie de rejet.</p>
+      <div class="callout green">
+        <div class="callout-title">Setup de référence</div>
+        <p>CSD Daily confirmé + retest H1 du FVG de cassure + MSS M5 + entrée M1 sur rejet. RR typique 1:4 à 1:7, taux de réussite estimé 60-70% sur backtests structurés.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--red)"></span>Erreurs fatales</div>
+      <ul class="list-styled">
+        <li><strong>CSD sans prise de liquidité</strong> — une simple MSS sans sweep précédent n'est pas un CSD.</li>
+        <li><strong>Trigger sans FVG frais</strong> — entrer au retest d'un niveau sans FVG non mitigated multiplie les faux signaux.</li>
+        <li><strong>Ignorer le HTF</strong> — un CSD M5 contre un trend Daily vigoureux est un contre-tendance à probabilité faible.</li>
+        <li><strong>Multi-essais</strong> — après invalidation, abandonner le scénario ; ne pas redoubler.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

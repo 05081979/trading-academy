@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="starter">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(function(){
+  try {
+    fetch('../version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v=(v||'').trim(); if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){ localStorage.setItem(k,v); location.replace(location.pathname+'?_cb='+v+location.hash); }
+        else localStorage.setItem(k,v);
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<script src="../auth.js?v=v20260413-revoke2"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orderflow & Intermarket — Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../readability.css?v=v20260413-revoke2">
+<link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
+<style>
+:root {
+  --bg:#f5f7fa; --s1:#fff; --s2:#f8fafc; --bd:#e2e5ea;
+  --gold:#b8860b; --gold2:#d4a017;
+  --blue:#2563eb; --green:#059669; --red:#dc2626;
+  --orange:#ea580c; --purple:#7c3aed; --cyan:#0891b2;
+  --text:#1a1a2e; --t2:#475569; --t3:#94a3b8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;}
+.banner{background:linear-gradient(135deg,#1a1a2e 0%,#2d2d4a 100%);color:#fff;padding:56px 56px 44px;position:relative;overflow:hidden;}
+.banner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 0%,var(--gold) 30%,var(--gold2) 50%,var(--gold) 70%,transparent 100%);}
+.banner-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--gold2);text-transform:uppercase;margin-bottom:12px;}
+.banner h1{font-family:'Syne',sans-serif;font-size:clamp(30px,4vw,44px);font-weight:800;color:#fff;line-height:1.1;letter-spacing:-0.01em;}
+.banner h1 em{color:var(--gold2);font-style:normal;}
+.banner-sub{margin-top:14px;color:rgba(255,255,255,0.75);font-size:15px;max-width:720px;line-height:1.6;}
+.container{max-width:1100px;margin:0 auto;padding:40px 32px;}
+.module{margin-bottom:36px;}
+.mod-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd);}
+.mod-num{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;padding:4px 10px;border-radius:4px;background:rgba(184,134,11,0.12);color:var(--gold);}
+.mod-head h2{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text);letter-spacing:-0.01em;}
+.section{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:28px 32px;margin-bottom:18px;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.section-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.section-title .dot{width:7px;height:7px;border-radius:50%;}
+p.lede{color:var(--t2);line-height:1.75;font-size:14px;}
+p.lede + p.lede{margin-top:10px;}
+.concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
+@media(max-width:800px){.concept-grid{grid-template-columns:1fr;}.container{padding:24px 16px;}.banner{padding:36px 24px;}}
+.concept-card{background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:18px 20px;}
+.concept-card h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--gold);margin-bottom:8px;}
+.concept-card p{color:var(--t2);line-height:1.7;font-size:13px;}
+.concept-card p + p{margin-top:8px;}
+.concept-card.full{grid-column:1 / -1;}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px;}
+th{text-align:left;padding:9px 12px;background:var(--s2);color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;border-bottom:1px solid var(--bd);}
+td{padding:9px 12px;border-bottom:1px solid var(--bd);color:var(--t2);}
+.list-styled{padding-left:20px;margin-top:8px;}
+.list-styled li{color:var(--t2);line-height:1.8;font-size:13px;}
+.list-styled li strong{color:var(--text);}
+.highlight{color:var(--gold2);font-weight:600;}
+.callout{border-left:3px solid var(--gold);background:rgba(212,160,23,0.06);padding:14px 18px;border-radius:0 8px 8px 0;margin-top:14px;}
+.callout.red{border-left-color:var(--red);background:rgba(220,38,38,0.05);}
+.callout.green{border-left-color:var(--green);background:rgba(5,150,105,0.05);}
+.callout.blue{border-left-color:var(--blue);background:rgba(37,99,235,0.05);}
+.callout-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.callout.red .callout-title{color:var(--red);} .callout.green .callout-title{color:var(--green);} .callout.blue .callout-title{color:var(--blue);}
+.callout p{color:var(--t2);font-size:13px;line-height:1.7;}
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+<div class="banner">
+  <div class="banner-eyebrow">FONDATIONS — 4 MODULES</div>
+  <h1>Orderflow & <em>Intermarket</em></h1>
+  <p class="banner-sub">Lire le flux institutionnel, confirmer par les corrélations inter-actifs, identifier les swings à signature algorithmique et exploiter les zones Breaker Price Range.</p>
+</div>
+<div class="container">
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 01</span><h2>Orderflow institutionnel HTF / LTF</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--gold)"></span>Lecture du flux par séquences</div>
+      <p class="lede">L'orderflow institutionnel n'est pas une suite aléatoire de bougies mais une alternance <span class="highlight">expansion → retracement → consolidation → redistribution</span>. Le prix délivre sur des niveaux planifiés ; la tâche du trader est de reconnaître à quelle phase de la séquence on se trouve avant d'exécuter.</p>
+      <p class="lede">La phase d'expansion est la plus lisible : déplacement directionnel rapide, bougies pleines, FVG laissé derrière. La phase de retracement est la plus piégeante : elle ressemble à un retournement alors qu'elle n'est qu'un refill de liquidité avant la jambe suivante.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Expansion</h3>
+          <p>Jambe directionnelle avec <strong>déplacement significatif</strong>. Typiquement 3 à 7 bougies H1 qui ouvrent FVG, prennent le haut/bas précédent et ferment près de l'extrême.</p>
+          <p>Signature : volume réel, closes consécutives du même côté, mèches courtes du côté du mouvement.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Retracement</h3>
+          <p>Retour partiel dans la jambe précédente, souvent <strong>entre 50% et 79%</strong> de la jambe d'expansion. Vise la mitigation d'un OB, d'un FVG, ou d'un breaker.</p>
+          <p>Signature : volume qui décroît, mèches des deux côtés, temps passé plus long que la jambe d'expansion.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Consolidation</h3>
+          <p>Fenêtre de range étroit, souvent nocturne ou pré-session, où l'algorithme <strong>accumule ou distribue</strong> avant la jambe suivante.</p>
+          <p>Signature : amplitude qui se contracte, extrêmes qui servent de pool de liquidité.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Redistribution</h3>
+          <p>Reprise du mouvement macro après refill complet. Le prix <strong>déplace à nouveau</strong> avec la même intention directionnelle, parfois après avoir purgé une liquidité contraire.</p>
+          <p>Signature : MSS dans le sens du HTF bias, FVG frais, absence de rebranchement.</p>
+        </div>
+      </div>
+      <div class="callout">
+        <div class="callout-title">Règle d'or</div>
+        <p>L'expansion donne la direction ; le retracement donne l'entrée ; la consolidation donne le stop ; la redistribution donne le TP.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--blue)"></span>Alignement HTF → LTF</div>
+      <p class="lede">Le HTF (Monthly, Weekly, Daily) dicte le DoL (Draw on Liquidity). Le LTF (M15, M5, M1) donne le timing d'entrée. Sauter cette hiérarchie, c'est trader en aveugle.</p>
+      <table>
+        <thead><tr><th>Rôle</th><th>Timeframe</th><th>Objectif</th></tr></thead>
+        <tbody>
+          <tr><td>Narrative</td><td>Monthly / Weekly</td><td>Biais directionnel, DoL macro, zones premium/discount</td></tr>
+          <tr><td>Structure</td><td>Daily / H4</td><td>Identification MSS, dernier OB valide, FVG HTF</td></tr>
+          <tr><td>Trigger</td><td>M15 / M5</td><td>Confirmation MSS intraday, refinement zone</td></tr>
+          <tr><td>Exécution</td><td>M1</td><td>Entrée chirurgicale, stop serré, RR calculé</td></tr>
+        </tbody>
+      </table>
+      <div class="callout red">
+        <div class="callout-title">Piège fatal</div>
+        <p>Entrer sur un signal LTF qui contredit le biais Daily revient à parier contre l'orderflow dominant. Le signal peut fonctionner 2 fois sur 10 ; sur 100 trades, le compte fond.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--purple)"></span>Signature algorithmique</div>
+      <p class="lede">Une jambe algorithmique se reconnaît à trois critères objectifs : <strong>vitesse, amplitude, propreté</strong>. Vitesse = peu de bougies pour parcourir la distance. Amplitude = écart supérieur à l'ATR du TF. Propreté = mèches du côté du mouvement très courtes et closes groupées.</p>
+      <p class="lede">À l'inverse, un mouvement retail est lent, haché, produit de longues mèches et laisse des doubles tops/bottoms évidents. Savoir distinguer les deux évite 80% des faux signaux.</p>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 02</span><h2>Intermarket — DXY, bonds, indices</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--green)"></span>La matrice des corrélations</div>
+      <p class="lede">Aucun actif ne bouge isolé. Les paires FX majeures dépendent du DXY, qui lui-même réagit aux rendements obligataires 10Y US. Les indices actions répondent au couple taux / dollar. Comprendre ces chaînes, c'est anticiper au lieu de réagir.</p>
+      <table>
+        <thead><tr><th>Actif</th><th>Relation directe</th><th>Utilisation</th></tr></thead>
+        <tbody>
+          <tr><td>EURUSD</td><td>Inverse du DXY</td><td>Confirmation long EUR si DXY perd support</td></tr>
+          <tr><td>GBPUSD</td><td>Inverse du DXY, bêta plus élevé</td><td>Accélération directionnelle quand DXY casse</td></tr>
+          <tr><td>USDJPY</td><td>Corrélé au 10Y US</td><td>Long USDJPY si 10Y hausse sous couvert BoJ</td></tr>
+          <tr><td>XAUUSD</td><td>Inverse DXY et 10Y réel</td><td>Long or si dollar faiblit et yields réels baissent</td></tr>
+          <tr><td>NQ / ES</td><td>Inverse 10Y sur horizon court</td><td>Risk-on si yields consolident, risk-off si yields cassent haussier</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--cyan)"></span>Divergences comme confirmation</div>
+      <p class="lede">Une divergence intermarket est un signal de haute qualité : deux actifs corrélés divergent temporairement, un seul "a raison", et c'est presque toujours celui qui respecte sa structure HTF.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Divergence confirmation</h3>
+          <p>EURUSD prend un plus bas, GBPUSD refuse. Le DXY ne parvient pas à faire un plus haut. <strong>Le plus bas EUR est faux</strong> : long EUR au refill du FVG local.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Divergence d'épuisement</h3>
+          <p>NQ fait un nouveau plus haut, ES refuse, Dow refuse. La jambe NQ est isolée, <strong>short potentiel</strong> sur cassure MSS M5.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Divergence de timing</h3>
+          <p>Or casse haussier avant le DXY, le marché anticipe une faiblesse dollar <strong>non encore imprimée</strong>. Long or / short DXY sont corrélés.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Divergence d'épaisseur</h3>
+          <p>Un actif bouge avec volume, l'autre sans. La jambe sans volume est cosmétique et <strong>se retrace</strong> en premier.</p>
+        </div>
+      </div>
+      <div class="callout blue">
+        <div class="callout-title">Note</div>
+        <p>Une divergence seule n'est jamais un signal d'entrée. C'est une confluence qui s'ajoute à une structure LTF déjà valide.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--orange)"></span>Fenêtres d'écoute intermarket</div>
+      <p class="lede">Toutes les heures ne se valent pas pour lire l'intermarket. Trois fenêtres ET concentrent les réactions exploitables.</p>
+      <table>
+        <thead><tr><th>Heure ET</th><th>Événement</th><th>Ce qu'on lit</th></tr></thead>
+        <tbody>
+          <tr><td>02:00 – 05:00</td><td>Ouverture Londres FX</td><td>DXY imprime la direction du jour, les paires majeures s'alignent</td></tr>
+          <tr><td>08:30</td><td>Release data US (NFP, CPI, PPI)</td><td>Réaction 10Y + DXY immédiate, FX et or réagissent en miroir</td></tr>
+          <tr><td>09:30 – 10:30</td><td>Ouverture cash US</td><td>Indices valident ou invalident la narrative matinale</td></tr>
+          <tr><td>14:00</td><td>FOMC / Treasury auctions</td><td>Yields cassent un niveau, DXY suit avec 30-60s de retard</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 03</span><h2>Institutional Swing Points & Open Float</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--red)"></span>Un swing point n'est pas un pivot retail</div>
+      <p class="lede">Le pivot à 3 bougies que tout indicateur affiche n'a aucune valeur institutionnelle. Un <strong>vrai swing à signature institutionnelle</strong> est un sommet ou un creux qui a généré un déplacement objectif derrière lui, laissé un FVG et pris une liquidité identifiable.</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Critères de validation</h3>
+          <p>1. Le swing prend au moins une équité précédente (PDH/PDL, PWH/PWL, session high/low).</p>
+          <p>2. Déplacement post-swing supérieur à 1× ATR du TF analysé.</p>
+          <p>3. Un FVG laissé dans les 3 bougies qui suivent le swing.</p>
+          <p>4. Structure cassée dans le sens opposé après impression (MSS).</p>
+        </div>
+        <div class="concept-card">
+          <h3>Hiérarchie des swings</h3>
+          <p><strong>Macro</strong> : Weekly / Monthly, servent de DoL pour plusieurs semaines.</p>
+          <p><strong>Intermédiaire</strong> : Daily / H4, servent de cible hebdomadaire.</p>
+          <p><strong>Intraday</strong> : H1 / M15, servent de cible de session.</p>
+          <p>Un swing intraday n'efface pas un swing macro : il le sert.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--gold)"></span>Open Float — le flottant accessible</div>
+      <p class="lede">L'Open Float désigne la <strong>quantité de liquidité réellement exploitable</strong> entre le prix actuel et les prochains swings institutionnels. Un marché à Open Float élevé est un marché qui va bouger ; un marché à Open Float épuisé est un marché qui va consolider ou retourner.</p>
+      <p class="lede">Concrètement, si tous les BSL majeurs ont été pris dans les dernières sessions et qu'il ne reste que des SSL en dessous, la probabilité d'une jambe baissière explose. L'algorithme cherche le flottant le plus riche.</p>
+      <div class="callout green">
+        <div class="callout-title">Méthode</div>
+        <p>Cartographier sur Daily les BSL et SSL non pris des 20 derniers jours. Marquer en priorité ceux qui n'ont pas été testés depuis plus de 5 sessions. Ce sont les cibles les plus probables.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--blue)"></span>Erreurs de lecture fréquentes</div>
+      <ul class="list-styled">
+        <li><strong>Confondre swing retail et institutionnel</strong> — un pivot à 3 bougies sans déplacement n'est rien.</li>
+        <li><strong>Ignorer l'Open Float</strong> — entrer long alors que seuls des SSL restent en dessous est une faute de plan.</li>
+        <li><strong>Empiler les swings</strong> — tracer 30 niveaux rend le graphique illisible ; 3 à 5 suffisent.</li>
+        <li><strong>Oublier le temps</strong> — un swing de plus de 30 sessions sans test est souvent devenu un DoL majeur.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-num">MODULE 04</span><h2>BPR — Breaker Price Range</h2></div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--purple)"></span>Définition précise</div>
+      <p class="lede">Le Breaker Price Range (BPR) est la <strong>zone d'overlap entre un breaker et un FVG de sens inverse</strong>. Cet overlap cumule deux couches de mémoire algorithmique : la zone où le prix a cassé la structure précédente (breaker) et le déséquilibre laissé pendant cette cassure (FVG).</p>
+      <p class="lede">Résultat : une zone beaucoup plus restreinte et beaucoup plus précise qu'un OB seul ou un FVG seul. La majorité des faux signaux sur OB classique proviennent de zones trop larges ; le BPR corrige ce défaut.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--orange)"></span>Différences avec FVG et OB simples</div>
+      <table>
+        <thead><tr><th>Zone</th><th>Taille typique</th><th>Précision</th><th>Usage</th></tr></thead>
+        <tbody>
+          <tr><td>FVG seul</td><td>Large (ATR entier)</td><td>Moyenne</td><td>Refill HTF, cible partielle</td></tr>
+          <tr><td>OB seul</td><td>1 à 3 bougies</td><td>Moyenne</td><td>Entrée HTF swing</td></tr>
+          <tr><td>Breaker seul</td><td>Zone d'OB flippé</td><td>Bonne</td><td>Entrée contre-tendance mesurée</td></tr>
+          <tr><td>BPR</td><td>Overlap restreint</td><td>Élevée</td><td>Entrée chirurgicale, SL serré</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <div class="callout-title">Avantage clé</div>
+        <p>Le BPR permet souvent un RR supérieur à 1:5 parce que le stop loss se loge juste au-delà de la zone d'overlap, pas au-delà du breaker entier.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--cyan)"></span>Construction pas-à-pas</div>
+      <ul class="list-styled">
+        <li><strong>Étape 1</strong> — identifier une cassure de structure (MSS) sur le TF choisi.</li>
+        <li><strong>Étape 2</strong> — localiser la bougie d'OB qui a provoqué la cassure.</li>
+        <li><strong>Étape 3</strong> — repérer le FVG laissé par la bougie ou les bougies suivantes.</li>
+        <li><strong>Étape 4</strong> — attendre le retour du prix dans la zone ; le breaker (OB flippé) et le FVG doivent se recouvrir partiellement.</li>
+        <li><strong>Étape 5</strong> — la zone d'overlap est le BPR ; l'entrée se déclenche dans cette fenêtre.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="dot" style="background:var(--red)"></span>Pièges du BPR</div>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>BPR sans MSS</h3>
+          <p>Sans cassure de structure préalable, il n'y a pas de breaker, donc pas de BPR. Beaucoup de traders nomment "BPR" un simple overlap OB/FVG sans cassure. C'est faux.</p>
+        </div>
+        <div class="concept-card">
+          <h3>BPR trop ancien</h3>
+          <p>Au-delà de 15 à 20 bougies sans test, le BPR perd en fraîcheur. La mémoire algorithmique s'efface après plusieurs déplacements opposés.</p>
+        </div>
+        <div class="concept-card">
+          <h3>BPR contre HTF</h3>
+          <p>Un BPR M5 contre le biais H4 est une tentation de contre-tendance faible. Ne jamais trader un BPR LTF qui contredit la narrative HTF.</p>
+        </div>
+        <div class="concept-card">
+          <h3>BPR dans la consolidation</h3>
+          <p>Les BPR imprimés à l'intérieur d'un range sont fréquemment retestés sans suite. Exiger une expansion préalable avant de qualifier un BPR.</p>
+        </div>
+      </div>
+      <div class="callout red">
+        <div class="callout-title">Règle d'invalidation</div>
+        <p>Si le prix clôture (close M5 ou M15 selon le TF de trigger) au-delà de la limite opposée du BPR, la zone est morte. Pas de second essai, pas de moyenne à la baisse.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
