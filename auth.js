@@ -197,13 +197,13 @@
       if (existing) existing.remove();
       var wm = document.createElement('div');
       wm.id = 'aa-watermark';
-      wm.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;overflow:hidden;opacity:0.12;';
+      wm.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;overflow:hidden;opacity:0.18;mix-blend-mode:multiply;';
       var stamp = new Date().toISOString().replace('T',' ').slice(0,16);
       var tag = username + ' · ' + stamp;
       var wmText = '';
-      for (var i = 0; i < 20; i++) {
-        wmText += '<div style="white-space:nowrap;transform:rotate(-28deg);color:#000;font-size:13px;font-weight:600;font-family:monospace;letter-spacing:4px;line-height:90px;margin-left:' + ((i%3)*-120) + 'px;">';
-        for (var j = 0; j < 6; j++) { wmText += tag + ' &nbsp;&nbsp; '; }
+      for (var i = 0; i < 25; i++) {
+        wmText += '<div style="white-space:nowrap;transform:rotate(-28deg);color:#000;font-size:15px;font-weight:700;font-family:monospace;letter-spacing:4px;line-height:80px;margin-left:' + ((i%3)*-120) + 'px;">';
+        for (var j = 0; j < 7; j++) { wmText += tag + ' &nbsp;&nbsp; '; }
         wmText += '</div>';
       }
       wm.innerHTML = wmText;
@@ -220,13 +220,39 @@
     shield.innerHTML = '<div style="text-align:center;color:#6b7280;font-family:Inter,sans-serif;"><div style="font-size:36px;margin-bottom:16px;">&#x1F6E1;</div><div style="font-size:16px;color:#111;">Contenu protege</div><div style="font-size:12px;margin-top:8px;color:#6b7280;">Revenez sur cette fenetre pour continuer</div></div>';
     document.body.appendChild(shield);
 
-    window.addEventListener('blur', function() { shield.style.display = 'flex'; });
-    window.addEventListener('focus', function() { shield.style.display = 'none'; });
-    // Détecte aussi tab switch / alt+tab / perte de visibilité
+    // Shield avec délai minimum 3s après retour — empêche les outils de capture
+    // qui déclenchent brièvement le shield puis le referment trop vite
+    var shieldUntil = 0;
+    function triggerShield(ms) {
+      shield.style.display = 'flex';
+      shieldUntil = Math.max(shieldUntil, Date.now() + (ms || 3000));
+    }
+    function checkShield() {
+      if (Date.now() >= shieldUntil) shield.style.display = 'none';
+    }
+    setInterval(checkShield, 200);
+    window.addEventListener('blur', function() { triggerShield(3000); });
+    window.addEventListener('focus', function() { /* géré par checkShield */ });
     document.addEventListener('visibilitychange', function() {
-      if (document.hidden) shield.style.display = 'flex';
-      else shield.style.display = 'none';
+      if (document.hidden) triggerShield(3000);
     });
+    // Mouse quitte la fenêtre → shield (empêche d'aller cliquer Snipping Tool sans être détecté)
+    document.addEventListener('mouseleave', function(e) {
+      if (e.relatedTarget === null && (e.clientY <= 0 || e.clientX <= 0 || e.clientX >= window.innerWidth || e.clientY >= window.innerHeight)) {
+        triggerShield(2000);
+      }
+    });
+    // Auto-blur le contenu après 20s d'inactivité (souris + clavier)
+    var lastActivity = Date.now();
+    function markActivity() { lastActivity = Date.now(); document.body.style.filter = ''; }
+    ['mousemove','mousedown','keydown','scroll','touchstart'].forEach(function(ev) {
+      document.addEventListener(ev, markActivity, { passive: true });
+    });
+    setInterval(function() {
+      if (Date.now() - lastActivity > 20000) {
+        document.body.style.filter = 'blur(14px)';
+      }
+    }, 2000);
     // Bloque impression via CSS (print media = vide total)
     var printStyle = document.createElement('style');
     printStyle.textContent = '@media print { html, body { display: none !important; visibility: hidden !important; } *, *::before, *::after { display: none !important; } }';
@@ -238,25 +264,51 @@
     document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
     document.body.style.userSelect = 'none';
     document.body.style.webkitUserSelect = 'none';
+    // Anti PrintScreen: écrase le presse-papier en permanence après PrintScreen
+    function overwriteClipboard() {
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText('-- Contenu protégé : ' + username + ' --').catch(function(){});
+        }
+      } catch(e) {}
+    }
+    document.addEventListener('keyup', function(e) {
+      if (e.key === 'PrintScreen') {
+        e.preventDefault(); triggerShield(4000); overwriteClipboard();
+        // Écrase plusieurs fois pour vider même si la capture s'y est mise
+        setTimeout(overwriteClipboard, 50);
+        setTimeout(overwriteClipboard, 200);
+        setTimeout(overwriteClipboard, 500);
+      }
+    });
     document.addEventListener('keydown', function(e) {
       // Screenshot / capture
-      if (e.key === 'PrintScreen') { e.preventDefault(); shield.style.display = 'flex'; navigator.clipboard && navigator.clipboard.writeText(''); }
+      if (e.key === 'PrintScreen') { e.preventDefault(); triggerShield(4000); overwriteClipboard(); }
       // Win+Shift+S (Snipping Tool Windows)
-      if (e.shiftKey && (e.key === 'S' || e.key === 's') && (e.metaKey || e.getModifierState('Meta'))) { e.preventDefault(); shield.style.display = 'flex'; }
-      if (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's')) { e.preventDefault(); shield.style.display = 'flex'; }
+      if (e.shiftKey && (e.key === 'S' || e.key === 's') && (e.metaKey || e.getModifierState('Meta'))) { e.preventDefault(); triggerShield(4000); }
+      if (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's')) { e.preventDefault(); triggerShield(4000); }
+      // Cmd+Shift+3/4/5 (Mac)
+      if (e.metaKey && e.shiftKey && (e.key === '3' || e.key === '4' || e.key === '5')) { e.preventDefault(); triggerShield(4000); }
       // Save / Print
-      if (e.ctrlKey && (e.key === 'p' || e.key === 'P')) { e.preventDefault(); shield.style.display = 'flex'; }
+      if (e.ctrlKey && (e.key === 'p' || e.key === 'P')) { e.preventDefault(); triggerShield(2000); }
+      if (e.metaKey && (e.key === 'p' || e.key === 'P')) { e.preventDefault(); triggerShield(2000); }
       if (e.ctrlKey && (e.key === 's' || e.key === 'S')) e.preventDefault();
+      if (e.metaKey && (e.key === 's' || e.key === 'S')) e.preventDefault();
       // Devtools
       if (e.key === 'F12') e.preventDefault();
       if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) e.preventDefault();
       if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) e.preventDefault();
       if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) e.preventDefault();
+      if (e.metaKey && e.altKey && (e.key === 'I' || e.key === 'i')) e.preventDefault();
       // View source
       if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) e.preventDefault();
-      // Copy (évite copier-coller gros blocs)
-      if (e.ctrlKey && (e.key === 'c' || e.key === 'C')) { /* laissé, sélection désactivée de toute façon */ }
+      if (e.metaKey && (e.key === 'u' || e.key === 'U')) e.preventDefault();
+      // Select all (empêche copier-coller du texte)
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'a' || e.key === 'A')) e.preventDefault();
     });
+    // Anti-copy via événement clipboard
+    document.addEventListener('copy', function(e) { e.preventDefault(); overwriteClipboard(); });
+    document.addEventListener('cut', function(e) { e.preventDefault(); });
     // Détection devtools ouverte via taille fenêtre — shield activé
     var devtoolsCheck = setInterval(function() {
       var threshold = 160;
