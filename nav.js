@@ -15,7 +15,6 @@
     ]},
     { name: 'Temps & Cycles', items: [
       { id: 'sessions-killzones',  label: 'Sessions, Killzones & Macros' },
-      { id: 'cycles-temporels',    label: 'Cycles Temporels & GB Time' },
       { id: 'digital-time-theory', label: 'Theorie du Temps Numerique' },
       { id: 'temps-prix-protocole',label: 'Temps & Prix — Protocole' },
       { id: 'sequences-fractales', label: 'Sequences & Fractales' },
@@ -23,6 +22,7 @@
     { name: 'Architecture', items: [
       { id: 'architecture-niveaux',    label: 'Architecture des Niveaux' },
       { id: 'niveaux-algorithmiques',  label: 'Niveaux Algorithmiques' },
+      { id: 'cycles-temporels',        label: 'GB Time & Cycles Temporels' },
       { id: 'ipda-trainer',            label: 'Algorithme de Livraison du Prix' },
     ]},
     { name: 'Execution', items: [
