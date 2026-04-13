@@ -478,20 +478,42 @@ body {
       <a href="modules/hub-cours.html" class="btn-primary">Commencer le Parcours <span>&rarr;</span></a>
       <a href="#parcours" class="btn-outline">Explorer</a>
     </div>
-    <div class="hero-stats">
+    <div class="hero-stats" id="heroStats">
       <div class="stat">
-        <div class="stat-num"><span class="counter" data-target="32">0</span></div>
+        <div class="stat-num"><span class="counter" id="statCours" data-target="0">0</span></div>
         <div class="stat-label">Cours</div>
       </div>
       <div class="stat">
-        <div class="stat-num"><span class="counter" data-target="250">0</span><span class="suffix">+</span></div>
+        <div class="stat-num"><span class="counter" id="statModules" data-target="0">0</span></div>
         <div class="stat-label">Modules</div>
       </div>
       <div class="stat">
-        <div class="stat-num"><span class="counter" data-target="6">0</span></div>
+        <div class="stat-num"><span class="counter" id="statIndicateurs" data-target="0">0</span></div>
         <div class="stat-label">Indicateurs</div>
       </div>
     </div>
+    <script>
+      // Stats auto-calculées (mise à jour au déploiement via GitHub Action → stats.json)
+      fetch('stats.json?_=' + Date.now(), {cache: 'no-store'})
+        .then(r => r.json())
+        .then(s => {
+          if (s.cours != null)       document.getElementById('statCours').dataset.target = s.cours;
+          if (s.modules != null)     document.getElementById('statModules').dataset.target = s.modules;
+          if (s.indicateurs != null) document.getElementById('statIndicateurs').dataset.target = s.indicateurs;
+          // Relance l'animation des counters si elle est déjà passée
+          document.querySelectorAll('#heroStats .counter').forEach(el => {
+            var t = parseInt(el.dataset.target, 10);
+            if (!isNaN(t) && parseInt(el.textContent, 10) !== t) {
+              var cur = 0, step = Math.max(1, Math.ceil(t / 40));
+              var id = setInterval(function() {
+                cur += step;
+                if (cur >= t) { cur = t; clearInterval(id); }
+                el.textContent = cur;
+              }, 22);
+            }
+          });
+        }).catch(()=>{});
+    </script>
   </div>
 </section>
 
@@ -548,12 +570,21 @@ body {
       <span class="card-arrow">Acceder &rarr;</span>
     </a>
 
-    <a href="modules/hub-cours.html" class="card fade-in" style="border-left-color: #d97706">
+    <a href="modules/psychologie-trader.html" class="card fade-in" style="border-left-color: #d97706">
       <span class="card-num">06</span>
       <span class="card-badge badge-starter">Starter</span>
-      <h3>Psychologie & Outils</h3>
-      <p>Gestion du risque, journal de trading, indicateurs Pine Script et discipline.</p>
-      <div class="card-tags"><span class="card-tag">Risk</span><span class="card-tag">Journal</span><span class="card-tag">Pine</span></div>
+      <h3>Psychologie</h3>
+      <p>Mindset du trader, discipline, gestion émotionnelle et psychologie de l'exécution.</p>
+      <div class="card-tags"><span class="card-tag">Mindset</span><span class="card-tag">Discipline</span><span class="card-tag">Émotions</span></div>
+      <span class="card-arrow">Acceder &rarr;</span>
+    </a>
+
+    <a href="modules/calculatrice.html" class="card fade-in" style="border-left-color: #059669">
+      <span class="card-num">07</span>
+      <span class="card-badge badge-starter">Starter</span>
+      <h3>Outils</h3>
+      <p>Calculatrice de position, journal de trading et news en direct.</p>
+      <div class="card-tags"><span class="card-tag">Risk</span><span class="card-tag">Journal</span><span class="card-tag">News</span></div>
       <span class="card-arrow">Acceder &rarr;</span>
     </a>
 

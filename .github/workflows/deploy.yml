@@ -25,6 +25,17 @@ jobs:
           # Bump ?v=... sur les CSS/JS locaux dans tous les HTML
           find . -name "*.html" -not -path "./.github/*" -print0 | \
             xargs -0 sed -i -E "s/(\.(css|js))\?v=[^\"' ]+/\1?v=$VER/g"
+      - name: Auto-compute stats.json
+        run: |
+          INDIC=$(ls modules/indicateur-*.html 2>/dev/null | wc -l)
+          # Modules = toutes pages dans /modules/ sauf indicateurs, archives, hub, index
+          MODULES=$(ls modules/*.html 2>/dev/null \
+            | grep -vE "indicateur-|_archive|hub-cours|indicateurs\.html|index-cours" \
+            | wc -l)
+          # Cours = nombre de cours listés dans hub-cours.html (cherche `title:` dans le JSON)
+          COURS=$(grep -cE "^\s*title:\s*\"" modules/hub-cours.html || echo 0)
+          echo "{\"cours\": $COURS, \"modules\": $MODULES, \"indicateurs\": $INDIC}" > stats.json
+          echo "stats.json = $(cat stats.json)"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
