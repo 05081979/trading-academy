@@ -58,18 +58,29 @@
     window.AA_USER = savedUser;
     window.AA_ALLOW = savedAllow;
 
-    // Blocage pages Premium — redirection silencieuse
+    // Blocage pages tiered — redirection silencieuse
     var pageTier = document.documentElement.getAttribute('data-tier');
+    var pageSlug = getPageSlug();
+    var denied = false;
     if (pageTier === 'premium') {
-      var pageSlug = getPageSlug();
-      var denied = false;
+      // Premium pages: starter bloqué. Custom: whitelist. Premium/admin OK.
       if (savedTier === 'starter') denied = true;
       if (savedTier === 'custom' && savedAllow.indexOf(pageSlug) === -1) denied = true;
-      if (denied) {
-        var redirect = location.pathname.includes('/modules/') ? 'hub-cours.html' : 'index.html';
-        location.replace(redirect);
-        return;
+    }
+    if (pageTier === 'indicator') {
+      // Indicator pages: uniquement Custom (avec slug whitelisté) ou Admin
+      if (savedUser === 'Admin') {
+        denied = false;
+      } else if (savedTier === 'custom' && savedAllow.indexOf(pageSlug) !== -1) {
+        denied = false;
+      } else {
+        denied = true;
       }
+    }
+    if (denied) {
+      var redirect = location.pathname.includes('/modules/') ? 'hub-cours.html' : 'index.html';
+      location.replace(redirect);
+      return;
     }
 
     window.addEventListener('DOMContentLoaded', function() { addProtection(savedUser); });

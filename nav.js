@@ -2,10 +2,15 @@
 (function() {
   // Tier (starter / premium / custom) et whitelist éventuelle
   const USER_TIER = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('aa_tier')) || 'premium';
+  const USER_NAME = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('aa_user')) || '';
   const IS_STARTER = USER_TIER === 'starter';
+  const IS_PREMIUM = USER_TIER === 'premium';
   const IS_CUSTOM = USER_TIER === 'custom';
+  const IS_ADMIN = USER_NAME === 'Admin';
   let USER_ALLOW = [];
   try { USER_ALLOW = JSON.parse((typeof sessionStorage !== 'undefined' && sessionStorage.getItem('aa_allow')) || '[]'); } catch(e) {}
+  // Au moins un indicateur whitelisté ?
+  const HAS_INDICATOR = USER_ALLOW.some(function(s){ return s.startsWith('indicateur'); });
 
   const CATS_RAW = [
     { name: 'Fondations', items: [
@@ -43,7 +48,7 @@
       { id: 'etudes-de-cas',           label: 'Etudes de Cas' },
     ]},
     { name: 'Bibliotheque', link: 'hub-cours.html', id: 'hub-cours' },
-    { name: 'Indicateurs', link: 'indicateurs.html', id: 'indicateurs', premium: true },
+    { name: 'Indicateurs', link: 'indicateurs.html', id: 'indicateurs', indicator: true },
     { name: 'Psychologie', items: [
       { id: 'psychologie-trader',  label: 'Psychologie du Trader' },
     ]},
@@ -54,10 +59,12 @@
     ]},
   ];
 
-  // Filtre: cache les catégories Premium aux Starter
-  // Pour Custom: garde la catégorie Premium mais filtre les items hors whitelist
+  // Filtre visibilité des catégories / liens :
+  // - premium=true  → caché aux Starter ; Custom: items filtrés sur whitelist ; Premium+Admin OK
+  // - indicator=true → visible uniquement si Admin ou Custom avec au moins 1 indicateur whitelisté
   const CATS = CATS_RAW
     .filter(c => !(c.premium && IS_STARTER))
+    .filter(c => !(c.indicator && !(IS_ADMIN || (IS_CUSTOM && HAS_INDICATOR))))
     .map(c => {
       if (c.premium && IS_CUSTOM && c.items) {
         const filtered = c.items.filter(m => USER_ALLOW.indexOf(m.id) !== -1);
