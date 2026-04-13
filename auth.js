@@ -3,10 +3,13 @@
   // Admin password (toi) - ton ancien mot de passe
   const HASH_ADMIN = '3b38fdddc696def68a4cadfa18d9c5470995d47495fd09371d5787e08ec04f49';
 
-  const SESSION_KEY = 'aa_auth';
+  const SESSION_KEY = 'aa_auth_v2';
   const TIER_KEY = 'aa_tier';
   const USER_KEY = 'aa_user';
   const ALLOW_KEY = 'aa_allow';
+
+  // Nettoyage ponctuel: invalide les sessions sur l'ancienne clé
+  try { sessionStorage.removeItem('aa_auth'); } catch(e) {}
 
   // Reset de session si ?reset=1 dans l'URL
   if (location.search.indexOf('reset=1') !== -1) {
