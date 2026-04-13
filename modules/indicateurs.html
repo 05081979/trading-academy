@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(function(){
+  try {
+    fetch('../version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v=(v||'').trim(); if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){ localStorage.setItem(k,v); location.replace(location.pathname+'?_cb='+v+location.hash); }
+        else localStorage.setItem(k,v);
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="../auth.js"></script>
+<title>Indicateurs Pine Script — Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#f5f7fa; color:#1a1a2e; font-family:'Inter',sans-serif; line-height:1.6; }
+.hero { background:linear-gradient(135deg,#1a1a2e 0%,#2d2d4a 100%); color:#fff; padding:80px 40px 60px; text-align:center; }
+.hero h1 { font-family:'Syne',sans-serif; font-size:clamp(32px,5vw,56px); font-weight:800; letter-spacing:-0.02em; margin-bottom:16px; background:linear-gradient(90deg,#fff 0%,#b8860b 50%,#fff 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.hero p { font-size:17px; color:#cbd5e1; max-width:700px; margin:0 auto; }
+.container { max-width:1200px; margin:0 auto; padding:50px 24px 80px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:20px; }
+.card { background:#fff; border-radius:14px; padding:24px; border:1px solid #e2e5ea; box-shadow:0 2px 12px rgba(0,0,0,0.04); text-decoration:none; color:inherit; transition:transform 0.2s, box-shadow 0.2s, border-color 0.2s; display:flex; flex-direction:column; gap:12px; position:relative; overflow:hidden; }
+.card:hover { transform:translateY(-4px); box-shadow:0 8px 24px rgba(0,0,0,0.12); border-color:var(--c,#2563eb); }
+.card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:var(--c,#2563eb); }
+.card-icon { font-size:36px; }
+.card-title { font-family:'Syne',sans-serif; font-size:17px; font-weight:700; color:#1a1a2e; }
+.card-desc { font-size:13px; color:#475569; line-height:1.55; }
+.card-cta { margin-top:auto; font-size:12px; color:var(--c,#2563eb); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; }
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+
+<div class="hero">
+  <h1>Indicateurs Pine Script</h1>
+  <p>9 outils propriétaires pour lire le marché comme l'algorithme le livre. Mode d'emploi complet, paramètres détaillés, timeframes recommandés.</p>
+</div>
+
+<div class="container">
+  <div class="grid">
+    <a href="indicateur-algo-time-po3-ranges.html" class="card" style="--c:#6366f1">
+      <div class="card-icon">⏱️</div>
+      <div class="card-title">Algo Time & PO3 Ranges</div>
+      <div class="card-desc">Combine Goldbach Levels (21 niveaux), Algo Time (phases temporelles) et PO3 Sequence (dealing range imbriqué avec zones Order Flow).</div>
+      <div class="card-cta">Voir le mode d'emploi →</div>
+    </a>
+    <a href="indicateur-amd-cycles-institutional-time.html" class="card" style="--c:#f59e0b">
+      <div class="card-icon">🔄</div>
+      <div class="card-title">AMD Cycles & Institutional Time</div>
+      <div class="card-desc">Découpe la journée en phases AMD (Accumulation / Manipulation / Distribution 1 & 2) sur 3 niveaux fractals imbriqués. Inclut un module GB avec tableau algo, swings et backtesting.</div>
+      <div class="card-cta">Voir le mode d'emploi →</div>
+    </a>
+    <a href="indicateur-dealing-range-mtf.html" class="card" style="--c:#10b981">
+      <div class="card-icon">📐</div>
+      <div class="card-title">Dealing Range MTF</div>
+      <div class="card-desc">Dealing range multi-timeframe (5m → Monthly) avec niveaux High, 75%, 50% (EQ), 25%, Low et OTE (0.79 à 0.21). Shading Premium/Discount + tableau récap.</div>
+      <div class="card-cta">Voir le mode d'emploi →</div>
+    </a>
+    <a href="indicateur-htf-candles-opening-gaps.html" class="card" style="--c:#8b5cf6">
+      <div class="card-icon">🕯️</div>
+      <div class="card-title">HTF Candles & Opening Gaps</div>
+      <div class="card-desc">Affiche jusqu'à 12 bougies HTF à droite du chart avec FVG, Volume Imbalance et trace lines. Intègre ORG (09:30), premier 1m FVG du jour, NWOG et NDOG.</div>
+      <div class="card-cta">Voir le mode d'emploi →</div>
+    </a>
+    <a href="indicateur-keys.html" class="card" style="--c:#ef4444">
+      <div class="card-icon">🔑</div>
+      <div class="card-title">Keys — Risk Management Prop Firm</div>
+      <div class="card-desc">Strategy de risk management pour prop firms (Topstep, Apex, FTMO, MFF). Calcule la taille en contrats NQ selon le risque autorisé. Trailing stop, breakeven 1R, dashboard DD.</div>
+      <div class="card-cta">Voir le mode d'emploi →</div>
+    </a>
+    <a href="indicateur-macro-tracker-news.html" class="card" style="--c:#06b6d4">
+      <div class="card-icon">📅</div>
+      <div class="card-title">Macro Tracker & News</div>
+      <div class="card-desc">Trace les fenêtres de macros ICT intrajournalières (~30 min) + calendrier Forex Factory (via toodegrees). Filtres par impact et devise.</div>
+      <div class="card-cta">Voir le mode d'emploi →</div>
+    </a>
+    <a href="indicateur-quarterly-theory.html" class="card" style="--c:#ec4899">
+      <div class="card-icon">⏳</div>
+      <div class="card-title">Quarterly Theory</div>
+      <div class="card-desc">Quarterly Theory ICT complète : cycles Yearly → Micro avec True Opens (TMO/TWO/TDO/TMSO). Module liquidité PMH/PML, PWH/PWL, PDH/PDL, sessions Asia/Londres/NY AM/PM avec détection sweeps.</div>
+      <div class="card-cta">Voir le mode d'emploi →</div>
+    </a>
+    <a href="indicateur-smart-money-toolkit.html" class="card" style="--c:#0ea5e9">
+      <div class="card-icon">🧠</div>
+      <div class="card-title">Smart Money Toolkit</div>
+      <div class="card-desc">Toolkit smart money ICT : CISD, MSB + Order Blocks (Z-score momentum), HIPPO multi-TF, BPR / iFVG. Détection MTF indépendante (1m → Daily).</div>
+      <div class="card-cta">Voir le mode d'emploi →</div>
+    </a>
+    <a href="indicateur-time-cycles-toolkit.html" class="card" style="--c:#14b8a6">
+      <div class="card-icon">🌀</div>
+      <div class="card-title">Time Cycles Toolkit</div>
+      <div class="card-desc">Toolkit cycles temporels ICT/TTU : 9 cycles 90min + 30min, EQ précédent, Daily/Weekly/Monthly quartiers, fibs, opens, liquidité temporelle 270m + 90m + historique D/W/M/Y.</div>
+      <div class="card-cta">Voir le mode d'emploi →</div>
+    </a>
+  </div>
+</div>
+</body>
+</html>
