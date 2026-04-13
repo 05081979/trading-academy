@@ -10,7 +10,6 @@
     { name: 'Structure du Prix', items: [
       { id: 'zones-de-prix',       label: 'Zones de Prix & Dealing Ranges' },
       { id: 'candle-range-theory',  label: 'Bougies, Ranges & Profils' },
-      { id: 'ranges-fractals',     label: 'Ranges & Fractales' },
       { id: 'analyse-mtf-avancee', label: 'Analyse Multi-Timeframe' },
     ]},
     { name: 'Temps & Cycles', items: [
@@ -23,6 +22,7 @@
     { name: 'Architecture', items: [
       { id: 'architecture-niveaux',    label: 'Architecture des Niveaux' },
       { id: 'niveaux-algorithmiques',  label: 'Niveaux Algorithmiques' },
+      { id: 'ranges-fractals',         label: 'Ranges & Fractales' },
       { id: 'gb-time',                 label: 'GB Time', href: 'cycles-temporels.html#gb-time' },
       { id: 'ipda-trainer',            label: 'Algorithme de Livraison du Prix' },
     ]},
