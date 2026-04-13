@@ -8,6 +8,18 @@
   const USER_KEY = 'aa_user';
   const ALLOW_KEY = 'aa_allow';
 
+  // Reset de session si ?reset=1 dans l'URL
+  if (location.search.indexOf('reset=1') !== -1) {
+    try {
+      sessionStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(TIER_KEY);
+      sessionStorage.removeItem(USER_KEY);
+      sessionStorage.removeItem(ALLOW_KEY);
+    } catch(e) {}
+    var cleanUrl = location.pathname;
+    location.replace(cleanUrl);
+  }
+
   async function sha256(text) {
     const data = new TextEncoder().encode(text);
     const buf = await crypto.subtle.digest('SHA-256', data);
