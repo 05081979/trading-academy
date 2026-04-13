@@ -245,13 +245,13 @@
       if (existing) existing.remove();
       var wm = document.createElement('div');
       wm.id = 'aa-watermark';
-      wm.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;overflow:hidden;opacity:0.18;mix-blend-mode:multiply;';
+      wm.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;overflow:hidden;opacity:0.06;mix-blend-mode:multiply;';
       var stamp = new Date().toISOString().replace('T',' ').slice(0,16);
       var tag = username + ' · ' + stamp;
       var wmText = '';
-      for (var i = 0; i < 25; i++) {
-        wmText += '<div style="white-space:nowrap;transform:rotate(-28deg);color:#000;font-size:15px;font-weight:700;font-family:monospace;letter-spacing:4px;line-height:80px;margin-left:' + ((i%3)*-120) + 'px;">';
-        for (var j = 0; j < 7; j++) { wmText += tag + ' &nbsp;&nbsp; '; }
+      for (var i = 0; i < 18; i++) {
+        wmText += '<div style="white-space:nowrap;transform:rotate(-28deg);color:#000;font-size:12px;font-weight:500;font-family:monospace;letter-spacing:5px;line-height:110px;margin-left:' + ((i%3)*-120) + 'px;">';
+        for (var j = 0; j < 5; j++) { wmText += tag + ' &nbsp;&nbsp;&nbsp; '; }
         wmText += '</div>';
       }
       wm.innerHTML = wmText;
