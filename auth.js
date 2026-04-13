@@ -8,6 +8,19 @@
   const USER_KEY = 'aa_user';
   const ALLOW_KEY = 'aa_allow';
 
+  // Tokens révoqués (username + tier). Si un élève entre un token dans cette
+  // liste, il est rejeté comme invalide.
+  const REVOKED = [
+    { user: 'elgavacho8421', tier: 'premium' }, // ancien token Premium révoqué
+    { user: 'elgavacho8421', tier: 'starter' }  // par précaution
+  ];
+  function isRevoked(username, tier) {
+    for (var i = 0; i < REVOKED.length; i++) {
+      if (REVOKED[i].user === username && REVOKED[i].tier === tier) return true;
+    }
+    return false;
+  }
+
   // Nettoyage ponctuel: invalide les sessions sur l'ancienne clé
   try { sessionStorage.removeItem('aa_auth'); } catch(e) {}
 
@@ -52,6 +65,7 @@
         return { username: username, tier: 'custom', allow: slugs };
       }
       var t = tier === 'p' ? 'premium' : 'starter';
+      if (isRevoked(decoded, t)) return null; // Token révoqué
       return { username: decoded, tier: t, allow: [] };
     } catch(e) { return null; }
   }
@@ -67,6 +81,15 @@
   var savedUser = sessionStorage.getItem(USER_KEY);
   var savedAllow = [];
   try { savedAllow = JSON.parse(sessionStorage.getItem(ALLOW_KEY) || '[]'); } catch(e) {}
+
+  // Si la session active correspond à un token révoqué, on force un relogin
+  if (savedAuth === 'valid' && savedUser && savedTier && isRevoked(savedUser, savedTier)) {
+    sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(TIER_KEY);
+    sessionStorage.removeItem(USER_KEY);
+    sessionStorage.removeItem(ALLOW_KEY);
+    savedAuth = null;
+  }
 
   if (savedAuth === 'valid' && savedTier && savedUser) {
     window.AA_TIER = savedTier;
