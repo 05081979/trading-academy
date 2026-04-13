@@ -119,13 +119,31 @@
     </div>
   `;
 
-  // Insère après le nav (ou tout en haut du body)
+  // Insère dans la zone de contenu principal (évite le chevauchement avec sidebar)
   function inject() {
+    // Essaye de trouver le conteneur de contenu principal (hors sidebar)
+    const candidates = [
+      'main', '[role="main"]',
+      '.main-content', '.main', '.content-main', '.content-wrap', '.content',
+      '.viewer-content', '.lesson', '.lesson-content', '.module-content',
+      'article', '.article', '.page-content', '.container'
+    ];
+    let host = null;
+    for (const sel of candidates) {
+      const el = document.querySelector(sel);
+      if (el && el.offsetWidth > 400) { host = el; break; }
+    }
+    if (host) {
+      host.insertBefore(wrap, host.firstChild);
+      return;
+    }
+    // Fallback: après le nav du haut, mais largeur auto pour éviter chevauchement
+    wrap.style.position = 'relative';
+    wrap.style.zIndex = '10';
     const nav = document.getElementById('aa-nav');
-    const body = document.body;
-    if (nav && nav.nextSibling) body.insertBefore(wrap, nav.nextSibling);
-    else if (body.firstChild) body.insertBefore(wrap, body.firstChild);
-    else body.appendChild(wrap);
+    if (nav && nav.nextSibling) document.body.insertBefore(wrap, nav.nextSibling);
+    else if (document.body.firstChild) document.body.insertBefore(wrap, document.body.firstChild);
+    else document.body.appendChild(wrap);
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', inject);
