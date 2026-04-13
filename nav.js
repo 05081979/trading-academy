@@ -15,15 +15,15 @@
     { name: 'Temps & Cycles', items: [
       { id: 'sessions-killzones',  label: 'Sessions, Killzones & Macros' },
       { id: 'cycles-temporels',    label: 'Cycles Temporels' },
-      { id: 'digital-time-theory', label: 'Theorie du Temps Numerique' },
       { id: 'temps-prix-protocole',label: 'Temps & Prix — Protocole' },
-      { id: 'sequences-fractales', label: 'Sequences & Fractales' },
     ]},
     { name: 'Architecture', items: [
       { id: 'architecture-niveaux',    label: 'Architecture des Niveaux' },
       { id: 'niveaux-algorithmiques',  label: 'Niveaux Algorithmiques' },
       { id: 'ranges-fractals',         label: 'Ranges & Fractales' },
       { id: 'gb-time',                 label: 'GB Time', href: 'cycles-temporels.html#gb-time' },
+      { id: 'digital-time-theory',     label: 'Theorie du Temps Numerique' },
+      { id: 'sequences-fractales',     label: 'Sequences & Fractales' },
       { id: 'ipda-trainer',            label: 'Algorithme de Livraison du Prix' },
     ]},
     { name: 'Execution', items: [
