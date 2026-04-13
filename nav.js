@@ -43,7 +43,7 @@
       { id: 'etudes-de-cas',           label: 'Etudes de Cas' },
     ]},
     { name: 'Bibliotheque', link: 'hub-cours.html', id: 'hub-cours' },
-    { name: 'Indicateurs', link: 'indicateurs.html', id: 'indicateurs' },
+    { name: 'Indicateurs', link: 'indicateurs.html', id: 'indicateurs', premium: true },
     { name: 'Psychologie', items: [
       { id: 'psychologie-trader',  label: 'Psychologie du Trader' },
     ]},
