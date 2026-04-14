@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Time Cycles — Guide de travail</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121a30;
+      --panel-2: #17213d;
+      --text: #eef2ff;
+      --muted: #a8b1d1;
+      --line: #253152;
+      --accent: #7c9cff;
+      --accent-2: #58e1c1;
+      --warn: #ffb86b;
+      --danger: #ff7f96;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, #0b1020 0%, #0e1530 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 24px;
+      border-right: 1px solid var(--line);
+      background: rgba(9, 14, 30, 0.8);
+      backdrop-filter: blur(10px);
+      overflow: auto;
+    }
+
+    .brand {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+
+    nav a {
+      display: block;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 10px 12px;
+      border-radius: 12px;
+      margin-bottom: 6px;
+      transition: 0.2s ease;
+    }
+
+    nav a:hover {
+      background: var(--panel);
+      color: var(--text);
+    }
+
+    main {
+      padding: 32px;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(124,156,255,0.18), rgba(88,225,193,0.12));
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.22);
+    }
+
+    .hero h1 {
+      margin: 0 0 12px;
+      font-size: 2rem;
+      line-height: 1.15;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 850px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin: 22px 0 30px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    section {
+      margin-bottom: 24px;
+      background: rgba(18, 26, 48, 0.78);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 24px;
+    }
+
+    section h2 {
+      margin-top: 0;
+      font-size: 1.35rem;
+    }
+
+    h3 {
+      margin-top: 20px;
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+    }
+
+    p, li { color: var(--text); }
+    .muted { color: var(--muted); }
+    ul { padding-left: 18px; }
+
+    .pill-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+    }
+
+    .highlight {
+      border-left: 4px solid var(--accent);
+      padding: 12px 14px;
+      background: rgba(124,156,255,0.08);
+      border-radius: 14px;
+      margin: 12px 0;
+      color: var(--text);
+    }
+
+    .warning {
+      border-left-color: var(--warn);
+      background: rgba(255,184,107,0.08);
+    }
+
+    .danger {
+      border-left-color: var(--danger);
+      background: rgba(255,127,150,0.08);
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      margin-top: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 680px;
+      background: var(--panel);
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--panel-2);
+      color: var(--text);
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .footer {
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding: 8px 0 24px;
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      aside {
+        position: relative;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      main { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <div class="brand">Time Cycles</div>
+      <div class="sub">Version HTML structurée pour lecture, révision et exécution.</div>
+      <nav>
+        <a href="#overview">Vue d’ensemble</a>
+        <a href="#environment">High probability environment</a>
+        <a href="#cycles">Price & Time Cycles</a>
+        <a href="#pdarrays">PD Arrays</a>
+        <a href="#iof">HTF Institutional Orderflow</a>
+        <a href="#poi">POI & Draw on Liquidity</a>
+        <a href="#toi">Times of Interest</a>
+        <a href="#smt">SMT</a>
+        <a href="#csd">CSD</a>
+        <a href="#entries">Entry Patterns</a>
+        <a href="#management">Trade & Risk Management</a>
+        <a href="#protocol">Protocol Development</a>
+        <a href="#checklist">Checklist finale</a>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="hero" id="overview">
+        <h1>Guide HTML — Time Cycles, Delivery & Protocol</h1>
+        <p>
+          Cette page transforme tes notes en une base de travail claire : environnement, time cycles, PD Arrays,
+          HTF orderflow, draw on liquidity, SMT, CSD, entrées, gestion et protocole. L’idée est simple :
+          <strong>le modèle ne vaut rien sans le bon environnement, le bon timing et une exécution disciplinée.</strong>
+        </p>
+        <div class="pill-row">
+          <span class="pill">HTF IOF</span>
+          <span class="pill">Drawing Liquidity</span>
+          <span class="pill">POI</span>
+          <span class="pill">Time of Interest</span>
+          <span class="pill">SMT</span>
+          <span class="pill">CSD</span>
+          <span class="pill">Entry</span>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Le vrai edge</h3>
+          <p>Savoir quand appliquer le modèle, et surtout quand ne pas le trader.</p>
+        </div>
+        <div class="card">
+          <h3>Règle mère</h3>
+          <p>Time then price. Le timing te dit quand regarder, le prix te dit où agir.</p>
+        </div>
+        <div class="card">
+          <h3>Objectif du trader</h3>
+          <p>Reconnaître manipulation → confirmer distribution → exécuter de A vers B.</p>
+        </div>
+        <div class="card">
+          <h3>Piège classique</h3>
+          <p>Prendre un pattern isolé sans HTF bias, sans DOL, sans TOI, sans SMT, sans CSD.</p>
+        </div>
+      </div>
+
+      <section id="environment">
+        <h2>High Probability Environment</h2>
+        <p>Le modèle seul ne suffit pas. Un environnement “high probability” existe quand le contexte soutient réellement le draw on liquidity.</p>
+        <h3>Ce qu’il faut éviter</h3>
+        <ul>
+          <li>Lundi sans news majeure : souvent choppy, installation de la structure hebdo.</li>
+          <li>La veille d’une news majeure : liquidité souvent engineered, marché sale.</li>
+          <li>Intermarket hors synchro : corrélations cassées, runs high resistance.</li>
+          <li>Pas de draw HTF clair : pas de A → B évident.</li>
+        </ul>
+        <div class="highlight warning">
+          Si pendant les macros le marché ne “deliver” pas proprement, tu disengage. Pas de forcing.
+        </div>
+        <h3>Règles news</h3>
+        <ul>
+          <li><strong>NFP week :</strong> focus lundi → mercredi AM. Évite jeudi. Vendredi AM souvent évité, préférence vendredi PM après delivery clean.</li>
+          <li><strong>FOMC :</strong> éviter le jour d’avant. Si FOMC l’après-midi, éviter souvent la session AM. Préférence post 2:30.</li>
+          <li><strong>CPI :</strong> souvent milieu de semaine, éviter la veille.</li>
+        </ul>
+      </section>
+
+      <section id="cycles">
+        <h2>Price Cycles & Time Cycles</h2>
+        <p>Le marché repose sur deux variables objectives : <strong>le temps + le prix</strong>. Les cycles ont un début et une fin fixes, et le cycle suivant utilise les highs/lows du cycle précédent.</p>
+        <h3>Fonction d’un cycle</h3>
+        <ul>
+          <li>Accumulation</li>
+          <li>Manipulation</li>
+          <li>Distribution</li>
+        </ul>
+        <h3>Deux signatures majeures</h3>
+        <ul>
+          <li><strong>Purge & Revert</strong> : prend la liquidité du cycle précédent puis reverse vers le côté opposé.</li>
+          <li><strong>Break & Continue</strong> : casse le high/low précédent, displacement, puis continuation.</li>
+        </ul>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Session</th>
+                <th>Heures NY</th>
+                <th>Lecture</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Asia</td>
+                <td>6:00 pm → 2:30 am</td>
+                <td>La session suivante utilisera souvent ses highs/lows.</td>
+              </tr>
+              <tr>
+                <td>London</td>
+                <td>2:30 am → 7:00 am</td>
+                <td>Souvent base du delivery avant NY.</td>
+              </tr>
+              <tr>
+                <td>NY Morning</td>
+                <td>7:00 am → 11:30 am</td>
+                <td>Zone la plus active pour exécution et expansion.</td>
+              </tr>
+              <tr>
+                <td>NY Afternoon</td>
+                <td>11:30 am → 4:00 pm</td>
+                <td>Lunch cycle souvent range / liquidity engineering.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Cycles 90 minutes</h3>
+        <ul>
+          <li>London : 2:30–4:00, 4:00–5:30, 5:30–7:00</li>
+          <li>NY Morning : 7:00–8:30, 8:30–10:00, 10:00–11:30</li>
+          <li>NY Afternoon : 11:30–1:00, 1:00–2:30, 2:30–4:00</li>
+        </ul>
+      </section>
+
+      <section id="pdarrays">
+        <h2>PD Arrays</h2>
+        <p>Les PD Arrays ne sont pas des patterns à chasser au hasard. Ce sont des empreintes algorithmiques laissées pendant un buy program ou un sell program.</p>
+        <h3>PDA Matrix</h3>
+        <ul>
+          <li><strong>Premium</strong> au-dessus de 50% : plutôt vendeuse.</li>
+          <li><strong>Discount</strong> en dessous de 50% : plutôt acheteuse.</li>
+        </ul>
+        <h3>Séquence type bearish</h3>
+        <p>RB → OB → FVG → Breaker / Mitigation Block</p>
+        <h3>Séquence type bullish</h3>
+        <p>RB → OB → FVG → Breaker / Mitigation Block</p>
+        <div class="highlight">
+          Ne chasse pas un FVG ou un breaker seul. D’abord contexte, draw, programme, puis seulement la séquence dans la bonne zone.
+        </div>
+      </section>
+
+      <section id="iof">
+        <h2>HTF Institutional Orderflow</h2>
+        <p>Si tu n’anticipes pas le move en higher timeframe, descendre en lower timeframe ne sert à rien. Tu veux d’abord la narrative HTF, puis le timing LTF.</p>
+        <h3>Bullish IOF</h3>
+        <p>Expand up → retrace down → expand up. Les discount arrays servent de support.</p>
+        <h3>Bearish IOF</h3>
+        <p>Expand down → retrace up → expand down. Les premium arrays servent de résistance.</p>
+        <h3>Cadre A → B</h3>
+        <ul>
+          <li><strong>Point A</strong> : inception du programme</li>
+          <li><strong>Point B</strong> : drawing liquidity / terminus</li>
+        </ul>
+      </section>
+
+      <section id="poi">
+        <h2>POI & Draw on Liquidity</h2>
+        <p>Trader sans draw on liquidity, c’est conduire sans destination. Le draw est l’aimant. Le POI est la zone où la manipulation doit se produire avant d’aller vers le draw.</p>
+        <h3>3 outils pour définir le draw</h3>
+        <ul>
+          <li>Time cycles</li>
+          <li>Key levels / quadrants / EQ</li>
+          <li>PD Arrays</li>
+        </ul>
+        <h3>Blend logique</h3>
+        <p>HTF draw → POI HTF proche d’un key level → confluence avec time cycle → LTF market maker model → trade A vers B.</p>
+        <div class="highlight warning">
+          Les key levels structurent l’orderflow. Ils ne sont pas des boutons buy/sell automatiques.
+        </div>
+      </section>
+
+      <section id="toi">
+        <h2>Times of Interest</h2>
+        <p>Un time of interest est le moment où la manipulation doit se terminer et où la distribution doit commencer.</p>
+        <h3>Les 3 filtres</h3>
+        <ol>
+          <li>SMT = alarme qu’un swing est potentiellement en train de se former</li>
+          <li>Macro windows = horloge des expansions</li>
+          <li>Delivery profile = manipulation → distribution</li>
+        </ol>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Bloc</th>
+                <th>Fenêtres NY</th>
+                <th>Usage</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>London</td>
+                <td>2:45–3:15, 3:45–4:15</td>
+                <td>Observation des reversals et expansions London</td>
+              </tr>
+              <tr>
+                <td>NY AM</td>
+                <td>9:45–10:15, 10:15–10:45</td>
+                <td>Fenêtres majeures pour jambe impulsive du matin</td>
+              </tr>
+              <tr>
+                <td>NY PM</td>
+                <td>1:45–2:15, 2:45–3:15</td>
+                <td>Très utile pour PM reversal / continuation</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="highlight">
+          Si le shift se forme hors macro, tu attends souvent la macro suivante pour la vraie expansion.
+        </div>
+      </section>
+
+      <section id="smt">
+        <h2>Smart Money Time (SMT)</h2>
+        <p>SMT est un outil de confirmation, pas un outil de biais. Il sert à confirmer qu’un retournement est en train de se produire dans un contexte déjà validé.</p>
+        <h3>Deux formes principales</h3>
+        <ul>
+          <li><strong>Bearish SMT</strong> : un marché fait un higher high, l’autre non.</li>
+          <li><strong>Bullish SMT</strong> : un marché fait un lower low, l’autre non.</li>
+        </ul>
+        <h3>Catégories utiles</h3>
+        <ul>
+          <li>Time Cycle SMT</li>
+          <li>Opening SMT</li>
+          <li>Double SMT</li>
+        </ul>
+        <div class="highlight danger">
+          SMT seul ne vaut rien. Sans HTF bias, DOL, POI et timing, ça n’a aucune valeur opérationnelle.
+        </div>
+      </section>
+
+      <section id="csd">
+        <h2>Change in State of Delivery (CSD)</h2>
+        <p>CSD confirme le passage d’un état de delivery à l’autre : sell → buy ou buy → sell.</p>
+        <h3>Bullish CSD</h3>
+        <ul>
+          <li>Purge sous sell-side liquidity</li>
+          <li>Displacement au-dessus d’un high clé</li>
+          <li>Retest : le niveau tient en support</li>
+        </ul>
+        <h3>Bearish CSD</h3>
+        <ul>
+          <li>Purge au-dessus de buy-side liquidity</li>
+          <li>Displacement sous un low clé</li>
+          <li>Retest : le niveau tient en résistance</li>
+        </ul>
+        <p>Le shift le plus fort = break + imbalance + retest.</p>
+      </section>
+
+      <section id="entries">
+        <h2>Entry Patterns</h2>
+        <p>Les entrées servent uniquement à rentrer dans le move A → B. Le pattern isolé ne vaut rien.</p>
+        <h3>Les 3 patterns principaux</h3>
+        <ul>
+          <li><strong>Breaker Block</strong> : inversion après sweep + displacement</li>
+          <li><strong>Mitigation Block</strong> : proche du breaker, sans higher high / lower low complet</li>
+          <li><strong>Fair Value Gap</strong> : zone d’inefficience à retracer</li>
+        </ul>
+        <div class="highlight">
+          Choisis un seul pattern au début. Répète-le pendant plusieurs mois avant de complexifier.
+        </div>
+      </section>
+
+      <section id="management">
+        <h2>Trade Management & Risk Management</h2>
+        <h3>Trade Management</h3>
+        <ul>
+          <li>Avant l’entrée, tu dois savoir ce qui doit arriver ensuite.</li>
+          <li>Entry, invalidation, targets : les 3 piliers.</li>
+          <li>L’invalidation remonte au fur et à mesure que le trade avance.</li>
+          <li>Pyramider seulement quand le programme se confirme.</li>
+        </ul>
+        <h3>Risk Management</h3>
+        <ul>
+          <li><strong>Regular</strong> : risque fixe, réduction après perte</li>
+          <li><strong>Prop firm</strong> : approche différente challenge / funded</li>
+          <li><strong>Exponential</strong> : agressif, seulement pour profils avancés</li>
+        </ul>
+        <div class="highlight warning">
+          Le point commun des 3 approches : quand tu es en drawdown, tu réduis le risque. Tu ne te “refais” pas au forceps.
+        </div>
+      </section>
+
+      <section id="protocol">
+        <h2>Protocol Development</h2>
+        <p>Chaque trade doit suivre une séquence claire. Le modèle est simple. Ce qui est difficile, c’est de ne pas sauter d’étapes.</p>
+        <h3>Reversal Sequence</h3>
+        <ol>
+          <li>HTF Institutional Orderflow</li>
+          <li>Drawing Liquidity</li>
+          <li>Point of Interest</li>
+          <li>Time of Interest</li>
+          <li>SMT</li>
+          <li>CSD</li>
+          <li>Entry</li>
+          <li>Risk Management</li>
+          <li>Operator Management</li>
+        </ol>
+        <div class="highlight danger">
+          S’il manque une étape, il n’y a pas de trade. Point.
+        </div>
+      </section>
+
+      <section id="checklist">
+        <h2>Checklist Finale</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Étape</th>
+                <th>Question</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>HTF IOF</td>
+                <td>Buy program ou sell program ?</td>
+                <td>Définir la narrative supérieure</td>
+              </tr>
+              <tr>
+                <td>DOL</td>
+                <td>Vers où le prix est attiré ?</td>
+                <td>Choisir Point B</td>
+              </tr>
+              <tr>
+                <td>POI</td>
+                <td>Où la manipulation doit-elle se produire ?</td>
+                <td>Identifier la zone de travail</td>
+              </tr>
+              <tr>
+                <td>TOI</td>
+                <td>Sommes-nous dans une bonne fenêtre ?</td>
+                <td>Attendre la macro ou le cycle</td>
+              </tr>
+              <tr>
+                <td>SMT</td>
+                <td>Un swing est-il en train de se former ?</td>
+                <td>Passer en mode alerte</td>
+              </tr>
+              <tr>
+                <td>CSD</td>
+                <td>L’orderflow a-t-il changé ?</td>
+                <td>Confirmer la bascule</td>
+              </tr>
+              <tr>
+                <td>Entry</td>
+                <td>Quel pattern simple utiliser ?</td>
+                <td>Entrer via BB / MB / FVG</td>
+              </tr>
+              <tr>
+                <td>Risk</td>
+                <td>Risque adapté au contexte ?</td>
+                <td>Size correct, invalidation claire</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="footer">
+        Base HTML créée à partir de tes notes “Time cycles”. Tu peux maintenant la modifier, l’imprimer, ou la transformer en dashboard plus avancé.
+      </div>
+    </main>
+  </div>
+</body>
+</html>
