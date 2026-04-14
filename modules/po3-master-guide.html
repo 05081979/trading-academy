@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PO3 Master Guide</title>
+  <style>
+    :root{
+      --bg:#0b0b0c;
+      --panel:#141416;
+      --panel2:#1b1b1f;
+      --line:#2b2b31;
+      --text:#f4f4f5;
+      --muted:#b5b5bd;
+      --gold:#d9b24c;
+      --goldsoft:rgba(217,178,76,.12);
+      --blue:#8db4ff;
+      --green:#88e0b8;
+      --red:#ff8ea1;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      background:linear-gradient(180deg,#09090b 0%,#101014 100%);
+      color:var(--text);
+      line-height:1.6;
+    }
+    .wrap{display:grid;grid-template-columns:290px 1fr;min-height:100vh}
+    aside{
+      position:sticky;top:0;height:100vh;overflow:auto;
+      padding:24px;border-right:1px solid var(--line);
+      background:rgba(10,10,12,.92);backdrop-filter:blur(8px)
+    }
+    .brand{font-weight:900;letter-spacing:.06em;color:var(--gold);font-size:1.35rem}
+    .sub{color:var(--muted);font-size:.95rem;margin:8px 0 20px}
+    nav a{
+      display:block;text-decoration:none;color:var(--muted);
+      padding:10px 12px;border-radius:12px;margin-bottom:6px
+    }
+    nav a:hover{background:var(--panel);color:var(--text)}
+    main{padding:32px;max-width:1200px;width:100%;margin:0 auto}
+    .hero, section, .card{
+      background:rgba(20,20,22,.96);
+      border:1px solid var(--line);
+      border-radius:24px;
+    }
+    .hero{
+      padding:30px;
+      background:linear-gradient(135deg, rgba(217,178,76,.18), rgba(255,255,255,.03));
+      box-shadow:0 18px 60px rgba(0,0,0,.28);
+      margin-bottom:24px;
+    }
+    .hero h1{margin:0 0 10px;font-size:2.4rem;line-height:1.08}
+    .hero p{margin:0;color:var(--muted);max-width:920px}
+    .pillrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+    .pill{
+      border:1px solid var(--line);background:var(--panel2);border-radius:999px;
+      padding:8px 12px;font-size:.9rem;
+    }
+    .grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;
+      margin:0 0 24px;
+    }
+    .card{padding:18px}
+    .card h3{margin:0 0 8px;font-size:1rem;color:var(--gold)}
+    .card p{margin:0;color:var(--muted);font-size:.95rem}
+    section{padding:24px;margin-bottom:22px}
+    section h2{margin-top:0;color:var(--gold);font-size:1.38rem}
+    h3{margin:18px 0 8px;font-size:1.05rem}
+    p,li{color:var(--text)}
+    .muted{color:var(--muted)}
+    .highlight{
+      border-left:4px solid var(--gold);
+      background:var(--goldsoft);
+      padding:12px 14px;border-radius:14px;margin:12px 0;
+    }
+    .ok{border-left-color:var(--green);background:rgba(136,224,184,.08)}
+    .danger{border-left-color:var(--red);background:rgba(255,142,161,.08)}
+    .info{border-left-color:var(--blue);background:rgba(141,180,255,.08)}
+    .tablewrap{
+      overflow:auto;border:1px solid var(--line);border-radius:18px;margin-top:12px;
+    }
+    table{
+      width:100%;min-width:760px;border-collapse:collapse;background:var(--panel);
+    }
+    th,td{
+      padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;
+    }
+    th{background:var(--panel2);color:var(--gold)}
+    tr:last-child td{border-bottom:0}
+    .code{
+      background:#0d0d10;border:1px solid var(--line);border-radius:14px;padding:12px;
+      font-family:Consolas,monospace;overflow:auto;white-space:pre-wrap
+    }
+    .footer{color:var(--muted);font-size:.92rem;padding:8px 0 26px}
+    @media (max-width:980px){
+      .wrap{grid-template-columns:1fr}
+      aside{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}
+      main{padding:20px}
+      .hero h1{font-size:1.8rem}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <aside>
+      <div class="brand">GOLDBACH MASTER GUIDE</div>
+      <div class="sub">Version HTML structurée à partir de tes PDF.</div>
+      <nav>
+        <a href="#overview">Vue d’ensemble</a>
+        <a href="#po3">PO3</a>
+        <a href="#levels">Niveaux PO3</a>
+        <a href="#nongb">Niveaux non PO3</a>
+        <a href="#dealing">Dealing ranges</a>
+        <a href="#selection">Choix du bon range</a>
+        <a href="#algos">Algo 1 & Algo 2</a>
+        <a href="#time">Temps, lookback, AMD</a>
+        <a href="#hippo">HIPPO</a>
+        <a href="#circuit">Circuit breakers / Twin Tower</a>
+        <a href="#plans">Trade plans</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#checklist">Checklist</a>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="hero" id="overview">
+        <h1>PO3 — base HTML bien garnie</h1>
+        <p>
+          Cette page regroupe les idées clés de tes PDF dans une seule base de travail :
+          PO3, partitions PO3, dealing ranges, algos, lookback, HIPPO, circuit breakers,
+          Twin Tower et trade plans. Le but n’est pas de faire joli pour rien. Le but est d’avoir
+          une structure claire que tu peux relire, compléter et utiliser comme référence.
+        </p>
+        <div class="pillrow">
+          <span class="pill">3 = PO3</span>
+          <span class="pill">6 = blocs PO3</span>
+          <span class="pill">9 = temps / lookback</span>
+          <span class="pill">Algo 1 = MMXM</span>
+          <span class="pill">Algo 2 = trending</span>
+          <span class="pill">HIPPO</span>
+          <span class="pill">Twin Tower</span>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card"><h3>Base</h3><p>Le marché est travaillé comme un range 0 → 100 avec une symétrie premium / discount.</p></div>
+        <div class="card"><h3>Prix</h3><p>PO3 donne la taille du range. PO3 donne les zones internes où la réaction peut se produire.</p></div>
+        <div class="card"><h3>Temps</h3><p>Le 9 structure la partie lookback et certaines lectures temporelles.</p></div>
+        <div class="card"><h3>Pratique</h3><p>Le setup naît quand le bon temps rejoint le bon niveau, puis qu’un pattern valide l’entrée.</p></div>
+      </div>
+
+      <section id="po3">
+        <h2>PO3 — Power of 3</h2>
+        <p>Les nombres PO3 sont des puissances de 3. Ils servent à définir les dealing ranges, les swings intermédiaires, et parfois la taille de blocs ou de gaps.</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Puissance</th><th>Valeur</th><th>Usage pratique</th></tr></thead>
+            <tbody>
+              <tr><td>3¹</td><td>3</td><td>Micro déplacement / micro stop run</td></tr>
+              <tr><td>3²</td><td>9</td><td>Petit gap / petit bloc</td></tr>
+              <tr><td>3³</td><td>27</td><td>Stop run ou move intermédiaire</td></tr>
+              <tr><td>3⁴</td><td>81</td><td>Intraday exécution</td></tr>
+              <tr><td>3⁵</td><td>243</td><td>Range intraday / setup fort</td></tr>
+              <tr><td>3⁶</td><td>729</td><td>Vue plus large / weekly profile</td></tr>
+              <tr><td>3⁷</td><td>2187</td><td>Très grande vue / broader picture</td></tr>
+              <tr><td>3⁸</td><td>6561</td><td>Très large contexte</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="highlight info">
+          En bref : 81, 243, 729 et 2187 sont les tailles qui reviennent le plus dans tes docs.
+        </div>
+      </section>
+
+      <section id="levels">
+        <h2>Niveaux PO3</h2>
+        <p>Le range complet vaut 100%. Les partitions PO3 sont des couples de nombres premiers qui s’additionnent pour donner 100. Elles créent les niveaux premium / discount du range.</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Partition</th><th>Discount</th><th>Premium</th><th>Lecture</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>0</td><td>100</td><td>Low / High</td></tr>
+              <tr><td>2</td><td>3</td><td>97</td><td>Rejection Block</td></tr>
+              <tr><td>3</td><td>11</td><td>89</td><td>Order Block</td></tr>
+              <tr><td>4</td><td>17</td><td>83</td><td>Fair Value Gap</td></tr>
+              <tr><td>5</td><td>29</td><td>71</td><td>Liquidity Void</td></tr>
+              <tr><td>6</td><td>41</td><td>59</td><td>Breaker</td></tr>
+              <tr><td>7</td><td>47</td><td>53</td><td>Mitigation Block</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Mapping PD Arrays</h3>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Nombre</th><th>PD Array</th></tr></thead>
+            <tbody>
+              <tr><td>0</td><td>High / Low selon orientation</td></tr>
+              <tr><td>3 / 97</td><td>Rejection Block</td></tr>
+              <tr><td>11 / 89</td><td>Order Block</td></tr>
+              <tr><td>17 / 83</td><td>Fair Value Gap</td></tr>
+              <tr><td>29 / 71</td><td>Liquidity Void</td></tr>
+              <tr><td>41 / 59</td><td>Breaker</td></tr>
+              <tr><td>47 / 53</td><td>Mitigation Block</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Fib PO3 à charger</h3>
+        <div class="code">0
+0.03
+0.11
+0.17
+0.29
+0.41
+0.47
+0.50
+0.53
+0.59
+0.71
+0.83
+0.89
+0.97
+1</div>
+      </section>
+
+      <section id="nongb">
+        <h2>Niveaux non PO3</h2>
+        <p>Les docs insistent sur 23/77 et 35/65. Ce sont des milieux de blocs 12%, donc des niveaux non PO3 mais opérationnels.</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Niveau</th><th>Symétrique</th><th>Utilité</th></tr></thead>
+            <tbody>
+              <tr><td>23</td><td>77</td><td>Milieu d’un bloc 12%</td></tr>
+              <tr><td>35</td><td>65</td><td>Milieu d’un bloc 12%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="highlight">
+          Les niveaux 29/71 forment déjà un bloc large. 23/77 et 35/65 servent à raffiner certaines réactions au milieu de ces zones.
+        </div>
+      </section>
+
+      <section id="dealing">
+        <h2>Dealing Ranges</h2>
+        <p>Un dealing range PO3 se construit avec trois choses : une taille PO3, des niveaux PO3 internes, et un prix d’ancrage.</p>
+        <ol>
+          <li>Choisir un PO3</li>
+          <li>Trouver le prix d’ancrage</li>
+          <li>Tracer le range 0 → 100</li>
+          <li>Placer les partitions PO3</li>
+          <li>Observer comment le prix délivre d’un niveau à l’autre</li>
+        </ol>
+        <h3>Idées clés</h3>
+        <ul>
+          <li>Le range te donne directement des highs/lows possibles</li>
+          <li>Le prix peut stopper, reverser, ou passer au range suivant</li>
+          <li>Le niveau 50 = EQ</li>
+          <li>Le range peut être fixe, optimal ou dynamique selon l’approche</li>
+        </ul>
+        <div class="highlight ok">
+          En pratique : le range n’est pas là pour décorer le graphe. Il sert à sentir où le prix est et où il peut raisonnablement aller.
+        </div>
+      </section>
+
+      <section id="selection">
+        <h2>Choix du bon range</h2>
+        <h3>Méthode 1 — Auto PO3</h3>
+        <ul>
+          <li>Plus efficace sur les lower timeframes</li>
+          <li>Génère plus de niveaux</li>
+          <li>Très utile pour intraday</li>
+          <li>Conseil débutant : TP à EQ</li>
+        </ul>
+
+        <h3>Méthode 2 — ADR</h3>
+        <ul>
+          <li>Trouver l’ADR</li>
+          <li>Prendre le PO3 le plus proche</li>
+          <li>Moins de niveaux, mais souvent plus lourds</li>
+          <li>Utile pour cadrer MMXM et ranges non remplis</li>
+        </ul>
+
+        <h3>Repères donnés dans les docs</h3>
+        <ul>
+          <li><strong>243</strong> : intraday principal</li>
+          <li><strong>729</strong> : weekly profile / 4H ou 1H</li>
+          <li><strong>2187</strong> : bigger picture, à ne pas trop dépasser</li>
+        </ul>
+      </section>
+
+      <section id="algos">
+        <h2>Algo 1 & Algo 2</h2>
+        <h3>Algo 1 = MMXM</h3>
+        <div class="code">High / Low → Order Block → Premium Breaker → Premium Rejection Block → Premium FVG → Discount Liquidity Void</div>
+
+        <h3>Algo 2 = Trending</h3>
+        <div class="code">Rejection Block → Breaker → FVG → Opposing Order Block → Premium Mitigation → Premium Liquidity Void</div>
+
+        <h3>Lecture pratique</h3>
+        <ul>
+          <li>Algo 1 = structure plus macro, type Market Maker Model</li>
+          <li>Algo 2 = version tendance, souvent visible en fractale dans Algo 1</li>
+          <li>La zone FVG est la plus importante pour l’entrée</li>
+          <li>EQ et l’OB opposé servent souvent de terminus intermédiaires</li>
+        </ul>
+
+        <div class="highlight danger">
+          Les PDFs rappellent que l’algo n’est pas un bouton magique. Il peut ralentir, se décaler, s’inverser, ou être lu différemment selon le timeframe.
+        </div>
+      </section>
+
+      <section id="time">
+        <h2>Temps, Lookback, AMD</h2>
+        <h3>3, 6, 9</h3>
+        <ul>
+          <li>3 = PO3</li>
+          <li>6 = niveaux PO3 / blocs</li>
+          <li>9 = lookback partitions</li>
+        </ul>
+
+        <h3>Repères lookback par mois</h3>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Mois</th><th>Nombre repère</th></tr></thead>
+            <tbody>
+              <tr><td>Janvier</td><td>18</td></tr>
+              <tr><td>Février</td><td>27</td></tr>
+              <tr><td>Mars</td><td>36</td></tr>
+              <tr><td>Avril</td><td>45</td></tr>
+              <tr><td>Mai</td><td>54</td></tr>
+              <tr><td>Juin</td><td>63</td></tr>
+              <tr><td>Juillet</td><td>72</td></tr>
+              <tr><td>Août</td><td>81</td></tr>
+              <tr><td>Septembre</td><td>90–99</td></tr>
+              <tr><td>Octobre</td><td>108</td></tr>
+              <tr><td>Novembre</td><td>117</td></tr>
+              <tr><td>Décembre</td><td>126</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>AMD</h3>
+        <p>AMD reste la grammaire de base : accumulation, manipulation, distribution. Les docs le relient à la lecture fractale du temps et à la distorsion temporelle.</p>
+      </section>
+
+      <section id="hippo">
+        <h2>HIPPO</h2>
+        <p>HIPPO = Hidden Interbank Price Point Objective. C’est un PD Array basé sur une formation à 2 bougies avec overlapping wicks.</p>
+        <ul>
+          <li>2 bougies avec mèches qui se chevauchent</li>
+          <li>Idéalement FVG / MVG au-dessus et au-dessous</li>
+          <li>Plus fort si les FVG environnants ont une taille PO3 identique</li>
+          <li>Très intéressant près d’un CE ou d’un niveau non PO3</li>
+          <li>Peut servir de draw on liquidity, inversion, support ou résistance</li>
+        </ul>
+
+        <h3>HIPPO POT A MUS</h3>
+        <ol>
+          <li>Identifier le HIPPO</li>
+          <li>Voir s’il y a un swing / POT autour</li>
+          <li>Attendre activation dans la zone</li>
+          <li>Le FVG autour doit tenir</li>
+        </ol>
+      </section>
+
+      <section id="circuit">
+        <h2>Circuit Breakers / Twin Tower</h2>
+        <h3>Prix de référence</h3>
+        <ul>
+          <li>VWAP de la bougie 30 secondes entre 3:59:30 PM et 4:00 PM EST</li>
+          <li>Approximation pratique : EQ de cette bougie</li>
+        </ul>
+
+        <h3>Bornes</h3>
+        <ul>
+          <li>Statique : ±7% sur la session</li>
+          <li>Dynamique : ±3.5% dans une heure</li>
+          <li>Dans Twin Tower, retour fréquent des chiffres 7, 13, 20</li>
+        </ul>
+
+        <h3>Lecture Twin Tower</h3>
+        <ul>
+          <li>E = Equilibrium</li>
+          <li>M = Mean Threshold</li>
+          <li>C² = Circuit breaker dealing ranges au-dessus et au-dessous</li>
+          <li>Le temps du settlement / fix est indispensable</li>
+        </ul>
+
+        <div class="highlight info">
+          Sans le bon timing de settlement, tu n’as pas le bon prix de référence. Donc ton cadre peut être faux dès le départ.
+        </div>
+      </section>
+
+      <section id="plans">
+        <h2>Trade plans</h2>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Plan</th><th>Idée</th></tr></thead>
+            <tbody>
+              <tr><td>Lookback trade plan</td><td>Lecture mensuelle / large swing</td></tr>
+              <tr><td>HIPPO POT A MUS</td><td>Trade plan autour du HIPPO</td></tr>
+              <tr><td>OSOK</td><td>Capter 50 à 75 pips une fois par semaine</td></tr>
+              <tr><td>Personal trade plan</td><td>24 pips par semaine</td></tr>
+              <tr><td>Hidden OTE</td><td>OTE entre 2 niveaux PO3</td></tr>
+              <tr><td>OB Trade Plan</td><td>Entrée à l’OB, sortie au breaker</td></tr>
+              <tr><td>Breaker Trade Plan</td><td>Entrée au breaker, sortie au high/low</td></tr>
+              <tr><td>Stop Run Trade Plan</td><td>Utiliser le stop run du dealing range</td></tr>
+              <tr><td>Equilibrium Trade Plan</td><td>Mitigation + EQ</td></tr>
+              <tr><td>FVG Trade Plan</td><td>FVG + propulsion block</td></tr>
+              <tr><td>Einstein Trade Plan</td><td>OB + LV + FVG</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="workflow">
+        <h2>Workflow pratique</h2>
+        <ol>
+          <li>Choisir l’actif</li>
+          <li>Choisir le bon PO3</li>
+          <li>Tracer le range PO3</li>
+          <li>Marquer niveaux GB + non GB utiles</li>
+          <li>Identifier le contexte AMD / temps</li>
+          <li>Repérer si Algo 1 ou Algo 2 domine</li>
+          <li>Chercher un pattern : OB, FVG, Breaker, HIPPO</li>
+          <li>Définir invalidation et objectifs</li>
+        </ol>
+      </section>
+
+      <section id="checklist">
+        <h2>Checklist finale</h2>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Étape</th><th>Question</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Le PO3 choisi est-il cohérent avec le timeframe ?</td></tr>
+              <tr><td>2</td><td>Le range PO3 est-il propre ?</td></tr>
+              <tr><td>3</td><td>Le prix est-il sur un niveau PO3 ou non PO3 intéressant ?</td></tr>
+              <tr><td>4</td><td>Le temps soutient-il le scénario ?</td></tr>
+              <tr><td>5</td><td>Algo 1 ou Algo 2 domine-t-il ?</td></tr>
+              <tr><td>6</td><td>Y a-t-il un vrai pattern d’entrée ?</td></tr>
+              <tr><td>7</td><td>Objectif clair et invalidation claire ?</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="footer">
+        Fichier HTML généré à partir de tes PDF. Tu peux l’ouvrir dans un navigateur, le modifier ou t’en servir comme base de travail.
+      </div>
+    </main>
+  </div>
+</body>
+</html>
