@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html data-tier="indicator" lang="fr">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(function(){
+  try {
+    fetch('../version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v=(v||'').trim(); if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){ localStorage.setItem(k,v); location.replace(location.pathname+'?_cb='+v+location.hash); }
+        else localStorage.setItem(k,v);
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="../auth.js?v=v20260413-revoke2"></script>
+<title>29/71 Goldbach Levels — Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#f5f7fa; color:#1a1a2e; font-family:'Inter',sans-serif; line-height:1.6; }
+.hero { background:linear-gradient(135deg,#ec4899 0%,#ec4899dd 100%); color:#fff; padding:60px 40px 40px; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top right, rgba(255,255,255,0.15) 0%, transparent 60%); pointer-events:none; }
+.hero-inner { max-width:1100px; margin:0 auto; position:relative; z-index:1; }
+.back-link { display:inline-flex; align-items:center; gap:8px; color:rgba(255,255,255,0.85); text-decoration:none; font-size:13px; margin-bottom:24px; transition:color 0.15s; }
+.back-link:hover { color:#fff; }
+.hero-icon { font-size:48px; margin-bottom:16px; }
+.hero h1 { font-family:'Syne',sans-serif; font-size:clamp(28px,4vw,44px); font-weight:800; letter-spacing:-0.01em; margin-bottom:12px; }
+.hero p { font-size:16px; max-width:700px; opacity:0.95; }
+.container { max-width:1100px; margin:0 auto; padding:40px 24px; }
+.section { background:#fff; border-radius:14px; padding:28px 32px; margin-bottom:20px; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid #e2e5ea; }
+.section-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:#1a1a2e; margin-bottom:18px; display:flex; align-items:center; gap:10px; }
+.section-title::before { content:''; width:6px; height:24px; background:#ec4899; border-radius:3px; }
+.features-list { list-style:none; }
+.features-list li { padding:10px 0; border-bottom:1px solid #f1f5f9; display:flex; gap:12px; align-items:flex-start; }
+.features-list li:last-child { border-bottom:none; }
+.features-list li::before { content:'✓'; color:#ec4899; font-weight:700; flex-shrink:0; }
+.inputs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:14px; }
+.input-card { padding:14px 16px; background:#f8fafc; border:1px solid #e2e5ea; border-radius:10px; }
+.input-name { font-weight:600; color:#ec4899; font-size:13px; margin-bottom:4px; font-family:'JetBrains Mono',monospace; }
+.input-desc { font-size:13px; color:#475569; line-height:1.5; }
+.tf-box { padding:14px 18px; background:linear-gradient(90deg,rgba(37,99,235,0.06),rgba(37,99,235,0.02)); border-left:4px solid #ec4899; border-radius:8px; font-size:14px; color:#334155; }
+.mode-emploi ol { padding-left:22px; }
+.mode-emploi li { padding:6px 0; font-size:14px; color:#334155; }
+.mode-emploi p { font-size:14px; color:#334155; margin-top:10px; }
+.code-warn { padding:12px 16px; background:linear-gradient(90deg,#fee2e2,#fecaca); border-radius:10px; font-size:12px; color:#991b1b; font-weight:600; margin-bottom:12px; text-align:center; }
+.code-box { background:#0f172a; color:#e2e8f0; border-radius:10px; padding:20px; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.5; overflow-x:auto; max-height:500px; overflow-y:auto; white-space:pre; }
+.copy-code-btn { margin-top:10px; padding:10px 18px; background:#ec4899; color:#fff; border:none; border-radius:8px; font-family:inherit; font-weight:600; font-size:13px; cursor:pointer; }
+.copy-code-btn:hover { filter:brightness(1.1); }
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+
+<div class="hero">
+  <div class="hero-inner">
+    <a href="indicateurs.html" class="back-link">← Retour aux indicateurs</a>
+    <div class="hero-icon">🔢</div>
+    <h1>29/71 Goldbach Levels</h1>
+    <p>Niveaux Goldbach 29 et 71 avec midpoints 50%. Lignes horizontales étendues, labels automatiques, itérations paramétrables de part et d'autre du prix.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <div class="section-title">Fonctionnalités principales</div>
+    <ul class="features-list">
+      <li>Niveaux multiples de 29 (bleus) autour du prix courant</li>
+      <li>Niveaux multiples de 71 (noirs) autour du prix courant</li>
+      <li>Midpoints 50% entre deux niveaux consécutifs (rouges / verts)</li>
+      <li>Itérations paramétrables (2 à 11 de chaque côté)</li>
+      <li>Couleurs et épaisseurs indépendantes pour chaque série</li>
+      <li>Extensions automatiques gauche + droite</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Paramètres clés</div>
+    <div class="inputs-grid">
+      <div class="input-card"><div class="input-name">Show Levels for 29 / 71</div><div class="input-desc">Affiche les niveaux multiples de 29 ou 71</div></div>
+      <div class="input-card"><div class="input-name">Show Midpoints for 29 / 71</div><div class="input-desc">Ajoute les midpoints 50% entre niveaux</div></div>
+      <div class="input-card"><div class="input-name">Color Level 29 / 71</div><div class="input-desc">Couleur des lignes principales</div></div>
+      <div class="input-card"><div class="input-name">Color Midpoint 29 / 71</div><div class="input-desc">Couleur des midpoints</div></div>
+      <div class="input-card"><div class="input-name">Thickness Level 29 / 71</div><div class="input-desc">Épaisseur des lignes principales</div></div>
+      <div class="input-card"><div class="input-name">Thickness Midpoint 29 / 71</div><div class="input-desc">Épaisseur des midpoints</div></div>
+      <div class="input-card"><div class="input-name">Iterations 29 / 71</div><div class="input-desc">Nombre de niveaux de part et d'autre du prix (2-11)</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Timeframes &amp; Marchés</div>
+    <div class="tf-box">Fonctionne sur toutes les TF. Idéal sur indices (NQ, ES) et FX pour cibler les niveaux Goldbach algo.</div>
+  </div>
+
+  <div class="section mode-emploi">
+    <div class="section-title">Mode d'emploi</div>
+    
+    <ol>
+      <li>Copier le code Pine ci-dessous (bouton en bas de page, admin).</li>
+      <li>Sur TradingView Desktop : ouvrir le <strong>Pine Editor</strong>.</li>
+      <li>Coller le code, cliquer sur <strong>Sauvegarder</strong> puis <strong>Ajouter au chart</strong>.</li>
+      <li>Régler les inputs selon votre style (voir Paramètres clés).</li>
+    </ol>
+    <p><strong>Conseils :</strong> Combiner 29/71 avec un dealing range MTF : les intersections entre un niveau 29/71 et un niveau Goldbach 21 sont des zones haute probabilité.</p>
+
+  </div>
+
+  <div class="section" id="codeSection" style="display:none;">
+    <div class="section-title">🔒 Code source (Admin)</div>
+    <div class="code-warn">⚠️ Réservé à l'admin. Ne jamais partager ce code avec les élèves.</div>
+    <pre class="code-box" id="codeBox"></pre>
+    <button class="copy-code-btn" onclick="copyPineCode()">📋 Copier le code Pine</button>
+  </div>
+
+</div>
+
+<script>
+var PINE_B64 = "Ly8gVGhpcyBQaW5lIFNjcmlwdOKEoiBjb2RlIGlzIHN1YmplY3QgdG8gdGhlIHRlcm1zIG9mIHRoZSBNb3ppbGxhIFB1YmxpYyBMaWNlbnNlIDIuMCBhdCBodHRwczovL21vemlsbGEub3JnL01QTC8yLjAvCi8vIMKpIExpbmdpbzc4CgovL0B2ZXJzaW9uPTYKaW5kaWNhdG9yKCJBbGdvcml0aG1pYyBBY2FkZW15IDI5LzcxIEdvbGRiYWNoIiwgIkFBIDI5LzcxIEdvbGRiYWNoIiwgb3ZlcmxheT10cnVlKQoKc2hvd0xldmVsMjkgPSBpbnB1dCh0cnVlLCB0aXRsZT0iU2hvdyBMZXZlbHMgZm9yIDI5IikKc2hvd0xldmVsNzEgPSBpbnB1dCh0cnVlLCB0aXRsZT0iU2hvdyBMZXZlbHMgZm9yIDcxIikKc2hvd01pZHBvaW50MjkgPSBpbnB1dChmYWxzZSwgdGl0bGU9IlNob3cgTWlkcG9pbnRzIGZvciAyOSIpCnNob3dNaWRwb2ludDcxID0gaW5wdXQodHJ1ZSwgdGl0bGU9IlNob3cgTWlkcG9pbnRzIGZvciA3MSIpCmNvbG9yTGV2ZWwyOSA9IGlucHV0LmNvbG9yKGNvbG9yLmJsdWUsIHRpdGxlPSJDb2xvciBmb3IgTGV2ZWwgMjkiKQpjb2xvckxldmVsNzEgPSBpbnB1dC5jb2xvcihjb2xvci5ibGFjaywgdGl0bGU9IkNvbG9yIGZvciBMZXZlbCA3MSIpCmNvbG9yTWlkcG9pbnQyOSA9IGlucHV0LmNvbG9yKGNvbG9yLmdyZWVuLCB0aXRsZT0iQ29sb3IgZm9yIE1pZHBvaW50IExpbmVzIGZvciAyOSIpCmNvbG9yTWlkcG9pbnQ3MSA9IGlucHV0LmNvbG9yKGNvbG9yLnJlZCwgdGl0bGU9IkNvbG9yIGZvciBNaWRwb2ludCBMaW5lcyBmb3IgNzEiKQp0aGlja25lc3NMZXZlbDI5ID0gaW5wdXQuaW50KDEsIHRpdGxlPSJUaGlja25lc3MgZm9yIExldmVsIDI5IiwgbWludmFsPTEpCnRoaWNrbmVzc0xldmVsNzEgPSBpbnB1dC5pbnQoMSwgdGl0bGU9IlRoaWNrbmVzcyBmb3IgTGV2ZWwgNzEiLCBtaW52YWw9MSkKdGhpY2tuZXNzTWlkcG9pbnQyOSA9IGlucHV0LmludCgxLCB0aXRsZT0iVGhpY2tuZXNzIGZvciBNaWRwb2ludCBMaW5lcyBmb3IgMjkiLCBtaW52YWw9MSkKdGhpY2tuZXNzTWlkcG9pbnQ3MSA9IGlucHV0LmludCgxLCB0aXRsZT0iVGhpY2tuZXNzIGZvciBNaWRwb2ludCBMaW5lcyBmb3IgNzEiLCBtaW52YWw9MSkKCml0ZXJhdGlvbnMyOSA9IGlucHV0LmludCg1LCB0aXRsZT0iSXRlcmF0aW9ucyBmb3IgTGV2ZWwgMjkiLCBtaW52YWw9MiwgbWF4dmFsPTExKQppdGVyYXRpb25zNzEgPSBpbnB1dC5pbnQoNSwgdGl0bGU9Ikl0ZXJhdGlvbnMgZm9yIExldmVsIDcxIiwgbWludmFsPTIsIG1heHZhbD0xMSkKCmN1cnJlbnRDbG9zZSA9IGNsb3NlCgpiYXNlTGV2ZWwyOSA9IG1hdGguZmxvb3IoY3VycmVudENsb3NlIC8gMjkpICogMjkKYmFzZUxldmVsNzEgPSBtYXRoLmZsb29yKGN1cnJlbnRDbG9zZSAvIDcxKSAqIDcxCgppZiBzaG93TGV2ZWwyOQogICAgZm9yIGkgPSAtaXRlcmF0aW9uczI5IHRvIGl0ZXJhdGlvbnMyOQogICAgICAgIGxldmVsMjkgPSBiYXNlTGV2ZWwyOSArIGkgKiAyOQogICAgICAgIGxpbmUubmV3KGJhcl9pbmRleFsxXSwgbGV2ZWwyOSwgYmFyX2luZGV4LCBsZXZlbDI5LCBjb2xvcj1jb2xvckxldmVsMjksIHdpZHRoPXRoaWNrbmVzc0xldmVsMjksIGV4dGVuZD1leHRlbmQuYm90aCkKICAgICAgICBsYWJlbC5uZXcoYmFyX2luZGV4ICsgNTAsIGxldmVsMjkgKyAxLCAiTGV2ZWwgMjk6ICIgKyBzdHIudG9zdHJpbmcobGV2ZWwyOSksIGNvbG9yPWNvbG9yTGV2ZWwyOSwgc3R5bGU9bGFiZWwuc3R5bGVfbGFiZWxfZG93bikKCiAgICAgICAgaWYgc2hvd01pZHBvaW50MjkgYW5kIGkgIT0gLWl0ZXJhdGlvbnMyOQogICAgICAgICAgICBwcmV2aW91c0xldmVsMjkgPSBiYXNlTGV2ZWwyOSArIChpIC0gMSkgKiAyOQogICAgICAgICAgICBtaWRwb2ludDI5ID0gKGxldmVsMjkgKyBwcmV2aW91c0xldmVsMjkpIC8gMgogICAgICAgICAgICBsaW5lLm5ldyhiYXJfaW5kZXhbMV0sIG1pZHBvaW50MjksIGJhcl9pbmRleCwgbWlkcG9pbnQyOSwgY29sb3I9Y29sb3JNaWRwb2ludDI5LCB3aWR0aD10aGlja25lc3NNaWRwb2ludDI5LCBleHRlbmQ9ZXh0ZW5kLmJvdGgpCiAgICAgICAgICAgIGxhYmVsLm5ldyhiYXJfaW5kZXggKyA1MCwgbWlkcG9pbnQyOSArIDEsICJNaWRwb2ludCAyOTogIiArIHN0ci50b3N0cmluZyhtaWRwb2ludDI5KSwgY29sb3I9Y29sb3JNaWRwb2ludDI5LCBzdHlsZT1sYWJlbC5zdHlsZV9sYWJlbF9kb3duKQoKaWYgc2hvd0xldmVsNzEKICAgIGZvciBpID0gLWl0ZXJhdGlvbnM3MSB0byBpdGVyYXRpb25zNzEKICAgICAgICBsZXZlbDcxID0gYmFzZUxldmVsNzEgKyBpICogNzEKICAgICAgICBsaW5lLm5ldyhiYXJfaW5kZXhbMV0sIGxldmVsNzEsIGJhcl9pbmRleCwgbGV2ZWw3MSwgY29sb3I9Y29sb3JMZXZlbDcxLCB3aWR0aD10aGlja25lc3NMZXZlbDcxLCBleHRlbmQ9ZXh0ZW5kLmJvdGgpCiAgICAgICAgbGFiZWwubmV3KGJhcl9pbmRleCArIDUwLCBsZXZlbDcxICsgMSwgIkxldmVsIDcxOiAiICsgc3RyLnRvc3RyaW5nKGxldmVsNzEpLCBjb2xvcj1jb2xvckxldmVsNzEsIHN0eWxlPWxhYmVsLnN0eWxlX2xhYmVsX2Rvd24pCgogICAgICAgIGlmIHNob3dNaWRwb2ludDcxIGFuZCBpICE9IC1pdGVyYXRpb25zNzEKICAgICAgICAgICAgcHJldmlvdXNMZXZlbDcxID0gYmFzZUxldmVsNzEgKyAoaSAtIDEpICogNzEKICAgICAgICAgICAgbWlkcG9pbnQ3MSA9IChsZXZlbDcxICsgcHJldmlvdXNMZXZlbDcxKSAvIDIKICAgICAgICAgICAgbGluZS5uZXcoYmFyX2luZGV4WzFdLCBtaWRwb2ludDcxLCBiYXJfaW5kZXgsIG1pZHBvaW50NzEsIGNvbG9yPWNvbG9yTWlkcG9pbnQ3MSwgd2lkdGg9dGhpY2tuZXNzTWlkcG9pbnQ3MSwgZXh0ZW5kPWV4dGVuZC5ib3RoKQogICAgICAgICAgICBsYWJlbC5uZXcoYmFyX2luZGV4ICsgNTAsIG1pZHBvaW50NzEgKyAxLCAiTWlkcG9pbnQgNzE6ICIgKyBzdHIudG9zdHJpbmcobWlkcG9pbnQ3MSksIGNvbG9yPWNvbG9yTWlkcG9pbnQ3MSwgc3R5bGU9bGFiZWwuc3R5bGVfbGFiZWxfZG93bikK";
+window.addEventListener('DOMContentLoaded', function() {
+  var user = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('aa_user')) || '';
+  if (user === 'Admin') {
+    try {
+      var bin = atob(PINE_B64);
+      var bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      var code = new TextDecoder('utf-8').decode(bytes);
+      document.getElementById('codeBox').textContent = code;
+      document.getElementById('codeSection').style.display = 'block';
+    } catch(e) { console.warn('decode fail', e); }
+  }
+});
+function copyPineCode() {
+  var code = document.getElementById('codeBox').textContent;
+  navigator.clipboard.writeText(code).then(function() {
+    var btn = document.querySelector('.copy-code-btn');
+    btn.textContent = '✓ Copié';
+    setTimeout(function() { btn.textContent = '📋 Copier le code Pine'; }, 1500);
+  });
+}
+</script>
+</body>
+</html>

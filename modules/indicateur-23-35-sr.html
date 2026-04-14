@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html data-tier="indicator" lang="fr">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(function(){
+  try {
+    fetch('../version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v=(v||'').trim(); if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){ localStorage.setItem(k,v); location.replace(location.pathname+'?_cb='+v+location.hash); }
+        else localStorage.setItem(k,v);
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="../auth.js?v=v20260413-revoke2"></script>
+<title>23/35 SR Channels — Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#f5f7fa; color:#1a1a2e; font-family:'Inter',sans-serif; line-height:1.6; }
+.hero { background:linear-gradient(135deg,#f59e0b 0%,#f59e0bdd 100%); color:#fff; padding:60px 40px 40px; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top right, rgba(255,255,255,0.15) 0%, transparent 60%); pointer-events:none; }
+.hero-inner { max-width:1100px; margin:0 auto; position:relative; z-index:1; }
+.back-link { display:inline-flex; align-items:center; gap:8px; color:rgba(255,255,255,0.85); text-decoration:none; font-size:13px; margin-bottom:24px; transition:color 0.15s; }
+.back-link:hover { color:#fff; }
+.hero-icon { font-size:48px; margin-bottom:16px; }
+.hero h1 { font-family:'Syne',sans-serif; font-size:clamp(28px,4vw,44px); font-weight:800; letter-spacing:-0.01em; margin-bottom:12px; }
+.hero p { font-size:16px; max-width:700px; opacity:0.95; }
+.container { max-width:1100px; margin:0 auto; padding:40px 24px; }
+.section { background:#fff; border-radius:14px; padding:28px 32px; margin-bottom:20px; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid #e2e5ea; }
+.section-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:#1a1a2e; margin-bottom:18px; display:flex; align-items:center; gap:10px; }
+.section-title::before { content:''; width:6px; height:24px; background:#f59e0b; border-radius:3px; }
+.features-list { list-style:none; }
+.features-list li { padding:10px 0; border-bottom:1px solid #f1f5f9; display:flex; gap:12px; align-items:flex-start; }
+.features-list li:last-child { border-bottom:none; }
+.features-list li::before { content:'✓'; color:#f59e0b; font-weight:700; flex-shrink:0; }
+.inputs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:14px; }
+.input-card { padding:14px 16px; background:#f8fafc; border:1px solid #e2e5ea; border-radius:10px; }
+.input-name { font-weight:600; color:#f59e0b; font-size:13px; margin-bottom:4px; font-family:'JetBrains Mono',monospace; }
+.input-desc { font-size:13px; color:#475569; line-height:1.5; }
+.tf-box { padding:14px 18px; background:linear-gradient(90deg,rgba(37,99,235,0.06),rgba(37,99,235,0.02)); border-left:4px solid #f59e0b; border-radius:8px; font-size:14px; color:#334155; }
+.mode-emploi ol { padding-left:22px; }
+.mode-emploi li { padding:6px 0; font-size:14px; color:#334155; }
+.mode-emploi p { font-size:14px; color:#334155; margin-top:10px; }
+.code-warn { padding:12px 16px; background:linear-gradient(90deg,#fee2e2,#fecaca); border-radius:10px; font-size:12px; color:#991b1b; font-weight:600; margin-bottom:12px; text-align:center; }
+.code-box { background:#0f172a; color:#e2e8f0; border-radius:10px; padding:20px; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.5; overflow-x:auto; max-height:500px; overflow-y:auto; white-space:pre; }
+.copy-code-btn { margin-top:10px; padding:10px 18px; background:#f59e0b; color:#fff; border:none; border-radius:8px; font-family:inherit; font-weight:600; font-size:13px; cursor:pointer; }
+.copy-code-btn:hover { filter:brightness(1.1); }
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+
+<div class="hero">
+  <div class="hero-inner">
+    <a href="indicateurs.html" class="back-link">← Retour aux indicateurs</a>
+    <div class="hero-icon">📏</div>
+    <h1>23/35 SR Channels</h1>
+    <p>Hitchhikers Guide to Goldbach : canaux S/R construits sur les bougies m23 et m35 (orange & bleu). Détection de chevauchement et highlights automatiques.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <div class="section-title">Fonctionnalités principales</div>
+    <ul class="features-list">
+      <li>Détection automatique des bougies à la minute 23 et 35</li>
+      <li>Canaux S/R construits sur le high/low de ces bougies</li>
+      <li>Couleurs distinctes : orange (23) et bleu (35)</li>
+      <li>Suppression automatique des chevauchements</li>
+      <li>Labels 23 / 35 sur la bougie génératrice</li>
+      <li>Longueur de canal paramétrable</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Paramètres clés</div>
+    <div class="inputs-grid">
+      <div class="input-card"><div class="input-name">Channel Length (bars)</div><div class="input-desc">Nombre de bars de projection du canal (défaut 20)</div></div>
+      <div class="input-card"><div class="input-name">Show 23 Minute Channels</div><div class="input-desc">Active les canaux générés à la minute 23</div></div>
+      <div class="input-card"><div class="input-name">Show 35 Minute Channels</div><div class="input-desc">Active les canaux générés à la minute 35</div></div>
+      <div class="input-card"><div class="input-name">Highlight 23/35 Candles</div><div class="input-desc">Ajoute un label 23 ou 35 sur la bougie</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Timeframes &amp; Marchés</div>
+    <div class="tf-box">TF 1 minute impérative (l'indicateur cible la minute 23 et 35). Utile sur NQ, ES et FX majeurs.</div>
+  </div>
+
+  <div class="section mode-emploi">
+    <div class="section-title">Mode d'emploi</div>
+    
+    <ol>
+      <li>Copier le code Pine ci-dessous (bouton en bas de page, admin).</li>
+      <li>Sur TradingView Desktop : ouvrir le <strong>Pine Editor</strong>.</li>
+      <li>Coller le code, cliquer sur <strong>Sauvegarder</strong> puis <strong>Ajouter au chart</strong>.</li>
+      <li>Régler les inputs selon votre style (voir Paramètres clés).</li>
+    </ol>
+    <p><strong>Conseils :</strong> Utiliser en complément des Goldbach Levels pour valider une réaction sur un niveau 23/35. Un test de canal dans une killzone = setup haute probabilité.</p>
+
+  </div>
+
+  <div class="section" id="codeSection" style="display:none;">
+    <div class="section-title">🔒 Code source (Admin)</div>
+    <div class="code-warn">⚠️ Réservé à l'admin. Ne jamais partager ce code avec les élèves.</div>
+    <pre class="code-box" id="codeBox"></pre>
+    <button class="copy-code-btn" onclick="copyPineCode()">📋 Copier le code Pine</button>
+  </div>
+
+</div>
+
+<script>
+var PINE_B64 = "Ly9AdmVyc2lvbj02CmluZGljYXRvcigiQWxnb3JpdGhtaWMgQWNhZGVteSAyMy8zNSBTUiIsICJBQSAyMy8zNSBTUiIsIG92ZXJsYXk9dHJ1ZSwgbWF4X2xpbmVzX2NvdW50PTUwMCwgbWF4X2JveGVzX2NvdW50PTUwMCwgbWF4X2xhYmVsc19jb3VudD01MDApCgpjaGFubmVsTGVuZ3RoID0gaW5wdXQuaW50KDIwLCAiQ2hhbm5lbCBMZW5ndGggKGJhcnMpIiwgbWludmFsPTEpCnNob3cyMyA9IGlucHV0LmJvb2wodHJ1ZSwgIlNob3cgMjMgTWludXRlIENoYW5uZWxzIikKc2hvdzM1ID0gaW5wdXQuYm9vbCh0cnVlLCAiU2hvdyAzNSBNaW51dGUgQ2hhbm5lbHMiKQpoaWdobGlnaHRDYW5kbGVzID0gaW5wdXQuYm9vbCh0cnVlLCAiSGlnaGxpZ2h0IDIzLzM1IENhbmRsZXMiKQoKdmFyIGJveFtdIGJveGVzMjMgPSBhcnJheS5uZXdfYm94KCkKdmFyIGJveFtdIGJveGVzMzUgPSBhcnJheS5uZXdfYm94KCkKCmN1cnJNaW51dGUgPSBtaW51dGUodGltZSkKaXMyMyA9IGN1cnJNaW51dGUgPT0gMjMKaXMzNSA9IGN1cnJNaW51dGUgPT0gMzUKCmZfcmVtb3ZlT3ZlcmxhcHMoYm94QXJyLCBuZXdUb3AsIG5ld0JvdHRvbSkgPT4KICAgIGlmIGFycmF5LnNpemUoYm94QXJyKSA+IDAKICAgICAgICBmb3IgaSA9IGFycmF5LnNpemUoYm94QXJyKSAtIDEgdG8gMAogICAgICAgICAgICBiID0gYXJyYXkuZ2V0KGJveEFyciwgaSkKICAgICAgICAgICAgb2xkVG9wID0gYm94LmdldF90b3AoYikKICAgICAgICAgICAgb2xkQm90dG9tID0gYm94LmdldF9ib3R0b20oYikKICAgICAgICAgICAgaWYgbm90IChuZXdUb3AgPCBvbGRCb3R0b20gb3IgbmV3Qm90dG9tID4gb2xkVG9wKQogICAgICAgICAgICAgICAgYm94LmRlbGV0ZShiKQogICAgICAgICAgICAgICAgYXJyYXkucmVtb3ZlKGJveEFyciwgaSkKCmlmIGlzMjMgYW5kIHNob3cyMwogICAgdG9wMjMgPSBoaWdoCiAgICBib3R0b20yMyA9IGxvdwogICAgZl9yZW1vdmVPdmVybGFwcyhib3hlczIzLCB0b3AyMywgYm90dG9tMjMpCiAgICBiMjMgPSBib3gubmV3KGJhcl9pbmRleCwgdG9wMjMsIGJhcl9pbmRleCArIGNoYW5uZWxMZW5ndGgsIGJvdHRvbTIzLCBib3JkZXJfY29sb3I9Y29sb3Iub3JhbmdlLCBiZ2NvbG9yPWNvbG9yLm5ldyhjb2xvci5vcmFuZ2UsIDg1KSkKICAgIGFycmF5LnB1c2goYm94ZXMyMywgYjIzKQoKaWYgaXMzNSBhbmQgc2hvdzM1CiAgICB0b3AzNSA9IGhpZ2gKICAgIGJvdHRvbTM1ID0gbG93CiAgICBmX3JlbW92ZU92ZXJsYXBzKGJveGVzMzUsIHRvcDM1LCBib3R0b20zNSkKICAgIGIzNSA9IGJveC5uZXcoYmFyX2luZGV4LCB0b3AzNSwgYmFyX2luZGV4ICsgY2hhbm5lbExlbmd0aCwgYm90dG9tMzUsIGJvcmRlcl9jb2xvcj1jb2xvci5ibHVlLCBiZ2NvbG9yPWNvbG9yLm5ldyhjb2xvci5ibHVlLCA4NSkpCiAgICBhcnJheS5wdXNoKGJveGVzMzUsIGIzNSkKCmlmIGhpZ2hsaWdodENhbmRsZXMgYW5kIChpczIzIG9yIGlzMzUpCiAgICBsYWJlbC5uZXcoYmFyX2luZGV4LCBoaWdoLCBpczIzID8gIjIzIiA6ICIzNSIsIHN0eWxlPWxhYmVsLnN0eWxlX2xhYmVsX2Rvd24sIHRleHRjb2xvcj1jb2xvci53aGl0ZSwgY29sb3I9aXMyMyA/IGNvbG9yLm9yYW5nZSA6IGNvbG9yLmJsdWUsIHNpemU9c2l6ZS5zbWFsbCkK";
+window.addEventListener('DOMContentLoaded', function() {
+  var user = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('aa_user')) || '';
+  if (user === 'Admin') {
+    try {
+      var bin = atob(PINE_B64);
+      var bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      var code = new TextDecoder('utf-8').decode(bytes);
+      document.getElementById('codeBox').textContent = code;
+      document.getElementById('codeSection').style.display = 'block';
+    } catch(e) { console.warn('decode fail', e); }
+  }
+});
+function copyPineCode() {
+  var code = document.getElementById('codeBox').textContent;
+  navigator.clipboard.writeText(code).then(function() {
+    var btn = document.querySelector('.copy-code-btn');
+    btn.textContent = '✓ Copié';
+    setTimeout(function() { btn.textContent = '📋 Copier le code Pine'; }, 1500);
+  });
+}
+</script>
+</body>
+</html>
