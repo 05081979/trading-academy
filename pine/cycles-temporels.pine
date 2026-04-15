@@ -145,6 +145,11 @@ int  lq_yearly_n = input.int(1, "Yearly Hist", minval=1, maxval=5, group=gLiq, t
 bool lq_270 = input.bool(true, "Enable 270m Sessions (master)", group=gLiq, tooltip="Active la detection 270m sessions. Decocher pour tout couper Asia/London/NY AM/NY PM.")
 bool lq_90  = input.bool(true, "Enable 90m Quarters", group=gLiq)
 bool lq_30  = input.bool(true, "Enable 30m Quarters", group=gLiq)
+// ── Historique HTF non-pris ──
+bool lq_past_months  = input.bool(true, "Show last 3 months H/L (unswept only)", group=gLiq, tooltip="Affiche les highs/lows des 3 derniers mois non pris (ex: JAN H, FEB L)")
+bool lq_past_days    = input.bool(true, "Show last 5 days H/L (unswept only)", group=gLiq, tooltip="Affiche les highs/lows des 5 derniers jours non pris (ex: MON H, TUE L)")
+color lq_past_mc     = input.color(color.new(#D32F2F, 0), "Past Months Color", group=gLiq)
+color lq_past_dc     = input.color(color.new(#D32F2F, 0), "Past Days Color", group=gLiq)
 // Asia 1 et Asia 2 unifies sous "lq_asia"
 bool lq_270_a1 = lq_asia
 bool lq_270_a2 = lq_asia
@@ -267,6 +272,20 @@ var CL LO = CL.new(array.new_box(), array.new_label(), na, na, na, na, 5, na, na
 var CL LY = CL.new(array.new_box(), array.new_label(), na, na, na, na, 3, na, na, na, na)
 var lq_90a = array.new<LQ>()
 var lq_30a = array.new<LQ>()
+// Historique Month/Day
+var lq_pm_a = array.new<LQ>()  // 3 derniers mois
+var lq_pd_a = array.new<LQ>()  // 5 derniers jours
+// Trackers mois courant / jour courant (pour detecter fin)
+var float month_h = na
+var float month_l = na
+var int   month_hx = na
+var int   month_lx = na
+var int   month_id = na
+var float day_h = na
+var float day_l = na
+var int   day_hx = na
+var int   day_lx = na
+var int   day_dow = na
 var lq_6ha = array.new<LQ>()
 var lq_270_a1a = array.new<LQ>()
 var lq_270_a2a = array.new<LQ>()
@@ -520,6 +539,89 @@ if n6h and not na(L6.ph) and not na(L6.pl)
     f_addlq(lq_6ha, L6.ph, true, ch, 2, L6.phx, "", "Tiny", 0)
     f_addlq(lq_6ha, L6.pl, false, cl, 2, L6.plx, "", "Tiny", 0)
 f_chklq(lq_6ha)
+
+// ========== HISTORIQUE MOIS / JOUR (liquidites non prises) ==========
+f_month_abbr(int m) =>
+    m == 1 ? "JAN" : m == 2 ? "FEB" : m == 3 ? "MAR" : m == 4 ? "APR" : m == 5 ? "MAY" : m == 6 ? "JUN" : m == 7 ? "JUL" : m == 8 ? "AUG" : m == 9 ? "SEP" : m == 10 ? "OCT" : m == 11 ? "NOV" : "DEC"
+f_day_abbr(int d) =>
+    d == 2 ? "MON" : d == 3 ? "TUE" : d == 4 ? "WED" : d == 5 ? "THU" : d == 6 ? "FRI" : d == 7 ? "SAT" : "MON"
+
+// Track mois courant : quand nouveau mois, push ancien dans lq_pm_a
+if lq_past_months
+    curMonth = month(time, TZ)
+    if na(month_id)
+        month_id := curMonth
+        month_h := high
+        month_l := low
+        month_hx := bar_index
+        month_lx := bar_index
+    else if curMonth != month_id
+        // Mois precedent termine : ajoute si non encore pris
+        // Cree ligne + label avec nom du mois precedent
+        prevMonthName = f_month_abbr(month_id)
+        f_addlq(lq_pm_a, month_h, true,  lq_past_mc, 3 * 2, month_hx, prevMonthName + " H", "Normal", 14)
+        f_addlq(lq_pm_a, month_l, false, lq_past_mc, 3 * 2, month_lx, prevMonthName + " L", "Normal", 14)
+        // Reset pour nouveau mois
+        month_id := curMonth
+        month_h := high
+        month_l := low
+        month_hx := bar_index
+        month_lx := bar_index
+    else
+        if high > month_h
+            month_h := high
+            month_hx := bar_index
+        if low < month_l
+            month_l := low
+            month_lx := bar_index
+f_chklq(lq_pm_a)
+
+// Track jour courant : quand nouveau jour, push ancien dans lq_pd_a
+if lq_past_days
+    if na(day_dow)
+        day_dow := dayofweek(time, TZ)
+        day_h := high
+        day_l := low
+        day_hx := bar_index
+        day_lx := bar_index
+    else if nDay
+        // nDay fire a 18h ET (debut d'une nouvelle session trading).
+        // Le label = dayofweek AU MOMENT DU PUSH (represente la session qui vient de finir).
+        // MON=2, TUE=3, WED=4, THU=5, FRI=6. Skip 1 (Sunday 18h = weekend) et 7 (Saturday).
+        int curDow = dayofweek(time, TZ)
+        if curDow >= 2 and curDow <= 6
+            prevDayName = f_day_abbr(curDow)
+            f_addlq(lq_pd_a, day_h, true,  lq_past_dc, 5 * 2, day_hx, prevDayName + " H", "Small", 7)
+            f_addlq(lq_pd_a, day_l, false, lq_past_dc, 5 * 2, day_lx, prevDayName + " L", "Small", 7)
+        day_dow := curDow
+        day_h := high
+        day_l := low
+        day_hx := bar_index
+        day_lx := bar_index
+    else
+        if high > day_h
+            day_h := high
+            day_hx := bar_index
+        if low < day_l
+            day_l := low
+            day_lx := bar_index
+f_chklq(lq_pd_a)
+
+// Historique mois/jours : supprime completement les niveaux une fois pris (ne laisse pas la trace sweep)
+f_remove_swept(array<LQ> a) =>
+    i = 0
+    while i < array.size(a)
+        LQ lv = array.get(a, i)
+        if lv.swept
+            if not na(lv.ln)
+                line.delete(lv.ln)
+            if not na(lv.lb)
+                label.delete(lv.lb)
+            array.remove(a, i)
+            continue
+        i += 1
+f_remove_swept(lq_pm_a)
+f_remove_swept(lq_pd_a)
 // Reset intraday (session + 90m + 30m + 6h) en debut de nouvelle journee
 f_clearlq(array<LQ> a) =>
     while array.size(a) > 0
