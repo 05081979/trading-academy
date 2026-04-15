@@ -148,8 +148,10 @@ bool lq_30  = input.bool(true, "Enable 30m Quarters", group=gLiq)
 // ── Historique HTF non-pris ──
 bool lq_past_months  = input.bool(true, "Show last 3 months H/L (unswept only)", group=gLiq, tooltip="Affiche les highs/lows des 3 derniers mois non pris (ex: JAN H, FEB L)")
 bool lq_past_days    = input.bool(true, "Show last 5 days H/L (unswept only)", group=gLiq, tooltip="Affiche les highs/lows des 5 derniers jours non pris (ex: MON H, TUE L)")
-color lq_past_mc     = input.color(color.new(#D32F2F, 0), "Past Months Color", group=gLiq)
-color lq_past_dc     = input.color(color.new(#D32F2F, 0), "Past Days Color", group=gLiq)
+color lq_past_mc     = input.color(color.new(#D32F2F, 0), "Past Months line", inline="lqpm_g", group=gLiq)
+color lq_past_mc_lb  = input.color(color.new(#D32F2F, 0), "lbl",              inline="lqpm_g", group=gLiq)
+color lq_past_dc     = input.color(color.new(#D32F2F, 0), "Past Days line",   inline="lqpd_g", group=gLiq)
+color lq_past_dc_lb  = input.color(color.new(#D32F2F, 0), "lbl",              inline="lqpd_g", group=gLiq)
 // Asia 1 et Asia 2 unifies sous "lq_asia"
 bool lq_270_a1 = lq_asia
 bool lq_270_a2 = lq_asia
@@ -161,26 +163,56 @@ bool  lq_override_color = input.bool(false, "Override: meme couleur pour toutes 
 color lq_override_c     = input.color(color.new(#FFFFFF, 0), "Couleur override", group=gLiqC)
 color lq_270h = input.color(#E91E63, "270m High Color", inline="lq270", group=gLiqC)
 color lq_270l = input.color(#E91E63, "Low", inline="lq270", group=gLiqC)
-color lq_ac1 = input.color(color.black, "Asia H", inline="lqa", group=gLiqC)
-color lq_ac2 = input.color(color.black, "Asia L", inline="lqa", group=gLiqC)
-color lq_lc1 = input.color(#2196F3, "London H", inline="lql", group=gLiqC)
-color lq_lc2 = input.color(#2196F3, "London L", inline="lql", group=gLiqC)
-color lq_amc1 = input.color(#00ACC1, "NY AM H", inline="lqam", group=gLiqC)
-color lq_amc2 = input.color(#00ACC1, "NY AM L", inline="lqam", group=gLiqC)
-color lq_pmc1 = input.color(#8E24AA, "NY PM H", inline="lqpm", group=gLiqC)
-color lq_pmc2 = input.color(#8E24AA, "NY PM L", inline="lqpm", group=gLiqC)
-color lq_q90c1 = input.color(#FFB300, "Q90 H", inline="lqq90", group=gLiqC)
-color lq_q90c2 = input.color(#FFB300, "Q90 L", inline="lqq90", group=gLiqC)
-color lq_q30c1 = input.color(#78909C, "Q30 H", inline="lqq30", group=gLiqC)
-color lq_q30c2 = input.color(#78909C, "Q30 L", inline="lqq30", group=gLiqC)
-color lq_dc1 = input.color(#9C27B0, "Daily H", inline="lqd", group=gLiqC)
-color lq_dc2 = input.color(#9C27B0, "Daily L", inline="lqd", group=gLiqC)
-color lq_wc1 = input.color(#FF9800, "Weekly H", inline="lqw", group=gLiqC)
-color lq_wc2 = input.color(#FF9800, "Weekly L", inline="lqw", group=gLiqC)
-color lq_mc1 = input.color(#009688, "Monthly H", inline="lqm", group=gLiqC)
-color lq_mc2 = input.color(#009688, "Monthly L", inline="lqm", group=gLiqC)
-color lq_yc1 = input.color(#F44336, "Yearly H", inline="lqy", group=gLiqC)
-color lq_yc2 = input.color(#F44336, "Yearly L", inline="lqy", group=gLiqC)
+// Chaque categorie : LINE color (ligne) et LABEL color (texte) independants
+color lq_ac1 = input.color(color.black, "Asia H line", inline="lqa", group=gLiqC)
+color lq_ac1_lb = input.color(color.black, "lbl", inline="lqa", group=gLiqC)
+color lq_ac2 = input.color(color.black, "Asia L line", inline="lqa2", group=gLiqC)
+color lq_ac2_lb = input.color(color.black, "lbl", inline="lqa2", group=gLiqC)
+
+color lq_lc1 = input.color(#2196F3, "London H line", inline="lql", group=gLiqC)
+color lq_lc1_lb = input.color(#2196F3, "lbl", inline="lql", group=gLiqC)
+color lq_lc2 = input.color(#2196F3, "London L line", inline="lql2", group=gLiqC)
+color lq_lc2_lb = input.color(#2196F3, "lbl", inline="lql2", group=gLiqC)
+
+color lq_amc1 = input.color(#00ACC1, "NY AM H line", inline="lqam", group=gLiqC)
+color lq_amc1_lb = input.color(#00ACC1, "lbl", inline="lqam", group=gLiqC)
+color lq_amc2 = input.color(#00ACC1, "NY AM L line", inline="lqam2", group=gLiqC)
+color lq_amc2_lb = input.color(#00ACC1, "lbl", inline="lqam2", group=gLiqC)
+
+color lq_pmc1 = input.color(#8E24AA, "NY PM H line", inline="lqpm", group=gLiqC)
+color lq_pmc1_lb = input.color(#8E24AA, "lbl", inline="lqpm", group=gLiqC)
+color lq_pmc2 = input.color(#8E24AA, "NY PM L line", inline="lqpm2", group=gLiqC)
+color lq_pmc2_lb = input.color(#8E24AA, "lbl", inline="lqpm2", group=gLiqC)
+
+color lq_q90c1 = input.color(#FFB300, "Q90 H line", inline="lqq90", group=gLiqC)
+color lq_q90c1_lb = input.color(#FFB300, "lbl", inline="lqq90", group=gLiqC)
+color lq_q90c2 = input.color(#FFB300, "Q90 L line", inline="lqq902", group=gLiqC)
+color lq_q90c2_lb = input.color(#FFB300, "lbl", inline="lqq902", group=gLiqC)
+
+color lq_q30c1 = input.color(#78909C, "Q30 H line", inline="lqq30", group=gLiqC)
+color lq_q30c1_lb = input.color(#78909C, "lbl", inline="lqq30", group=gLiqC)
+color lq_q30c2 = input.color(#78909C, "Q30 L line", inline="lqq302", group=gLiqC)
+color lq_q30c2_lb = input.color(#78909C, "lbl", inline="lqq302", group=gLiqC)
+
+color lq_dc1 = input.color(#9C27B0, "Daily H line", inline="lqd", group=gLiqC)
+color lq_dc1_lb = input.color(#9C27B0, "lbl", inline="lqd", group=gLiqC)
+color lq_dc2 = input.color(#9C27B0, "Daily L line", inline="lqd2", group=gLiqC)
+color lq_dc2_lb = input.color(#9C27B0, "lbl", inline="lqd2", group=gLiqC)
+
+color lq_wc1 = input.color(#FF9800, "Weekly H line", inline="lqw", group=gLiqC)
+color lq_wc1_lb = input.color(#FF9800, "lbl", inline="lqw", group=gLiqC)
+color lq_wc2 = input.color(#FF9800, "Weekly L line", inline="lqw2", group=gLiqC)
+color lq_wc2_lb = input.color(#FF9800, "lbl", inline="lqw2", group=gLiqC)
+
+color lq_mc1 = input.color(#009688, "Monthly H line", inline="lqm", group=gLiqC)
+color lq_mc1_lb = input.color(#009688, "lbl", inline="lqm", group=gLiqC)
+color lq_mc2 = input.color(#009688, "Monthly L line", inline="lqm2", group=gLiqC)
+color lq_mc2_lb = input.color(#009688, "lbl", inline="lqm2", group=gLiqC)
+
+color lq_yc1 = input.color(#F44336, "Yearly H line", inline="lqy", group=gLiqC)
+color lq_yc1_lb = input.color(#F44336, "lbl", inline="lqy", group=gLiqC)
+color lq_yc2 = input.color(#F44336, "Yearly L line", inline="lqy2", group=gLiqC)
+color lq_yc2_lb = input.color(#F44336, "lbl", inline="lqy2", group=gLiqC)
 string gLiqLS = "LIQUIDITY LINE SETTINGS"
 string lq_ls = input.string("Dashed", "Line Style", options=["Solid","Dashed","Dotted"], group=gLiqLS)
 string lq_ss = input.string("Dotted", "Swept Line Style", options=["Solid","Dashed","Dotted"], group=gLiqLS)
@@ -378,15 +410,14 @@ manage(LO, nMonth, tfMo, mo_box, mo_brd, mo_brd_c, mo_lbl, mo_labels, mo_qc, mo_
 // Yearly : track H/L only (no boxes)
 manage(LY, nYear, true, false, false, color.gray, false, "", color.gray, 0)
 // ===== TIME BASED LIQUIDITY =====
-f_addlq(array<LQ> a, float p, bool ih, color c, int cap, int sb, string lblTxt, string szStr, int xOff) =>
+f_addlq(array<LQ> a, float p, bool ih, color cLine, int cap, int sb, string lblTxt, string szStr, int xOff, color cLbl) =>
     int _off = na(sb) ? 0 : math.max(0, math.min(bar_index - sb, 4999))
     int _t = time[_off]
     int _end_t = lq_extR ? time + 100 * (time - time[1]) : time + lq_ext * (time - time[1])
     int _lbl_t = _end_t + xOff * (time - time[1])
-    // Past months/days (labels avec jour/mois dans le texte): toujours utiliser la couleur passee (c), pas l'override
     bool _isPast = str.contains(lblTxt, "MON") or str.contains(lblTxt, "TUE") or str.contains(lblTxt, "WED") or str.contains(lblTxt, "THU") or str.contains(lblTxt, "FRI") or str.contains(lblTxt, "JAN") or str.contains(lblTxt, "FEB") or str.contains(lblTxt, "MAR") or str.contains(lblTxt, "APR") or str.contains(lblTxt, "MAY") or str.contains(lblTxt, "JUN") or str.contains(lblTxt, "JUL") or str.contains(lblTxt, "AUG") or str.contains(lblTxt, "SEP") or str.contains(lblTxt, "OCT") or str.contains(lblTxt, "NOV") or str.contains(lblTxt, "DEC")
-    color _line_c = lq_override_color and not _isPast ? lq_override_c : c
-    color _lbl_c  = lq_override_color and not _isPast ? lq_override_c : c
+    color _line_c = lq_override_color and not _isPast ? lq_override_c : cLine
+    color _lbl_c  = lq_override_color and not _isPast ? lq_override_c : cLbl
     line  _ln = line.new(_t, p, _end_t, p, xloc=xloc.bar_time, color=_line_c, style=f_style(lq_ls), width=lq_lw)
     int   _off_ticks = ih ? lq_hi_off : lq_lo_off
     float _lbl_y = p + _off_ticks * syminfo.mintick
@@ -461,28 +492,28 @@ if lq_270 and _270end and not na(s270_h) and not na(s270_l) and s270_sess > 0
             asia_l := s270_l
             asia_lx := s270_lx
         if lq_asia_h and not na(asia_h)
-            f_addlq(lq_270_a2a, asia_h, true, lq_ac1, 2, asia_hx, "ASH", lq_as_sz, 0)
+            f_addlq(lq_270_a2a, asia_h, true, lq_ac1, 2, asia_hx, "ASH", lq_as_sz, 0, lq_ac1_lb)
         if lq_asia_l and not na(asia_l)
-            f_addlq(lq_270_a2a, asia_l, false, lq_ac2, 2, asia_lx, "ASL", lq_as_sz, 0)
+            f_addlq(lq_270_a2a, asia_l, false, lq_ac2, 2, asia_lx, "ASL", lq_as_sz, 0, lq_ac2_lb)
         asia_h := na
         asia_l := na
         asia_hx := na
         asia_lx := na
     if s270_sess == 3 and lq_270_ldn
         if lq_ldn_h
-            f_addlq(lq_270_ldna, s270_h, true, lq_lc1, 2, s270_hx, "LDH", lq_ln_sz, 3)
+            f_addlq(lq_270_ldna, s270_h, true, lq_lc1, 2, s270_hx, "LDH", lq_ln_sz, 3, lq_lc1_lb)
         if lq_ldn_l
-            f_addlq(lq_270_ldna, s270_l, false, lq_lc2, 2, s270_lx, "LDL", lq_ln_sz, 3)
+            f_addlq(lq_270_ldna, s270_l, false, lq_lc2, 2, s270_lx, "LDL", lq_ln_sz, 3, lq_lc2_lb)
     if s270_sess == 4 and lq_270_am
         if lq_am_h
-            f_addlq(lq_270_ama, s270_h, true, lq_amc1, 2, s270_hx, "AMH", lq_am_sz, 6)
+            f_addlq(lq_270_ama, s270_h, true, lq_amc1, 2, s270_hx, "AMH", lq_am_sz, 6, lq_amc1_lb)
         if lq_am_l
-            f_addlq(lq_270_ama, s270_l, false, lq_amc2, 2, s270_lx, "AML", lq_am_sz, 6)
+            f_addlq(lq_270_ama, s270_l, false, lq_amc2, 2, s270_lx, "AML", lq_am_sz, 6, lq_amc2_lb)
     if s270_sess == 5 and lq_270_pm
         if lq_pm_h
-            f_addlq(lq_270_pma, s270_h, true, lq_pmc1, 2, s270_hx, "NPH", lq_pm_sz, 9)
+            f_addlq(lq_270_pma, s270_h, true, lq_pmc1, 2, s270_hx, "NPH", lq_pm_sz, 9, lq_pmc1_lb)
         if lq_pm_l
-            f_addlq(lq_270_pma, s270_l, false, lq_pmc2, 2, s270_lx, "NPL", lq_pm_sz, 9)
+            f_addlq(lq_270_pma, s270_l, false, lq_pmc2, 2, s270_lx, "NPL", lq_pm_sz, 9, lq_pmc2_lb)
 
 // Nouvelle session 270mn : reset tracker
 if _270new
@@ -526,20 +557,20 @@ else if _270id == 0
     label.delete(_270_cur_ll)
 
 if n90 and lq_90 and not na(L9.ph) and not na(L9.pl)
-    f_addlq(lq_90a, L9.ph, true, lq_q90c1, 2, L9.phx, "Q90H", "Tiny", 1)
-    f_addlq(lq_90a, L9.pl, false, lq_q90c2, 2, L9.plx, "Q90L", "Tiny", 1)
+    f_addlq(lq_90a, L9.ph, true, lq_q90c1, 2, L9.phx, "Q90H", "Tiny", 1, lq_q90c1_lb)
+    f_addlq(lq_90a, L9.pl, false, lq_q90c2, 2, L9.plx, "Q90L", "Tiny", 1, lq_q90c2_lb)
 // Q30 : ajoute uniquement sur transitions Q30 pures (PAS sur n90 pour eviter doublons avec Q90)
 if n30 and not n90 and lq_30 and not na(L30.ph) and not na(L30.pl)
-    f_addlq(lq_30a, L30.ph, true, lq_q30c1, 2, L30.phx, "Q30H", "Tiny", 3)
-    f_addlq(lq_30a, L30.pl, false, lq_q30c2, 2, L30.plx, "Q30L", "Tiny", 3)
+    f_addlq(lq_30a, L30.ph, true, lq_q30c1, 2, L30.phx, "Q30H", "Tiny", 3, lq_q30c1_lb)
+    f_addlq(lq_30a, L30.pl, false, lq_q30c2, 2, L30.plx, "Q30L", "Tiny", 3, lq_q30c2_lb)
 f_chklq(lq_30a)
 f_chklq(lq_90a)
 if n6h and not na(L6.ph) and not na(L6.pl)
     int prevS = qDay > 1 ? qDay - 1 : 4
     color ch = prevS == 1 ? lq_ac1 : prevS == 2 ? lq_lc1 : prevS == 3 ? s6_c3 : s6_c4
     color cl = prevS == 1 ? lq_ac2 : prevS == 2 ? lq_lc2 : prevS == 3 ? s6_c3 : s6_c4
-    f_addlq(lq_6ha, L6.ph, true, ch, 2, L6.phx, "", "Tiny", 0)
-    f_addlq(lq_6ha, L6.pl, false, cl, 2, L6.plx, "", "Tiny", 0)
+    f_addlq(lq_6ha, L6.ph, true, ch, 2, L6.phx, "", "Tiny", 0, ch)
+    f_addlq(lq_6ha, L6.pl, false, cl, 2, L6.plx, "", "Tiny", 0, cl)
 f_chklq(lq_6ha)
 
 // ========== HISTORIQUE MOIS / JOUR (liquidites non prises) ==========
@@ -561,8 +592,8 @@ if lq_past_months
         // Mois precedent termine : ajoute si non encore pris
         // Cree ligne + label avec nom du mois precedent
         prevMonthName = f_month_abbr(month_id)
-        f_addlq(lq_pm_a, month_h, true,  lq_past_mc, 3 * 2, month_hx, prevMonthName + " H", "Normal", 14)
-        f_addlq(lq_pm_a, month_l, false, lq_past_mc, 3 * 2, month_lx, prevMonthName + " L", "Normal", 14)
+        f_addlq(lq_pm_a, month_h, true, lq_past_mc, 3 * 2, month_hx, prevMonthName + " H", "Normal", 14, lq_past_mc_lb)
+        f_addlq(lq_pm_a, month_l, false, lq_past_mc, 3 * 2, month_lx, prevMonthName + " L", "Normal", 14, lq_past_mc_lb)
         // Reset pour nouveau mois
         month_id := curMonth
         month_h := high
@@ -593,8 +624,8 @@ if lq_past_days
         int curDow = dayofweek(time, TZ)
         if curDow >= 2 and curDow <= 6
             prevDayName = f_day_abbr(curDow)
-            f_addlq(lq_pd_a, day_h, true,  lq_past_dc, 5 * 2, day_hx, prevDayName + " H", "Small", 7)
-            f_addlq(lq_pd_a, day_l, false, lq_past_dc, 5 * 2, day_lx, prevDayName + " L", "Small", 7)
+            f_addlq(lq_pd_a, day_h, true, lq_past_dc, 5 * 2, day_hx, prevDayName + " H", "Small", 7, lq_past_dc_lb)
+            f_addlq(lq_pd_a, day_l, false, lq_past_dc, 5 * 2, day_lx, prevDayName + " L", "Small", 7, lq_past_dc_lb)
         day_dow := curDow
         day_h := high
         day_l := low
