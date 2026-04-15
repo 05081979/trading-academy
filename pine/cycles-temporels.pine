@@ -422,7 +422,7 @@ f_addlq(array<LQ> a, float p, bool ih, color cLine, int cap, int sb, string lblT
     int   _off_ticks = ih ? lq_hi_off : lq_lo_off
     float _lbl_y = p + _off_ticks * syminfo.mintick
     label _lb = lq_ll and str.length(lblTxt) > 0 ? label.new(_lbl_t, _lbl_y, lblTxt, xloc=xloc.bar_time, style=label.style_none, textcolor=_lbl_c, size=f_lsz(szStr)) : na
-    array.push(a, LQ.new(_ln, _lb, p, ih, false, c, na(sb) ? bar_index : sb, _t, xOff))
+    array.push(a, LQ.new(_ln, _lb, p, ih, false, cLine, na(sb) ? bar_index : sb, _t, xOff))
     if array.size(a) > cap
         LQ o = array.shift(a)
         if not na(o.ln)
@@ -455,8 +455,8 @@ f_chklq(array<LQ> a) =>
                         label.delete(lv.lb)
                     lv.ln := line.new(lv.stime, lv.price, time, lv.price, xloc=xloc.bar_time, color=sc, style=f_style(lq_ss), width=lq_lw)
                     int mx = int(math.avg(lv.stime, time))
-                    // Label sweep au milieu de la ligne : "<orig> X" (ou juste "<orig>" si sw_txt vide)
-                    string finalTxt = str.length(lq_sw_txt) > 0 ? (str.length(origTxt) > 0 ? origTxt + " " + lq_sw_txt : lq_sw_txt) : origTxt
+                    // Label sweep : "<orig> X". Pas de X orphelin si pas d'origine.
+                    string finalTxt = str.length(origTxt) > 0 ? (str.length(lq_sw_txt) > 0 ? origTxt + " " + lq_sw_txt : origTxt) : ""
                     if str.length(finalTxt) > 0
                         lv.lb := label.new(mx, lv.price, finalTxt, xloc=xloc.bar_time, style=label.style_none, textcolor=sc, size=f_lsz(lq_xs))
 // 270mn ICT sessions (ET timezone via TZ)
