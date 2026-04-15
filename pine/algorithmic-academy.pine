@@ -1,4 +1,4 @@
-// © AA — MSB/OB + HIPPO + BPR + Multi-HTF FVG/BPR (sans CISD)
+// © AA — MSB/OB + HIPPO + BPR + Multi-HTF FVG/BPR
 //@version=6
 indicator("Algorithmic Academy - Smart Money Toolkit", overlay=true, max_boxes_count=500, max_labels_count=500, max_lines_count=500, max_bars_back=5000)
 // Note: max_boxes_count limité à 500 par TradingView. Au-delà, TV supprime automatiquement les plus anciennes.

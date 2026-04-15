@@ -85,5 +85,4 @@ Active **"Afficher tableau debug FVG/BPR"** → tableau en haut à droite montra
 
 ## Changelog
 
-- **v2.0** : retrait du module CISD, ajout du **Multi-HTF FVG/BPR** (7 timeframes), filtre proximité prix, tableau debug
-- **v1.x** : version initiale avec CISD + MSB/OB + HIPPO + BPR single-TF
+- **v2.0** : ajout du **Multi-HTF FVG/BPR** (7 timeframes), filtre proximité prix, tableau debug
