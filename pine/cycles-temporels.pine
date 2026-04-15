@@ -383,8 +383,10 @@ f_addlq(array<LQ> a, float p, bool ih, color c, int cap, int sb, string lblTxt, 
     int _t = time[_off]
     int _end_t = lq_extR ? time + 100 * (time - time[1]) : time + lq_ext * (time - time[1])
     int _lbl_t = _end_t + xOff * (time - time[1])
-    color _line_c = lq_override_color ? lq_override_c : c
-    color _lbl_c  = lq_override_color ? lq_override_c : c
+    // Past months/days (labels avec jour/mois dans le texte): toujours utiliser la couleur passee (c), pas l'override
+    bool _isPast = str.contains(lblTxt, "MON") or str.contains(lblTxt, "TUE") or str.contains(lblTxt, "WED") or str.contains(lblTxt, "THU") or str.contains(lblTxt, "FRI") or str.contains(lblTxt, "JAN") or str.contains(lblTxt, "FEB") or str.contains(lblTxt, "MAR") or str.contains(lblTxt, "APR") or str.contains(lblTxt, "MAY") or str.contains(lblTxt, "JUN") or str.contains(lblTxt, "JUL") or str.contains(lblTxt, "AUG") or str.contains(lblTxt, "SEP") or str.contains(lblTxt, "OCT") or str.contains(lblTxt, "NOV") or str.contains(lblTxt, "DEC")
+    color _line_c = lq_override_color and not _isPast ? lq_override_c : c
+    color _lbl_c  = lq_override_color and not _isPast ? lq_override_c : c
     line  _ln = line.new(_t, p, _end_t, p, xloc=xloc.bar_time, color=_line_c, style=f_style(lq_ls), width=lq_lw)
     int   _off_ticks = ih ? lq_hi_off : lq_lo_off
     float _lbl_y = p + _off_ticks * syminfo.mintick
