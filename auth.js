@@ -8,10 +8,11 @@
   const USER_KEY = 'aa_user';
   const ALLOW_KEY = 'aa_allow';
 
-  // Tokens révoqués par (username + tier) — bloque tous les tokens Premium/Starter d'un user
+  // Tokens révoqués par (username + tier) — bloque tous les tokens d'un user (starter/premium/custom)
   const REVOKED = [
     { user: 'elgavacho8421', tier: 'premium' },
-    { user: 'elgavacho8421', tier: 'starter' }
+    { user: 'elgavacho8421', tier: 'starter' },
+    { user: 'elgavacho8421', tier: 'custom' }
   ];
   // Tokens complets révoqués (chaîne exacte AA-X-...) — pour révoquer un Custom précis
   const REVOKED_TOKENS = [
@@ -72,6 +73,7 @@
         var pipe = decoded.indexOf('|');
         if (pipe < 0) return null;
         var username = decoded.slice(0, pipe);
+        if (isRevoked(username, 'custom')) return null; // User revoqué pour custom
         var slugs = decoded.slice(pipe + 1).split(',').filter(function(x){ return x.trim().length > 0; });
         return { username: username, tier: 'custom', allow: slugs };
       }

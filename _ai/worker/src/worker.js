@@ -19,6 +19,7 @@ const CORS = {
 const REVOKED = new Set([
   "elgavacho8421|premium",
   "elgavacho8421|starter",
+  "elgavacho8421|custom",
 ]);
 
 // --- Utils ---
@@ -54,6 +55,7 @@ function decodeAA(token) {
     const pipe = decoded.indexOf("|");
     if (pipe < 0) return null;
     const username = decoded.slice(0, pipe);
+    if (REVOKED.has(`${username}|custom`)) return null;
     const slugs = decoded
       .slice(pipe + 1)
       .split(",")
