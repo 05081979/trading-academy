@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html data-tier="premium" lang="fr">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(function(){
+  try {
+    fetch('../version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v=(v||'').trim(); if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){ localStorage.setItem(k,v); location.replace(location.pathname+'?_cb='+v+location.hash); }
+        else localStorage.setItem(k,v);
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="../auth.js?v=v20260413-revoke2"></script>
+<title>Entry Model Simplifie — Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#f5f7fa; color:#1a1a2e; font-family:'Inter',sans-serif; line-height:1.65; }
+.hero { background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%); color:#fff; padding:60px 40px 40px; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top right, rgba(255,255,255,0.18) 0%, transparent 60%); pointer-events:none; }
+.hero-inner { max-width:1100px; margin:0 auto; position:relative; z-index:1; }
+.back-link { display:inline-flex; align-items:center; gap:8px; color:rgba(255,255,255,0.9); text-decoration:none; font-size:13px; margin-bottom:24px; }
+.back-link:hover { color:#fff; }
+.hero-icon { font-size:48px; margin-bottom:16px; }
+.hero h1 { font-family:'Syne',sans-serif; font-size:clamp(28px,4vw,44px); font-weight:800; letter-spacing:-0.01em; margin-bottom:12px; }
+.hero p { font-size:16px; max-width:720px; opacity:0.95; }
+.tier-badge { display:inline-block; background:rgba(0,0,0,0.2); color:#fff; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:16px; }
+.container { max-width:1100px; margin:0 auto; padding:40px 24px; }
+.section { background:#fff; border-radius:14px; padding:28px 32px; margin-bottom:20px; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid #e2e5ea; }
+.section-title { font-family:'Syne',sans-serif; font-size:20px; font-weight:700; color:#1a1a2e; margin-bottom:18px; display:flex; align-items:center; gap:10px; }
+.section-title::before { content:''; width:6px; height:26px; background:#f59e0b; border-radius:3px; }
+.section p { margin-bottom:12px; color:#334155; }
+.section h3 { font-family:'Syne',sans-serif; font-size:15px; color:#92400e; margin:18px 0 8px; font-weight:700; }
+.checklist { list-style:none; counter-reset:step; }
+.checklist li { counter-increment:step; padding:14px 16px 14px 58px; background:#fff7ed; border:1px solid #fed7aa; border-radius:10px; margin-bottom:10px; position:relative; font-size:14px; }
+.checklist li::before { content:counter(step); position:absolute; left:14px; top:13px; width:32px; height:32px; background:#f59e0b; color:#fff; font-weight:800; display:flex; align-items:center; justify-content:center; border-radius:50%; font-family:'Syne',sans-serif; }
+.checklist li strong { color:#92400e; display:block; margin-bottom:3px; font-size:14px; }
+.features-list { list-style:none; }
+.features-list li { padding:10px 0; border-bottom:1px solid #f1f5f9; display:flex; gap:12px; align-items:flex-start; font-size:14.5px; }
+.features-list li:last-child { border-bottom:none; }
+.features-list li::before { content:'▸'; color:#f59e0b; font-weight:700; flex-shrink:0; }
+.concept-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:14px; margin-top:14px; }
+.concept-card { padding:16px; background:#f8fafc; border:1px solid #e2e5ea; border-radius:10px; }
+.concept-card h4 { color:#f59e0b; font-size:13px; margin-bottom:6px; font-weight:700; letter-spacing:0.03em; }
+.concept-card p { font-size:13.5px; color:#475569; margin:0; line-height:1.55; }
+.scenario-split { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+@media (max-width:720px) { .scenario-split { grid-template-columns:1fr; } }
+.scenario { padding:20px; border-radius:12px; border:2px solid; }
+.scenario.bull { background:#ecfdf5; border-color:#10b981; }
+.scenario.bear { background:#fef2f2; border-color:#ef4444; }
+.scenario h3 { font-family:'Syne',sans-serif; margin:0 0 12px; font-size:16px; }
+.scenario.bull h3 { color:#047857; }
+.scenario.bear h3 { color:#b91c1c; }
+.scenario ol { margin-left:18px; font-size:13.5px; }
+.scenario ol li { margin-bottom:8px; color:#334155; }
+.box-tip { padding:16px 20px; background:linear-gradient(90deg,rgba(245,158,11,0.08),rgba(245,158,11,0.02)); border-left:4px solid #f59e0b; border-radius:8px; font-size:14px; color:#334155; margin-top:14px; }
+.time-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px; margin-top:10px; }
+.time-chip { background:#0f172a; color:#fbbf24; padding:10px 14px; border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:13px; text-align:center; }
+.time-chip small { display:block; color:#94a3b8; font-size:10px; margin-top:3px; letter-spacing:0.05em; }
+kbd { background:#0f172a; color:#fbbf24; padding:2px 6px; border-radius:4px; font-family:'JetBrains Mono',monospace; font-size:12px; }
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+
+<div class="hero">
+  <div class="hero-inner">
+    <a href="hub-cours.html" class="back-link">← Retour au hub</a>
+    <div class="tier-badge">Premium</div>
+    <div class="hero-icon">🎯</div>
+    <h1>Entry Model Simplifié</h1>
+    <p>Un cadre exécutoire minimaliste pour transformer un biais HTF en entrée précise. Sept critères à valider, deux scénarios (bull / bear), un déclencheur : IFVG ou Breaker.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <div class="section-title">Pourquoi un modèle d'entrée "simplifié"</div>
+    <p>La plupart des traders échouent non pas parce qu'ils manquent de savoir, mais parce qu'ils en empilent trop. Trop de confluences, trop de niveaux, trop de conditions floues. Résultat : paralysie devant le graphique ou impulsivité par frustration.</p>
+    <p>Un modèle d'entrée <strong>simplifié</strong> impose l'inverse : <em>sept cases à cocher, pas plus</em>. Si une seule manque, on ne trade pas. Si toutes sont vertes, on exécute mécaniquement. Le but n'est pas de prédire, mais de <strong>filtrer</strong> — ne prendre que les setups où l'algorithme montre ses intentions de manière lisible.</p>
+    <div class="box-tip">💡 Ce module ne remplace pas ta compréhension des fondamentaux. Il suppose que tu maîtrises déjà liquidité, FVG, order flow et sessions. C'est un <strong>cadre d'exécution</strong>, pas un cours d'initiation.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">La checklist (7 critères)</div>
+    <p>Avant toute entrée, chacun des 7 points ci-dessous doit être validé. Si tu hésites sur un seul, passe. Le marché offrira un autre setup.</p>
+    <ol class="checklist">
+      <li><strong>Biais HTF clair</strong>Daily et 4H orientés dans la même direction. Si les deux divergent, pas de trade.</li>
+      <li><strong>Order Flow 15m aligné</strong>La structure en M15 (HH/HL pour bull, LH/LL pour bear) confirme le biais HTF. Pas d'indécision, pas de range.</li>
+      <li><strong>Key Levels pertinents</strong>Le prix interagit avec un niveau algorithmique propre : PDH/PDL, PWH/PWL, FVG HTF respecté, ou draw on liquidity identifiable.</li>
+      <li><strong>Fenêtre Macro NY</strong>On exécute uniquement pendant les windows Macro (voir section dédiée). En dehors, on observe.</li>
+      <li><strong>Stop Hunt confirmé</strong>Un sweep de liquidité (equal highs/lows, swing PDH/PDL) vient de se produire dans la direction opposée au biais. C'est le piège institutionnel.</li>
+      <li><strong>SMT divergence</strong>Une paire corrélée (NQ/ES, DXY/EURUSD, XAU/XAG) refuse de suivre le sweep. Divergence = confirmation.</li>
+      <li><strong>Trigger : IFVG ou Breaker</strong>Entrée uniquement sur la clôture qui invalide le dernier FVG opposé (IFVG) ou qui casse un order block (Breaker). Jamais à l'aveugle.</li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <div class="section-title">1. Order Flow — lire l'intention du marché</div>
+    <p>L'order flow est la <strong>photographie directionnelle</strong> du marché. Il répond à une seule question : <em>qui a le contrôle, acheteurs ou vendeurs ?</em> Tant que tu ne le sais pas, tu ne sais pas dans quel sens chercher ton entrée.</p>
+    <h3>Comment le lire</h3>
+    <ul class="features-list">
+      <li>Observe les <strong>displacement candles</strong> : bougies impulsives larges qui laissent des FVG derrière elles. Elles trahissent un flux institutionnel actif.</li>
+      <li>Si les FVG bullish sont <strong>respectés</strong> (prix rebondit dessus), l'order flow est haussier. S'ils sont traversés sans réaction, il est en train de changer.</li>
+      <li>Alignement requis : HTF (4H/Daily) = direction, LTF (15m) = timing.</li>
+    </ul>
+    <div class="box-tip">⚠️ Trader contre l'order flow HTF est la première source de pertes. Avant même de penser à entrer, demande-toi : <em>est-ce que le Daily me laisse le droit de prendre ce trade ?</em></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">2. Key Levels — les seuls niveaux qui comptent</div>
+    <p>Tous les "niveaux" ne se valent pas. Un trader qui dessine vingt lignes sur son graphique ne voit plus rien. Réduis au strict minimum.</p>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h4>PDH / PDL</h4>
+        <p>Previous Day High/Low. Liquidité intraday la plus lue par l'algorithme.</p>
+      </div>
+      <div class="concept-card">
+        <h4>PWH / PWL</h4>
+        <p>Previous Week High/Low. Targets swing, particulièrement pertinents le lundi/mardi.</p>
+      </div>
+      <div class="concept-card">
+        <h4>FVG HTF non-mitigé</h4>
+        <p>Un FVG 4H ou Daily laissé intact attire le prix. C'est un draw gravitationnel.</p>
+      </div>
+      <div class="concept-card">
+        <h4>Relative Equal Highs/Lows</h4>
+        <p>Deux sommets ou creux quasi-identiques = liquidité empilée. Le marché viendra la chercher.</p>
+      </div>
+      <div class="concept-card">
+        <h4>Opening Gaps (NDOG / NWOG)</h4>
+        <p>Gaps du weekend ou de la session précédente. Souvent comblés puis retournés.</p>
+      </div>
+      <div class="concept-card">
+        <h4>Session Highs/Lows</h4>
+        <p>Asia High/Low, London H/L, NY AM H/L : liquidité de session qui sert de pivot.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">3. Macros — les fenêtres d'exécution</div>
+    <p>Les Macros ICT sont des fenêtres de ~20 minutes où la volatilité et la probabilité de manipulation algorithmique augmentent. Hors Macro, on attend.</p>
+    <div class="time-grid">
+      <div class="time-chip">07:50 → 08:10<small>NY — pre-market</small></div>
+      <div class="time-chip">08:50 → 09:10<small>NY — open approach</small></div>
+      <div class="time-chip">09:50 → 10:10<small>NY — post-open</small></div>
+      <div class="time-chip">10:50 → 11:10<small>NY — AM session</small></div>
+      <div class="time-chip">11:50 → 12:10<small>NY — lunch pivot</small></div>
+      <div class="time-chip">13:10 → 13:40<small>NY — afternoon</small></div>
+      <div class="time-chip">14:50 → 15:10<small>NY — pre-close</small></div>
+      <div class="time-chip">15:15 → 15:45<small>NY — closing drive</small></div>
+    </div>
+    <p style="margin-top:14px;">Toutes les fenêtres sont en heure de New York (ET). Plus de 70% des mouvements intraday "tradables" se produisent dans ces intervalles. Un setup hors Macro est un setup à laisser passer, même s'il a l'air parfait.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">4. Stop Hunt — le piège qui valide</div>
+    <p>Un Stop Hunt est une <strong>incursion délibérée</strong> du prix au-delà d'un pool de liquidité évident (equal highs/lows, PDH/PDL, sommet récent), suivie d'un rejet immédiat. C'est la signature d'une main institutionnelle qui absorbe les ordres retail avant d'expédier le prix dans le sens opposé.</p>
+    <h3>Les zones typiquement chassées</h3>
+    <ul class="features-list">
+      <li>Au-dessus du PDH ou sous le PDL</li>
+      <li>Au-delà des equal highs/lows visibles</li>
+      <li>Juste sous un swing low récent où tout le monde a mis son stop</li>
+      <li>Au-dessus de l'Asia High ou sous l'Asia Low en début de session London/NY</li>
+    </ul>
+    <p>Sans stop hunt, tu achètes ou vends dans un range sans catalyseur. Avec stop hunt, tu exploites un imbalance que l'algorithme vient de créer.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">5. DOL / ERL — la cible du trade</div>
+    <p><strong>Draw on Liquidity (DOL)</strong> est la direction vers laquelle l'algorithme pousse. <strong>External Range Liquidity (ERL)</strong> est la cible externe à la structure en cours : un PDH, un PWH, un FVG HTF opposé, un cluster d'equal highs plus loin.</p>
+    <p>La règle : <strong>tu n'entres pas sans savoir où tu vas</strong>. Si tu ne peux pas dessiner la cible avant l'exécution, c'est que tu n'as pas d'edge. Un setup valide doit avoir un DOL clair à au moins 1:2 de R:R, idéalement 1:3 ou plus.</p>
+    <div class="box-tip">🎯 Identifier le DOL <em>avant</em> le stop hunt force une discipline majeure : tu sais que le piège visera la liquidité opposée à ta cible. Cela verrouille ton biais.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">6. SMT — la confirmation inter-marchés</div>
+    <p>La Smart Money Technique compare deux (ou trois) instruments fortement corrélés et cherche la divergence au moment du sweep.</p>
+    <h3>Paires classiques</h3>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h4>Indices US</h4>
+        <p>NQ vs ES vs YM. Si ES fait un nouveau low mais NQ refuse, c'est un SMT bullish.</p>
+      </div>
+      <div class="concept-card">
+        <h4>FX majeurs</h4>
+        <p>EURUSD vs GBPUSD vs DXY (inversé). Divergences = changement de main.</p>
+      </div>
+      <div class="concept-card">
+        <h4>Métaux</h4>
+        <p>XAUUSD vs XAGUSD vs XPTUSD. L'or mène souvent, l'argent confirme.</p>
+      </div>
+      <div class="concept-card">
+        <h4>Crypto</h4>
+        <p>BTC vs ETH vs SOL. Utilité limitée hors fortes volatilités.</p>
+      </div>
+    </div>
+    <p style="margin-top:14px;">La règle : au moment du stop hunt, <strong>une des paires corrélées doit refuser de suivre</strong>. C'est le feu vert. Sans SMT, tu prends le trade à l'aveugle sur une seule donnée.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">7. Trigger — IFVG ou Breaker</div>
+    <p>C'est le <strong>déclencheur mécanique</strong> de l'entrée. Une fois les 6 premiers critères validés, tu attends l'un des deux signaux suivants. Pas avant.</p>
+    <h3>IFVG (Inversion Fair Value Gap)</h3>
+    <p>Un FVG qui a été traversé puis invalidé par une clôture opposée. Exemple bullish : un FVG bearish se fait clôturer au-dessus de son high → il devient un support. Ton entrée est la retouche de ce niveau.</p>
+    <h3>Breaker Block</h3>
+    <p>Un order block (souvent le dernier avant le sweep) qui se fait casser par le mouvement impulsif post stop-hunt. La retouche du breaker dans le sens du trade est ton entrée.</p>
+    <div class="box-tip">⚡ Règle d'or : <strong>attends la deuxième bougie</strong> de confirmation après la clôture décisive. La première peut être un piège. La seconde qui respecte le niveau te donne le go.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Scénarios complets</div>
+    <div class="scenario-split">
+      <div class="scenario bull">
+        <h3>🟢 Scénario bullish</h3>
+        <ol>
+          <li>Daily et 4H en structure haussière (HH/HL).</li>
+          <li>M15 aligné, dernier HL respecté.</li>
+          <li>Prix approche une liquidité basse : equal lows, PDL, ou FVG bullish HTF.</li>
+          <li>Entrée dans une fenêtre Macro NY.</li>
+          <li>Le prix <strong>sweep</strong> les lows (stop hunt bearish) puis rejette violemment.</li>
+          <li>Une paire corrélée (ES si tu es sur NQ) refuse le new low → SMT bullish confirmé.</li>
+          <li>Une bougie clôture <strong>au-dessus</strong> d'un IFVG ou d'un Breaker → trigger activé.</li>
+          <li>Entrée sur la retouche du niveau, stop sous le low du sweep, TP sur le DOL haussier (PDH, FVG opposé).</li>
+        </ol>
+      </div>
+      <div class="scenario bear">
+        <h3>🔴 Scénario bearish</h3>
+        <ol>
+          <li>Daily et 4H en structure baissière (LH/LL).</li>
+          <li>M15 aligné, dernier LH respecté.</li>
+          <li>Prix approche une liquidité haute : equal highs, PDH, ou FVG bearish HTF.</li>
+          <li>Entrée dans une fenêtre Macro NY.</li>
+          <li>Le prix <strong>sweep</strong> les highs (stop hunt bullish) puis rejette violemment.</li>
+          <li>Une paire corrélée (DXY qui refuse de monter si tu es short EURUSD) → SMT bearish confirmé.</li>
+          <li>Une bougie clôture <strong>sous</strong> un IFVG ou d'un Breaker → trigger activé.</li>
+          <li>Entrée sur la retouche du niveau, stop au-dessus du high du sweep, TP sur le DOL baissier (PDL, FVG opposé).</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Gestion du risque</div>
+    <ul class="features-list">
+      <li><strong>R:R cible : 1:2 minimum</strong> sur le DOL identifié. Si le ratio est inférieur, c'est que ton entrée est trop tardive ou ta cible mal choisie.</li>
+      <li><strong>Stop placement</strong> : juste <em>au-delà</em> de la mèche du stop hunt (pas à pile dessus — l'algorithme peut revenir le chercher).</li>
+      <li><strong>Taille</strong> : risque fixe de 0,5 % à 1 % par trade. Jamais plus, quelle que soit ta conviction.</li>
+      <li><strong>Partials</strong> : sécurise 50 % à 1:1, laisse courir le reste avec stop break-even.</li>
+      <li><strong>Maximum 2 trades par session</strong>. Si les deux sont perdants, tu coupes ta journée.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Pourquoi ça marche</div>
+    <p>Ce modèle ne prédit rien. Il <strong>attend</strong>. Chaque critère de la checklist est un filtre qui élimine les faux signaux :</p>
+    <ul class="features-list">
+      <li>L'alignement HTF élimine les trades contre-tendance.</li>
+      <li>Les Macros éliminent les zones illiquides.</li>
+      <li>Le stop hunt élimine les setups sans catalyseur.</li>
+      <li>Le SMT élimine les mouvements isolés (news-driven non-corrélés).</li>
+      <li>L'IFVG/Breaker élimine les entrées à l'aveugle.</li>
+    </ul>
+    <p style="margin-top:12px;">Ce qui reste, après tous ces filtres, est un setup à probabilité élevée — pas infaillible, mais statistiquement exploitable. Ta seule discipline est de ne <strong>jamais</strong> prendre un trade qui rate ne serait-ce qu'un critère. La patience est l'edge.</p>
+  </div>
+
+</div>
+
+<!-- AA_TUTOR_WIDGET -->
+<script src="../chat.js?v=v20260416"></script>
+</body>
+</html>

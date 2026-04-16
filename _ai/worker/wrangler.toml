@@ -1,0 +1,9 @@
+name = "aa-tutor"
+main = "src/worker.js"
+compatibility_date = "2025-03-01"
+
+[[kv_namespaces]]
+binding = "RATE_KV"
+id = "621d7c39020b4a27aaad0fcd78816d13"
+
+# Secret GEMINI_KEY injecte via wrangler secret put GEMINI_KEY

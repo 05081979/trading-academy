@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html data-tier="starter" lang="fr">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(function(){
+  try {
+    fetch('../version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v=(v||'').trim(); if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){ localStorage.setItem(k,v); location.replace(location.pathname+'?_cb='+v+location.hash); }
+        else localStorage.setItem(k,v);
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="../auth.js?v=v20260413-revoke2"></script>
+<title>Module 1 — Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
+<style>
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f3;
+      --bg-tertiary: #eeede8;
+      --bg-success: #eaf3de;
+      --bg-danger: #fcebeb;
+      --bg-info: #e6f1fb;
+      --bg-warning: #faeeda;
+      --text-primary: #1a1a18;
+      --text-secondary: #5f5e5a;
+      --text-success: #3b6d11;
+      --text-danger: #a32d2d;
+      --text-info: #185fa5;
+      --text-warning: #854f0b;
+      --border: rgba(0,0,0,0.12);
+      --border-md: rgba(0,0,0,0.22);
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #1c1c1a;
+        --bg-secondary: #252523;
+        --bg-tertiary: #2e2e2b;
+        --bg-success: #173404;
+        --bg-danger: #501313;
+        --bg-info: #042c53;
+        --bg-warning: #412402;
+        --text-primary: #e8e6de;
+        --text-secondary: #9c9a92;
+        --text-success: #c0dd97;
+        --text-danger: #f09595;
+        --text-info: #b5d4f4;
+        --text-warning: #fac775;
+        --border: rgba(255,255,255,0.1);
+        --border-md: rgba(255,255,255,0.2);
+      }
+    }
+    body {
+      font-family: var(--font);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 1.5rem 1rem;
+    }
+    .course {
+      max-width: 720px;
+      margin: 0 auto;
+      background: var(--bg-primary);
+      border-radius: 16px;
+      border: 0.5px solid var(--border);
+      overflow: hidden;
+    }
+    .course-header {
+      padding: 2rem 2rem 1.5rem;
+      border-bottom: 0.5px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .course-header h1 { font-size: 22px; font-weight: 500; }
+    .course-header p { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+    .progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 14px; }
+    .progress-fill { height: 100%; background: var(--text-primary); border-radius: 2px; transition: width 0.4s ease; }
+    .modules-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 1rem 2rem;
+      border-bottom: 0.5px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .mod-btn {
+      padding: 5px 14px;
+      font-size: 12px;
+      border: 0.5px solid var(--border-md);
+      border-radius: 20px;
+      cursor: pointer;
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      transition: all 0.18s;
+      font-family: var(--font);
+      white-space: nowrap;
+    }
+    .mod-btn:hover { background: var(--bg-tertiary); }
+    .mod-btn.active {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      border-color: var(--text-primary);
+    }
+    .module-body { padding: 1.75rem 2rem 1rem; display: none; }
+    .module-body.active { display: block; }
+    .section-title { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
+    .section-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 1.5rem; }
+    .card {
+      background: var(--bg-primary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .card-title { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+    .card p { font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
+    .rule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 1rem 0; }
+    .rule-card { padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 13px; line-height: 1.55; border: 0.5px solid var(--border); }
+    .bull { background: var(--bg-success); color: var(--text-success); }
+    .bear { background: var(--bg-danger); color: var(--text-danger); }
+    .neutral { background: var(--bg-secondary); color: var(--text-secondary); }
+    .info-box {
+      background: var(--bg-info); color: var(--text-info);
+      border: 0.5px solid var(--border); border-radius: var(--radius-md);
+      padding: 0.75rem 1rem; font-size: 13px; margin: 0.75rem 0; line-height: 1.6;
+    }
+    .warn-box {
+      background: var(--bg-warning); color: var(--text-warning);
+      border: 0.5px solid var(--border); border-radius: var(--radius-md);
+      padding: 0.75rem 1rem; font-size: 13px; margin: 0.75rem 0; line-height: 1.6;
+    }
+    .step-row { display: flex; gap: 10px; margin-bottom: 0.75rem; align-items: flex-start; }
+    .step-num {
+      min-width: 26px; height: 26px; border-radius: 50%;
+      background: var(--text-primary); color: var(--bg-primary);
+      font-size: 12px; font-weight: 500; display: flex;
+      align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+    }
+    .step-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+    .step-text strong { color: var(--text-primary); font-weight: 500; }
+    .badge {
+      display: inline-block; padding: 2px 10px; border-radius: 12px;
+      font-size: 11px; font-weight: 500; margin-right: 6px;
+    }
+    .b-bull { background: var(--bg-success); color: var(--text-success); }
+    .b-bear { background: var(--bg-danger); color: var(--text-danger); }
+    .b-info { background: var(--bg-info); color: var(--text-info); }
+    .b-warn { background: var(--bg-warning); color: var(--text-warning); }
+    .divider { height: 0.5px; background: var(--border); margin: 1rem 0; }
+    .kz-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0.75rem 0; }
+    .kz-cell { border-radius: var(--radius-md); padding: 0.6rem 0.85rem; font-size: 12px; line-height: 1.5; border: 0.5px solid var(--border); }
+    .kz-time { font-weight: 500; font-size: 13px; margin-bottom: 2px; }
+    .time-line {
+      display: flex; align-items: baseline; justify-content: space-between;
+      padding: 0.5rem 0; border-bottom: 0.5px solid var(--border);
+    }
+    .time-line:last-child { border-bottom: none; }
+    .time-key { font-size: 13px; font-weight: 500; }
+    .time-val { font-size: 12px; color: var(--text-secondary); }
+    .flow-step {
+      display: flex; align-items: center; gap: 8px;
+      padding: 0.6rem 0.85rem; background: var(--bg-secondary);
+      border-radius: var(--radius-md); margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .flow-arrow { color: var(--text-secondary); font-size: 16px; flex-shrink: 0; }
+    .amd-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 0.75rem 0; }
+    .amd-cell {
+      text-align: center; padding: 0.75rem 0.5rem;
+      border-radius: var(--radius-md); font-size: 12px; font-weight: 500;
+      border: 0.5px solid var(--border);
+    }
+    table { width: 100%; font-size: 12px; border-collapse: collapse; }
+    th {
+      text-align: left; padding: 6px 8px; font-weight: 500;
+      color: var(--text-secondary); border-bottom: 0.5px solid var(--border);
+    }
+    td { padding: 6px 8px; border-bottom: 0.5px solid var(--border); font-size: 12px; }
+    tr:last-child td { border-bottom: none; }
+    .candle-wrap {
+      display: flex; gap: 32px; justify-content: center;
+      align-items: flex-end; padding: 1rem 0; flex-wrap: wrap;
+    }
+    .candle-group { text-align: center; }
+    .candle-group p { font-size: 11px; color: var(--text-secondary); margin-top: 6px; }
+    .nav-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.25rem 2rem; border-top: 0.5px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .nav-btn {
+      padding: 8px 20px; border: 0.5px solid var(--border-md);
+      border-radius: var(--radius-md); cursor: pointer;
+      background: var(--bg-primary); color: var(--text-primary);
+      font-size: 13px; font-family: var(--font); transition: background 0.15s;
+    }
+    .nav-btn:hover { background: var(--bg-secondary); }
+    .nav-btn.primary { background: var(--text-primary); color: var(--bg-primary); }
+    .nav-btn:disabled { opacity: 0.35; cursor: default; }
+    .mod-count { font-size: 12px; color: var(--text-secondary); }
+    @media (max-width: 580px) {
+      .course { border-radius: 0; }
+      body { padding: 0; }
+      .module-body { padding: 1.25rem 1rem 1rem; }
+      .modules-nav { padding: 0.75rem 1rem; }
+      .course-header { padding: 1.25rem 1rem 1rem; }
+      .nav-row { padding: 1rem; }
+      .rule-grid { grid-template-columns: 1fr; }
+      .kz-row { grid-template-columns: 1fr; }
+      .amd-row { grid-template-columns: repeat(2, 1fr); }
+    }
+  
+/* Overrides pour l'integration AA */
+body { background:#f5f7fa !important; color:#1a1a2e !important; font-family:'Inter',sans-serif !important; }
+.course-hero { background:linear-gradient(135deg,#3b82f6 0%,#3b82f6dd 100%); color:#fff; padding:60px 40px 40px; position:relative; overflow:hidden; }
+.course-hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top right, rgba(255,255,255,0.15) 0%, transparent 60%); pointer-events:none; }
+.course-hero-inner { max-width:1100px; margin:0 auto; position:relative; z-index:1; }
+.course-hero .back-link { display:inline-flex; align-items:center; gap:8px; color:rgba(255,255,255,0.88); text-decoration:none; font-size:13px; margin-bottom:24px; }
+.course-hero h1 { font-family:'Syne',sans-serif; font-size:clamp(28px,4vw,40px); font-weight:800; letter-spacing:-0.01em; margin-bottom:10px; }
+.course-hero p { font-size:16px; max-width:720px; opacity:0.95; }
+.tier-badge { display:inline-block; background:rgba(0,0,0,0.2); color:#fff; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:16px; }
+.course-body-wrap { max-width:1100px; margin:0 auto; padding:32px 24px; }
+.course-body-wrap > * { background:#fff; border-radius:12px; padding:22px 28px; margin-bottom:18px; box-shadow:0 1px 6px rgba(0,0,0,0.04); border:1px solid #e2e5ea; }
+.course-body-wrap h3, .course-body-wrap .section-title { font-family:'Syne',sans-serif; color:#1a1a2e; font-weight:700; margin-bottom:12px; }
+.course-body-wrap .section-title { font-size:19px; display:flex; align-items:center; gap:10px; }
+.course-body-wrap .section-title::before { content:''; width:6px; height:24px; background:#3b82f6; border-radius:3px; }
+.course-body-wrap h3 { font-size:14px; color:#3b82f6; margin:16px 0 8px; }
+.course-body-wrap p { margin-bottom:10px; color:#334155; line-height:1.65; }
+.course-body-wrap ul, .course-body-wrap ol { margin-left:22px; margin-bottom:10px; }
+.course-body-wrap li { margin-bottom:6px; color:#334155; line-height:1.6; }
+.info-box, .warn-box { padding:14px 18px; border-radius:10px; margin:12px 0; font-size:14px; }
+.info-box { background:linear-gradient(90deg,rgba(59,130,246,0.08),rgba(59,130,246,0.02)); border-left:4px solid #3b82f6; color:#334155; }
+.warn-box { background:#fef3c7; border-left:4px solid #f59e0b; color:#78350f; }
+.rule-card, .card { padding:14px 16px; background:#f8fafc; border:1px solid #e2e5ea; border-radius:10px; margin-bottom:10px; }
+.card-title { font-weight:700; color:#3b82f6; font-size:14px; margin-bottom:6px; }
+.badge { display:inline-block; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:700; margin:0 4px 4px 0; }
+.badge.bull, .badge.b-bull { background:#ecfdf5; color:#047857; }
+.badge.bear, .badge.b-bear { background:#fef2f2; color:#b91c1c; }
+.badge.neutral { background:#f1f5f9; color:#475569; }
+.rule-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; }
+.step-row { display:flex; gap:12px; padding:10px 0; border-bottom:1px solid #f1f5f9; }
+.step-row:last-child { border-bottom:none; }
+.step-num { width:30px; height:30px; background:#3b82f6; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0; }
+.time-line, .kz-row, .amd-row { display:grid; gap:12px; padding:8px 0; border-bottom:1px solid #f1f5f9; font-size:14px; }
+.time-key, .kz-time { font-family:'JetBrains Mono',monospace; color:#3b82f6; font-weight:600; }
+.modules-nav, .progress-bar, .progress-fill, .mod-btn, .nav-btn, .nav-row { display:none !important; }
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+
+<div class="course-hero">
+  <div class="course-hero-inner">
+    <a href="hub-cours.html" class="back-link">← Retour au hub</a>
+    <div class="tier-badge">Starter</div>
+    <div style="font-size:44px;margin-bottom:14px;">📊</div>
+    <h1>Module 1</h1>
+    <p>Chaque bougie raconte une histoire. Ce n'est pas juste un prix : c'est la séquence dans laquelle le marché a construit cette bougie qui révèle l'intention des institutions.</p>
+  </div>
+</div>
+
+<div class="course-body-wrap">
+
+<div class="section-title">Module 1 — OHLC / OLHC</div>
+<div class="section-sub">Comprendre la construction des bougies et leur signification profonde</div>
+<div class="card">
+<div class="card-title">Qu'est-ce que l'OHLC / OLHC ?</div>
+<p>Chaque bougie raconte une histoire. Ce n'est pas juste un prix : c'est la <strong>séquence</strong> dans laquelle le marché a construit cette bougie qui révèle l'intention des institutions.</p>
+</div>
+<div class="rule-grid">
+<div class="rule-card bear">
+<div style="font-weight:500;margin-bottom:4px">OHLC — Bougie baissière</div>
+<div>Open → High → Low → Close</div>
+<div style="margin-top:4px;font-size:12px">Prix monte après l'ouverture, puis s'inverse et clôture en dessous de l'open</div>
+</div>
+<div class="rule-card bull">
+<div style="font-weight:500;margin-bottom:4px">OLHC — Bougie haussière</div>
+<div>Open → Low → High → Close</div>
+<div style="margin-top:4px;font-size:12px">Prix chute après l'ouverture, puis s'inverse et clôture au-dessus de l'open</div>
+</div>
+</div>
+<div class="candle-wrap">
+<div class="candle-group">
+<svg height="160" viewbox="0 0 80 160" width="80">
+<line opacity="0.4" stroke="currentColor" stroke-width="1.5" x1="40" x2="40" y1="10" y2="30"></line>
+<rect fill="#3B5BB3" height="90" opacity="0.9" rx="3" width="50" x="15" y="30"></rect>
+<text fill="white" font-family="inherit" font-size="9" text-anchor="middle" x="40" y="50">OPEN</text>
+<text fill="white" font-family="inherit" font-size="9" text-anchor="middle" x="40" y="115">CLOSE</text>
+<line opacity="0.4" stroke="currentColor" stroke-width="1.5" x1="40" x2="40" y1="120" y2="145"></line>
+<text fill="currentColor" font-family="inherit" font-size="9" opacity="0.5" x="62" y="22">HIGH</text>
+<text fill="currentColor" font-family="inherit" font-size="9" opacity="0.5" x="62" y="148">LOW</text>
+</svg>
+<p>OHLC (baissier)</p>
+</div>
+<div class="candle-group">
+<svg height="160" viewbox="0 0 80 160" width="80">
+<line opacity="0.4" stroke="currentColor" stroke-width="1.5" x1="40" x2="40" y1="10" y2="35"></line>
+<rect fill="none" height="90" opacity="0.5" rx="3" stroke="currentColor" stroke-width="1.2" width="50" x="15" y="35"></rect>
+<text fill="currentColor" font-family="inherit" font-size="9" opacity="0.7" text-anchor="middle" x="40" y="120">OPEN</text>
+<text fill="currentColor" font-family="inherit" font-size="9" opacity="0.7" text-anchor="middle" x="40" y="50">CLOSE</text>
+<line opacity="0.4" stroke="currentColor" stroke-width="1.5" x1="40" x2="40" y1="125" y2="148"></line>
+<text fill="currentColor" font-family="inherit" font-size="9" opacity="0.5" x="62" y="22">HIGH</text>
+<text fill="currentColor" font-family="inherit" font-size="9" opacity="0.5" x="62" y="148">LOW</text>
+</svg>
+<p>OLHC (haussier)</p>
+</div>
+</div>
+<div class="divider"></div>
+<div class="card-title" style="margin-bottom:.75rem">Pourquoi c'est crucial ?</div>
+<div class="step-row"><div class="step-num">1</div><div class="step-text"><strong>Comprendre la structure</strong> des bougies approfondit l'analyse du comportement des prix</div></div>
+<div class="step-row"><div class="step-num">2</div><div class="step-text"><strong>OHLC hebdomadaire</strong> aide à aligner la direction du marché et renforcer le biais hebdo</div></div>
+<div class="step-row"><div class="step-num">3</div><div class="step-text"><strong>OHLC journalier</strong> donne clarté et confiance pour définir le biais directionnel du jour</div></div>
+<div class="step-row"><div class="step-num">4</div><div class="step-text"><strong>Intraday (H4/H1)</strong> : l'OHLC aide à trouver des setups plus propres et plus précis</div></div>
+<div class="divider"></div>
+<div class="card-title" style="margin-bottom:.75rem">Le pattern P03 — L'arme des smart traders</div>
+<div class="info-box">Le P03 décrit la mécanique complète d'une journée de trading : Accumulation → Manipulation → Distribution. C'est le script que le marché rejoue chaque jour.</div>
+<div class="rule-grid">
+<div class="rule-card bear">
+<div style="font-weight:500;margin-bottom:4px">P03 Baissier (OHLC)</div>
+<div style="font-size:12px">① Prix consolide au-dessus du Daily Open → Accumulation</div>
+<div style="font-size:12px">② Spike haussier → Manipulation (stop hunt)</div>
+<div style="font-size:12px">③ Retournement → Distribution vers le bas</div>
+<div style="font-size:12px;margin-top:4px;font-style:italic">Entry : après la manipulation, au retour sous l'open</div>
+</div>
+<div class="rule-card bull">
+<div style="font-weight:500;margin-bottom:4px">P03 Haussier (OLHC)</div>
+<div style="font-size:12px">① Prix consolide sous le Daily Open → Accumulation</div>
+<div style="font-size:12px">② Spike baissier → Manipulation (stop hunt)</div>
+<div style="font-size:12px">③ Retournement → Distribution vers le haut</div>
+<div style="font-size:12px;margin-top:4px;font-style:italic">Entry : après la manipulation, au retour au-dessus de l'open</div>
+</div>
+</div>
+<div class="card" style="margin-top:.75rem">
+<div class="card-title">Comment trader l'OHLC — 4 étapes</div>
+<div class="step-row" style="margin-top:.5rem"><div class="step-num">1</div><div class="step-text"><strong>Marquer le Daily Open</strong> comme point de référence principal</div></div>
+<div class="step-row"><div class="step-num">2</div><div class="step-text"><strong>Le prix plonge dans le Discount PDA Array</strong>, prenant la liquidité (manipulation)</div></div>
+<div class="step-row"><div class="step-num">3</div><div class="step-text"><strong>Shift de structure confirmé M15/H1</strong> — le bas est probablement établi</div></div>
+<div class="step-row"><div class="step-num">4</div><div class="step-text"><strong>Après un CISD</strong> : attendre le retest → entrée précise sur confirmation lower timeframe</div></div>
+</div>
+
+</div>
+
+<!-- AA_TUTOR_WIDGET -->
+<script src="../chat.js?v=v20260416"></script>
+</body>
+</html>
