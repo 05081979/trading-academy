@@ -164,8 +164,23 @@
       }
     }
     if (denied) {
-      var redirect = location.pathname.includes('/modules/') ? 'hub-cours.html' : 'index.html';
-      location.replace(redirect);
+      // Au lieu d'une redirection silencieuse (confuse pour l'eleve), on affiche un message explicite
+      document.documentElement.style.display = 'none';
+      window.addEventListener('DOMContentLoaded', function() {
+        document.documentElement.style.display = '';
+        document.body.innerHTML = '';
+        document.body.style.cssText = 'margin:0;min-height:100vh;background:#f5f7fa;display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,sans-serif;padding:20px;';
+        var tierLabel = savedTier === 'starter' ? 'Starter' : (savedTier === 'custom' ? 'Custom (acces partiel)' : savedTier);
+        var card = document.createElement('div');
+        card.style.cssText = 'max-width:520px;background:#fff;border-radius:16px;padding:40px 36px;box-shadow:0 8px 32px rgba(0,0,0,0.08);text-align:center;border:1px solid #e2e5ea;';
+        card.innerHTML = '<div style="font-size:48px;margin-bottom:16px;">🔒</div>'
+          + '<h1 style="font-family:Syne,sans-serif;font-size:22px;color:#1a1a2e;margin:0 0 12px;">Module non inclus dans ton acces</h1>'
+          + '<p style="color:#475569;font-size:14px;line-height:1.6;margin:0 0 20px;">Ton acces <strong>' + tierLabel + '</strong> ne comprend pas ce module. '
+          + (savedTier === 'custom' ? 'Ton abonnement couvre une selection specifique de modules. Pour debloquer celui-ci, contacte l\'administrateur.' : 'Passe en Premium pour y acceder.')
+          + '</p>'
+          + '<a href="' + (location.pathname.includes('/modules/') ? 'hub-cours.html' : 'index.html') + '" style="display:inline-block;background:#6366f1;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px;">← Retour au hub</a>';
+        document.body.appendChild(card);
+      });
       return;
     }
 
@@ -266,23 +281,18 @@
     document.addEventListener('visibilitychange', function() {
       if (document.hidden) triggerShield(3000);
     });
-    // Mouse quitte la fenêtre → shield (empêche d'aller cliquer Snipping Tool sans être détecté)
-    document.addEventListener('mouseleave', function(e) {
-      if (e.relatedTarget === null && (e.clientY <= 0 || e.clientX <= 0 || e.clientX >= window.innerWidth || e.clientY >= window.innerHeight)) {
-        triggerShield(2000);
-      }
-    });
-    // Auto-blur le contenu après 20s d'inactivité (souris + clavier)
+    // Mouseleave disabled (too aggressive — fires when user reads off-screen or checks email)
+    // Auto-blur apres 2 minutes d'inactivite (plus permissif)
     var lastActivity = Date.now();
     function markActivity() { lastActivity = Date.now(); document.body.style.filter = ''; }
     ['mousemove','mousedown','keydown','scroll','touchstart'].forEach(function(ev) {
       document.addEventListener(ev, markActivity, { passive: true });
     });
     setInterval(function() {
-      if (Date.now() - lastActivity > 20000) {
+      if (Date.now() - lastActivity > 120000) {
         document.body.style.filter = 'blur(14px)';
       }
-    }, 2000);
+    }, 5000);
     // Bloque impression via CSS (print media = vide total)
     var printStyle = document.createElement('style');
     printStyle.textContent = '@media print { html, body { display: none !important; visibility: hidden !important; } *, *::before, *::after { display: none !important; } }';
@@ -290,10 +300,16 @@
     // Flash le shield au beforeprint aussi
     window.addEventListener('beforeprint', function() { shield.style.display = 'flex'; });
 
-    // 3. Protections clavier (élargies)
-    document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
-    document.body.style.userSelect = 'none';
-    document.body.style.webkitUserSelect = 'none';
+    // 3. Protections clavier (élargies) — laisse la selection dans le widget IA
+    document.addEventListener('contextmenu', function(e) {
+      // Autorise clic droit dans le widget IA (pour copier/coller)
+      if (e.target && e.target.closest && e.target.closest('#aa-tutor-panel')) return;
+      e.preventDefault();
+    });
+    // Bloque selection globale MAIS autorise dans le widget IA via CSS (voir aa-tutor-panel override)
+    var protStyle = document.createElement('style');
+    protStyle.textContent = 'body { user-select: none; -webkit-user-select: none; } #aa-tutor-panel, #aa-tutor-panel * { user-select: text !important; -webkit-user-select: text !important; }';
+    document.head.appendChild(protStyle);
     // Anti PrintScreen: écrase le presse-papier en permanence après PrintScreen
     function overwriteClipboard() {
       try {
@@ -333,12 +349,21 @@
       // View source
       if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) e.preventDefault();
       if (e.metaKey && (e.key === 'u' || e.key === 'U')) e.preventDefault();
-      // Select all (empêche copier-coller du texte)
-      if ((e.ctrlKey || e.metaKey) && (e.key === 'a' || e.key === 'A')) e.preventDefault();
+      // Select all (empêche copier-coller du texte) — autorise dans widget IA
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'a' || e.key === 'A')) {
+        if (e.target && e.target.closest && e.target.closest('#aa-tutor-panel')) return;
+        e.preventDefault();
+      }
     });
-    // Anti-copy via événement clipboard
-    document.addEventListener('copy', function(e) { e.preventDefault(); overwriteClipboard(); });
-    document.addEventListener('cut', function(e) { e.preventDefault(); });
+    // Anti-copy via événement clipboard — autorise copie depuis le widget IA
+    document.addEventListener('copy', function(e) {
+      if (e.target && e.target.closest && e.target.closest('#aa-tutor-panel')) return;
+      e.preventDefault(); overwriteClipboard();
+    });
+    document.addEventListener('cut', function(e) {
+      if (e.target && e.target.closest && e.target.closest('#aa-tutor-panel')) return;
+      e.preventDefault();
+    });
     // Détection devtools ouverte via taille fenêtre — shield activé
     var devtoolsCheck = setInterval(function() {
       var threshold = 160;

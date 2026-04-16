@@ -54,6 +54,9 @@
 .aa-tutor-foot textarea:focus { border-color: #6366f1; }
 .aa-tutor-foot button { background: #6366f1; color: #fff; border: none; border-radius: 10px; padding: 0 14px; cursor: pointer; font-weight: 600; font-size: 13px; }
 .aa-tutor-foot button:disabled { opacity: .5; cursor: not-allowed; }
+.aa-tutor-copy-btn { display: block; margin-top: 6px; font-size: 10px; color: #6366f1; background: none; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px; cursor: pointer; font-family: inherit; }
+.aa-tutor-copy-btn:hover { background: #eef2ff; }
+.aa-tutor-copy-btn.copied { color: #047857; border-color: #86efac; background: #ecfdf5; }
 .aa-tutor-typing { display: inline-flex; gap: 4px; }
 .aa-tutor-typing span { width: 6px; height: 6px; border-radius: 50%; background: #9ca3af; animation: aatype 1.2s infinite; }
 .aa-tutor-typing span:nth-child(2) { animation-delay: .15s; }
@@ -130,6 +133,25 @@
         const data = await r.json();
         if (r.ok && data.answer) {
           typing.textContent = data.answer;
+          const btn = document.createElement("button");
+          btn.className = "aa-tutor-copy-btn";
+          btn.textContent = "📋 Copier";
+          btn.onclick = async () => {
+            try {
+              await navigator.clipboard.writeText(data.answer);
+              btn.textContent = "✓ Copié";
+              btn.classList.add("copied");
+              setTimeout(() => { btn.textContent = "📋 Copier"; btn.classList.remove("copied"); }, 2000);
+            } catch (_) {
+              const rg = document.createRange();
+              rg.selectNodeContents(typing);
+              const sel = window.getSelection();
+              sel.removeAllRanges();
+              sel.addRange(rg);
+              btn.textContent = "↑ Sélection faite, Ctrl+C";
+            }
+          };
+          typing.parentElement.appendChild(btn);
           if (data.limit && data.used) {
             const info = document.createElement("div");
             info.style.cssText = "font-size:11px; color:#6b7280; margin-top:6px;";

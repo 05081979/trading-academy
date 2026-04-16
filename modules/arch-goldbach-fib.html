@@ -25,292 +25,63 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
 <style>
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --gold: #c9a227;
-      --gold-bg: #fdf6e3;
-      --gold-border: rgba(201,162,39,0.25);
-      --bg-primary: #ffffff;
-      --bg-secondary: #f7f6f2;
-      --bg-tertiary: #eeede8;
-      --bg-success: #eaf3de;
-      --bg-danger: #fcebeb;
-      --bg-info: #e6f1fb;
-      --bg-warning: #faeeda;
-      --text-primary: #1a1a18;
-      --text-secondary: #5f5e5a;
-      --text-success: #3b6d11;
-      --text-danger: #a32d2d;
-      --text-info: #185fa5;
-      --text-warning: #854f0b;
-      --border: rgba(0,0,0,0.1);
-      --border-md: rgba(0,0,0,0.2);
-      --radius-md: 8px;
-      --radius-lg: 12px;
-      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --gold: #d4a82a;
-        --gold-bg: #2a2510;
-        --gold-border: rgba(212,168,42,0.2);
-        --bg-primary: #1c1c1a;
-        --bg-secondary: #252523;
-        --bg-tertiary: #2e2e2b;
-        --bg-success: #173404;
-        --bg-danger: #501313;
-        --bg-info: #042c53;
-        --bg-warning: #412402;
-        --text-primary: #e8e6de;
-        --text-secondary: #9c9a92;
-        --text-success: #c0dd97;
-        --text-danger: #f09595;
-        --text-info: #b5d4f4;
-        --text-warning: #fac775;
-        --border: rgba(255,255,255,0.08);
-        --border-md: rgba(255,255,255,0.18);
-      }
-    }
-    body {
-      font-family: var(--font);
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
-      min-height: 100vh;
-      padding: 1.5rem 1rem;
-    }
-    .course {
-      max-width: 720px;
-      margin: 0 auto;
-      background: var(--bg-primary);
-      border-radius: 16px;
-      border: 0.5px solid var(--border);
-      overflow: hidden;
-    }
-    .course-header {
-      padding: 2rem 2rem 1.5rem;
-      border-bottom: 0.5px solid var(--border);
-      background: var(--gold-bg);
-      border-top: 3px solid var(--gold);
-    }
-    .course-header h1 { font-size: 22px; font-weight: 500; }
-    .course-header h1 span { color: var(--gold); }
-    .course-header p { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
-    .progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 14px; }
-    .progress-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.4s ease; }
-    .modules-nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 1rem 2rem;
-      border-bottom: 0.5px solid var(--border);
-      background: var(--bg-secondary);
-    }
-    .mod-btn {
-      padding: 5px 14px;
-      font-size: 12px;
-      border: 0.5px solid var(--border-md);
-      border-radius: 20px;
-      cursor: pointer;
-      background: var(--bg-primary);
-      color: var(--text-secondary);
-      transition: all 0.18s;
-      font-family: var(--font);
-      white-space: nowrap;
-    }
-    .mod-btn:hover { background: var(--bg-tertiary); }
-    .mod-btn.active {
-      background: var(--gold);
-      color: #fff;
-      border-color: var(--gold);
-    }
-    .module-body { padding: 1.75rem 2rem 1rem; display: none; }
-    .module-body.active { display: block; }
-    .section-title { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
-    .section-title span { color: var(--gold); }
-    .section-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 1.5rem; }
-    .card {
-      background: var(--bg-primary);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1rem 1.25rem;
-      margin-bottom: 1rem;
-    }
-    .card-title { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
-    .card p { font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
-    .gold-card {
-      background: var(--gold-bg);
-      border: 0.5px solid var(--gold-border);
-      border-radius: var(--radius-lg);
-      padding: 1rem 1.25rem;
-      margin-bottom: 1rem;
-    }
-    .gold-card .card-title { color: var(--gold); }
-    .gold-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
-    .info-box {
-      background: var(--bg-info); color: var(--text-info);
-      border: 0.5px solid var(--border); border-radius: var(--radius-md);
-      padding: 0.75rem 1rem; font-size: 13px; margin: 0.75rem 0; line-height: 1.6;
-    }
-    .warn-box {
-      background: var(--bg-warning); color: var(--text-warning);
-      border: 0.5px solid var(--border); border-radius: var(--radius-md);
-      padding: 0.75rem 1rem; font-size: 13px; margin: 0.75rem 0; line-height: 1.6;
-    }
-    .gold-box {
-      background: var(--gold-bg);
-      border: 0.5px solid var(--gold-border);
-      border-left: 3px solid var(--gold);
-      border-radius: var(--radius-md);
-      padding: 0.75rem 1rem; font-size: 13px; margin: 0.75rem 0; line-height: 1.6;
-      color: var(--text-secondary);
-    }
-    .step-row { display: flex; gap: 10px; margin-bottom: 0.75rem; align-items: flex-start; }
-    .step-num {
-      min-width: 26px; height: 26px; border-radius: 50%;
-      background: var(--gold); color: #fff;
-      font-size: 12px; font-weight: 500; display: flex;
-      align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
-    }
-    .step-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
-    .step-text strong { color: var(--text-primary); font-weight: 500; }
-    .divider { height: 0.5px; background: var(--border); margin: 1rem 0; }
-    .badge {
-      display: inline-block; padding: 2px 10px; border-radius: 12px;
-      font-size: 11px; font-weight: 500; margin-right: 6px;
-    }
-    .b-gold { background: var(--gold-bg); color: var(--gold); border: 0.5px solid var(--gold-border); }
-    .b-bull { background: var(--bg-success); color: var(--text-success); }
-    .b-bear { background: var(--bg-danger); color: var(--text-danger); }
-    .b-info { background: var(--bg-info); color: var(--text-info); }
-    /* PO3 table */
-    .po3-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .po3-table th {
-      text-align: left; padding: 7px 10px;
-      font-weight: 500; color: var(--text-secondary);
-      border-bottom: 0.5px solid var(--border);
-      background: var(--bg-secondary);
-    }
-    .po3-table td { padding: 7px 10px; border-bottom: 0.5px solid var(--border); }
-    .po3-table tr:last-child td { border-bottom: none; }
-    .po3-table .highlight { background: var(--gold-bg); font-weight: 500; color: var(--gold); }
-    /* Goldbach level bar */
-    .gb-bar {
-      display: flex; align-items: center; gap: 8px;
-      padding: 5px 0; border-bottom: 0.5px solid var(--border);
-    }
-    .gb-bar:last-child { border-bottom: none; }
-    .gb-num {
-      width: 36px; text-align: center; font-size: 12px; font-weight: 500;
-      padding: 3px 0; border-radius: 4px; flex-shrink: 0;
-    }
-    .gb-name { font-size: 12px; color: var(--text-secondary); }
-    .gb-pct { font-size: 11px; color: var(--text-secondary); margin-left: auto; opacity: 0.6; }
-    .gb-premium { background: var(--bg-success); color: var(--text-success); }
-    .gb-discount { background: var(--bg-danger); color: var(--text-danger); }
-    .gb-mid { background: var(--gold-bg); color: var(--gold); }
-    /* Fib visualization */
-    .fib-viz {
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      margin: 1rem 0;
-    }
-    .fib-row {
-      display: flex; align-items: center; padding: 5px 12px;
-      border-bottom: 0.5px solid var(--border); gap: 10px;
-    }
-    .fib-row:last-child { border-bottom: none; }
-    .fib-row .lvl { font-size: 11px; font-weight: 500; min-width: 32px; color: var(--text-secondary); }
-    .fib-row .bar-wrap { flex: 1; height: 6px; background: var(--border); border-radius: 3px; }
-    .fib-row .bar-fill { height: 100%; border-radius: 3px; }
-    .fib-row .lbl { font-size: 11px; min-width: 110px; color: var(--text-secondary); }
-    /* Two col grid */
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 1rem 0; }
-    .rule-card { padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 13px; line-height: 1.55; border: 0.5px solid var(--border); }
-    .bull { background: var(--bg-success); color: var(--text-success); }
-    .bear { background: var(--bg-danger); color: var(--text-danger); }
-    .neutral { background: var(--bg-secondary); color: var(--text-secondary); }
-    .flow-step {
-      display: flex; align-items: center; gap: 8px;
-      padding: 0.6rem 0.85rem; background: var(--bg-secondary);
-      border-radius: var(--radius-md); margin-bottom: 6px;
-    }
-    .time-line {
-      display: flex; align-items: baseline; justify-content: space-between;
-      padding: 0.5rem 0; border-bottom: 0.5px solid var(--border);
-    }
-    .time-line:last-child { border-bottom: none; }
-    .time-key { font-size: 13px; font-weight: 500; }
-    .time-val { font-size: 12px; color: var(--text-secondary); }
-    /* Nav */
-    .nav-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 1.25rem 2rem; border-top: 0.5px solid var(--border);
-      background: var(--bg-secondary);
-    }
-    .nav-btn {
-      padding: 8px 20px; border: 0.5px solid var(--border-md);
-      border-radius: var(--radius-md); cursor: pointer;
-      background: var(--bg-primary); color: var(--text-primary);
-      font-size: 13px; font-family: var(--font); transition: background 0.15s;
-    }
-    .nav-btn:hover { background: var(--bg-secondary); }
-    .nav-btn.primary { background: var(--gold); color: #fff; border-color: var(--gold); }
-    .nav-btn:disabled { opacity: 0.35; cursor: default; }
-    .mod-count { font-size: 12px; color: var(--text-secondary); }
-    .partition-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 1rem 0; }
-    .p-cell { text-align: center; padding: 0.6rem 0.5rem; border-radius: var(--radius-md); font-size: 12px; border: 0.5px solid var(--border); }
-    .p-num { font-size: 18px; font-weight: 500; }
-    @media (max-width: 580px) {
-      .course { border-radius: 0; }
-      body { padding: 0; }
-      .module-body { padding: 1.25rem 1rem 1rem; }
-      .modules-nav { padding: 0.75rem 1rem; }
-      .course-header { padding: 1.25rem 1rem 1rem; }
-      .nav-row { padding: 1rem; }
-      .two-col { grid-template-columns: 1fr; }
-      .partition-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-  
-body { background:#f5f7fa !important; color:#1a1a2e !important; font-family:'Inter',sans-serif !important; }
-.course-hero { background:linear-gradient(135deg,#14b8a6 0%,#14b8a6dd 100%); color:#fff; padding:60px 40px 40px; position:relative; overflow:hidden; }
-.course-hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top right, rgba(255,255,255,0.15) 0%, transparent 60%); pointer-events:none; }
-.course-hero-inner { max-width:1100px; margin:0 auto; position:relative; z-index:1; }
-.course-hero .back-link { display:inline-flex; align-items:center; gap:8px; color:rgba(255,255,255,0.88); text-decoration:none; font-size:13px; margin-bottom:24px; }
-.course-hero h1 { font-family:'Syne',sans-serif; font-size:clamp(28px,4vw,40px); font-weight:800; letter-spacing:-0.01em; margin-bottom:10px; }
-.course-hero p { font-size:16px; max-width:720px; opacity:0.95; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background:#f5f7fa !important; color:#1a1a2e !important; font-family:'Inter',sans-serif; line-height:1.65; min-height:100vh; }
+.hero { background:linear-gradient(135deg,#14b8a6 0%,#14b8a6dd 100%); color:#fff; padding:60px 40px 40px; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top right, rgba(255,255,255,0.15) 0%, transparent 60%); pointer-events:none; }
+.hero-inner { max-width:1100px; margin:0 auto; position:relative; z-index:1; }
+.back-link { display:inline-flex; align-items:center; gap:8px; color:rgba(255,255,255,0.88); text-decoration:none; font-size:13px; margin-bottom:24px; }
+.back-link:hover { color:#fff; }
 .tier-badge { display:inline-block; background:rgba(0,0,0,0.2); color:#fff; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:16px; }
-.course-body-wrap { max-width:1100px; margin:0 auto; padding:32px 24px; }
-.course-body-wrap > * { background:#fff; border-radius:12px; padding:22px 28px; margin-bottom:18px; box-shadow:0 1px 6px rgba(0,0,0,0.04); border:1px solid #e2e5ea; }
-.course-body-wrap h3, .course-body-wrap .section-title { font-family:'Syne',sans-serif; color:#1a1a2e; font-weight:700; margin-bottom:12px; }
-.course-body-wrap .section-title { font-size:19px; display:flex; align-items:center; gap:10px; }
-.course-body-wrap .section-title::before { content:''; width:6px; height:24px; background:#14b8a6; border-radius:3px; }
-.course-body-wrap h3 { font-size:14px; color:#14b8a6; margin:16px 0 8px; }
-.course-body-wrap p { margin-bottom:10px; color:#334155; line-height:1.65; }
-.course-body-wrap ul, .course-body-wrap ol { margin-left:22px; margin-bottom:10px; }
-.course-body-wrap li { margin-bottom:6px; color:#334155; line-height:1.6; }
-.info-box, .warn-box { padding:14px 18px; border-radius:10px; margin:12px 0; font-size:14px; }
-.info-box { background:linear-gradient(90deg,rgba(20,184,166,0.08),rgba(20,184,166,0.02)); border-left:4px solid #14b8a6; color:#334155; }
-.warn-box { background:#fef3c7; border-left:4px solid #f59e0b; color:#78350f; }
-.rule-card, .card { padding:14px 16px; background:#f8fafc; border:1px solid #e2e5ea; border-radius:10px; margin-bottom:10px; }
-.card-title { font-weight:700; color:#14b8a6; font-size:14px; margin-bottom:6px; }
-.badge { display:inline-block; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:700; margin:0 4px 4px 0; }
-.badge.bull, .badge.b-bull { background:#ecfdf5; color:#047857; }
-.badge.bear, .badge.b-bear { background:#fef2f2; color:#b91c1c; }
+.hero h1 { font-family:'Syne',sans-serif; font-size:clamp(28px,4vw,40px); font-weight:800; letter-spacing:-0.01em; margin-bottom:10px; color:#fff; }
+.hero p { font-size:16px; max-width:720px; opacity:0.95; color:#fff; }
+.container { max-width:1100px; margin:0 auto; padding:40px 24px; }
+.container > * { background:#fff; border-radius:14px; padding:24px 28px; margin-bottom:18px; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid #e2e5ea; }
+.container > *:last-child { margin-bottom:0; }
+h2, h3, h4 { font-family:'Syne',sans-serif; color:#1a1a2e; font-weight:700; }
+h2 { font-size:20px; margin-bottom:14px; display:flex; align-items:center; gap:10px; padding-bottom:8px; border-bottom:2px solid #14b8a633; }
+h3 { font-size:15px; color:#14b8a6; margin:18px 0 8px; }
+h4 { font-size:14px; color:#1a1a2e; margin:14px 0 6px; }
+p { margin-bottom:12px; color:#334155; line-height:1.7; }
+strong, b { color:#111827; font-weight:700; }
+em, i { color:#334155; }
+ul, ol { margin-left:22px; margin-bottom:12px; }
+li { margin-bottom:6px; color:#334155; line-height:1.65; }
+code { font-family:'JetBrains Mono',monospace; background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:0.9em; color:#0f172a; }
+.section-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:#1a1a2e; margin-bottom:12px; display:flex; align-items:center; gap:10px; padding-bottom:8px; border-bottom:2px solid #14b8a633; }
+.section-sub { color:#64748b; font-size:14px; margin-bottom:14px; font-style:italic; }
+.info-box { padding:14px 18px; background:rgba(20,184,166,0.06); border-left:4px solid #14b8a6; border-radius:10px; margin:14px 0; color:#334155; font-size:14px; }
+.warn-box, .b-warn { padding:14px 18px; background:#fef3c7; border-left:4px solid #f59e0b; border-radius:10px; margin:14px 0; color:#78350f; font-size:14px; }
+.rule-card, .card { padding:14px 18px; background:#f8fafc; border:1px solid #e2e5ea; border-radius:10px; margin-bottom:12px; }
+.card-title { font-weight:700; color:#14b8a6; font-size:14px; margin-bottom:6px; font-family:'Syne',sans-serif; }
+.rule-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; margin-top:10px; }
+.badge { display:inline-block; padding:3px 9px; border-radius:6px; font-size:11px; font-weight:700; margin:0 4px 4px 0; font-family:'Inter',sans-serif; }
+.badge.bull, .b-bull { background:#ecfdf5; color:#047857; padding:3px 9px; border-radius:6px; font-size:11px; font-weight:700; display:inline-block; }
+.badge.bear, .b-bear { background:#fef2f2; color:#b91c1c; padding:3px 9px; border-radius:6px; font-size:11px; font-weight:700; display:inline-block; }
 .badge.neutral { background:#f1f5f9; color:#475569; }
-.rule-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; }
-.step-row { display:flex; gap:12px; padding:10px 0; border-bottom:1px solid #f1f5f9; }
+.step-row { display:flex; gap:14px; padding:12px 0; border-bottom:1px solid #f1f5f9; }
 .step-row:last-child { border-bottom:none; }
-.step-num { width:30px; height:30px; background:#14b8a6; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0; }
-.modules-nav, .progress-bar, .progress-fill, .mod-btn, .nav-btn, .nav-row { display:none !important; }
+.step-num { width:30px; height:30px; background:#14b8a6; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; flex-shrink:0; font-family:'Syne',sans-serif; font-size:14px; }
+.step-text { flex:1; color:#334155; line-height:1.6; }
+.flow-step, .flow-arrow { padding:8px 0; }
+.flow-arrow { color:#14b8a6; font-weight:700; }
+.time-line { display:flex; gap:14px; padding:8px 0; border-bottom:1px solid #f1f5f9; align-items:center; }
+.time-line:last-child { border-bottom:none; }
+.time-key { font-family:'JetBrains Mono',monospace; color:#14b8a6; font-weight:600; font-size:13px; min-width:120px; }
+.time-val { color:#334155; font-size:14px; }
+.kz-row, .amd-row { display:grid; grid-template-columns:140px 1fr; gap:14px; padding:8px 0; border-bottom:1px solid #f1f5f9; font-size:14px; }
+.kz-row:last-child, .amd-row:last-child { border-bottom:none; }
+.kz-time, .amd-cell:first-child { font-family:'JetBrains Mono',monospace; color:#14b8a6; font-weight:600; }
+.divider { height:1px; background:#e2e5ea; margin:16px 0; border:none; }
+.primary { color:#14b8a6; font-weight:600; }
 </style>
 </head>
 <body>
 <script src="../nav.js"></script>
 
-<div class="course-hero">
-  <div class="course-hero-inner">
+<div class="hero">
+  <div class="hero-inner">
     <a href="hub-cours.html" class="back-link">← Retour au hub</a>
     <div class="tier-badge">Premium</div>
     <div style="font-size:44px;margin-bottom:14px;">📐</div>
@@ -319,7 +90,7 @@ body { background:#f5f7fa !important; color:#1a1a2e !important; font-family:'Int
   </div>
 </div>
 
-<div class="course-body-wrap">
+<div class="container">
 
 <div class="section-title">Module 3 — <span>Goldbach Fib</span></div>
 <div class="section-sub">L'outil de Fibonacci customisé avec les niveaux Goldbach</div>
@@ -328,103 +99,103 @@ body { background:#f5f7fa !important; color:#1a1a2e !important; font-family:'Int
 <p>C'est simplement un outil Fibonacci standard dans lequel on remplace les niveaux habituels (0.236, 0.382, 0.618…) par les niveaux Goldbach. L'outil reste le même — seuls les niveaux changent.</p>
 </div>
 <div class="divider"></div>
-<div class="card-title" style="margin-bottom:.75rem">Configuration du Goldbach Fib</div>
+<div class="card-title">Configuration du Goldbach Fib</div>
 <div class="fib-viz">
-<div class="fib-row" style="background:var(--bg-secondary)">
-<span class="lvl" style="color:var(--text-primary);font-weight:500">Niveau</span>
-<div class="bar-wrap" style="background:transparent"></div>
-<span class="lbl" style="font-weight:500;color:var(--text-primary)">Zone associée</span>
-<span style="font-size:11px;font-weight:500;color:var(--text-secondary);min-width:40px;text-align:right">Type</span>
+<div class="fib-row">
+<span class="lvl">Niveau</span>
+<div class="bar-wrap"></div>
+<span class="lbl">Zone associée</span>
+<span>Type</span>
 </div>
 <div class="fib-row">
 <span class="lvl">0</span>
-<div class="bar-wrap"><div class="bar-fill" style="width:0%;background:var(--gold)"></div></div>
+<div class="bar-wrap"><div class="bar-fill"></div></div>
 <span class="lbl">HIGH (anchor haut)</span>
-<span style="font-size:10px;color:var(--text-success);min-width:40px;text-align:right">GB</span>
+<span>GB</span>
 </div>
 <div class="fib-row">
 <span class="lvl">0.03</span>
-<div class="bar-wrap"><div class="bar-fill" style="width:3%;background:var(--text-success)"></div></div>
+<div class="bar-wrap"><div class="bar-fill"></div></div>
 <span class="lbl">Rejection Block (premium)</span>
-<span style="font-size:10px;color:var(--text-success);min-width:40px;text-align:right">GB</span>
+<span>GB</span>
 </div>
 <div class="fib-row">
 <span class="lvl">0.11</span>
-<div class="bar-wrap"><div class="bar-fill" style="width:11%;background:var(--text-success)"></div></div>
+<div class="bar-wrap"><div class="bar-fill"></div></div>
 <span class="lbl">Order Block (premium)</span>
-<span style="font-size:10px;color:var(--text-success);min-width:40px;text-align:right">GB</span>
+<span>GB</span>
 </div>
 <div class="fib-row">
 <span class="lvl">0.17</span>
-<div class="bar-wrap"><div class="bar-fill" style="width:17%;background:var(--text-success)"></div></div>
+<div class="bar-wrap"><div class="bar-fill"></div></div>
 <span class="lbl">Fair Value Gap (premium)</span>
-<span style="font-size:10px;color:var(--text-success);min-width:40px;text-align:right">GB</span>
+<span>GB</span>
 </div>
 <div class="fib-row">
 <span class="lvl">0.29</span>
-<div class="bar-wrap"><div class="bar-fill" style="width:29%;background:var(--text-success)"></div></div>
+<div class="bar-wrap"><div class="bar-fill"></div></div>
 <span class="lbl">Liquidity Void (premium)</span>
-<span style="font-size:10px;color:var(--text-success);min-width:40px;text-align:right">GB</span>
+<span>GB</span>
 </div>
 <div class="fib-row">
 <span class="lvl">0.41</span>
-<div class="bar-wrap"><div class="bar-fill" style="width:41%;background:var(--text-success)"></div></div>
+<div class="bar-wrap"><div class="bar-fill"></div></div>
 <span class="lbl">Breaker (premium)</span>
-<span style="font-size:10px;color:var(--text-success);min-width:40px;text-align:right">GB</span>
+<span>GB</span>
 </div>
 <div class="fib-row">
 <span class="lvl">0.47</span>
-<div class="bar-wrap"><div class="bar-fill" style="width:47%;background:var(--text-success)"></div></div>
+<div class="bar-wrap"><div class="bar-fill"></div></div>
 <span class="lbl">Mitigation Block (premium)</span>
-<span style="font-size:10px;color:var(--text-success);min-width:40px;text-align:right">GB</span>
+<span>GB</span>
 </div>
-<div class="fib-row" style="background:var(--gold-bg)">
-<span class="lvl" style="color:var(--gold)">0.5</span>
-<div class="bar-wrap"><div class="bar-fill" style="width:50%;background:var(--gold)"></div></div>
-<span class="lbl" style="color:var(--gold)">Equilibrium (midpoint)</span>
-<span style="font-size:10px;color:var(--gold);min-width:40px;text-align:right">CE</span>
+<div class="fib-row">
+<span class="lvl">0.5</span>
+<div class="bar-wrap"><div class="bar-fill"></div></div>
+<span class="lbl">Equilibrium (midpoint)</span>
+<span>CE</span>
 </div>
 <div class="fib-row">
 <span class="lvl">0.53</span>
-<div class="bar-wrap"><div class="bar-fill" style="width:53%;background:var(--text-danger)"></div></div>
+<div class="bar-wrap"><div class="bar-fill"></div></div>
 <span class="lbl">Mitigation Block (discount)</span>
-<span style="font-size:10px;color:var(--text-danger);min-width:40px;text-align:right">GB</span>
+<span>GB</span>
 </div>
 <div class="fib-row">
 <span class="lvl">0.59</span>
-<div class="bar-wrap"><div class="bar-fill" style="width:59%;background:var(--text-danger)"></div></div>
+<div class="bar-wrap"><div class="bar-fill"></div></div>
 <span class="lbl">Breaker (discount)</span>
-<span style="font-size:10px;color:var(--text-danger);min-width:40px;text-align:right">GB</span>
+<span>GB</span>
 </div>
 <div class="fib-row">
 <span class="lvl">0.71</span>
-<div class="bar-wrap"><div class="bar-fill" style="width:71%;background:var(--text-danger)"></div></div>
+<div class="bar-wrap"><div class="bar-fill"></div></div>
 <span class="lbl">Liquidity Void (discount)</span>
-<span style="font-size:10px;color:var(--text-danger);min-width:40px;text-align:right">GB</span>
+<span>GB</span>
 </div>
 <div class="fib-row">
 <span class="lvl">0.83</span>
-<div class="bar-wrap"><div class="bar-fill" style="width:83%;background:var(--text-danger)"></div></div>
+<div class="bar-wrap"><div class="bar-fill"></div></div>
 <span class="lbl">Fair Value Gap (discount)</span>
-<span style="font-size:10px;color:var(--text-danger);min-width:40px;text-align:right">GB</span>
+<span>GB</span>
 </div>
 <div class="fib-row">
 <span class="lvl">0.89</span>
-<div class="bar-wrap"><div class="bar-fill" style="width:89%;background:var(--text-danger)"></div></div>
+<div class="bar-wrap"><div class="bar-fill"></div></div>
 <span class="lbl">Order Block (discount)</span>
-<span style="font-size:10px;color:var(--text-danger);min-width:40px;text-align:right">GB</span>
+<span>GB</span>
 </div>
 <div class="fib-row">
 <span class="lvl">0.97</span>
-<div class="bar-wrap"><div class="bar-fill" style="width:97%;background:var(--text-danger)"></div></div>
+<div class="bar-wrap"><div class="bar-fill"></div></div>
 <span class="lbl">Rejection Block (discount)</span>
-<span style="font-size:10px;color:var(--text-danger);min-width:40px;text-align:right">GB</span>
+<span>GB</span>
 </div>
 <div class="fib-row">
 <span class="lvl">1</span>
-<div class="bar-wrap"><div class="bar-fill" style="width:100%;background:var(--gold)"></div></div>
+<div class="bar-wrap"><div class="bar-fill"></div></div>
 <span class="lbl">LOW (anchor bas)</span>
-<span style="font-size:10px;color:var(--text-danger);min-width:40px;text-align:right">GB</span>
+<span>GB</span>
 </div>
 </div>
 <div class="info-box">Les paires 35/65 et 23/77 sont des niveaux <strong>non-Goldbach (non-GB)</strong> — ils ne correspondent à aucune partition de nombres premiers. Hopiplaka ne les utilise généralement pas sur ses charts.</div>
