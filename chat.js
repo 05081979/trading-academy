@@ -8,11 +8,25 @@
 
   function getAuth() {
     try {
-      const ok = sessionStorage.getItem("aa_auth_v2") === "ok";
+      const ok = sessionStorage.getItem("aa_auth_v2") === "valid";
       const tier = sessionStorage.getItem("aa_tier");
       const user = sessionStorage.getItem("aa_user");
-      const token = sessionStorage.getItem("aa_token");
-      return ok && tier && user ? { tier, user, token } : null;
+      let token = sessionStorage.getItem("aa_token");
+      if (!ok || !tier || !user) return null;
+      // Retro-compat: reconstruit le token pour les sessions ouvertes avant le deploy du widget
+      if (!token) {
+        if (tier === "premium") token = "AA-P-" + btoa(user);
+        else if (tier === "starter") token = "AA-S-" + btoa(user);
+        else if (tier === "custom") {
+          const allow = sessionStorage.getItem("aa_allow") || "[]";
+          try {
+            const slugs = JSON.parse(allow).join(",");
+            token = "AA-C-" + btoa(user + "|" + slugs);
+          } catch (_) { token = null; }
+        }
+        if (token) sessionStorage.setItem("aa_token", token);
+      }
+      return token ? { tier, user, token } : null;
     } catch (_) {
       return null;
     }
