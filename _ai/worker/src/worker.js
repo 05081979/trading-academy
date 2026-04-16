@@ -136,6 +136,11 @@ async function callGemini(env, system, question) {
   });
   const data = await r.json();
   if (!r.ok) {
+    if (r.status === 429) {
+      const err = new Error("quota");
+      err.quota = true;
+      throw err;
+    }
     throw new Error(`Gemini ${r.status}: ${JSON.stringify(data).slice(0, 300)}`);
   }
   const answer =
@@ -205,6 +210,11 @@ export default {
     try {
       answer = await callGemini(env, system, question);
     } catch (e) {
+      if (e.quota) {
+        return json({
+          error: "Le tuteur IA a atteint son quota journalier gratuit (reset a 02h heure francaise). Reviens demain ou attends un peu.",
+        }, 429);
+      }
       return json({ error: "Erreur IA: " + e.message }, 502);
     }
 
