@@ -213,6 +213,7 @@
         sessionStorage.setItem(SESSION_KEY, 'valid');
         sessionStorage.setItem(TIER_KEY, 'premium');
         sessionStorage.setItem(USER_KEY, 'Admin');
+        sessionStorage.setItem('aa_token', 'AA-P-' + btoa('Admin'));
         location.reload();
         return;
       }
@@ -224,6 +225,7 @@
         sessionStorage.setItem(TIER_KEY, decoded.tier);
         sessionStorage.setItem(USER_KEY, decoded.username);
         sessionStorage.setItem(ALLOW_KEY, JSON.stringify(decoded.allow || []));
+        sessionStorage.setItem('aa_token', pwd);
         location.reload();
         return;
       }

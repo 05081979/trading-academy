@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="fr" data-tier="starter">
+<head>
+<script>
+(function(){
+  try {
+    fetch('../version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v=(v||'').trim(); if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){ localStorage.setItem(k,v); location.replace(location.pathname+'?_cb='+v+location.hash); }
+        else localStorage.setItem(k,v);
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="../auth.js?v=v20260413-revoke2"></script>
+<title>Fundamentals Forex — Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#f4ecd8; color:#1c2a1e; font-family:'Inter',sans-serif; line-height:1.6; }
+.hero { background:linear-gradient(135deg,#1a5f3f 0%,#0f4529 100%); color:#fbf6e9; padding:60px 40px 40px; }
+.hero-inner { max-width:1100px; margin:0 auto; }
+.back-link { display:inline-flex; align-items:center; gap:8px; color:rgba(251,246,233,0.85); text-decoration:none; font-size:13px; margin-bottom:24px; }
+.back-link:hover { color:#fbf6e9; }
+.hero-icon { font-size:48px; margin-bottom:16px; }
+.hero h1 { font-family:'Syne',sans-serif; font-size:clamp(28px,4vw,44px); font-weight:800; margin-bottom:12px; }
+.hero p { font-size:16px; max-width:700px; opacity:0.95; }
+.container { max-width:1100px; margin:0 auto; padding:40px 24px; }
+.module { background:#fbf6e9; border-radius:14px; padding:28px 32px; margin-bottom:24px; border:1px solid #e4d9b9; }
+.module-title { font-family:'Syne',sans-serif; font-size:20px; font-weight:700; color:#1a5f3f; margin-bottom:20px; display:flex; align-items:center; gap:12px; }
+.module-title::before { content:''; width:6px; height:24px; background:#1a5f3f; border-radius:3px; }
+.lesson { border-top:1px solid #e4d9b9; padding:18px 0; }
+.lesson:first-of-type { border-top:none; padding-top:0; }
+.lesson-head { display:flex; align-items:flex-start; gap:14px; cursor:pointer; }
+.lesson-num { font-family:'Syne',sans-serif; font-weight:700; font-size:14px; color:#c9a961; min-width:40px; }
+.lesson-info { flex:1; }
+.lesson-title { font-weight:600; font-size:15px; color:#1c2a1e; margin-bottom:4px; }
+.lesson-sub { font-size:13px; color:#3f4d42; }
+.lesson-toggle { font-size:20px; color:#1a5f3f; transition:transform 0.2s; }
+.lesson.open .lesson-toggle { transform:rotate(90deg); }
+.lesson-body { max-height:0; overflow:hidden; transition:max-height 0.3s; }
+.lesson.open .lesson-body { max-height:800px; margin-top:16px; }
+.video-wrap { background:#0f172a; border-radius:10px; overflow:hidden; aspect-ratio:16/9; }
+.video-wrap video { width:100%; height:100%; display:block; }
+.video-placeholder { display:flex; align-items:center; justify-content:center; height:100%; color:#fbf6e9; flex-direction:column; gap:8px; text-align:center; padding:20px; }
+.video-placeholder .hint { font-size:12px; opacity:0.6; max-width:400px; }
+.notice { padding:16px 20px; background:#fff8ee; border-left:4px solid #c9a961; border-radius:8px; margin-bottom:24px; font-size:13px; color:#5a4d2a; }
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+
+<div class="hero">
+  <div class="hero-inner">
+    <a href="hub-cours.html" class="back-link">← Retour au hub</a>
+    <div class="hero-icon">💱</div>
+    <h1>Fundamentals Forex</h1>
+    <p>20 leçons vidéo sous-titrées en français pour maîtriser les fondamentaux du Forex : structure de marché, cycles, confirmations LTF, setups d'entrée, prop firms et chemin vers la profitabilité.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="notice">
+    <strong>🎬 Vidéos sous-titrées FR.</strong> Audio original en anglais, sous-titres français auto-générés (Whisper + traduction). Active les sous-titres via le bouton CC du player.
+  </div>
+
+  <!-- MODULE 1 : Fondamentaux Forex -->
+  <div class="module">
+    <div class="module-title">Module 1 — Fondamentaux du marché Forex</div>
+
+    <div class="lesson" data-video="01 - What Is Forex">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">01</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Qu'est-ce que le Forex ?</div>
+          <div class="lesson-sub">Marché, participants, liquidité, sessions, pips — les bases absolues.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+
+    <div class="lesson" data-video="04 - What is a candlestick">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">02</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Qu'est-ce qu'une bougie ?</div>
+          <div class="lesson-sub">Anatomie d'une chandelle : open, close, high, low, corps et mèches.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+
+    <div class="lesson" data-video="05 - What Is A Pip">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">03</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Qu'est-ce qu'un pip ?</div>
+          <div class="lesson-sub">Unité de mesure du prix, calcul de la taille de position.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+
+    <div class="lesson" data-video="06 - Price movement buying, selling, profit dynami">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">04</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Mouvement du prix : achat, vente, dynamique du profit</div>
+          <div class="lesson-sub">Comprendre les flux acheteurs/vendeurs et comment naît le profit.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+
+    <div class="lesson" data-video="01 - Market Structue & Dynamics">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">05</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Structure de marché & dynamiques</div>
+          <div class="lesson-sub">HH, HL, LH, LL — lire la structure et repérer les changements.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+
+    <div class="lesson" data-video="07 - Decoding Market Exits stop loss & Tak Profit">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">06</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Sorties de marché : stop loss & take profit</div>
+          <div class="lesson-sub">Comment placer tes sorties : invalidation, objectifs, gestion du risque.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+  </div>
+
+  <!-- MODULE 2 : Pathway To Profits -->
+  <div class="module">
+    <div class="module-title">Module 2 — Pathway To Profits (prop firms)</div>
+
+    <div class="lesson" data-video="01 - Introduction to Pathway To Profits">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">01</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Introduction à Pathway To Profits</div>
+          <div class="lesson-sub">Le framework global et la philosophie du parcours trader.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+
+    <div class="lesson" data-video="02 - Roadmap to Your First Payout">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">02</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Feuille de route vers ton premier payout</div>
+          <div class="lesson-sub">Étapes concrètes : challenge, validation, premier retrait.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+
+    <div class="lesson" data-video="03  -  What Are Prop Firms">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">03</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Que sont les Prop Firms ?</div>
+          <div class="lesson-sub">Modèle business, types de comptes, avantages et pièges.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+
+    <div class="lesson" data-video="04 - Scaling Techniques with Prop Firms">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">04</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Techniques de scaling avec les prop firms</div>
+          <div class="lesson-sub">Multiplier les comptes, gérer plusieurs challenges en parallèle.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+  </div>
+
+  <!-- MODULE 3 : Cycles -->
+  <div class="module">
+    <div class="module-title">Module 3 — Cycles du marché</div>
+
+    <div class="lesson" data-video="03 -The Daily Cycle">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">01</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Le cycle journalier</div>
+          <div class="lesson-sub">Phases de la journée de trading : accumulation, manipulation, distribution.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+
+    <div class="lesson" data-video="04 - Cycles Combined">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">02</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Cycles combinés</div>
+          <div class="lesson-sub">Superposition des cycles (journalier, hebdo, mensuel) pour le contexte.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+
+    <div class="lesson" data-video="05 - Structure Cycle">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">03</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Cycle de structure</div>
+          <div class="lesson-sub">Comment la structure évolue dans un cycle complet (expansion, consolidation, réaccumulation).</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+  </div>
+
+  <!-- MODULE 4 : Setups & Stratégie -->
+  <div class="module">
+    <div class="module-title">Module 4 — Setups & stratégie d'entrée</div>
+
+    <div class="lesson" data-video="01  - The Three Questions">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">01</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Les trois questions</div>
+          <div class="lesson-sub">Le filtre mental à passer avant chaque entrée : contexte, timing, confirmation.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+
+    <div class="lesson" data-video="05 - The Power of One Setup">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">02</div>
+        <div class="lesson-info">
+          <div class="lesson-title">La puissance d'un seul setup</div>
+          <div class="lesson-sub">Pourquoi la spécialisation bat la diversification en début de parcours.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+
+    <div class="lesson" data-video="02 - The Efficiency Of The Pullback">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">03</div>
+        <div class="lesson-info">
+          <div class="lesson-title">L'efficacité du pullback</div>
+          <div class="lesson-sub">Entrer sur les retraits : niveaux, timing, risque/récompense optimal.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+
+    <div class="lesson" data-video="06 - Points of Interest">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">04</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Points d'intérêt (POI)</div>
+          <div class="lesson-sub">Identifier les zones où le prix va probablement réagir (OB, FVG, niveaux clés).</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+  </div>
+
+  <!-- MODULE 5 : Lower Time Frame Confirmations -->
+  <div class="module">
+    <div class="module-title">Module 5 — Confirmations sur unités de temps inférieures (LTF)</div>
+
+    <div class="lesson" data-video="01 -  Lower Time Frame Confirmations">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">01</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Confirmations LTF — introduction</div>
+          <div class="lesson-sub">Pourquoi descendre en UT pour affiner l'entrée et le risque.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+
+    <div class="lesson" data-video="02 - Lower Time Frame Confirmations Types">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">02</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Types de confirmations LTF</div>
+          <div class="lesson-sub">BOS, CHoCH, displacement, SMT — quelle confirmation pour quel contexte.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+
+    <div class="lesson" data-video="03 - Change of momentum entry type (break of ">
+      <div class="lesson-head" onclick="toggleLesson(this)">
+        <div class="lesson-num">03</div>
+        <div class="lesson-info">
+          <div class="lesson-title">Changement de momentum — type d'entrée (break of structure)</div>
+          <div class="lesson-sub">Entrer sur la cassure structurelle avec confirmation du shift.</div>
+        </div>
+        <div class="lesson-toggle">▸</div>
+      </div>
+      <div class="lesson-body"><div class="video-wrap"></div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Remplacer par l'URL de base une fois l'hébergement vidéo configuré (YouTube unlisted / Cloudflare R2 / Bunny CDN)
+// Pour YouTube: https://www.youtube.com/embed/VIDEO_ID
+// Pour hébergement direct: base URL absolue + encodeURIComponent(name)
+const VIDEO_BASE = null; // ex: 'https://videos.example.com/fundamentals/'
+const SUBTITLE_BASE = 'subtitles/'; // relatif au module — les .vtt sont dans /modules/subtitles/
+
+function toggleLesson(head) {
+  const lesson = head.closest('.lesson');
+  const wrap = lesson.querySelector('.video-wrap');
+  const wasOpen = lesson.classList.contains('open');
+
+  // close others
+  document.querySelectorAll('.lesson.open').forEach(l => {
+    if (l !== lesson) {
+      l.classList.remove('open');
+      l.querySelector('.video-wrap').innerHTML = '';
+    }
+  });
+
+  if (wasOpen) {
+    lesson.classList.remove('open');
+    wrap.innerHTML = '';
+    return;
+  }
+  lesson.classList.add('open');
+
+  const name = lesson.dataset.video;
+  if (VIDEO_BASE) {
+    const src = VIDEO_BASE + encodeURIComponent(name + '.mp4');
+    const vtt = SUBTITLE_BASE + encodeURIComponent(name + '.fr.vtt');
+    wrap.innerHTML = `<video controls preload="metadata"><source src="${src}" type="video/mp4"><track kind="subtitles" srclang="fr" label="Français" src="${vtt}" default></video>`;
+  } else {
+    wrap.innerHTML = `<div class="video-placeholder"><div>🎥 Vidéo à configurer</div><div class="hint">Hébergement vidéo pas encore configuré. Sous-titres FR disponibles dans <code>/modules/subtitles/${name}.fr.vtt</code>.</div></div>`;
+  }
+}
+</script>
+
+<!-- AA_TUTOR_WIDGET -->
+<script src="../chat.js?v=v20260416"></script>
+</body>
+</html>
