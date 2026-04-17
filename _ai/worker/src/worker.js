@@ -8,7 +8,16 @@ const corpusStarterData = Array.isArray(corpusStarterRaw) ? corpusStarterRaw : J
 const corpusPremiumData = Array.isArray(corpusPremiumRaw) ? corpusPremiumRaw : JSON.parse(corpusPremiumRaw);
 
 const MODEL = "gemini-2.5-flash";
-const DAILY_LIMIT = 100; // questions par eleve par jour
+
+// Limite quotidienne par tier (questions / eleve / jour)
+const DAILY_LIMIT = {
+  starter: 30,
+  custom:  50,
+  premium: 100,
+  admin:  500,
+};
+function limitFor(tier) { return DAILY_LIMIT[tier] || 30; }
+
 const CORS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
@@ -19,7 +28,7 @@ const CORS = {
 const REVOKED = new Set([
   "elgavacho8421|premium",
   "elgavacho8421|starter",
-  "elgavacho8421|custom",
+  // "elgavacho8421|custom" — LEVEE 2026-04-17: nouvelle cle 7-modules autorisee
 ]);
 
 // --- Utils ---
@@ -69,13 +78,30 @@ function decodeAA(token) {
   return { username: decoded, tier: t, allow: [] };
 }
 
-function buildSystemPrompt(corpus, tier) {
-  const tierNote =
-    tier === "starter"
-      ? "Cet eleve a un acces STARTER. Reponds uniquement sur les fondamentaux. Si la question depasse le niveau starter, dis-lui poliment que cela releve du tier Premium et d'upgrader pour avoir la reponse complete."
-      : tier === "custom"
-      ? "Cet eleve a un acces CUSTOM (modules specifiques). Reponds uniquement dans le cadre des modules disponibles ci-dessous."
-      : "Cet eleve a un acces PREMIUM complet. Reponds avec toute la profondeur necessaire.";
+function buildSystemPrompt(corpus, tier, allowedSlugs) {
+  let tierNote;
+  let scopeRule;
+  if (tier === "starter") {
+    tierNote = "ACCES STARTER (fondamentaux seulement).";
+    scopeRule = `REGLE DE SCOPE STARTER — NON NEGOCIABLE:
+- Tu as UNIQUEMENT les modules Starter ci-dessous dans ton contexte.
+- Si la question porte sur un sujet AVANCE (Goldbach, PO3, Trifecta, shelves, CISD, MMxM, Quarterly Theory avancee, entry model complet, architecture niveaux) :
+  -> reponds EXACTEMENT : "Ce sujet releve du module Premium '<nom du module le plus proche>'. Ton acces Starter ne couvre pas ce contenu. Passe en Premium pour y acceder."
+  -> NE JAMAIS donner d'indice, d'explication partielle, de definition, meme generale.
+- Pour les fondamentaux Starter : reponds avec clarte et detail.`;
+  } else if (tier === "custom") {
+    const allowed = (allowedSlugs && allowedSlugs.length) ? allowedSlugs.join(", ") : "(aucun)";
+    tierNote = `ACCES CUSTOM. Modules autorises pour cet eleve: ${allowed}.`;
+    scopeRule = `REGLE DE SCOPE CUSTOM — NON NEGOCIABLE:
+- Tu n'as dans ton contexte QUE les modules autorises ci-dessous.
+- Si la question porte sur un module NON inclus dans sa liste :
+  -> reponds EXACTEMENT : "Ce sujet appartient a un module qui n'est pas dans ton acces Custom. Modules que tu peux demander : ${allowed}. Contacte l'administrateur pour etendre ton acces."
+  -> NE JAMAIS donner d'indice ou d'explication partielle hors-scope.
+- Dans le scope autorise : reponds avec toute la profondeur.`;
+  } else {
+    tierNote = "ACCES PREMIUM complet.";
+    scopeRule = "Tu peux repondre avec toute la profondeur necessaire sur tous les sujets du cours.";
+  }
 
   const modules = corpus
     .map((m) => `### ${m.title} (${m.slug}, tier=${m.tier})\n${m.text}`)
@@ -85,7 +111,9 @@ function buildSystemPrompt(corpus, tier) {
 
 ${tierNote}
 
-REGLES STRICTES:
+${scopeRule}
+
+REGLES GENERALES:
 - Reponds en francais, ton clair et pedagogique.
 - Ne reponds QUE sur les sujets du cours (ICT, liquidite, order blocks, FVG, SMT, PO3, cycles temporels, Goldbach, killzones, macros, psychologie trading).
 - Si la question est hors-sujet (vie perso, autres sujets), recadre gentiment vers le trading.
@@ -94,7 +122,7 @@ REGLES STRICTES:
 - Cite le module concerne quand pertinent (ex: "Voir le module 'Comprendre la liquidite'").
 - Si tu ne sais pas, dis-le.
 
-CONTENU DU COURS DISPONIBLE:
+CONTENU DU COURS DISPONIBLE (tout ce qui suit est TON UNIQUE source autorisee) :
 
 ${modules}`;
 }
@@ -177,14 +205,15 @@ export default {
       return json({ error: "Token invalide. Reconnecte-toi." }, 401);
     }
 
-    // Rate limit
+    // Rate limit per tier
+    const limit = limitFor(id.tier);
     const used = await getCount(env, id.username);
-    if (used >= DAILY_LIMIT) {
+    if (used >= limit) {
       return json(
         {
-          error: `Quota atteint (${DAILY_LIMIT} questions/jour). Reessaye demain.`,
+          error: `Quota atteint (${limit} questions/jour pour ton tier ${id.tier}). Reessaye demain.`,
           used,
-          limit: DAILY_LIMIT,
+          limit,
         },
         429
       );
@@ -204,7 +233,7 @@ export default {
       return json({ error: "Tier inconnu" }, 400);
     }
 
-    const system = buildSystemPrompt(corpus, id.tier);
+    const system = buildSystemPrompt(corpus, id.tier, id.allow);
 
     let answer;
     try {
@@ -224,7 +253,7 @@ export default {
       answer,
       tier: id.tier,
       used: used + 1,
-      limit: DAILY_LIMIT,
+      limit,
     });
   },
 };
