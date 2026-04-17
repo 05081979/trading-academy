@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html data-tier="indicator" lang="fr">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(function(){
+  try {
+    fetch('../version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v=(v||'').trim(); if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){ localStorage.setItem(k,v); location.replace(location.pathname+'?_cb='+v+location.hash); }
+        else localStorage.setItem(k,v);
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="../auth.js?v=v20260413-revoke2"></script>
+<title>HIPPO Blocks MTF &mdash; Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#f5f7fa; color:#1a1a2e; font-family:'Inter',sans-serif; line-height:1.6; }
+.hero { background:linear-gradient(135deg,#2563eb 0%,#2563ebdd 100%); color:#fff; padding:60px 40px 40px; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top right, rgba(255,255,255,0.15) 0%, transparent 60%); pointer-events:none; }
+.hero-inner { max-width:1100px; margin:0 auto; position:relative; z-index:1; }
+.back-link { display:inline-flex; align-items:center; gap:8px; color:rgba(255,255,255,0.85); text-decoration:none; font-size:13px; margin-bottom:24px; transition:color 0.15s; }
+.back-link:hover { color:#fff; }
+.hero-icon { font-size:48px; margin-bottom:16px; }
+.hero h1 { font-family:'Syne',sans-serif; font-size:clamp(28px,4vw,44px); font-weight:800; letter-spacing:-0.01em; margin-bottom:12px; }
+.hero p { font-size:16px; max-width:700px; opacity:0.95; }
+.container { max-width:1100px; margin:0 auto; padding:40px 24px; }
+.section { background:#fff; border-radius:14px; padding:28px 32px; margin-bottom:20px; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid #e2e5ea; }
+.section-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:#1a1a2e; margin-bottom:18px; display:flex; align-items:center; gap:10px; }
+.section-title::before { content:''; width:6px; height:24px; background:#2563eb; border-radius:3px; }
+.features-list { list-style:none; }
+.features-list li { padding:10px 0; border-bottom:1px solid #f1f5f9; display:flex; gap:12px; align-items:flex-start; }
+.features-list li:last-child { border-bottom:none; }
+.features-list li::before { content:'&#x2713;'; color:#2563eb; font-weight:700; flex-shrink:0; }
+.inputs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:14px; }
+.input-card { padding:14px 16px; background:#f8fafc; border:1px solid #e2e5ea; border-radius:10px; }
+.input-name { font-weight:600; color:#2563eb; font-size:13px; margin-bottom:4px; font-family:'JetBrains Mono',monospace; }
+.input-desc { font-size:13px; color:#475569; line-height:1.5; }
+.tf-box { padding:14px 18px; background:linear-gradient(90deg,rgba(37,99,235,0.06),rgba(37,99,235,0.02)); border-left:4px solid #2563eb; border-radius:8px; font-size:14px; color:#334155; }
+.mode-emploi ol { padding-left:22px; }
+.mode-emploi li { padding:6px 0; font-size:14px; color:#334155; }
+.mode-emploi p { font-size:14px; color:#334155; margin-top:10px; }
+.code-warn { padding:12px 16px; background:linear-gradient(90deg,#fee2e2,#fecaca); border-radius:10px; font-size:12px; color:#991b1b; font-weight:600; margin-bottom:12px; text-align:center; }
+.code-box { background:#0f172a; color:#e2e8f0; border-radius:10px; padding:20px; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.5; overflow-x:auto; max-height:500px; overflow-y:auto; white-space:pre; }
+.copy-code-btn { margin-top:10px; padding:10px 18px; background:#2563eb; color:#fff; border:none; border-radius:8px; font-family:inherit; font-weight:600; font-size:13px; cursor:pointer; }
+.copy-code-btn:hover { filter:brightness(1.1); }
+</style>
+</head>
+<body>
+<script src="../nav.js"></script>
+
+<div class="hero">
+  <div class="hero-inner">
+    <a href="indicateurs.html" class="back-link">&larr; Retour aux indicateurs</a>
+    <div class="hero-icon">&#x1F99B;</div>
+    <h1>HIPPO Blocks MTF</h1>
+    <p>Detecteur automatique de patterns HIPPO (3-bar engulfing gap) sur 5 timeframes simultanes. Chaque HIPPO confirme une zone d'imbalance exploitable comme Order Block ou zone de mitigation.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <div class="section-title">Fonctionnalites principales</div>
+    <ul class="features-list">
+      <li>Detection HIPPO bullish/bearish sur 5 TF : 15m, 30m, 1H, 4H, Daily</li>
+      <li>Confirmation 3-bougies : gap entre bougie -2 et bougie 0 apres 2 bougies directionnelles</li>
+      <li>Filtre taille minimum configurable (% du corps de la bougie)</li>
+      <li>Box placee avec timestamps HTF reels (precision temporelle parfaite)</li>
+      <li>Couleur distincte par timeframe (visibilite immediate du TF source)</li>
+      <li>Extension horizontale configurable (10 bougies HTF par defaut)</li>
+      <li>Label texte en haut-droite identifiant le TF (H 15m, H 1H, etc.)</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Parametres cles</div>
+    <div class="inputs-grid">
+      <div class="input-card"><div class="input-name">Extend boxes</div><div class="input-desc">Nombre de bougies HTF que la box prolonge vers la droite (defaut 10)</div></div>
+      <div class="input-card"><div class="input-name">Taille min (% corps)</div><div class="input-desc">Filtre : HIPPO ignore si gap < X% du corps (defaut 0.01%)</div></div>
+      <div class="input-card"><div class="input-name">HIPPO 15m / 30m / 1H / 4H / D</div><div class="input-desc">Toggle pour afficher les HIPPOs de chaque TF</div></div>
+      <div class="input-card"><div class="input-name">Couleur par TF</div><div class="input-desc">Chaque TF a sa propre couleur pour differencier visuellement</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Timeframes &amp; Marches</div>
+    <div class="tf-box">S'utilise sur un chart intraday (M1-M15 ideal). Les HIPPOs detectes sur 15m/30m/1H sont les plus actionnables en scalping/day trading. Les HIPPOs 4H/D sont des zones HTF a utiliser comme cibles ou filtres de direction.</div>
+  </div>
+
+  <div class="section mode-emploi">
+    <div class="section-title">Mode d'emploi</div>
+
+    <ol>
+      <li>Copier le code Pine ci-dessous (bouton en bas de page, admin).</li>
+      <li>Sur TradingView Desktop : ouvrir le <strong>Pine Editor</strong>.</li>
+      <li>Coller le code, cliquer sur <strong>Sauvegarder</strong> puis <strong>Ajouter au chart</strong>.</li>
+      <li>Activer uniquement les TF pertinents pour ton style (ex: 15m+1H en intraday, 1H+4H+D en swing).</li>
+      <li>Ajuster <strong>Extend boxes</strong> selon la densite des HIPPOs (plus c'est dense, plus tu reduis).</li>
+    </ol>
+
+    <h3 style="font-family:'Syne',sans-serif;font-size:16px;margin-top:24px;margin-bottom:12px;color:#1a5f3f;">Comment trader les signaux</h3>
+    <ol>
+      <li><strong>HIPPO Bullish (vert)</strong> : 2 bougies haussieres puis gap haussier. Zone entre low[1] et high[2] = support institutionnel.</li>
+      <li><strong>HIPPO Bearish (rouge)</strong> : 2 bougies baissieres puis gap baissier. Zone entre high[1] et low[2] = resistance institutionnelle.</li>
+      <li>Entry au retest du bord interieur de la box (cote oppose a la direction HIPPO).</li>
+      <li>SL au-dela du bord exterieur de la box + 1-2 ticks de tampon.</li>
+      <li>TP = prochaine liquidite (EQH/EQL, PDH/PDL, HIPPO suivante dans le sens du trade).</li>
+      <li>Invalidation : cloture complete au-dela du HIPPO = zone consommee, chercher ailleurs.</li>
+    </ol>
+    <p><strong>Conseils :</strong> Un HIPPO 4H/D qui overlap avec une shelves Goldbach ou un niveau Trifecta = setup A+. Combiner avec <em>Quarterly Theory</em> pour valider le timing (Q2 Manipulation + HIPPO = haute probabilite). Ne pas trader les HIPPOs contre la direction du <em>Full QT</em> macro.</p>
+
+  </div>
+
+  <div class="section" id="codeSection" style="display:none;">
+    <div class="section-title">&#x1F512; Code source (Admin)</div>
+    <div class="code-warn">&#x26A0;&#xFE0F; Reserve a l'admin. Ne jamais partager ce code avec les eleves.</div>
+    <pre class="code-box" id="codeBox"></pre>
+    <button class="copy-code-btn" onclick="copyPineCode()">&#x1F4CB; Copier le code Pine</button>
+  </div>
+
+</div>
+
+<script>
+var PINE_B64 = "77u/Ly9AdmVyc2lvbj02CmluZGljYXRvcignSElQUE8gQmxvY2tzIE1URicsIG92ZXJsYXkgPSB0cnVlLCBtYXhfYm94ZXNfY291bnQgPSA1MDApCgovLyDilIDilIDilIAgU2V0dGluZ3Mg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACkhpcHBvZXh0ZW5kQm94ICAgICAgID0gaW5wdXQuaW50KDEwLCAiRXh0ZW5kIGJveGVzIChiYXJyZXMgSFRGKSIsIGdyb3VwID0gIkhJUFBPIikKc2hvd0hpcHBvR3JlYXRlclRoZW4gPSBpbnB1dC5mbG9hdCgwLjAxLCAiVGFpbGxlIG1pbiAoJSBjb3JwcykiLCBncm91cCA9ICJISVBQTyIpCgovLyDilIDilIDilIAgU8OpbGVjdGlvbiBURiArIENvdWxldXIgcGFyIFRGIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgApzaG93MTVtID0gaW5wdXQuYm9vbCh0cnVlLCAgIkhJUFBPIDE1bSIsICAgZ3JvdXAgPSAi4o+xIFRpbWVmcmFtZXMgdmlzaWJsZXMiLCBpbmxpbmUgPSAidGYxIikKY29sMTVtICA9IGlucHV0LmNvbG9yKGNvbG9yLm5ldygjMjE5NkYzLCA2NSksICIiLCBncm91cCA9ICLij7EgVGltZWZyYW1lcyB2aXNpYmxlcyIsIGlubGluZSA9ICJ0ZjEiKQoKc2hvdzMwbSA9IGlucHV0LmJvb2woZmFsc2UsICJISVBQTyAzMG0iLCAgIGdyb3VwID0gIuKPsSBUaW1lZnJhbWVzIHZpc2libGVzIiwgaW5saW5lID0gInRmMiIpCmNvbDMwbSAgPSBpbnB1dC5jb2xvcihjb2xvci5uZXcoIzlDMjdCMCwgNjUpLCAiIiwgZ3JvdXAgPSAi4o+xIFRpbWVmcmFtZXMgdmlzaWJsZXMiLCBpbmxpbmUgPSAidGYyIikKCnNob3cxaCAgPSBpbnB1dC5ib29sKHRydWUsICAiSElQUE8gMUgiLCAgICBncm91cCA9ICLij7EgVGltZWZyYW1lcyB2aXNpYmxlcyIsIGlubGluZSA9ICJ0ZjMiKQpjb2wxaCAgID0gaW5wdXQuY29sb3IoY29sb3IubmV3KCNGRjk4MDAsIDY1KSwgIiIsIGdyb3VwID0gIuKPsSBUaW1lZnJhbWVzIHZpc2libGVzIiwgaW5saW5lID0gInRmMyIpCgpzaG93NGggID0gaW5wdXQuYm9vbChmYWxzZSwgIkhJUFBPIDRIIiwgICAgZ3JvdXAgPSAi4o+xIFRpbWVmcmFtZXMgdmlzaWJsZXMiLCBpbmxpbmUgPSAidGY0IikKY29sNGggICA9IGlucHV0LmNvbG9yKGNvbG9yLm5ldygjRjQ0MzM2LCA2NSksICIiLCBncm91cCA9ICLij7EgVGltZWZyYW1lcyB2aXNpYmxlcyIsIGlubGluZSA9ICJ0ZjQiKQoKc2hvd0QgICA9IGlucHV0LmJvb2woZmFsc2UsICJISVBQTyBEYWlseSIsIGdyb3VwID0gIuKPsSBUaW1lZnJhbWVzIHZpc2libGVzIiwgaW5saW5lID0gInRmNSIpCmNvbEQgICAgPSBpbnB1dC5jb2xvcihjb2xvci5uZXcoIzc5NTU0OCwgNjUpLCAiIiwgZ3JvdXAgPSAi4o+xIFRpbWVmcmFtZXMgdmlzaWJsZXMiLCBpbmxpbmUgPSAidGY1IikKCi8vIOKUgOKUgOKUgCBGb25jdGlvbiBISVBQTyAocydleMOpY3V0ZSBkYW5zIGxlIGNvbnRleHRlIEhURikg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACi8vIFJldG91cm5lIGxlIHNpZ25hbCArIGxlcyBwcml4ICsgbGVzIFRJTUVTVEFNUFMgZGVzIGJvdWdpZXMgSFRGCmZfaGlwcG8oKSA9PgogICAgaXNHcmVlbiAgPSBvcGVuWzFdIDwgY2xvc2VbMV0gYW5kIG9wZW5bMl0gPCBjbG9zZVsyXSBhbmQgbG93ID4gaGlnaFsyXSBhbmQgbG93WzFdID4gaGlnaFszXQogICAgaXNSZWQgICAgPSBvcGVuWzFdID4gY2xvc2VbMV0gYW5kIG9wZW5bMl0gPiBjbG9zZVsyXSBhbmQgaGlnaCA8IGxvd1syXSBhbmQgaGlnaFsxXSA8IGxvd1szXQogICAgc2l6ZU9rRyAgPSAoaGlnaFsyXSAtIGxvd1sxXSkgPiAoKGxvd1sxXSAgLyAxMDApICogc2hvd0hpcHBvR3JlYXRlclRoZW4pCiAgICBzaXplT2tSICA9IChoaWdoWzFdIC0gbG93WzJdKSA+ICgoaGlnaFsxXSAvIDEwMCkgKiBzaG93SGlwcG9HcmVhdGVyVGhlbikKICAgIGdyZWVuU2lnID0gaXNHcmVlbiBhbmQgc2l6ZU9rRyBhbmQgYmFyc3RhdGUuaXNjb25maXJtZWQKICAgIHJlZFNpZyAgID0gaXNSZWQgICBhbmQgc2l6ZU9rUiBhbmQgYmFyc3RhdGUuaXNjb25maXJtZWQKICAgIC8vIEV4dGVuc2lvbiBlbiBtaWxsaXNlY29uZGVzIChIaXBwb2V4dGVuZEJveCBib3VnaWVzIEhURikKICAgIGV4dGVuZE1zID0gSGlwcG9leHRlbmRCb3ggKiB0aW1lZnJhbWUuaW5fc2Vjb25kcygpICogMTAwMAogICAgLy8gdGltZVsyXSA9IGTDqWJ1dCBkZSBsYSBib3ggKGJvdWdpZSBIVEYgbGEgcGx1cyBhbmNpZW5uZSBkdSBwYXR0ZXJuKQogICAgLy8gdGltZVswXSArIGV4dGVuZCA9IGZpbiBkZSBsYSBib3gKICAgIFtncmVlblNpZywgcmVkU2lnLAogICAgIGhpZ2hbMl0sIGxvd1sxXSwgICAgLy8gZ3JlZW4gOiB0b3A9aGlnaFsyXSwgYm90PWxvd1sxXQogICAgIGhpZ2hbMV0sIGxvd1syXSwgICAgLy8gcmVkICAgOiB0b3A9aGlnaFsxXSwgYm90PWxvd1syXQogICAgIHRpbWVbMl0sIHRpbWVbMF0gKyBleHRlbmRNc10KCi8vIOKUgOKUgOKUgCBBcHBlbHMgTVRGIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgApbZzE1LCByMTUsIGd0MTUsIGdiMTUsIHJ0MTUsIHJiMTUsIHRMMTUsIHRSMTVdID0gcmVxdWVzdC5zZWN1cml0eShzeW1pbmZvLnRpY2tlcmlkLCAiMTUiLCAgZl9oaXBwbygpKQpbZzMwLCByMzAsIGd0MzAsIGdiMzAsIHJ0MzAsIHJiMzAsIHRMMzAsIHRSMzBdID0gcmVxdWVzdC5zZWN1cml0eShzeW1pbmZvLnRpY2tlcmlkLCAiMzAiLCAgZl9oaXBwbygpKQpbZzFoLCByMWgsIGd0MWgsIGdiMWgsIHJ0MWgsIHJiMWgsIHRMMWgsIHRSMWhdID0gcmVxdWVzdC5zZWN1cml0eShzeW1pbmZvLnRpY2tlcmlkLCAiNjAiLCAgZl9oaXBwbygpKQpbZzRoLCByNGgsIGd0NGgsIGdiNGgsIHJ0NGgsIHJiNGgsIHRMNGgsIHRSNGhdID0gcmVxdWVzdC5zZWN1cml0eShzeW1pbmZvLnRpY2tlcmlkLCAiMjQwIiwgZl9oaXBwbygpKQpbZ0QsICByRCwgIGd0RCwgIGdiRCwgIHJ0RCwgIHJiRCwgIHRMRCwgIHRSRF0gID0gcmVxdWVzdC5zZWN1cml0eShzeW1pbmZvLnRpY2tlcmlkLCAiRCIsICAgZl9oaXBwbygpKQoKLy8g4pSA4pSA4pSAIERlc3NpbiBhdmVjIHhsb2MuYmFyX3RpbWUgKHBvc2l0aW9ucyB0ZW1wb3JlbGxlcyByw6llbGxlcyBIVEYpIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgApmX2RyYXcoc2lnX2csIHNpZ19yLCBnVG9wLCBnQm90LCByVG9wLCByQm90LCB0TGVmdCwgdFJpZ2h0LCBiZ0NvbCwgbGJsKSA9PgogICAgdmFyIGJveCBiID0gbmEKICAgIGlmIHNpZ19nIGFuZCBub3Qgc2lnX2dbMV0KICAgICAgICBiIDo9IGJveC5uZXcoaW50KHRMZWZ0KSwgZ1RvcCwgaW50KHRSaWdodCksIGdCb3QsCiAgICAgICAgICAgICB4bG9jICAgICAgICAgPSB4bG9jLmJhcl90aW1lLAogICAgICAgICAgICAgYm9yZGVyX2NvbG9yID0gbmEsCiAgICAgICAgICAgICBiZ2NvbG9yICAgICAgPSBiZ0NvbCwKICAgICAgICAgICAgIHRleHQgICAgICAgICA9IGxibCwKICAgICAgICAgICAgIHRleHRfc2l6ZSAgICA9IHNpemUudGlueSwKICAgICAgICAgICAgIHRleHRfY29sb3IgICA9IGNvbG9yLm5ldyhiZ0NvbCwgMCksCiAgICAgICAgICAgICB0ZXh0X2hhbGlnbiAgPSB0ZXh0LmFsaWduX3JpZ2h0KQogICAgaWYgc2lnX3IgYW5kIG5vdCBzaWdfclsxXQogICAgICAgIGIgOj0gYm94Lm5ldyhpbnQodExlZnQpLCByVG9wLCBpbnQodFJpZ2h0KSwgckJvdCwKICAgICAgICAgICAgIHhsb2MgICAgICAgICA9IHhsb2MuYmFyX3RpbWUsCiAgICAgICAgICAgICBib3JkZXJfY29sb3IgPSBuYSwKICAgICAgICAgICAgIGJnY29sb3IgICAgICA9IGJnQ29sLAogICAgICAgICAgICAgdGV4dCAgICAgICAgID0gbGJsLAogICAgICAgICAgICAgdGV4dF9zaXplICAgID0gc2l6ZS50aW55LAogICAgICAgICAgICAgdGV4dF9jb2xvciAgID0gY29sb3IubmV3KGJnQ29sLCAwKSwKICAgICAgICAgICAgIHRleHRfaGFsaWduICA9IHRleHQuYWxpZ25fcmlnaHQpCgovLyDilIDilIDilIAgQXBwbGljYXRpb24gc2Vsb24gbGVzIGNhc2VzIGNvY2jDqWVzIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgAppZiBzaG93MTVtCiAgICBmX2RyYXcoZzE1LCByMTUsIGd0MTUsIGdiMTUsIHJ0MTUsIHJiMTUsIHRMMTUsIHRSMTUsIGNvbDE1bSwgIkggMTVtIikKaWYgc2hvdzMwbQogICAgZl9kcmF3KGczMCwgcjMwLCBndDMwLCBnYjMwLCBydDMwLCByYjMwLCB0TDMwLCB0UjMwLCBjb2wzMG0sICJIIDMwbSIpCmlmIHNob3cxaAogICAgZl9kcmF3KGcxaCwgcjFoLCBndDFoLCBnYjFoLCBydDFoLCByYjFoLCB0TDFoLCB0UjFoLCBjb2wxaCwgICJIIDFIIikKaWYgc2hvdzRoCiAgICBmX2RyYXcoZzRoLCByNGgsIGd0NGgsIGdiNGgsIHJ0NGgsIHJiNGgsIHRMNGgsIHRSNGgsIGNvbDRoLCAgIkggNEgiKQppZiBzaG93RAogICAgZl9kcmF3KGdELCAgckQsICBndEQsICBnYkQsICBydEQsICByYkQsICB0TEQsICB0UkQsICBjb2xELCAgICJIIEQiKQo=";
+window.addEventListener('DOMContentLoaded', function() {
+  var user = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('aa_user')) || '';
+  if (user === 'Admin') {
+    try {
+      var bin = atob(PINE_B64);
+      var bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      var code = new TextDecoder('utf-8').decode(bytes);
+      document.getElementById('codeBox').textContent = code;
+      document.getElementById('codeSection').style.display = 'block';
+    } catch(e) { console.warn('decode fail', e); }
+  }
+});
+function copyPineCode() {
+  var code = document.getElementById('codeBox').textContent;
+  navigator.clipboard.writeText(code).then(function() {
+    var btn = document.querySelector('.copy-code-btn');
+    btn.textContent = '&#x2713; Copie';
+    setTimeout(function() { btn.textContent = '&#x1F4CB; Copier le code Pine'; }, 1500);
+  });
+}
+</script>
+<!-- AA_TUTOR_WIDGET -->
+<script src="../chat.js?v=v20260416"></script>
+</body>
+</html>
