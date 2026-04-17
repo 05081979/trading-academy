@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html data-tier="premium" lang="fr">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(function(){
+  try {
+    fetch('../version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v=(v||'').trim(); if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){ localStorage.setItem(k,v); location.replace(location.pathname+'?_cb='+v+location.hash); }
+        else localStorage.setItem(k,v);
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="../auth.js?v=v20260417-auth-elgavacho"></script>
+<title>Bibliothèque PDF — Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background:#f5f7fa; color:#1a1a2e; font-family:'Inter',sans-serif; line-height:1.65; min-height:100vh; }
+
+.hero { background:linear-gradient(135deg,#dc2626 0%,#dc2626dd 100%); color:#fff; padding:60px 40px 40px; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top right, rgba(255,255,255,0.15) 0%, transparent 60%); pointer-events:none; }
+.hero-inner { max-width:1100px; margin:0 auto; position:relative; z-index:1; }
+.back-link { display:inline-flex; align-items:center; gap:8px; color:rgba(255,255,255,0.88); text-decoration:none; font-size:13px; margin-bottom:24px; }
+.back-link:hover { color:#fff; }
+.tier-badge { display:inline-block; background:rgba(0,0,0,0.2); color:#fff; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:16px; }
+.hero h1 { font-family:'Syne',sans-serif; font-size:clamp(28px,4vw,40px); font-weight:800; letter-spacing:-0.01em; margin-bottom:10px; color:#fff; }
+.hero p { font-size:16px; max-width:720px; opacity:0.95; color:#fff; }
+
+.container { max-width:1100px; margin:0 auto; padding:40px 24px; }
+.section { background:#fff; border-radius:14px; padding:28px 32px; margin-bottom:22px; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid #e2e5ea; }
+
+.sec-head { display:flex; align-items:center; gap:12px; padding-bottom:14px; margin-bottom:18px; border-bottom:2px solid #dc262633; }
+.sec-head h2 { font-family:'Syne',sans-serif; font-size:22px; font-weight:700; color:#1a1a2e; letter-spacing:-0.01em; }
+.sec-count { background:#dc2626; color:#fff; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; }
+
+.pdf-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px; }
+.pdf-card {
+  display:flex; align-items:center; gap:12px;
+  padding:14px 16px; background:#fef2f2;
+  border:1px solid #fecaca; border-radius:10px;
+  text-decoration:none; color:#1a1a2e;
+  transition:all 0.2s;
+  font-size:13px; font-weight:600;
+}
+.pdf-card:hover { border-color:#dc2626; background:#fee2e2; transform:translateX(3px); }
+.pdf-icon { flex-shrink:0; width:36px; height:36px; border-radius:8px; background:#dc2626; color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:'JetBrains Mono',monospace; }
+.pdf-name { flex:1; line-height:1.4; }
+
+.toc-top { background:#fff; border-radius:14px; padding:24px 28px; margin-bottom:22px; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid #e2e5ea; }
+.toc-top h3 { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px; }
+.toc-pills { display:flex; flex-wrap:wrap; gap:8px; }
+.toc-pill { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; background:#fef2f2; border:1px solid #fecaca; border-radius:20px; color:#1a1a2e; text-decoration:none; font-size:13px; font-weight:600; transition:all 0.2s; }
+.toc-pill:hover { background:#dc2626; color:#fff; border-color:#dc2626; }
+.toc-pill .n { background:#dc2626; color:#fff; font-family:'JetBrains Mono',monospace; font-size:10px; padding:2px 7px; border-radius:10px; font-weight:700; }
+.toc-pill:hover .n { background:#fff; color:#dc2626; }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-inner">
+    <a href="hub-cours.html" class="back-link">&larr; Retour au Hub</a>
+    <span class="tier-badge">Premium</span>
+    <h1>Bibliothèque PDF</h1>
+    <p>44 documents PDF organisés par thématique : Quarterly Theory, Time Cycles, ICT, MMXM et Smart Money Concepts.</p>
+  </div>
+</section>
+
+<div class="container">
+
+  <div class="toc-top">
+    <h3>Accès rapide par thème</h3>
+    <div class="toc-pills">
+      <a href="#qt" class="toc-pill"><span class="n">03</span>Quarterly Theory</a>
+      <a href="#time" class="toc-pill"><span class="n">05</span>Time Cycles</a>
+      <a href="#ict" class="toc-pill"><span class="n">08</span>ICT</a>
+      <a href="#mmxm" class="toc-pill"><span class="n">10</span>MMXM</a>
+      <a href="#smc" class="toc-pill"><span class="n">18</span>SMC</a>
+    </div>
+  </div>
+
+  <section class="section" id="qt">
+    <div class="sec-head"><h2>Quarterly Theory</h2><span class="sec-count">03 PDF</span></div>
+    <div class="pdf-grid">
+      <a href="../pdf/library/quarterly-theory/Quarterly Theory.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Quarterly Theory</span></a>
+      <a href="../pdf/library/quarterly-theory/Quarterly theory secrets.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Quarterly Theory — Secrets</span></a>
+      <a href="../pdf/library/quarterly-theory/QT PDF.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">QT — Synthèse</span></a>
+    </div>
+  </section>
+
+  <section class="section" id="time">
+    <div class="sec-head"><h2>Time Cycles</h2><span class="sec-count">05 PDF</span></div>
+    <div class="pdf-grid">
+      <a href="../pdf/library/time-cycles/Time and Price.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Time and Price</span></a>
+      <a href="../pdf/library/time-cycles/Time.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Time</span></a>
+      <a href="../pdf/library/time-cycles/8.6 Key Times for the Algorithm.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">8.6 Key Times for the Algorithm</span></a>
+      <a href="../pdf/library/time-cycles/Timeframe Alignment - OTE Trader.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Timeframe Alignment</span></a>
+      <a href="../pdf/library/time-cycles/Daily Swing Model - Day 4 TTrades.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Daily Swing Model — Day 4</span></a>
+    </div>
+  </section>
+
+  <section class="section" id="ict">
+    <div class="sec-head"><h2>ICT</h2><span class="sec-count">08 PDF</span></div>
+    <div class="pdf-grid">
+      <a href="../pdf/library/ict/The ICT Bible V1 - By Ali Khan.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">The ICT Bible V1</span></a>
+      <a href="../pdf/library/ict/demystified_ICT.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Demystified ICT</span></a>
+      <a href="../pdf/library/ict/ICT DAILY BIAS.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">ICT Daily Bias</span></a>
+      <a href="../pdf/library/ict/ICT KILLZONES.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">ICT Killzones</span></a>
+      <a href="../pdf/library/ict/ICT RANGES.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">ICT Ranges</span></a>
+      <a href="../pdf/library/ict/ICT Templates Cheat Sheet.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">ICT Templates — Cheat Sheet</span></a>
+      <a href="../pdf/library/ict/ICT FX4 Model Framework 2023.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">ICT FX4 Model Framework 2023</span></a>
+      <a href="../pdf/library/ict/ICT Liquidity Book.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">ICT Liquidity Book</span></a>
+    </div>
+  </section>
+
+  <section class="section" id="mmxm">
+    <div class="sec-head"><h2>MMXM</h2><span class="sec-count">10 PDF</span></div>
+    <div class="pdf-grid">
+      <a href="../pdf/library/mmxm/MMXM MODEL.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">MMXM Model</span></a>
+      <a href="../pdf/library/mmxm/MMXM.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">MMXM — Introduction</span></a>
+      <a href="../pdf/library/mmxm/ICT MMXM.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">ICT MMXM</span></a>
+      <a href="../pdf/library/mmxm/MMXM universal model lesson 19.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">MMXM — Universal Model (lesson 19)</span></a>
+      <a href="../pdf/library/mmxm/MMXM putting it all together lesson 18.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">MMXM — Putting It All Together (lesson 18)</span></a>
+      <a href="../pdf/library/mmxm/MMXM how to trade MMXM lesson 13.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">MMXM — How to Trade (lesson 13)</span></a>
+      <a href="../pdf/library/mmxm/MMXM OHLC & OLHC power of three lesson 1.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">MMXM — OHLC / OLHC / PO3 (lesson 1)</span></a>
+      <a href="../pdf/library/mmxm/MMXM IRL & ERL lesson 5.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">MMXM — IRL &amp; ERL (lesson 5)</span></a>
+      <a href="../pdf/library/mmxm/MMXM breakaway gaps & BPR lesson 9.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">MMXM — Breakaway Gaps &amp; BPR (lesson 9)</span></a>
+      <a href="../pdf/library/mmxm/TIME AND PRICE MMXM 1.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Time and Price — MMXM (partie 1)</span></a>
+    </div>
+  </section>
+
+  <section class="section" id="smc">
+    <div class="sec-head"><h2>Smart Money Concepts</h2><span class="sec-count">18 PDF</span></div>
+    <div class="pdf-grid">
+      <a href="../pdf/library/smc/3 Step Liquidity System.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">3-Step Liquidity System</span></a>
+      <a href="../pdf/library/smc/CISD.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">CISD</span></a>
+      <a href="../pdf/library/smc/Daily_Bias_Simplified.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Daily Bias — Simplified</span></a>
+      <a href="../pdf/library/smc/Discount & Premium.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Discount &amp; Premium</span></a>
+      <a href="../pdf/library/smc/Draw on Liquidity (DOL).pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Draw on Liquidity (DOL)</span></a>
+      <a href="../pdf/library/smc/Engagement.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Engagement</span></a>
+      <a href="../pdf/library/smc/Entry Model.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Entry Model</span></a>
+      <a href="../pdf/library/smc/Hydra.Module.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Hydra Module</span></a>
+      <a href="../pdf/library/smc/Inducement_Cycle_V2.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Inducement Cycle V2</span></a>
+      <a href="../pdf/library/smc/Liquidity.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Liquidity</span></a>
+      <a href="../pdf/library/smc/London is always liquidity.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">London is Always Liquidity</span></a>
+      <a href="../pdf/library/smc/OLHC OHLC.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">OLHC / OHLC</span></a>
+      <a href="../pdf/library/smc/PO3.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Power of Three (PO3)</span></a>
+      <a href="../pdf/library/smc/Price Action Protocol.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Price Action Protocol</span></a>
+      <a href="../pdf/library/smc/Range_Dynamics.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Range Dynamics</span></a>
+      <a href="../pdf/library/smc/Smart money entry types.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Smart Money — Entry Types</span></a>
+      <a href="../pdf/library/smc/Standard Deviation Projections.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">Standard Deviation Projections</span></a>
+      <a href="../pdf/library/smc/The OTE Trader's Checklist.pdf" target="_blank" class="pdf-card"><span class="pdf-icon">PDF</span><span class="pdf-name">The OTE Trader's Checklist</span></a>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>
