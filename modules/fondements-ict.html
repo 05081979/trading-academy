@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Algorithmic Academy — Cours complet</title>
+<link rel="stylesheet" href="fondements-ict.css">
+</head>
+<body>
+
+<header class="top">
+  <h1>ALGORITHMIC ACADEMY</h1>
+  <nav id="topnav"></nav>
+  <input type="search" id="search" placeholder="🔍 Chercher un concept..." />
+</header>
+
+<div class="wrap">
+
+<div class="hero">
+  <h2>Cours complet — 40 modules, 86 leçons</h2>
+  <p>Synthèse structurée du mentorat Algorithmic Academy, enrichie d'exemples concrets, schémas et captures issues des vidéos originales.</p>
+  <div class="stats">
+    <div class="stat"><strong>86</strong><span>Leçons</span></div>
+    <div class="stat"><strong>40</strong><span>Modules</span></div>
+    <div class="stat"><strong>7</strong><span>Parties</span></div>
+    <div class="stat"><strong>301</strong><span>Captures</span></div>
+  </div>
+</div>
+
+<!-- ==================== MODULE 1 ==================== -->
+<section class="module" data-part="I" data-title="Quel trader êtes-vous">
+  <div class="head"><span class="num">1</span><h3>Quel trader êtes-vous ?</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>002</b> (Quel trader), <b>016</b> (Style de trading), <b>020</b> (Profils)</p>
+
+    <h4>Les 3 profils de base</h4>
+    <table>
+      <tr><th>Profil</th><th>Horizon</th><th>Fréquence</th><th>Stress</th><th>Adapté si…</th></tr>
+      <tr><td><b>Scalper</b></td><td>1min–15min</td><td>5–20 trades/jour</td><td>Très haut</td><td>4h+ live, tu aimes l'action</td></tr>
+      <tr><td><b>Day trader</b></td><td>15min–1H</td><td>1–3 trades/jour</td><td>Moyen</td><td>2h par session (London ou NY)</td></tr>
+      <tr><td><b>Swing trader</b></td><td>1H–Daily</td><td>1–5 trades/semaine</td><td>Faible</td><td>1h/jour max disponible</td></tr>
+    </table>
+
+    <h4>Exemple concret</h4>
+    <ul>
+      <li>Tu bosses 9h–18h → <b>day trading NY PM</b> (19h–21h Paris) OU <b>swing</b> posé le soir</li>
+      <li>Tu veux 20 trades/semaine → <b>scalper London killzone</b> (9h–11h Paris)</li>
+    </ul>
+
+    <div class="callout">💡 <b>Règle d'or</b> : Ton style doit coller à ta vie, pas l'inverse. Un scalper qui bosse 9h–18h s'auto-détruit.</div>
+
+    <div class="gallery" data-lessons="002_Quel_trader_êtes_vous_ 016_Déterminer_Votre_Style_de_Trading_🤖 020_Profils_de_Traders___Où_Êtes-Vous___🧭"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 2 ==================== -->
+<section class="module" data-part="I" data-title="Plan de trading">
+  <div class="head"><span class="num">2</span><h3>Le plan de trading</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>003</b> (Le plan), <b>014</b> (Construire scénario haute proba), <b>004</b> (Importance du scénario)</p>
+
+    <h4>Les 8 points non-négociables</h4>
+    <ol>
+      <li><b>Biais directionnel</b> : Long / Short / NoTrade — décidé <i>avant</i> la session</li>
+      <li><b>Instrument</b> : un seul par session au début</li>
+      <li><b>Timeframes</b> : HTF (1H/4H) biais, MTF (15min) structure, LTF (1min/5min) entrée</li>
+      <li><b>Zone d'intérêt</b> : niveau précis (PDH, OB, FVG, Asian H/L)</li>
+      <li><b>Déclencheur</b> : MSS + retest, sweep + CISD</li>
+      <li><b>Stop Loss</b> : points précis calculés <b>à l'avance</b></li>
+      <li><b>Take Profit</b> : liquidité opposée identifiée</li>
+      <li><b>Invalidation</b> : le scénario est mort si…</li>
+    </ol>
+
+    <h4>Exemple rempli</h4>
+<pre><code>DATE : 18/04/2026  |  INSTRUMENT : NQ1!
+BIAIS : SHORT
+  PDH swept à 18450 hier NY PM
+  Asian range = consolidation sous 18410
+  SIBI 4H non reblanché à 18480
+ZONE : 18440–18450 (SIBI 15min + PDH)
+DÉCLENCHEUR : MSS M1 + CISD sur 18442
+SL : 18455 (au-dessus du sweep)
+TP1 : 18395 (Asian Low)  →  -2R
+TP2 : 18360 (FVG 1H + weekly low)  →  -4R
+INVALIDATION : clôture M15 > 18455</code></pre>
+
+    <div class="callout bear">⚠️ <b>Piège</b> : écrire le plan <i>pendant</i> la session = rationalisation. Le plan doit être écrit <b>avant</b> que le premier chandelier d'intérêt arrive.</div>
+
+    <div class="gallery" data-lessons="003_Le_plan 014_Construire_un_scénario_de_haute_probabilité 004_L'importance_du_scénario"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 3 ==================== -->
+<section class="module" data-part="I" data-title="IBDR IPDA algorithme">
+  <div class="head"><span class="num">3</span><h3>IBDR & IPDA — L'algorithme de livraison</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>005-006</b> (IBDR), <b>007</b> (IPDA), <b>054</b> (Interbank Price Delivery), <b>055</b> (Intra Bank Dealing Range)</p>
+
+    <h4>IPDA — Interbank Price Delivery Algorithm</h4>
+    <p>L'<b>algorithme</b> qui livre le prix. Pas un market maker humain — un programme qui cherche à équilibrer les livres entre banques.</p>
+    <p><b>Sa mission</b> : prendre la liquidité des retail (stops au-dessus des hauts, sous les bas) et livrer vers les poches de déséquilibre (FVG, OB non mitigés).</p>
+    <div class="callout">🎯 <b>Conséquence pratique</b> : le prix ne va pas "où il devrait selon la news". Il va où est la liquidité. NFP, CPI, FOMC = catalyseurs, pas directions.</div>
+
+    <h4>IBDR — Intra Bank Dealing Range</h4>
+    <p>Plage dans laquelle une banque cote en intra-session. Se lit sur les anciens hauts/bas :</p>
+    <ul>
+      <li>PDH / PDL (Previous Day)</li>
+      <li>PWH / PWL (Previous Week)</li>
+      <li>PMH / PML (Previous Month)</li>
+      <li>Asian H / L</li>
+    </ul>
+
+    <div class="diagram">
+      <svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+        <rect width="600" height="300" fill="#0d1117"/>
+        <line x1="50" y1="60" x2="550" y2="60" stroke="#ef5350" stroke-width="2" stroke-dasharray="4"/>
+        <text x="560" y="64" fill="#ef5350" font-size="11">PDH = 18500</text>
+        <line x1="50" y1="240" x2="550" y2="240" stroke="#26a69a" stroke-width="2" stroke-dasharray="4"/>
+        <text x="560" y="244" fill="#26a69a" font-size="11">PDL = 18400</text>
+        <polyline points="60,150 100,130 140,170 180,140 220,100 260,70 280,55 300,80 340,120 380,160 420,190 460,210 500,235 540,250" fill="none" stroke="#f4b740" stroke-width="2"/>
+        <circle cx="280" cy="55" r="5" fill="#ef5350"/>
+        <text x="290" y="48" fill="#ef5350" font-size="11">Sweep PDH</text>
+        <circle cx="540" cy="250" r="5" fill="#26a69a"/>
+        <text x="460" y="268" fill="#26a69a" font-size="11">Cible : PDL</text>
+        <text x="200" y="25" fill="#d8dee4" font-size="13" font-weight="bold">IBDR : prix swept PDH → retour vers PDL</text>
+      </svg>
+    </div>
+
+    <h4>CBDR — Central Bank Dealing Range</h4>
+    <p>Range 14h–20h ET (20h–02h Paris) = 6h post-NY close + Asian.<br>Projection × 1.5 / × 2 / × 4 donne les zones <b>Flout</b> (extrapolation) utilisées en London.</p>
+
+    <div class="gallery" data-lessons="007_IPDA 005_L'IBDR_ 006_L'IBDR_! 054_Interbank_Price_Delivery_Algorithm 055_Intra_Bank_Dealing_Range"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 4 ==================== -->
+<section class="module" data-part="I" data-title="Structures">
+  <div class="head"><span class="num">4</span><h3>Structures (LTS / MTS / STS)</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>008-009</b> (Structures), <b>056</b> (Mid-term), <b>057</b> (Trendline), <b>058</b> (Short-term)</p>
+
+    <h4>3 niveaux de structure</h4>
+    <ul>
+      <li><b>Long Term (LTS)</b> : Daily, Weekly — biais sur plusieurs jours</li>
+      <li><b>Mid Term (MTS)</b> : 4H, 1H — biais intra-semaine</li>
+      <li><b>Short Term (STS)</b> : 15min, 5min — entrée</li>
+    </ul>
+
+    <h4>BOS vs MSS</h4>
+    <table>
+      <tr><th></th><th>BOS (Break of Structure)</th><th>MSS (Market Structure Shift)</th></tr>
+      <tr><td><b>Sens</b></td><td>Continuation</td><td>Inversion</td></tr>
+      <tr><td><b>Signal</b></td><td>Nouveau HH en up / LL en down</td><td>Cassure du dernier swing opposé</td></tr>
+      <tr><td><b>Action</b></td><td>Suivre le trend</td><td>Chercher entrée contre-trend</td></tr>
+    </table>
+
+    <div class="diagram">
+      <svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg">
+        <rect width="600" height="280" fill="#0d1117"/>
+        <polyline points="30,80 80,130 130,100 180,150 230,120 280,170 330,140 380,190 420,160 470,110 520,90 570,50" fill="none" stroke="#ef5350" stroke-width="2"/>
+        <text x="60" y="70" fill="#ef5350" font-size="10">LH</text>
+        <text x="110" y="90" fill="#ef5350" font-size="10">LH</text>
+        <text x="160" y="140" fill="#ef5350" font-size="10">LL</text>
+        <text x="260" y="160" fill="#ef5350" font-size="10">LL</text>
+        <line x1="420" y1="160" x2="570" y2="160" stroke="#f4b740" stroke-width="1" stroke-dasharray="3"/>
+        <text x="440" y="155" fill="#f4b740" font-size="10">last LH</text>
+        <circle cx="520" cy="90" r="6" fill="#26a69a"/>
+        <text x="490" y="80" fill="#26a69a" font-size="12" font-weight="bold">MSS</text>
+        <text x="530" y="45" fill="#26a69a" font-size="11">New HH après cassure</text>
+      </svg>
+    </div>
+
+    <div class="callout">📌 <b>Règle AA</b> : un MSS doit <b>clôturer</b> au-delà du swing opposé. Un simple pic qui traverse puis repart = sweep, pas MSS.</div>
+
+    <div class="gallery" data-lessons="008_Structures_ 009_Structures! 056_Mid_term_structure 057_Trendline 058_Short_term_structures"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 5 ==================== -->
+<section class="module" data-part="I" data-title="Liquidités">
+  <div class="head"><span class="num">5</span><h3>Liquidités (BSL/SSL, externes/internes)</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>010-011</b> (Liquidités), <b>038</b> (restantes), <b>039</b> (sweep/run), <b>168</b> (externes), <b>170-173</b> (internes)</p>
+
+    <h4>Définition</h4>
+    <div class="callout"><b>La liquidité = les stops des autres traders.</b> Toute zone où il y a concentration d'ordres stop est une cible pour l'algorithme.</div>
+
+    <h4>Liquidité externe — BSL / SSL</h4>
+    <ul>
+      <li><b>BSL</b> (Buy Side Liquidity) : au-dessus des hauts. Stops des shorts.</li>
+      <li><b>SSL</b> (Sell Side Liquidity) : sous les bas. Stops des longs.</li>
+    </ul>
+
+    <h5>Niveaux typiques</h5>
+    <ul>
+      <li>Previous Day High/Low (PDH/PDL)</li>
+      <li>Previous Week H/L — Previous Month H/L</li>
+      <li>Asian H / L</li>
+      <li><b>Old High / Old Low</b> (les plus puissants, stops accumulés depuis des mois)</li>
+    </ul>
+
+    <h4>Liquidité interne</h4>
+    <p>À l'intérieur du range : FVG (BISI/SIBI) non mitigés, Order blocks non retouchés, equal highs/lows.</p>
+
+    <h4>Sweep vs Run</h4>
+    <table>
+      <tr><th></th><th>Sweep</th><th>Run</th></tr>
+      <tr><td><b>Mouvement</b></td><td>Court, brutal, inverse immédiat</td><td>Long, progressif</td></tr>
+      <tr><td><b>Signal</b></td><td>Entrée contre-trend possible</td><td>Trend continuation</td></tr>
+      <tr><td><b>Exemple</b></td><td>Spike 15 pips, referme –2 en 3min</td><td>Cassure franche + 50 pips</td></tr>
+    </table>
+
+    <h4>Exemple EURUSD concret</h4>
+<pre><code>PDH = 1.0850. Prix oscille sous 1.0845 en Asian.
+09h15 London open : spike à 1.0852, redescend 1.0843 en 4 min.
+→ SWEEP confirmé. Setup SHORT :
+   Entry : 1.0848 (retest FVG M1 créé par le retour)
+   SL : 1.0854
+   TP : 1.0815 (PDL = SSL)</code></pre>
+
+    <div class="gallery" data-lessons="010_Liquidités 011_Liquidités 038_Liquidités_restantes 039_Liquidity_sweep___Liquidity_Run 168_Liq_externes 170_Liquidités_internes"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 6 ==================== -->
+<section class="module" data-part="I" data-title="Cycles AMD">
+  <div class="head"><span class="num">6</span><h3>Cycles du marché — Accumulation / Manipulation / Distribution</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>012-013</b> (Cycles), <b>043</b> (Consolidation), <b>044</b> (Expansion), <b>045</b> (Retracement/Reversal), <b>167</b> (Phases)</p>
+
+    <h4>Les 3 phases AMD</h4>
+    <table>
+      <tr><th>Phase</th><th>Chandelles</th><th>Volume</th><th>Objectif algo</th></tr>
+      <tr><td><b>Accumulation</b></td><td>Range, mèches 2 côtés</td><td>Bas</td><td>Piéger retail, charger positions</td></tr>
+      <tr><td><b>Manipulation</b></td><td>1 spike violent</td><td>Pic</td><td>Prendre liquidité opposée au vrai move</td></tr>
+      <tr><td><b>Distribution</b></td><td>Move directionnel</td><td>Élevé</td><td>Livrer vers la liquidité cible</td></tr>
+    </table>
+
+    <div class="diagram">
+      <svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+        <rect width="600" height="260" fill="#0d1117"/>
+        <rect x="30" y="100" width="180" height="60" fill="#1c2128" stroke="#8a93a1" stroke-dasharray="3"/>
+        <text x="70" y="95" fill="#8a93a1" font-size="11">ACCUMULATION</text>
+        <text x="85" y="135" fill="#8a93a1" font-size="10">range Asian</text>
+        <path d="M 210 130 L 240 60 L 260 140" stroke="#ef5350" stroke-width="2" fill="none"/>
+        <text x="215" y="50" fill="#ef5350" font-size="11">MANIPULATION</text>
+        <text x="215" y="180" fill="#ef5350" font-size="9">Sweep Asian H</text>
+        <path d="M 260 140 L 320 160 L 380 190 L 440 220 L 500 240" stroke="#26a69a" stroke-width="2" fill="none"/>
+        <text x="380" y="175" fill="#26a69a" font-size="11">DISTRIBUTION</text>
+        <text x="380" y="255" fill="#26a69a" font-size="9">Direction réelle</text>
+      </svg>
+    </div>
+
+    <h4>Modèle AMD en session (Paris)</h4>
+<pre><code>00h–08h : Asian        = ACCUMULATION (range serré)
+08h–09h : Pre-London   = MANIPULATION (sweep Asian H/L)
+09h–11h : London       = DISTRIBUTION (direction réelle)
+11h–14h : Lunch        = ACCUMULATION secondaire
+14h–15h30 : NY Open    = MANIPULATION (re-sweep)
+15h30–17h : NY trend   = DISTRIBUTION</code></pre>
+
+    <h4>Exemple</h4>
+<pre><code>Asian range NQ : 18380–18420 (acc)
+08h30 : spike 18425, retour 18410 (manip, sweep Asian H)
+09h00 : MSS M15 à 18408 (cassure Asian Low à 18378)
+TRADE : SHORT retest 18410 après MSS
+        TP : 18340 (FVG 1H laissé la veille)</code></pre>
+
+    <div class="gallery" data-lessons="012_Cycles_du_marché 013_Cycles_du_marché_2 043_Consolidation 044_Expansion 045_Retracement_reversal 167_Phases_du_marché"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 7 ==================== -->
+<section class="module" data-part="II" data-title="FVG Fair Value Gap">
+  <div class="head"><span class="num">7</span><h3>FVG — Fair Value Gap (BISI / SIBI)</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>022</b> (Fair Value Gap + Volume Imbalance), <b>176</b> (Déséquilibres), <b>027</b> (Imbalance)</p>
+
+    <h4>Définition FVG</h4>
+    <p>3 bougies consécutives où la mèche de <b>C1 ne recouvre pas</b> la mèche de C3.</p>
+
+    <h5>BISI (Bullish FVG)</h5>
+    <ul>
+      <li>High C1 &lt; Low C3</li>
+      <li>Zone = [High C1 ; Low C3]</li>
+      <li>Biais : achat sur réentrée</li>
+    </ul>
+
+    <h5>SIBI (Bearish FVG)</h5>
+    <ul>
+      <li>Low C1 &gt; High C3</li>
+      <li>Zone = [Low C1 ; High C3]</li>
+      <li>Biais : vente sur réentrée</li>
+    </ul>
+
+    <div class="diagram">
+      <svg viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
+        <rect width="500" height="280" fill="#0d1117"/>
+        <!-- C1 -->
+        <line x1="100" y1="200" x2="100" y2="240" stroke="#26a69a" stroke-width="1"/>
+        <rect x="90" y="210" width="20" height="25" fill="#26a69a"/>
+        <text x="85" y="260" fill="#8a93a1" font-size="11">C1</text>
+        <text x="125" y="210" fill="#8a93a1" font-size="10">High C1 = 18405</text>
+        <!-- C2 impulse -->
+        <line x1="200" y1="100" x2="200" y2="220" stroke="#26a69a" stroke-width="1"/>
+        <rect x="190" y="115" width="20" height="95" fill="#26a69a"/>
+        <text x="185" y="260" fill="#8a93a1" font-size="11">C2</text>
+        <text x="225" y="130" fill="#8a93a1" font-size="10">impulsion</text>
+        <!-- C3 -->
+        <line x1="300" y1="80" x2="300" y2="140" stroke="#26a69a" stroke-width="1"/>
+        <rect x="290" y="95" width="20" height="30" fill="#26a69a"/>
+        <text x="285" y="260" fill="#8a93a1" font-size="11">C3</text>
+        <text x="325" y="135" fill="#8a93a1" font-size="10">Low C3 = 18425</text>
+        <!-- FVG zone -->
+        <rect x="60" y="140" width="380" height="60" fill="rgba(38,166,154,0.15)" stroke="#26a69a" stroke-dasharray="4"/>
+        <text x="200" y="170" fill="#26a69a" font-size="14" font-weight="bold">FVG BISI</text>
+        <text x="170" y="188" fill="#8a93a1" font-size="10">[18405 ; 18425] — zone d'achat</text>
+      </svg>
+    </div>
+
+    <h4>Volume Imbalance</h4>
+    <p>Entre 2 bougies, une open/close ne "touche" pas l'autre. Plus fin qu'un FVG, doit aussi être reblanchi.</p>
+
+    <h4>Exemple NQ 15min</h4>
+<pre><code>C1 : H=18450  L=18440
+C2 : H=18470  L=18455  ← impulsion
+C3 : H=18475  L=18462
+→ FVG BISI = [18450 ; 18462]
+Prix revient dans cette zone → LONG, SL sous 18440.</code></pre>
+
+    <div class="callout bull">📏 <b>Règles</b> : un FVG <b>frais</b> (non touché) &gt; FVG partiellement rebalancé. FVG HTF (1H/4H) = zone primaire. FVG LTF (1min) = confirmation.</div>
+
+    <div class="gallery" data-lessons="022_Fairvalue_gap_Volume_imbalance 176_Desequilibres 027_Les_desequilibres_(imbalance)"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 8 ==================== -->
+<section class="module" data-part="II" data-title="Orderblock">
+  <div class="head"><span class="num">8</span><h3>Order Block</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>023</b> (Orderblock), <b>174</b> (Orderblock bis)</p>
+
+    <h4>Définition</h4>
+    <p>Dernière bougie <b>opposée</b> au mouvement impulsif, juste avant une cassure de structure.</p>
+    <ul>
+      <li><b>Bullish OB</b> : dernière bougie rouge avant un breakout haussier</li>
+      <li><b>Bearish OB</b> : dernière bougie verte avant un breakout baissier</li>
+    </ul>
+
+    <div class="diagram">
+      <svg viewBox="0 0 520 260" xmlns="http://www.w3.org/2000/svg">
+        <rect width="520" height="260" fill="#0d1117"/>
+        <!-- down moves -->
+        <g stroke="#ef5350" stroke-width="1">
+          <line x1="30" y1="60" x2="30" y2="120"/><rect x="22" y="70" width="16" height="40" fill="#ef5350"/>
+          <line x1="70" y1="90" x2="70" y2="160"/><rect x="62" y="100" width="16" height="50" fill="#ef5350"/>
+          <line x1="110" y1="120" x2="110" y2="190"/><rect x="102" y="130" width="16" height="50" fill="#ef5350"/>
+        </g>
+        <!-- red OB -->
+        <rect x="142" y="160" width="16" height="30" fill="#ef5350" stroke="#f4b740" stroke-width="2"/>
+        <line x1="150" y1="150" x2="150" y2="200" stroke="#ef5350"/>
+        <text x="130" y="215" fill="#f4b740" font-size="11" font-weight="bold">RED OB</text>
+        <!-- up impulse -->
+        <g stroke="#26a69a" stroke-width="1">
+          <rect x="182" y="130" width="16" height="50" fill="#26a69a"/>
+          <rect x="222" y="90" width="16" height="50" fill="#26a69a"/>
+          <rect x="262" y="60" width="16" height="40" fill="#26a69a"/>
+          <rect x="302" y="30" width="16" height="40" fill="#26a69a"/>
+        </g>
+        <text x="220" y="20" fill="#26a69a" font-size="11">Breakout haussier</text>
+        <!-- retrace to OB -->
+        <path d="M 318 50 Q 380 100 420 170" fill="none" stroke="#f4b740" stroke-dasharray="4" stroke-width="1.5"/>
+        <rect x="410" y="155" width="80" height="40" fill="rgba(244,183,64,0.15)" stroke="#f4b740" stroke-dasharray="3"/>
+        <text x="410" y="150" fill="#f4b740" font-size="10">Retest OB</text>
+        <text x="420" y="182" fill="#26a69a" font-size="10" font-weight="bold">LONG</text>
+      </svg>
+    </div>
+
+    <h4>Qualité d'un OB (ordre de force)</h4>
+    <ol>
+      <li><b>OB + FVG combiné</b> (le plus fort)</li>
+      <li>OB qui prend une liquidité avant de breakouter</li>
+      <li>OB simple</li>
+      <li>OB sur range serré sans impulsion (le plus faible)</li>
+    </ol>
+
+    <h4>Exemple EURUSD</h4>
+<pre><code>Downtrend EURUSD. Bougie verte M15 à 1.0850–1.0855 (dernière avant chute).
+Prix tombe à 1.0790, remonte tester 1.0850.
+→ SHORT sur retest OB :
+   SL : 1.0862 (au-dessus de la bougie OB)
+   TP : 1.0790 (precedent low) → ~5R</code></pre>
+
+    <div class="gallery" data-lessons="023_Orderblock 174_Orderblock"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 9 ==================== -->
+<section class="module" data-part="II" data-title="Breaker Block">
+  <div class="head"><span class="num">9</span><h3>Breaker Block</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>024-025</b> (Breaker), <b>175</b> (Breaker bis), <b>036</b> (Failed breaker + stop hunt)</p>
+
+    <h4>Définition</h4>
+    <p>Un OB qui a <b>échoué</b> (cassé) puis qui est <b>re-testé en inverse</b>.</p>
+
+    <h4>Mécanique (bullish breaker)</h4>
+    <ol>
+      <li>Prix en uptrend, pullback → crée un bullish OB</li>
+      <li>Prix casse cet OB (échec, downtrend amorcé)</li>
+      <li>Prix revient tester la même zone <b>par le bas</b> → devient résistance</li>
+    </ol>
+
+    <div class="callout info">🔑 <b>Pourquoi c'est puissant</b> : les stops des longs qui ont acheté sur l'OB initial sont maintenant <b>sous</b> la zone. Le retour en résistance piège tout le monde.</div>
+
+    <h4>Différence avec un simple OB</h4>
+    <ul>
+      <li><b>OB</b> : zone qui a produit le mouvement initial</li>
+      <li><b>Breaker</b> : zone <b>déjà mitigée</b> qui joue son rôle inverse</li>
+    </ul>
+
+    <h4>Failed Breaker + Stop Hunt (leçon 036)</h4>
+    <p>Un breaker qui se fait casser à nouveau = <b>trap</b>. Le vrai mouvement part dans l'autre sens après avoir piégé les traders qui ont suivi le breaker.</p>
+
+    <div class="gallery" data-lessons="024_Breaker 025_Breaker 175_Breaker 036_Failed_breaker_+_stop_hunt"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 10 ==================== -->
+<section class="module" data-part="II" data-title="Liquidity Void">
+  <div class="head"><span class="num">10</span><h3>Liquidity Void</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>026</b> (Liquidity Void), <b>037</b> (Liquidity void bis)</p>
+
+    <h4>Définition</h4>
+    <p>Grosse zone de FVG, souvent sur une bougie impulsive qui gap, <b>non rebalancée</b>.</p>
+
+    <h4>Lecture</h4>
+    <p>L'algorithme a <b>sauté</b> cette zone. Il y reviendra pour collecter la liquidité manquée.</p>
+    <ul>
+      <li>Zone reblanchie à ≥50% = souvent suffisant</li>
+      <li>Reblanchie à 100% = la zone est "fermée", ne jouera plus</li>
+    </ul>
+
+    <h4>Exemple</h4>
+<pre><code>NQ CPI day : prix 18400 → 18500 en 1 bougie M1.
+Liquidity void = [18410 ; 18498].
+Quelques heures plus tard : retrace 18450 → reblanchit 50%.
+→ LONG sur reprise du trend (vers 18520+).</code></pre>
+
+    <div class="gallery" data-lessons="026_Liquidity_Void 037_Liquidity_void"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 11 ==================== -->
+<section class="module" data-part="II" data-title="Rejection Block">
+  <div class="head"><span class="num">11</span><h3>Rejection Block</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>028</b> (Rejection block), <b>177</b> (Rejection block bis)</p>
+
+    <h4>Définition</h4>
+    <p>Bougie à <b>longue mèche</b> (rejet violent d'un niveau) sur HTF. On trade la zone de la mèche, <b>pas le corps</b>.</p>
+
+    <h4>Exemple</h4>
+<pre><code>Bougie 4H EURUSD : open 1.0800, high 1.0870, close 1.0815
+→ Rejection block bearish = [1.0815 ; 1.0870]  (la mèche)
+Prix revient dans cette zone → SHORT.
+SL : au-dessus de 1.0870.
+TP : low précédent ou SSL identifié.</code></pre>
+
+    <h4>Différence avec OB</h4>
+    <ul>
+      <li><b>OB</b> : dernière bougie opposée (corps)</li>
+      <li><b>Rejection</b> : mèche uniquement (pas de clôture dans la zone)</li>
+    </ul>
+
+    <div class="gallery" data-lessons="028_Rejection_block 177_Rejection_block"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 12 ==================== -->
+<section class="module" data-part="II" data-title="Failure To Launch FTL">
+  <div class="head"><span class="num">12</span><h3>Failure To Launch (FTL)</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>029</b> (Failure to launch), <b>178</b> (FTL bis)</p>
+
+    <h4>Concept</h4>
+    <p>Prix tente un breakout, <b>échoue</b> à le valider (pas de clôture au-delà), revient.</p>
+    <p><b>Signal</b> : le mouvement dans le sens du breakout avorté est fini, <b>inversion probable</b>.</p>
+
+    <h4>Exemple</h4>
+<pre><code>PDH = 18500. Prix atteint 18500, spike à 18502, referme à 18498.
+→ FTL bullish (pas de clôture > 18500).
+Prix redescend, fait un LH à 18495 → MSS M5 bearish.
+→ SHORT agressif. SL : 18503. TP : PDL.</code></pre>
+
+    <div class="gallery" data-lessons="029_Failure_to_launch 178_FTL"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 13 ==================== -->
+<section class="module" data-part="II" data-title="Rebalance Redelivery">
+  <div class="head"><span class="num">13</span><h3>Rebalance / Redelivery</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>030</b> (Rebalance redelivery)</p>
+
+    <h4>Concept</h4>
+    <p>L'algorithme <b>rebalance</b> les déséquilibres créés, puis <b>redelivery</b> vers la cible suivante.</p>
+    <p><b>Cycle</b> : imbalance → rebalance (retour dans la zone) → redelivery (mouvement reprend).</p>
+
+    <h4>Exemple</h4>
+<pre><code>NQ London : FVG BISI à 18380–18390 laissé en matinée.
+Prix monte à 18450.
+Rebalance : prix retourne à 18385 (comble FVG).
+Redelivery : prix repart vers 18500+ (cible initiale + continuation).</code></pre>
+
+    <div class="gallery" data-lessons="030_Rebalance_redelivery"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 14 ==================== -->
+<section class="module" data-part="II" data-title="Old High Low">
+  <div class="head"><span class="num">14</span><h3>Old High / Old Low</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>172</b> (Old high/low)</p>
+    <p>Les hauts/bas vieux de plusieurs semaines/mois sont les plus puissants. Pourquoi ? Parce que les stops s'y sont accumulés pendant tout ce temps.</p>
+    <div class="callout">🎯 Priorité de ciblage : <b>Old H/L &gt; PMH/L &gt; PWH/L &gt; PDH/L &gt; Asian H/L</b></div>
+    <div class="gallery" data-lessons="172_Old_high_low"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 15 ==================== -->
+<section class="module" data-part="III" data-title="Killzones">
+  <div class="head"><span class="num">15</span><h3>Killzones — Les fenêtres de trading</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>017</b> (Killzone + News), <b>046-047</b> (Killzone), <b>060</b> (Trader les killzone)</p>
+
+    <h4>Les 4 killzones (heure de Paris)</h4>
+    <table>
+      <tr><th>Killzone</th><th>Horaire</th><th>Caractère</th><th>Instruments</th></tr>
+      <tr><td><b>Asian</b></td><td>01h–05h</td><td>Range, accumulation</td><td>FX (JPY, AUD)</td></tr>
+      <tr><td><b>London</b></td><td>08h–11h</td><td>Premier move, manip + expansion</td><td>FX (EUR, GBP), indices EU</td></tr>
+      <tr><td><b>NY AM</b></td><td>14h30–17h</td><td>Grosse impulsion, news US</td><td>NQ, ES, DXY, FX</td></tr>
+      <tr><td><b>NY PM</b></td><td>19h30–21h</td><td>Continuation ou reversal</td><td>Indices US, fermeture</td></tr>
+    </table>
+
+    <div class="diagram">
+      <svg viewBox="0 0 700 160" xmlns="http://www.w3.org/2000/svg">
+        <rect width="700" height="160" fill="#0d1117"/>
+        <rect x="20" y="70" width="120" height="40" fill="#64b5f6" opacity="0.3"/>
+        <text x="40" y="95" fill="#64b5f6" font-size="11" font-weight="bold">ASIAN</text>
+        <text x="40" y="130" fill="#8a93a1" font-size="10">01h–05h</text>
+        <rect x="160" y="70" width="140" height="40" fill="#f4b740" opacity="0.3"/>
+        <text x="200" y="95" fill="#f4b740" font-size="11" font-weight="bold">LONDON</text>
+        <text x="200" y="130" fill="#8a93a1" font-size="10">08h–11h</text>
+        <rect x="320" y="70" width="140" height="40" fill="#26a69a" opacity="0.3"/>
+        <text x="350" y="95" fill="#26a69a" font-size="11" font-weight="bold">NY AM</text>
+        <text x="340" y="130" fill="#8a93a1" font-size="10">14h30–17h</text>
+        <rect x="480" y="70" width="140" height="40" fill="#ef5350" opacity="0.3"/>
+        <text x="510" y="95" fill="#ef5350" font-size="11" font-weight="bold">NY PM</text>
+        <text x="500" y="130" fill="#8a93a1" font-size="10">19h30–21h</text>
+        <text x="280" y="30" fill="#d8dee4" font-size="13" font-weight="bold">JOURNÉE DE TRADING</text>
+      </svg>
+    </div>
+
+    <div class="callout">📌 <b>Règle d'exécution</b> : 1 seul trade par killzone au début. Le trade se ferme <b>dans</b> la killzone ou juste après. Pas de setup dans la killzone = pas de trade.</div>
+
+    <h4>Exemple London typique</h4>
+<pre><code>08h : Asian range NQ = 18380–18420
+08h45 : sweep Asian High à 18425, ferme 18412
+09h05 : MSS M5 à 18405
+09h10 : retest OB 18408–18412 créé sur MSS
+09h11 : entrée SHORT à 18410, SL 18417, TP 18380
+09h35 : TP → +4.2R</code></pre>
+
+    <div class="gallery" data-lessons="017_Killzone_+_Nouvelles_eco_📊 046_killzone 047_killzone_#bis 060_trader_les_killzone"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 16 ==================== -->
+<section class="module" data-part="III" data-title="OTE Optimal Trade Entry">
+  <div class="head"><span class="num">16</span><h3>OTE — Optimal Trade Entry</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>021</b> (OTE)</p>
+
+    <h4>Définition</h4>
+    <p>Zone de retracement optimale = Fibo <b>62% à 79%</b> du dernier leg impulsionnel.</p>
+
+    <h4>Ajustement AA</h4>
+    <ul>
+      <li>Entry zone : <b>62% – 79%</b></li>
+      <li>Sweet spot : <b>70.5%</b></li>
+      <li>Au-delà de 79% = probablement reversal, pas retracement</li>
+    </ul>
+
+    <div class="diagram">
+      <svg viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg">
+        <rect width="500" height="260" fill="#0d1117"/>
+        <line x1="50" y1="200" x2="250" y2="50" stroke="#26a69a" stroke-width="2"/>
+        <text x="55" y="215" fill="#26a69a" font-size="10">Low = 18350</text>
+        <text x="255" y="45" fill="#26a69a" font-size="10">High = 18450</text>
+        <path d="M 250 50 Q 310 70 370 110" fill="none" stroke="#ef5350" stroke-width="1.5"/>
+        <rect x="290" y="100" width="150" height="50" fill="rgba(244,183,64,0.15)" stroke="#f4b740" stroke-dasharray="3"/>
+        <text x="445" y="100" fill="#f4b740" font-size="10">79% = 18412</text>
+        <text x="445" y="150" fill="#f4b740" font-size="10">62% = 18428</text>
+        <line x1="290" y1="125" x2="440" y2="125" stroke="#f4b740" stroke-width="2"/>
+        <text x="445" y="128" fill="#f4b740" font-size="11" font-weight="bold">70.5%</text>
+        <text x="320" y="180" fill="#26a69a" font-size="11" font-weight="bold">Zone OTE (Long)</text>
+      </svg>
+    </div>
+
+    <h4>Exemple NQ</h4>
+<pre><code>Leg haussier : 18350 → 18450 (100 pts).
+OTE LONG = [18412 (79%) ; 18428 (62%)].
+Sweet spot : 18420 (70.5%).
+SL : sous 18345. TP1 : 18450. TP2 : 18500 (extension).</code></pre>
+
+    <div class="callout">🔍 <b>Filtre</b> : OTE + PD Array dans la zone (FVG, OB) = haute proba. OTE seul = moyen.</div>
+
+    <div class="gallery" data-lessons="021_OTE"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 17 ==================== -->
+<section class="module" data-part="III" data-title="Models 10 12 BMF Callum">
+  <div class="head"><span class="num">17</span><h3>Les Models — 10, 12, BMF, Callum</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>031</b> (Callum), <b>032-033</b> (Model 10), <b>034</b> (Model 12), <b>035</b> (BMF)</p>
+
+    <h4>Model 10</h4>
+    <p><b>Contexte</b> : après 10h (Paris) sur NQ/ES.</p>
+    <ol>
+      <li>Asian range défini avant 9h</li>
+      <li>Pendant London (9h–10h), prix teste/sweep Asian H ou L</li>
+      <li>À 10h, retest du sweep → entrée dans la direction opposée au sweep</li>
+    </ol>
+<pre><code>Asian H NQ = 18420. À 9h45, spike à 18428 (sweep).
+À 10h10, retour à 18418 (retest) → SHORT, SL 18432, TP Asian Low.</code></pre>
+
+    <h4>Model 12</h4>
+    <p><b>Contexte</b> : pivot de mi-session (12h Paris).</p>
+    <ul>
+      <li>Matin London produit un move directionnel</li>
+      <li>Vers 12h, prix fait un pull-back vers un PD Array 15min</li>
+      <li>Retest = continuation pour NY open</li>
+    </ul>
+
+    <h4>BMF — Break-Mitigate-Fill</h4>
+    <ol>
+      <li><b>Break</b> : cassure structure (BOS/MSS)</li>
+      <li><b>Mitigate</b> : retour sur l'OB / FVG créé par la cassure</li>
+      <li><b>Fill</b> : prix reprend direction vers la liquidité cible</li>
+    </ol>
+
+    <h4>Callum (modèle signature)</h4>
+    <ol>
+      <li>Sweep liquidité (PDH/L, Asian H/L)</li>
+      <li>MSS LTF (M1/M5)</li>
+      <li>Retest OB/FVG du MSS</li>
+      <li>Entry + SL au-delà du sweep</li>
+      <li>TP = liquidité opposée</li>
+    </ol>
+
+    <div class="gallery" data-lessons="031_Callum 032_Model_10 033_Model_10 034_Model_12 035_BMF"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 18 ==================== -->
+<section class="module" data-part="III" data-title="Trade parfait">
+  <div class="head"><span class="num">18</span><h3>Trade parfait — le setup A+</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>048</b> (Trade parfait), <b>049</b> (Trade parfait)</p>
+
+    <h4>Concept</h4>
+    <p>Le prix fait l'<b>aller-retour complet</b> du range de la journée :<br>Asian H → test → descente → Asian L → test → remontée.</p>
+
+    <h4>Utilisation</h4>
+    <p>Si tu vois le pattern se former, tu peux trader les 2 côtés dans la journée. <b>Mais</b> : ne jamais prédire — attendre confirmation du 2e côté.</p>
+
+    <div class="gallery" data-lessons="048_Trade_parfait 049_Explication_du_trade_parfait"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 19 ==================== -->
+<section class="module" data-part="III" data-title="London to NY Reversal">
+  <div class="head"><span class="num">19</span><h3>London to NY Reversal</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>089</b> (London to NY reversal)</p>
+
+    <h4>Pattern</h4>
+    <ol>
+      <li>London produit un move (ex : haussier)</li>
+      <li>NY prend la liquidité créée par London puis <b>inverse</b></li>
+      <li>Gros move dans la direction opposée en NY PM</li>
+    </ol>
+
+    <h4>Exemple</h4>
+<pre><code>London NQ : range 18380–18450, move haussier jusqu'à 18460 à 13h.
+14h35 NY open : spike à 18465 (prend BSL), tombe à 18430.
+14h50 : MSS M5 à 18435.
+15h00 : retest OB 18442 → SHORT.
+17h : TP 18370 (Asian Low + FVG 1H).</code></pre>
+
+    <div class="gallery" data-lessons=""></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 20 ==================== -->
+<section class="module" data-part="III" data-title="OSOK One Shot One Kill">
+  <div class="head"><span class="num">20</span><h3>OSOK — One Shot One Kill</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>061</b> (Trader OSOK)</p>
+
+    <h4>Philosophie</h4>
+    <p><b>1 trade / jour. 1 seul.</b> Haute conviction, haut R.</p>
+
+    <h4>Règles</h4>
+    <ul>
+      <li>Analyse HTF la veille</li>
+      <li>Plan précis (zone, SL, TP)</li>
+      <li>Si setup non présenté → <b>0 trade</b></li>
+      <li>Setup présenté : entrée automatique, pas de deuxième chance</li>
+    </ul>
+
+    <div class="callout bull">✅ <b>Pourquoi ça marche</b> : pas d'épuisement mental, pas de revenge après perte, sélection A+ uniquement.</div>
+
+    <div class="gallery" data-lessons="061_trader_OSOK"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 21 ==================== -->
+<section class="module" data-part="III" data-title="Previous Day Week Month">
+  <div class="head"><span class="num">21</span><h3>Previous Day / Week / Month High-Low</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>042</b> (Previous day/week/month H/L)</p>
+
+    <h4>Hiérarchie</h4>
+    <table>
+      <tr><th>Niveau</th><th>Poids</th><th>Fréquence de test</th></tr>
+      <tr><td><b>PDH / PDL</b></td><td>Fort</td><td>Quasi-chaque jour</td></tr>
+      <tr><td><b>PWH / PWL</b></td><td>Très fort</td><td>1–2×/semaine</td></tr>
+      <tr><td><b>PMH / PML</b></td><td>Extrême</td><td>1–2×/mois</td></tr>
+      <tr><td><b>Old H / L</b></td><td>Le plus fort</td><td>Move violent quand touché</td></tr>
+    </table>
+
+    <div class="gallery" data-lessons="042_Previous_day_week_month_high_low"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 22 ==================== -->
+<section class="module" data-part="III" data-title="Equals Clean Highs Lows">
+  <div class="head"><span class="num">22</span><h3>Equal Highs/Lows & Clean H/L</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>041</b> (Equals et clean high/low)</p>
+
+    <h4>Equal highs / lows</h4>
+    <p>Plusieurs touches au même prix = <b>concentration de stops</b>. Aimant à prix.</p>
+    <div class="callout">⚡ Le prix viendra <b>sweep</b> ces equal highs/lows avant un vrai mouvement.</div>
+
+    <h4>Clean high / low</h4>
+    <p>Haut ou bas <b>isolé</b>, sans mèche qui dépasse = zone <b>non swept</b>. Très attractif pour l'algorithme.</p>
+
+    <h4>Exemple</h4>
+<pre><code>3 equal highs NQ à 18445 en 45 min. Prix reste sous.
+→ Très haute proba de spike à 18448 pour nettoyer,
+  avant tout move baissier. Setup short après sweep.</code></pre>
+
+    <div class="gallery" data-lessons="041_Equals_et_clean_high_low"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 23 ==================== -->
+<section class="module" data-part="IV" data-title="Asian Range CBDR Flout">
+  <div class="head"><span class="num">23</span><h3>Asian Range / CBDR / Flout</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>040</b> (Asian), <b>070</b> (CBDR, Asian range, Flout, Projection semaine)</p>
+
+    <h4>Asian Range</h4>
+    <ul>
+      <li>Mesuré 00h–05h Paris (NQ) ou 01h–07h (FX)</li>
+      <li>H–L = amplitude</li>
+      <li>Projection × 1.5 / × 2 / × 3 au-dessus et en-dessous = zones de livraison London</li>
+    </ul>
+
+    <h4>CBDR — Central Bank Dealing Range</h4>
+    <ul>
+      <li>14h–20h ET (20h–02h Paris) : 6h post-NY close + Asian</li>
+      <li>Projection × 1 / × 1.5 / × 2 / × 4 → zones <b>Flout</b></li>
+    </ul>
+
+    <div class="callout">🎯 Quand London ouvre, un multiple du range asiatique est souvent atteint comme target ou comme zone de sweep.</div>
+
+    <div class="gallery" data-lessons="040_Asian 070_Central_Bank_dealing_range_Asian_range_Flout_Projection_semaine"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 24 ==================== -->
+<section class="module" data-part="IV" data-title="Corrélations SMT">
+  <div class="head"><span class="num">24</span><h3>Corrélations & SMT</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>059</b> (Importance des corrélations)</p>
+
+    <h4>Principe SMT (Smart Money Technique)</h4>
+    <p>Deux instruments corrélés <b>doivent</b> faire les mêmes hauts et bas. Si l'un fait un HH et l'autre un LH = <b>divergence SMT</b>. Signal d'inversion.</p>
+
+    <h4>Paires classiques</h4>
+    <ul>
+      <li><b>NQ / ES</b> : tech vs large cap US</li>
+      <li><b>DXY vs EURUSD</b> : dollar vs euro (inversement corrélés)</li>
+      <li><b>EURUSD vs GBPUSD</b> : majors FX</li>
+      <li><b>XAUUSD vs GBPUSD</b> : or vs livre</li>
+      <li><b>BTC vs NQ</b> : risk-on</li>
+    </ul>
+
+    <h4>Exemple SMT concret</h4>
+<pre><code>NQ fait un HH à 18500 à 9h30.
+ES fait un LH (n'atteint pas son H précédent 5820).
+→ Divergence SMT bearish.
+Setup SHORT NQ avec haute conviction.</code></pre>
+
+    <div class="gallery" data-lessons="059_Importance_des_correlations"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 25 ==================== -->
+<section class="module" data-part="IV" data-title="Fractalité poupées russes">
+  <div class="head"><span class="num">25</span><h3>Poupées russes — la fractalité</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>068</b> (Poupées russes), <b>069</b> (Comment ça marche)</p>
+
+    <h4>Concept</h4>
+    <p>La structure M1 = microcosme de H1 = microcosme de D1. Ce qui se passe en petite échelle annonce la grande échelle.</p>
+
+    <h4>Lecture multi-TF</h4>
+    <ul>
+      <li>HTF (Daily) : biais</li>
+      <li>MTF (1H) : zone d'intérêt (OB, FVG)</li>
+      <li>LTF (15min) : confirmation structure (MSS)</li>
+      <li>Micro TF (1min) : entrée avec CISD</li>
+    </ul>
+
+    <div class="callout">🔑 <b>Règle</b> : ton entrée LTF doit <b>valider</b> le biais HTF, pas le contredire.</div>
+
+    <h4>Exemple</h4>
+    <ul>
+      <li>Daily bearish, 1H retrace FVG daily, 15min MSS bearish, 1min CISD → <b>SHORT</b> ✅</li>
+      <li>Daily bearish, 1H retrace, 15min MSS <b>bullish</b> → <b>NO TRADE</b> (fractal contradictoire) ❌</li>
+    </ul>
+
+    <div class="gallery" data-lessons=""></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 26 ==================== -->
+<section class="module" data-part="IV" data-title="Time and Price">
+  <div class="head"><span class="num">26</span><h3>Time & Price</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>179</b> (Time and Price)</p>
+
+    <h4>Concept</h4>
+    <p><b>Un PD Array n'a pas d'intérêt hors de sa fenêtre temporelle.</b><br>FVG créé à 9h15 perd sa puissance après 12h. OB vieux d'une semaine ne joue plus si le contexte a changé.</p>
+
+    <h4>Fenêtres clés (Paris)</h4>
+    <ul>
+      <li><b>Macros</b> (10min) : toutes les heures rondes ±10min (9h50–10h10…)</li>
+      <li><b>Silver Bullets</b> : 10h–11h, 16h–17h (3e heure de killzone)</li>
+      <li><b>7h30 Open</b> : biais de la journée ICT</li>
+      <li><b>IMP10</b> : impulsion de 10h — donne les targets</li>
+    </ul>
+
+    <div class="callout">⏱️ Si tu dois entrer, fais-le <b>dans</b> une macro window. Hors macro = signal faible.</div>
+
+    <div class="gallery" data-lessons="179_Time_and_Price"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 27 ==================== -->
+<section class="module" data-part="IV" data-title="Mid short term structure correlations">
+  <div class="head"><span class="num">27</span><h3>Mid-term & Short-term structure</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>053</b> (Welcome), <b>056</b> (Mid term), <b>057</b> (Trendline), <b>058</b> (Short term)</p>
+
+    <h4>Hiérarchie pratique</h4>
+    <ul>
+      <li><b>LTS</b> (Daily/Weekly) = biais général</li>
+      <li><b>MTS</b> (4H/1H) = niveaux d'intérêt, confluences</li>
+      <li><b>STS</b> (15min/5min) = timing de l'entrée</li>
+    </ul>
+
+    <h4>Trendline</h4>
+    <p>Ligne reliant 2+ swing points. Utile pour visualiser la structure actuelle, pas comme signal unique.</p>
+
+    <div class="gallery" data-lessons="053_Welcome!!! 056_Mid_term_structure 057_Trendline 058_Short_term_structures"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 28 ==================== -->
+<section class="module" data-part="V" data-title="Entrée SL TP">
+  <div class="head"><span class="num">28</span><h3>Entrée, Stop Loss, Take Profit</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>180</b> (Entrée-TP), <b>181</b> (SL TP)</p>
+
+    <h4>Entrée — 3 méthodes</h4>
+    <ul>
+      <li><b>Market</b> (agressive) : entrée au toucher</li>
+      <li><b>Limit</b> (patience) : ordre en attente</li>
+      <li><b>Stop</b> (confirmation) : déclenché à cassure + retest</li>
+    </ul>
+    <div class="callout">📏 Ordre préférentiel : <b>limit &gt; market &gt; stop</b>, sauf si volatilité casse le limit avant le fill.</div>
+
+    <h4>Stop Loss</h4>
+    <ul>
+      <li>Doit être <b>structurel</b> : au-delà du sweep, au-delà de l'invalidation</li>
+      <li>Jamais arbitraire ("10 pips parce que je veux")</li>
+      <li>Règle des 20% : SL ne dépasse pas 20% de l'amplitude du mouvement cible</li>
+    </ul>
+
+    <h4>Take Profit</h4>
+    <ul>
+      <li><b>TP1</b> : liquidité intermédiaire (≈1.5R–2R)</li>
+      <li><b>TP2</b> : liquidité principale (≈3R–5R)</li>
+      <li><b>TP3</b> (optionnel) : extension (≥5R)</li>
+    </ul>
+
+    <h4>Exemple rempli</h4>
+<pre><code>Entry : 18420 (limit OB retest)
+SL    : 18432 (au-dessus du sweep)  → 12 pts risque
+TP1   : 18395 (Asian L)               → +2R
+TP2   : 18360 (weekly FVG)            → +5R
+Sortie 50% en TP1, 50% trail vers TP2</code></pre>
+
+    <div class="gallery" data-lessons="180_Entrée_-_TP 181_SL_TP"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 29 ==================== -->
+<!-- ==================== MODULE 30 ==================== -->
+<section class="module" data-part="V" data-title="Gestion trades gagnants">
+  <div class="head"><span class="num">29</span><h3>Gestion des trades gagnants</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>182</b> (Gestion trades gagnants)</p>
+
+    <h4>Breakeven</h4>
+    <p>Déplacer SL à l'entrée <b>après 1R atteint</b>. Le trade ne peut plus faire mal.</p>
+
+    <h4>Partiel</h4>
+    <p>Sortir 30%–50% à TP1. Laisser le reste courir.</p>
+
+    <h4>Trailing</h4>
+    <ul>
+      <li>Sur M1 : trail sous chaque swing low (long) / au-dessus de chaque swing high (short)</li>
+      <li>Sur M15 : trail sous chaque OB/FVG significatif</li>
+    </ul>
+
+    <h4>Anti-FOMO en trade</h4>
+    <p>Si prix s'approche de TP2 et oscille : ne pas avancer le SL de façon agressive. Laisser respirer.</p>
+
+    <div class="gallery" data-lessons="182_Gestion_des_trades_gagnants"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 31 ==================== -->
+<!-- ==================== MODULE 32 ==================== -->
+<section class="module" data-part="V" data-title="Prop firm">
+  <div class="head"><span class="num">30</span><h3>Prop firm</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>163</b> (prop firm)</p>
+
+    <h4>Règles typiques</h4>
+    <ul>
+      <li>Daily loss limit (souvent 5%)</li>
+      <li>Max drawdown (souvent 10%)</li>
+      <li>Profit target (8–10% sur 30 jours phase 1)</li>
+      <li>Jours minimum de trading</li>
+    </ul>
+
+    <h4>Stratégie</h4>
+    <ul>
+      <li><b>Risk réduit</b> : 0.3%–0.5% par trade</li>
+      <li><b>Trades sélectifs</b> : 1–2/jour, A+ only</li>
+      <li><b>Objectif en plusieurs semaines</b>, pas en 2 jours</li>
+      <li><b>Pause après 2R gagnés</b> dans la journée</li>
+    </ul>
+
+    <h4>Erreurs classiques à éviter</h4>
+    <ul>
+      <li>Augmenter le risque après une perte</li>
+      <li>Trader hors killzone pour "compenser"</li>
+      <li>Over-trader les derniers jours</li>
+    </ul>
+
+    <div class="gallery" data-lessons="163_prop_firm_"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 33 ==================== -->
+<section class="module" data-part="VI" data-title="Alter Ego">
+  <div class="head"><span class="num">31</span><h3>Alter Ego — Psychologie du trading</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>018</b> (Maîtriser psychologie), <b>050</b> (Maîtriser son alter ego)</p>
+
+    <h4>Concept</h4>
+    <p><b>Ton cerveau en trading ≠ ton cerveau normal.</b><br>Il faut créer un "alter ego" discipliné qui respecte le plan, indépendamment des émotions.</p>
+
+    <h4>Rituel type</h4>
+<pre><code>07h30 : check news + biais journée
+08h00 : écrit plan sur papier
+08h30 : prépare chart, pose niveaux
+09h00 : session London, exécution pure
+11h00 : stop trade, pause
+14h00 : reprise NY, re-check plan
+17h30 : journal clôture, note émotions</code></pre>
+
+    <div class="gallery" data-lessons="018_Maîtriser_la_Psychologie_du_Trading_🧠 050_Maîtriser_Son_Alter_Ego_🧠"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 34 ==================== -->
+<section class="module" data-part="VI" data-title="FOMO">
+  <div class="head"><span class="num">32</span><h3>FOMO</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>091</b> (FOMO)</p>
+
+    <h4>Symptôme</h4>
+    <p>Tu vois le prix s'envoler sans toi → tu rentres tardivement, au pire moment.</p>
+
+    <h4>Antidote</h4>
+    <ul>
+      <li><b>Règle</b> : si pas entré sur la zone planifiée, <b>pas d'entrée tardive</b></li>
+      <li>Accepte de rater un trade. Il y en aura d'autres.</li>
+      <li>Journal : note chaque résistance au FOMO → renforcement positif</li>
+    </ul>
+
+    <div class="callout">🎯 "Le marché ouvre chaque jour. Ce trade n'est pas le dernier."</div>
+
+    <div class="gallery" data-lessons="091_FOMO"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 35 ==================== -->
+<section class="module" data-part="VI" data-title="Revenge Trading">
+  <div class="head"><span class="num">33</span><h3>Revenge Trading</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>092</b> (Revenge trading)</p>
+
+    <h4>Symptôme</h4>
+    <p>Tu perds un trade → tu rentres immédiatement dans un autre pour "récupérer". Le 2e trade est pris sur l'émotion.</p>
+
+    <h4>Antidote</h4>
+    <ul>
+      <li>Après une perte, <b>pause obligatoire 30 min</b> (hors chart)</li>
+      <li>2 pertes consécutives = <b>stop de la journée</b></li>
+      <li>Écrire dans le journal : "J'ai perdu X, je ressens Y, je ne traderai pas avant Z"</li>
+    </ul>
+
+    <div class="gallery" data-lessons="092_Revenge_trading"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 36 ==================== -->
+<section class="module" data-part="VI" data-title="Peur de prendre un trade">
+  <div class="head"><span class="num">34</span><h3>Peur de prendre un trade</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>093</b> (Peur de prendre un trade)</p>
+
+    <h4>Cause</h4>
+    <ul>
+      <li>Dernier trade perdant non digéré</li>
+      <li>Sous-capitalisation (taille psychologiquement lourde)</li>
+      <li>Manque de backtest (pas de confiance stats)</li>
+    </ul>
+
+    <h4>Solutions</h4>
+    <ul>
+      <li><b>Réduire la taille</b> : jusqu'à ce que l'entrée soit automatique</li>
+      <li><b>Backtester 30 trades</b> minimum</li>
+      <li><b>Limit orders</b> plutôt que décisions market</li>
+    </ul>
+
+    <div class="gallery" data-lessons="093_La_peur_de_prendre_un_trade"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 37 ==================== -->
+<section class="module" data-part="VI" data-title="Overtrading">
+  <div class="head"><span class="num">35</span><h3>Overtrading</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>094</b> (L'over trading)</p>
+
+    <h4>Symptôme</h4>
+    <p>10+ trades par jour. Résultat : P&L négatif, fatigue mentale.</p>
+
+    <h4>Règle AA</h4>
+    <p><b>Max 3 trades / jour</b>, peu importe les conditions. Mieux vaut laisser passer qu'en prendre un mauvais.</p>
+
+    <h4>Signal d'arrêt</h4>
+    <ul>
+      <li>2 pertes dans la journée → stop</li>
+      <li>2 TP atteints → stop (protéger les gains)</li>
+      <li>Pas de setup clair après 1h → stop</li>
+    </ul>
+
+    <div class="gallery" data-lessons="094_L'over_trading"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 38 ==================== -->
+<section class="module" data-part="VI" data-title="Ascenseur émotionnel">
+  <div class="head"><span class="num">36</span><h3>Ascenseur émotionnel</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>131</b> (Ascenseur emotionnel 12/09/24)</p>
+
+    <h4>Cycle</h4>
+    <p>euphorie (gain) → excès confiance → perte → déception → revenge → catastrophe.</p>
+
+    <h4>Garde-fous</h4>
+    <ul>
+      <li><b>Taille fixe</b> : même après 5 gagnants d'affilée</li>
+      <li><b>Risque fixe</b> : ne jamais augmenter le % après un gain</li>
+      <li><b>Journal émotionnel</b> : noter euphorie systématiquement</li>
+    </ul>
+
+    <div class="gallery" data-lessons="131_Ascenseur_emotionnel_12_09_24"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 39 ==================== -->
+<section class="module" data-part="VI" data-title="Détective émotions">
+  <div class="head"><span class="num">37</span><h3>Détective de vos émotions</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>184</b> (Detective de vos emotions)</p>
+
+    <h4>Grille d'auto-analyse</h4>
+    <p>Après chaque trade :</p>
+    <ol>
+      <li><b>Émotion avant</b> : calme, stress, excité, fatigue</li>
+      <li><b>Émotion pendant</b> : peur, confiance, doute</li>
+      <li><b>Émotion après</b> : satisfaction, colère, frustration</li>
+      <li><b>Qualité d'exécution</b> : 1–10 (respect du plan)</li>
+    </ol>
+
+    <h4>Patterns à détecter</h4>
+    <ul>
+      <li>"Excité avant" → trade émotionnel → <b>skip</b></li>
+      <li>"Fatigué après 2 trades" → <b>stop, repos</b></li>
+      <li>"Colère post-perte" → <b>interdit de retrader</b></li>
+    </ul>
+
+    <div class="gallery" data-lessons="184_Detective_de_vos_emotions"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 40 ==================== -->
+<section class="module" data-part="VII" data-title="Hindsight">
+  <div class="head"><span class="num">38</span><h3>Hindsight — Prise de notes</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçon : <b>067</b> (Comment faire de l'hindsight)</p>
+
+    <h4>Pratique</h4>
+    <p>Chaque soir, <b>rejouer la journée</b> sur replay :</p>
+    <ul>
+      <li>Marquer les setups <b>A+ manqués</b></li>
+      <li>Marquer les trades pris <b>hors plan</b></li>
+      <li>Dessiner ce que tu aurais dû voir</li>
+    </ul>
+
+    <h4>Outils</h4>
+    <ul>
+      <li>TradingView Replay</li>
+      <li>Enregistrements d'écran (OBS)</li>
+      <li>Screenshots systématiques</li>
+    </ul>
+
+    <div class="gallery" data-lessons="067_Comment_faire_de_l'hindsight_(prise_de_note)"></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 41 ==================== -->
+<!-- ==================== MODULE 42 ==================== -->
+<section class="module" data-part="VII" data-title="Pourquoi 95% perdants">
+  <div class="head"><span class="num">39</span><h3>Pourquoi 95% des traders perdent</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <p class="callout info">Leçons : <b>164</b> (Pourquoi pas rentables), <b>165</b> (Mindmap perdants), <b>166</b> (Feedback pour gagner)</p>
+
+    <h4>Mindmap des causes</h4>
+    <ol>
+      <li>Pas de plan (ou pas respecté)</li>
+      <li>Over-leverage (risque &gt; 2%)</li>
+      <li>Pas de backtest</li>
+      <li>Over-trading</li>
+      <li>Ego (refus d'accepter les pertes)</li>
+      <li>Mauvais timeframe pour le style</li>
+      <li>Influence externe (Twitter, Discord, signaux)</li>
+      <li>Pas de journal</li>
+    </ol>
+
+    <h4>Solution systémique : feedback loop</h4>
+    <ul>
+      <li>Journal après chaque trade</li>
+      <li>Review hebdo (quel setup marche / pas)</li>
+      <li>Review mensuelle (stats : WR, avg R, max DD)</li>
+      <li>Adaptation du plan si stats &lt; objectif</li>
+    </ul>
+
+    <div class="gallery" data-lessons=""></div>
+  </div>
+</section>
+
+<!-- ==================== MODULE 43 ==================== -->
+<section class="module" data-part="VII" data-title="Protocole complet checklist">
+  <div class="head"><span class="num">40</span><h3>Protocole complet & checklists</h3><span class="caret">▶</span></div>
+  <div class="body">
+
+    <h4>Check-list AVANT session</h4>
+<pre><code>□ News eco du jour vérifiées (FF calendar)
+□ Niveaux HTF tracés (PDH/L, PWH/L, PMH/L)
+□ Asian range défini (H/L)
+□ Biais écrit (Long / Short / NoTrade + raison)
+□ Zone d'intérêt identifiée (OB, FVG HTF)
+□ Taille de position calculée (risque 0.5%–1%)
+□ État émotionnel OK
+□ Pas de trade ouvert d'une session précédente</code></pre>
+
+    <h4>Check-list PENDANT le trade</h4>
+<pre><code>□ Entry sur zone planifiée (pas chasing)
+□ SL structurel (pas arbitraire)
+□ TP sur liquidité (pas "au pif")
+□ Taille conforme au plan
+□ Pas de modification émotionnelle du SL/TP</code></pre>
+
+    <h4>Check-list APRÈS session</h4>
+<pre><code>□ Journal rempli (entry, exit, émotion, note)
+□ Screenshot chart avec annotations
+□ Stats mises à jour (WR, R cumulé)
+□ Pas de trade "extra" hors plan
+□ Review si perte : erreur setup ou erreur exécution ?</code></pre>
+
+    <h4>Setup A+ — Checklist</h4>
+<pre><code>□ Biais HTF clair (Daily + 4H aligné)
+□ Liquidité prise (PDH/L ou Asian H/L swept)
+□ Zone PD Array retouchée (FVG, OB, Breaker)
+□ MSS confirmé sur MTF (15min)
+□ CISD sur LTF (1min) = confirmation entrée
+□ RR ≥ 1:2 minimum sur TP1
+□ Pas de news majeure dans 30 min
+□ Tu es dans une killzone
+□ Taille = risque planifié
+□ SL + TP entrés dans l'ordre</code></pre>
+  </div>
+</section>
+
+<!-- ==================== LIVES SECTION ==================== -->
+<!-- ==================== COMMANDEMENTS ==================== -->
+<section class="module open" data-part="VII" data-title="10 commandements">
+  <div class="head"><span class="num">✓</span><h3>Les 10 commandements Algorithmic Academy</h3><span class="caret">▶</span></div>
+  <div class="body">
+    <ol style="font-size: 15px; line-height: 2;">
+      <li><b>Le plan est sacré.</b> Pas de trade sans plan écrit avant.</li>
+      <li><b>Un setup A+ seulement.</b> Mieux vaut skip que forcer.</li>
+      <li><b>Killzone ou rien.</b> Hors killzone = pas d'entrée.</li>
+      <li><b>Le SL est ta vie.</b> Il ne bouge pas sauf à breakeven.</li>
+      <li><b>2% max, 0.5% typique.</b> Le risque ne se négocie pas.</li>
+      <li><b>Stop après 2 pertes.</b> Stop après 2 TP aussi.</li>
+      <li><b>Backtest &gt; opinion.</b> Tes statistiques valent mille théories.</li>
+      <li><b>Journal après chaque trade.</b> Sans exception.</li>
+      <li><b>Hindsight chaque soir.</b> Où as-tu manqué ? Où as-tu forcé ?</li>
+      <li><b>Le marché est éternel. Pas tes émotions.</b> Ton job : durer.</li>
+    </ol>
+  </div>
+</section>
+
+</div> <!-- /wrap -->
+
+<div id="lightbox" onclick="this.classList.remove('open')">
+  <button class="close" onclick="document.getElementById('lightbox').classList.remove('open')">&times;</button>
+  <img src="" alt="">
+</div>
+
+<script>
+// Build top nav
+const modules = document.querySelectorAll('section.module');
+const nav = document.getElementById('topnav');
+const parts = {I: 'Fondamentaux', II: 'PD Arrays', III: 'Models', IV: 'Avancé', V: 'Gestion', VI: 'Psycho', VII: 'Protocole', VIII: 'Lives'};
+const seenParts = new Set();
+modules.forEach((m, idx) => {
+  const part = m.dataset.part;
+  if (part && !seenParts.has(part)) {
+    seenParts.add(part);
+    const a = document.createElement('a');
+    a.href = '#mod-' + idx;
+    a.textContent = part + ' — ' + parts[part];
+    nav.appendChild(a);
+  }
+  m.id = 'mod-' + idx;
+});
+
+// Collapse / expand
+modules.forEach(m => {
+  m.querySelector('.head').addEventListener('click', () => m.classList.toggle('open'));
+});
+
+// Load gallery images dynamically
+document.querySelectorAll('.gallery[data-lessons]').forEach(gal => {
+  const lessons = gal.dataset.lessons.split(' ').filter(Boolean);
+  lessons.forEach(lesson => {
+    for (let i = 1; i <= 5; i++) {
+      const img = document.createElement('img');
+      img.src = `fondements-ict-screenshots/${lesson}/frame_${String(i).padStart(2, '0')}.jpg`;
+      img.loading = 'lazy';
+      img.alt = lesson;
+      const link = document.createElement('a');
+      link.appendChild(img);
+      const cap = document.createElement('div');
+      cap.className = 'cap';
+      cap.textContent = lesson.split('_').slice(0, 1) + ' — frame ' + i;
+      link.appendChild(cap);
+      link.onclick = (e) => {
+        e.preventDefault();
+        const lb = document.getElementById('lightbox');
+        lb.querySelector('img').src = img.src;
+        lb.classList.add('open');
+      };
+      // Hide broken images
+      img.onerror = () => { link.style.display = 'none'; };
+      gal.appendChild(link);
+    }
+  });
+});
+
+// Search: filter modules by title/content
+document.getElementById('search').addEventListener('input', e => {
+  const q = e.target.value.toLowerCase().trim();
+  modules.forEach(m => {
+    const title = (m.dataset.title || '').toLowerCase();
+    const body = m.querySelector('.body').textContent.toLowerCase();
+    const match = !q || title.includes(q) || body.includes(q);
+    m.style.display = match ? '' : 'none';
+    if (match && q) m.classList.add('open');
+  });
+});
+
+// Open module on hash change
+window.addEventListener('hashchange', () => {
+  const id = location.hash.slice(1);
+  if (id) {
+    const mod = document.getElementById(id);
+    if (mod) mod.classList.add('open');
+  }
+});
+
+// Initial: open first module
+if (modules[0]) modules[0].classList.add('open');
+</script>
+</body>
+</html>
