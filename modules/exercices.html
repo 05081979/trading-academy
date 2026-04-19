@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Algorithmic Academy — Exercices du cours</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Syne', system-ui, sans-serif;
+  background: #f5f7fa;
+  color: #111;
+  line-height: 1.65;
+  min-height: 100vh;
+}
+.wrap { max-width: 1100px; margin: 0 auto; padding: 24px 20px 80px; }
+.topnav {
+  background: #fff;
+  border-bottom: 2px solid #e5e7eb;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.topnav a { color: #dc2626; font-weight: 700; text-decoration: none; }
+.hero {
+  margin: 20px 0 28px;
+  padding: 28px 32px;
+  background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
+  border: 2px solid #dc2626;
+  border-radius: 12px;
+}
+.hero .badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #dc2626;
+  color: #fff;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.hero h1 { font-size: 28px; color: #111; margin-bottom: 8px; }
+.hero p { color: #555; font-size: 15px; }
+
+/* Onglets thematiques */
+.exo-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 24px 0 24px;
+  padding: 8px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+.exo-tab {
+  flex: 1 1 auto;
+  min-width: 160px;
+  padding: 10px 14px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: inherit;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+  line-height: 1.35;
+}
+.exo-tab:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+.exo-tab.active {
+  background: #dc2626;
+  color: #fff;
+  border-color: #dc2626;
+}
+.exo-tab .tab-count {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 8px;
+  background: rgba(255,255,255,0.3);
+  color: inherit;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.exo-tab:not(.active) .tab-count {
+  background: #dc2626;
+  color: #fff;
+}
+
+/* Pane */
+.pane-header h2 { font-size: 24px; color: #dc2626; margin-bottom: 8px; }
+.pane-header p { color: #555; font-size: 14px; margin-bottom: 22px; }
+
+.exo-item {
+  margin: 12px 0;
+  padding: 18px 20px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 9px;
+  transition: border-color 0.15s;
+}
+.exo-item:hover { border-color: #d1d5db; }
+.exo-q {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 12px;
+  line-height: 1.55;
+  display: flex;
+  gap: 12px;
+}
+.exo-num {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: #dc2626;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 800;
+}
+.exo-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.5;
+  resize: vertical;
+  transition: border-color 0.15s, background 0.15s;
+}
+.exo-input:focus { outline: none; border-color: #dc2626; }
+.exo-feedback { display: none; margin-top: 12px; }
+.exo-feedback.show { display: block; }
+.exo-feedback .result {
+  padding: 10px 14px;
+  border-radius: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.exo-feedback .result.ok { background: #d1fae5; color: #065f46; border-left: 3px solid #10b981; }
+.exo-feedback .result.ko { background: #fee2e2; color: #991b1b; border-left: 3px solid #dc2626; }
+.exo-feedback .ref {
+  padding: 14px 16px;
+  background: rgba(38,166,154,0.08);
+  border-left: 3px solid #26a69a;
+  border-radius: 5px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #1e3a34;
+}
+
+.exo-actions {
+  margin-top: 26px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+.exo-submit {
+  padding: 14px 32px;
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  font-family: inherit;
+}
+.exo-submit:hover { background: #b91c1c; }
+.exo-submit:disabled { background: #9ca3af; cursor: not-allowed; }
+.exo-reset {
+  padding: 14px 24px;
+  background: #fff;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  display: none;
+}
+.exo-reset:hover { background: #f9fafb; color: #111; }
+.exo-reset.show { display: inline-block; }
+
+.exo-score {
+  display: none;
+  margin-top: 24px;
+  padding: 24px;
+  border-radius: 10px;
+  text-align: center;
+}
+.exo-score.show { display: block; }
+.exo-score .big { font-size: 52px; font-weight: 900; line-height: 1; margin-bottom: 8px; }
+.exo-score .pct { font-size: 22px; font-weight: 700; margin-bottom: 14px; }
+.exo-score .msg { font-size: 15px; color: #333; line-height: 1.6; }
+
+@media (max-width: 700px) {
+  .hero { padding: 20px; }
+  .hero h1 { font-size: 22px; }
+  .exo-tab { font-size: 12.5px; padding: 9px 11px; min-width: 140px; }
+  .pane-header h2 { font-size: 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="hub-cours.html">← Retour au hub</a>
+  <span style="color:#6b7280;">|</span>
+  <a href="../index.html">Accueil</a>
+</nav>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="badge">Exercices · Quiz de validation</div>
+    <h1>📝 144 exercices · 13 thématiques</h1>
+    <p>Chaque thématique regroupe tous les exercices qui couvrent ses modules. Écris tes réponses, clique sur <b>VALIDER</b>, découvre les réponses de référence et ton score.</p>
+  </div>
+
+  <div class="exo-tabs">
+    <button class="exo-tab active" data-target="QUARTERLY_TIME">Quarterly Theory, Cycles & Time <span class="tab-count">12</span></button>
+        <button class="exo-tab" data-target="GOLDBACH_ARCHITECTURE">Goldbach, Architecture & Niveaux algorithmiques <span class="tab-count">12</span></button>
+        <button class="exo-tab" data-target="PO3_SEQUENCES">PO3 (Power Of Three) & séquences fractales <span class="tab-count">11</span></button>
+        <button class="exo-tab" data-target="DEALING_RANGES">Dealing Ranges & Ranges fractals <span class="tab-count">10</span></button>
+        <button class="exo-tab" data-target="LIQUIDITE">Liquidité & Inducement <span class="tab-count">10</span></button>
+        <button class="exo-tab" data-target="SMC_FONDAMENTAUX">Smart Money Concepts (SMC) & Fondamentaux <span class="tab-count">10</span></button>
+        <button class="exo-tab" data-target="SESSIONS_KILLZONES">Sessions, Killzones & Macros <span class="tab-count">10</span></button>
+        <button class="exo-tab" data-target="EXECUTION">Exécution, Modèles & Entrées <span class="tab-count">12</span></button>
+        <button class="exo-tab" data-target="ZONES_PRIX">Zones de prix : FVG, OB, CISD, Breakers <span class="tab-count">12</span></button>
+        <button class="exo-tab" data-target="ANALYSE_MTF">Analyse MTF, Daily Bias, OHLC, MMXM <span class="tab-count">10</span></button>
+        <button class="exo-tab" data-target="PSYCHOLOGIE">Psychologie & Mental Game <span class="tab-count">11</span></button>
+        <button class="exo-tab" data-target="GESTION_RISQUE">Gestion du risque, Plan & Protocole <span class="tab-count">12</span></button>
+        <button class="exo-tab" data-target="PATTERNS_MODELES">Patterns avancés, Modèles de marché & Études de cas <span class="tab-count">12</span></button>
+        
+  </div>
+
+  
+<section class="exo-pane" id="pane-QUARTERLY_TIME" style="display:block;" data-key="QUARTERLY_TIME">
+  <div class="pane-header">
+    <h2>Quarterly Theory, Cycles & Time</h2>
+    <p>12 exercices couvrent tous les modules de cette thématique. Réponds à chaque question, puis valide pour découvrir les réponses et ton score.</p>
+  </div>
+  <div class="exo-quiz"><div class="exo-item" data-idx="1"><div class="exo-q"><span class="exo-num">1</span>Quelles sont les 4 phases de la Quarterly Theory et que représentent-elles ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="2"><div class="exo-q"><span class="exo-num">2</span>Dans quelle Q se situe l'entrée optimale et pourquoi ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="3"><div class="exo-q"><span class="exo-num">3</span>Comment la QT se répète-t-elle fractalement dans une journée ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="4"><div class="exo-q"><span class="exo-num">4</span>Cite les 4 cycles temporels majeurs à surveiller.</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="5"><div class="exo-q"><span class="exo-num">5</span>Qu'est-ce qu'une 'macro' ICT et à quelles heures NY ont-elles lieu ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="6"><div class="exo-q"><span class="exo-num">6</span>Pourquoi 'Time' est-il aussi important que 'Price' en ICT ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="7"><div class="exo-q"><span class="exo-num">7</span>Qu'est-ce que la Digital Time Theory (DTT) ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="8"><div class="exo-q"><span class="exo-num">8</span>Un cycle weekly en Q1 (accumulation) : quels setups éviter ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="9"><div class="exo-q"><span class="exo-num">9</span>Comment identifier la transition Q2 → Q3 en temps réel ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="10"><div class="exo-q"><span class="exo-num">10</span>Sur quel timeframe la QT est-elle la plus tradable ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="11"><div class="exo-q"><span class="exo-num">11</span>Macro NY à 15h50 mais tu n'as pas de setup pré-identifié. Que faire ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="12"><div class="exo-q"><span class="exo-num">12</span>Piège : 'je suis dans la Q3, donc je dois entrer'. Quelle est l'erreur ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div></div>
+  <div class="exo-actions">
+    <button class="exo-submit" data-theme="QUARTERLY_TIME">VALIDER MES RÉPONSES</button>
+    <button class="exo-reset" data-theme="QUARTERLY_TIME">Recommencer</button>
+  </div>
+  <div class="exo-score" data-theme="QUARTERLY_TIME"></div>
+</section>
+<section class="exo-pane" id="pane-GOLDBACH_ARCHITECTURE" style="display:none;" data-key="GOLDBACH_ARCHITECTURE">
+  <div class="pane-header">
+    <h2>Goldbach, Architecture & Niveaux algorithmiques</h2>
+    <p>12 exercices couvrent tous les modules de cette thématique. Réponds à chaque question, puis valide pour découvrir les réponses et ton score.</p>
+  </div>
+  <div class="exo-quiz"><div class="exo-item" data-idx="1"><div class="exo-q"><span class="exo-num">1</span>Cite les 5 niveaux fondamentaux du système Goldbach (pourcentages).</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="2"><div class="exo-q"><span class="exo-num">2</span>Dans quelle zone Goldbach acheter sur un biais haussier ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="3"><div class="exo-q"><span class="exo-num">3</span>Différence entre Goldbach 729 / 243 / 81 ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="4"><div class="exo-q"><span class="exo-num">4</span>Niveau fib le plus important pour Goldbach et pourquoi ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="5"><div class="exo-q"><span class="exo-num">5</span>Pourquoi le fib fractal Goldbach est plus fiable que le fib classique ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="6"><div class="exo-q"><span class="exo-num">6</span>Quels sont les niveaux algorithmiques principaux à tracer quotidiennement ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="7"><div class="exo-q"><span class="exo-num">7</span>Pourquoi les niveaux 'ronds' (4500, 20000) sont-ils algorithmiques ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="8"><div class="exo-q"><span class="exo-num">8</span>Combien de niveaux afficher sur un chart pour rester efficient ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="9"><div class="exo-q"><span class="exo-num">9</span>Le prix est au-dessus du 50% Goldbach mais sous le 71%. Dans quelle zone ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="10"><div class="exo-q"><span class="exo-num">10</span>Un niveau HTF et un niveau LTF se chevauchent : lequel prime ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="11"><div class="exo-q"><span class="exo-num">11</span>Tu vois un setup parfait en LTF mais il est en plein PREMIUM HTF (70%+). Tu entres long ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="12"><div class="exo-q"><span class="exo-num">12</span>Comment savoir si un niveau algorithmique va tenir ou se faire casser ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div></div>
+  <div class="exo-actions">
+    <button class="exo-submit" data-theme="GOLDBACH_ARCHITECTURE">VALIDER MES RÉPONSES</button>
+    <button class="exo-reset" data-theme="GOLDBACH_ARCHITECTURE">Recommencer</button>
+  </div>
+  <div class="exo-score" data-theme="GOLDBACH_ARCHITECTURE"></div>
+</section>
+<section class="exo-pane" id="pane-PO3_SEQUENCES" style="display:none;" data-key="PO3_SEQUENCES">
+  <div class="pane-header">
+    <h2>PO3 (Power Of Three) & séquences fractales</h2>
+    <p>11 exercices couvrent tous les modules de cette thématique. Réponds à chaque question, puis valide pour découvrir les réponses et ton score.</p>
+  </div>
+  <div class="exo-quiz"><div class="exo-item" data-idx="1"><div class="exo-q"><span class="exo-num">1</span>Que signifie PO3 et quelles sont ses 3 phases ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="2"><div class="exo-q"><span class="exo-num">2</span>Comment reconnaître la phase d'accumulation ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="3"><div class="exo-q"><span class="exo-num">3</span>Où entrer dans une séquence PO3 idéale ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="4"><div class="exo-q"><span class="exo-num">4</span>Tu vois la phase d'accumulation en direct. Que faire ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="5"><div class="exo-q"><span class="exo-num">5</span>PO3 fractal : comment les 3 phases se répètent-elles ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="6"><div class="exo-q"><span class="exo-num">6</span>Avantage de la lecture fractale pour l'entrée ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="7"><div class="exo-q"><span class="exo-num">7</span>Un PO3 échoue (distribution dans le sens du sweep). Interprétation ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="8"><div class="exo-q"><span class="exo-num">8</span>Différence entre PO3 weekly et PO3 intraday ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="9"><div class="exo-q"><span class="exo-num">9</span>Comment identifier visuellement la fin d'une manipulation ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="10"><div class="exo-q"><span class="exo-num">10</span>Combien de temps dure typiquement chaque phase PO3 en session ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="11"><div class="exo-q"><span class="exo-num">11</span>Piège classique avec PO3 : trader l'accumulation comme un range ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div></div>
+  <div class="exo-actions">
+    <button class="exo-submit" data-theme="PO3_SEQUENCES">VALIDER MES RÉPONSES</button>
+    <button class="exo-reset" data-theme="PO3_SEQUENCES">Recommencer</button>
+  </div>
+  <div class="exo-score" data-theme="PO3_SEQUENCES"></div>
+</section>
+<section class="exo-pane" id="pane-DEALING_RANGES" style="display:none;" data-key="DEALING_RANGES">
+  <div class="pane-header">
+    <h2>Dealing Ranges & Ranges fractals</h2>
+    <p>10 exercices couvrent tous les modules de cette thématique. Réponds à chaque question, puis valide pour découvrir les réponses et ton score.</p>
+  </div>
+  <div class="exo-quiz"><div class="exo-item" data-idx="1"><div class="exo-q"><span class="exo-num">1</span>Définis un Dealing Range et ses frontières.</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="2"><div class="exo-q"><span class="exo-num">2</span>Où acheter dans un Dealing Range haussier ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="3"><div class="exo-q"><span class="exo-num">3</span>Le prix casse le haut du Dealing Range puis revient dedans. Signal ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="4"><div class="exo-q"><span class="exo-num">4</span>Qu'est-ce qu'un range fractal ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="5"><div class="exo-q"><span class="exo-num">5</span>Comment trader des ranges imbriqués avec double confluence ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="6"><div class="exo-q"><span class="exo-num">6</span>Un range LTF est cassé mais le HTF reste en range. Piège ou vrai break ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="7"><div class="exo-q"><span class="exo-num">7</span>Cite 3 types de ranges ICT et leurs heures Paris.</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="8"><div class="exo-q"><span class="exo-num">8</span>Comment projeter les targets d'un CBDR ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="9"><div class="exo-q"><span class="exo-num">9</span>Le range du jour précédent est-il pertinent pour le suivant ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="10"><div class="exo-q"><span class="exo-num">10</span>Pourquoi trader en PREMIUM d'un range fractal est risqué ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div></div>
+  <div class="exo-actions">
+    <button class="exo-submit" data-theme="DEALING_RANGES">VALIDER MES RÉPONSES</button>
+    <button class="exo-reset" data-theme="DEALING_RANGES">Recommencer</button>
+  </div>
+  <div class="exo-score" data-theme="DEALING_RANGES"></div>
+</section>
+<section class="exo-pane" id="pane-LIQUIDITE" style="display:none;" data-key="LIQUIDITE">
+  <div class="pane-header">
+    <h2>Liquidité & Inducement</h2>
+    <p>10 exercices couvrent tous les modules de cette thématique. Réponds à chaque question, puis valide pour découvrir les réponses et ton score.</p>
+  </div>
+  <div class="exo-quiz"><div class="exo-item" data-idx="1"><div class="exo-q"><span class="exo-num">1</span>Différence entre BSL et SSL ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="2"><div class="exo-q"><span class="exo-num">2</span>Liquidité externe vs interne : définis et donne un exemple.</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="3"><div class="exo-q"><span class="exo-num">3</span>Le prix sweep les plus-bas de la session asiatique puis repart fort vers le haut. Lecture ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="4"><div class="exo-q"><span class="exo-num">4</span>Qu'est-ce que l'inducement en SMC ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="5"><div class="exo-q"><span class="exo-num">5</span>Comment identifier un inducement sur un chart ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="6"><div class="exo-q"><span class="exo-num">6</span>Trader directement un inducement ou attendre le niveau HTF ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="7"><div class="exo-q"><span class="exo-num">7</span>Comment reconnaître un pool de liquidité visible ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="8"><div class="exo-q"><span class="exo-num">8</span>Le prix ne touche PAS un pool de liquidité malgré sa proximité. Signal ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="9"><div class="exo-q"><span class="exo-num">9</span>Equal Highs formés sur 3 touches. Proba break vs sweep ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="10"><div class="exo-q"><span class="exo-num">10</span>Tu vois une grande mèche baissière qui reverse violemment. Type de liquidité ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div></div>
+  <div class="exo-actions">
+    <button class="exo-submit" data-theme="LIQUIDITE">VALIDER MES RÉPONSES</button>
+    <button class="exo-reset" data-theme="LIQUIDITE">Recommencer</button>
+  </div>
+  <div class="exo-score" data-theme="LIQUIDITE"></div>
+</section>
+<section class="exo-pane" id="pane-SMC_FONDAMENTAUX" style="display:none;" data-key="SMC_FONDAMENTAUX">
+  <div class="pane-header">
+    <h2>Smart Money Concepts (SMC) & Fondamentaux</h2>
+    <p>10 exercices couvrent tous les modules de cette thématique. Réponds à chaque question, puis valide pour découvrir les réponses et ton score.</p>
+  </div>
+  <div class="exo-quiz"><div class="exo-item" data-idx="1"><div class="exo-q"><span class="exo-num">1</span>Qu'est-ce que le Smart Money Concept (SMC) ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="2"><div class="exo-q"><span class="exo-num">2</span>Les 3 piliers fondamentaux du SMC ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="3"><div class="exo-q"><span class="exo-num">3</span>Différence entre SMC et ICT ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="4"><div class="exo-q"><span class="exo-num">4</span>Cite les 3 sessions Forex principales et leurs caractéristiques.</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="5"><div class="exo-q"><span class="exo-num">5</span>Pourquoi les news macro US (NFP, CPI, FOMC) affectent toutes les paires Forex ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="6"><div class="exo-q"><span class="exo-num">6</span>Quelle paire Forex choisir pour débuter ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="7"><div class="exo-q"><span class="exo-num">7</span>Comment lire le Market Structure (MS) en SMC ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="8"><div class="exo-q"><span class="exo-num">8</span>Qu'est-ce qu'un BOS vs un MSS ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="9"><div class="exo-q"><span class="exo-num">9</span>Dans un uptrend, où placer son SL sur un trade long ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="10"><div class="exo-q"><span class="exo-num">10</span>Règle d'or SMC pour débuter ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div></div>
+  <div class="exo-actions">
+    <button class="exo-submit" data-theme="SMC_FONDAMENTAUX">VALIDER MES RÉPONSES</button>
+    <button class="exo-reset" data-theme="SMC_FONDAMENTAUX">Recommencer</button>
+  </div>
+  <div class="exo-score" data-theme="SMC_FONDAMENTAUX"></div>
+</section>
+<section class="exo-pane" id="pane-SESSIONS_KILLZONES" style="display:none;" data-key="SESSIONS_KILLZONES">
+  <div class="pane-header">
+    <h2>Sessions, Killzones & Macros</h2>
+    <p>10 exercices couvrent tous les modules de cette thématique. Réponds à chaque question, puis valide pour découvrir les réponses et ton score.</p>
+  </div>
+  <div class="exo-quiz"><div class="exo-item" data-idx="1"><div class="exo-q"><span class="exo-num">1</span>Cite les 3 killzones principales et leurs heures Paris.</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="2"><div class="exo-q"><span class="exo-num">2</span>Pourquoi trader hors killzone tue l'edge statistique ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="3"><div class="exo-q"><span class="exo-num">3</span>Différence entre 'session' et 'killzone' ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="4"><div class="exo-q"><span class="exo-num">4</span>Pendant quelle fenêtre la volatilité est-elle maximale ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="5"><div class="exo-q"><span class="exo-num">5</span>Qu'est-ce qu'une 'macro' ICT ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="6"><div class="exo-q"><span class="exo-num">6</span>Différence entre macro ICT et news économique ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="7"><div class="exo-q"><span class="exo-num">7</span>Trader pendant une news majeure : OUI ou NON ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="8"><div class="exo-q"><span class="exo-num">8</span>Profil hebdomadaire US typique : quels jours privilégier ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="9"><div class="exo-q"><span class="exo-num">9</span>Setup A+ à 12h30 (hors KZ). Tu fais quoi ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="10"><div class="exo-q"><span class="exo-num">10</span>Règle or pour la discipline horaire ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div></div>
+  <div class="exo-actions">
+    <button class="exo-submit" data-theme="SESSIONS_KILLZONES">VALIDER MES RÉPONSES</button>
+    <button class="exo-reset" data-theme="SESSIONS_KILLZONES">Recommencer</button>
+  </div>
+  <div class="exo-score" data-theme="SESSIONS_KILLZONES"></div>
+</section>
+<section class="exo-pane" id="pane-EXECUTION" style="display:none;" data-key="EXECUTION">
+  <div class="pane-header">
+    <h2>Exécution, Modèles & Entrées</h2>
+    <p>12 exercices couvrent tous les modules de cette thématique. Réponds à chaque question, puis valide pour découvrir les réponses et ton score.</p>
+  </div>
+  <div class="exo-quiz"><div class="exo-item" data-idx="1"><div class="exo-q"><span class="exo-num">1</span>Les 4 steps simplifiés d'un entry model ICT ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="2"><div class="exo-q"><span class="exo-num">2</span>Pourquoi attendre un sweep avant d'entrer ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="3"><div class="exo-q"><span class="exo-num">3</span>Confluence minimale pour un trade A+ ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="4"><div class="exo-q"><span class="exo-num">4</span>3 types d'entrée principaux ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="5"><div class="exo-q"><span class="exo-num">5</span>Quelle entrée offre le meilleur R:R ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="6"><div class="exo-q"><span class="exo-num">6</span>Market order vs limit order : avantages ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="7"><div class="exo-q"><span class="exo-num">7</span>Un trader exécute 90% de ses setups. Bon ou mauvais ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="8"><div class="exo-q"><span class="exo-num">8</span>Comment timer l'exécution pendant une macro ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="9"><div class="exo-q"><span class="exo-num">9</span>2 setups A+ simultanés sur 2 instruments : comment choisir ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="10"><div class="exo-q"><span class="exo-num">10</span>Entrée validée mais le prix te dépasse de 2 points. Tu chase ou tu skip ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="11"><div class="exo-q"><span class="exo-num">11</span>Variante scalper la plus rapide ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="12"><div class="exo-q"><span class="exo-num">12</span>Pourquoi tu dois écrire ton entry model ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div></div>
+  <div class="exo-actions">
+    <button class="exo-submit" data-theme="EXECUTION">VALIDER MES RÉPONSES</button>
+    <button class="exo-reset" data-theme="EXECUTION">Recommencer</button>
+  </div>
+  <div class="exo-score" data-theme="EXECUTION"></div>
+</section>
+<section class="exo-pane" id="pane-ZONES_PRIX" style="display:none;" data-key="ZONES_PRIX">
+  <div class="pane-header">
+    <h2>Zones de prix : FVG, OB, CISD, Breakers</h2>
+    <p>12 exercices couvrent tous les modules de cette thématique. Réponds à chaque question, puis valide pour découvrir les réponses et ton score.</p>
+  </div>
+  <div class="exo-quiz"><div class="exo-item" data-idx="1"><div class="exo-q"><span class="exo-num">1</span>Qu'est-ce qu'un FVG et la règle des 3 bougies ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="2"><div class="exo-q"><span class="exo-num">2</span>Différence BISI vs SIBI ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="3"><div class="exo-q"><span class="exo-num">3</span>Où entrer sur un FVG en retracement ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="4"><div class="exo-q"><span class="exo-num">4</span>Qu'est-ce qu'un Order Block bullish ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="5"><div class="exo-q"><span class="exo-num">5</span>Quelle partie de l'OB utilise-t-on pour l'entrée ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="6"><div class="exo-q"><span class="exo-num">6</span>Qu'est-ce qu'un Breaker Block ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="7"><div class="exo-q"><span class="exo-num">7</span>Qu'est-ce que la CISD et en quoi diffère-t-elle du MSS ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="8"><div class="exo-q"><span class="exo-num">8</span>Identifier une CISD haussière sur 1m ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="9"><div class="exo-q"><span class="exo-num">9</span>Avantage d'utiliser la CISD comme trigger ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="10"><div class="exo-q"><span class="exo-num">10</span>Qu'est-ce que la Candle Range Theory (CRT) ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="11"><div class="exo-q"><span class="exo-num">11</span>Les 4 zones de prix principales en SMC ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="12"><div class="exo-q"><span class="exo-num">12</span>Comment choisir parmi plusieurs zones à proximité ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div></div>
+  <div class="exo-actions">
+    <button class="exo-submit" data-theme="ZONES_PRIX">VALIDER MES RÉPONSES</button>
+    <button class="exo-reset" data-theme="ZONES_PRIX">Recommencer</button>
+  </div>
+  <div class="exo-score" data-theme="ZONES_PRIX"></div>
+</section>
+<section class="exo-pane" id="pane-ANALYSE_MTF" style="display:none;" data-key="ANALYSE_MTF">
+  <div class="pane-header">
+    <h2>Analyse MTF, Daily Bias, OHLC, MMXM</h2>
+    <p>10 exercices couvrent tous les modules de cette thématique. Réponds à chaque question, puis valide pour découvrir les réponses et ton score.</p>
+  </div>
+  <div class="exo-quiz"><div class="exo-item" data-idx="1"><div class="exo-q"><span class="exo-num">1</span>Qu'est-ce que l'analyse MTF et pourquoi est-elle indispensable ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="2"><div class="exo-q"><span class="exo-num">2</span>Ordre de lecture MTF optimal ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="3"><div class="exo-q"><span class="exo-num">3</span>Setup long 5m mais 4H baissière. Tu entres ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="4"><div class="exo-q"><span class="exo-num">4</span>Comment construire un biais daily ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="5"><div class="exo-q"><span class="exo-num">5</span>Un biais daily est-il figé toute la journée ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="6"><div class="exo-q"><span class="exo-num">6</span>Différence OHLC vs OLHC ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="7"><div class="exo-q"><span class="exo-num">7</span>Pourquoi OLHC = signal haussier ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="8"><div class="exo-q"><span class="exo-num">8</span>Qu'est-ce que le MMXM (Market Maker eXtension Model) ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="9"><div class="exo-q"><span class="exo-num">9</span>Qu'est-ce que l'ORG et comment l'utiliser ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="10"><div class="exo-q"><span class="exo-num">10</span>Quand ajuster un biais daily en cours de session ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div></div>
+  <div class="exo-actions">
+    <button class="exo-submit" data-theme="ANALYSE_MTF">VALIDER MES RÉPONSES</button>
+    <button class="exo-reset" data-theme="ANALYSE_MTF">Recommencer</button>
+  </div>
+  <div class="exo-score" data-theme="ANALYSE_MTF"></div>
+</section>
+<section class="exo-pane" id="pane-PSYCHOLOGIE" style="display:none;" data-key="PSYCHOLOGIE">
+  <div class="pane-header">
+    <h2>Psychologie & Mental Game</h2>
+    <p>11 exercices couvrent tous les modules de cette thématique. Réponds à chaque question, puis valide pour découvrir les réponses et ton score.</p>
+  </div>
+  <div class="exo-quiz"><div class="exo-item" data-idx="1"><div class="exo-q"><span class="exo-num">1</span>Les 3 émotions les plus dangereuses en trading ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="2"><div class="exo-q"><span class="exo-num">2</span>Antidote concret au FOMO ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="3"><div class="exo-q"><span class="exo-num">3</span>Règle anti-revenge après 2 pertes consécutives ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="4"><div class="exo-q"><span class="exo-num">4</span>Comment reconnaître que tu dois faire une pause ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="5"><div class="exo-q"><span class="exo-num">5</span>Qu'est-ce que l'Alter Ego en trading ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="6"><div class="exo-q"><span class="exo-num">6</span>Qu'est-ce que l'ascenseur émotionnel ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="7"><div class="exo-q"><span class="exo-num">7</span>Comment plat l'ascenseur émotionnel ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="8"><div class="exo-q"><span class="exo-num">8</span>Tu viens de gagner 3R d'affilée. Danger immédiat ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="9"><div class="exo-q"><span class="exo-num">9</span>Entraîner son mental game quotidiennement : les 4 piliers ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="10"><div class="exo-q"><span class="exo-num">10</span>Après grosse perte, combien de temps attendre avant de retrader ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="11"><div class="exo-q"><span class="exo-num">11</span>Pourquoi la psycho compte 50%+ du résultat après 6 mois ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div></div>
+  <div class="exo-actions">
+    <button class="exo-submit" data-theme="PSYCHOLOGIE">VALIDER MES RÉPONSES</button>
+    <button class="exo-reset" data-theme="PSYCHOLOGIE">Recommencer</button>
+  </div>
+  <div class="exo-score" data-theme="PSYCHOLOGIE"></div>
+</section>
+<section class="exo-pane" id="pane-GESTION_RISQUE" style="display:none;" data-key="GESTION_RISQUE">
+  <div class="pane-header">
+    <h2>Gestion du risque, Plan & Protocole</h2>
+    <p>12 exercices couvrent tous les modules de cette thématique. Réponds à chaque question, puis valide pour découvrir les réponses et ton score.</p>
+  </div>
+  <div class="exo-quiz"><div class="exo-item" data-idx="1"><div class="exo-q"><span class="exo-num">1</span>Règle d'or du risque par trade ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="2"><div class="exo-q"><span class="exo-num">2</span>Cite les 8 points non-négociables d'un plan de trading.</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="3"><div class="exo-q"><span class="exo-num">3</span>Comment définir une invalidation technique ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="4"><div class="exo-q"><span class="exo-num">4</span>Tu vois un setup A+ mais pas de biais défini pré-session. Tu fais quoi ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="5"><div class="exo-q"><span class="exo-num">5</span>Taille trop grosse : impact psychologique ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="6"><div class="exo-q"><span class="exo-num">6</span>SL sous swing low. Prix bouge contre toi de 3 pts, tu es tenté de descendre le SL. Bonne idée ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="7"><div class="exo-q"><span class="exo-num">7</span>Étapes d'un protocole complet ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="8"><div class="exo-q"><span class="exo-num">8</span>Pourquoi le protocole doit être IDENTIQUE chaque jour ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="9"><div class="exo-q"><span class="exo-num">9</span>Trader qui change de protocole toutes les semaines : résultat ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="10"><div class="exo-q"><span class="exo-num">10</span>Qu'est-ce qu'un Fix Price ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="11"><div class="exo-q"><span class="exo-num">11</span>Tu vois le prix accélérer vers le PDH. Entrée long ici : bonne idée ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="12"><div class="exo-q"><span class="exo-num">12</span>Bouger SL à breakeven : quand exactement ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div></div>
+  <div class="exo-actions">
+    <button class="exo-submit" data-theme="GESTION_RISQUE">VALIDER MES RÉPONSES</button>
+    <button class="exo-reset" data-theme="GESTION_RISQUE">Recommencer</button>
+  </div>
+  <div class="exo-score" data-theme="GESTION_RISQUE"></div>
+</section>
+<section class="exo-pane" id="pane-PATTERNS_MODELES" style="display:none;" data-key="PATTERNS_MODELES">
+  <div class="pane-header">
+    <h2>Patterns avancés, Modèles de marché & Études de cas</h2>
+    <p>12 exercices couvrent tous les modules de cette thématique. Réponds à chaque question, puis valide pour découvrir les réponses et ton score.</p>
+  </div>
+  <div class="exo-quiz"><div class="exo-item" data-idx="1"><div class="exo-q"><span class="exo-num">1</span>Les 3 grands types de modèles de marché ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="2"><div class="exo-q"><span class="exo-num">2</span>Identifier rapidement range vs trend ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="3"><div class="exo-q"><span class="exo-num">3</span>Trader une stratégie de trend sur un marché en range : résultat ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="4"><div class="exo-q"><span class="exo-num">4</span>3 patterns avancés au-delà des FVG/OB ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="5"><div class="exo-q"><span class="exo-num">5</span>Qu'est-ce que le Turtle Soup ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="6"><div class="exo-q"><span class="exo-num">6</span>Quand privilégier patterns basiques vs avancés ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="7"><div class="exo-q"><span class="exo-num">7</span>Qu'est-ce que l'analyse intermarket ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="8"><div class="exo-q"><span class="exo-num">8</span>Comment lire l'orderflow simple sans DOM ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="9"><div class="exo-q"><span class="exo-num">9</span>Divergence SMT : NQ fait nouveau high, ES stagne. Lecture ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="10"><div class="exo-q"><span class="exo-num">10</span>Structurer une étude de cas post-trade ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="11"><div class="exo-q"><span class="exo-num">11</span>Faut-il étudier les trades GAGNANTS autant que les perdants ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div><div class="exo-item" data-idx="12"><div class="exo-q"><span class="exo-num">12</span>Combien d'études de cas par mois minimum ?</div><textarea class="exo-input" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="exo-feedback"></div></div></div>
+  <div class="exo-actions">
+    <button class="exo-submit" data-theme="PATTERNS_MODELES">VALIDER MES RÉPONSES</button>
+    <button class="exo-reset" data-theme="PATTERNS_MODELES">Recommencer</button>
+  </div>
+  <div class="exo-score" data-theme="PATTERNS_MODELES"></div>
+</section>
+
+</div>
+
+<script>
+var ALL_DATA = {"QUARTERLY_TIME": [{"idx": 1, "q": "Quelles sont les 4 phases de la Quarterly Theory et que représentent-elles ?", "a": "Q1 (Accumulation = range), Q2 (Manipulation = sweep de liquidité), Q3 (Distribution = mouvement directionnel), Q4 (Reversal/Extension). Cycle fondamental répété à toutes les TF.", "kw": ["Accumulation", "Distribution", "Manipulation", "accumulation", "distribution"]}, {"idx": 2, "q": "Dans quelle Q se situe l'entrée optimale et pourquoi ?", "a": "En Q2 (Manipulation) — après le sweep de liquidité, juste avant le démarrage de la Q3. R:R optimal car SL serré (sous/au-dessus du sweep) et TP loin (fin de distribution Q3).", "kw": ["Manipulation", "distribution", "manipulation", "sweep", "Q2"]}, {"idx": 3, "q": "Comment la QT se répète-t-elle fractalement dans une journée ?", "a": "Journée = 4 quartiers de 6h (Asie=Q1, London=Q2, NY AM=Q3, NY PM=Q4). Chaque heure = 4 × 15m. Chaque 15m = 4 × 3min45. Fractal infini qui se répète.", "kw": ["Fractal", "fractal", "London", "Asie", "AM"]}, {"idx": 4, "q": "Cite les 4 cycles temporels majeurs à surveiller.", "a": "Quarterly (13 sem), Monthly (4 sem), Weekly (5 jours), Daily (24h). Aligner 2+ cycles dans le même sens = setup renforcé exponentiellement.", "kw": ["Quarterly", "Aligner", "Monthly", "Weekly", "Daily"]}, {"idx": 5, "q": "Qu'est-ce qu'une 'macro' ICT et à quelles heures NY ont-elles lieu ?", "a": "Fenêtre de 20 min où l'algo IPDA redéfinit le prix. Heures NY : 09h50-10h10, 10h50-11h10, 13h10-13h40, 14h50-15h10, 15h50-16h10. Mouvements concentrés ici.", "kw": ["Mouvements", "Heures", "IPDA", "20", "NY"]}, {"idx": 6, "q": "Pourquoi 'Time' est-il aussi important que 'Price' en ICT ?", "a": "Parce que le prix ne bouge QUE pendant certaines fenêtres (killzones, macros, news). Un setup parfait en prix mais au mauvais moment = edge nul. Le timing EST l'edge.", "kw": ["killzone", "Parce", "macro", "setup"]}, {"idx": 7, "q": "Qu'est-ce que la Digital Time Theory (DTT) ?", "a": "Théorie basée sur les nombres 'digitaux' comme pivots horaires (03h, 06h, 09h, 12h, 15h, 18h, 21h Paris). Les institutions initient souvent les mouvements à +/- 15 min de ces heures.", "kw": ["Paris", "15"]}, {"idx": 8, "q": "Un cycle weekly en Q1 (accumulation) : quels setups éviter ?", "a": "Éviter les setups directionnels (trend). En Q1 le marché oscille en range → trader les reversals aux extrêmes du range, pas les breakouts.", "kw": ["breakout", "reversal", "range", "setup", "trend"]}, {"idx": 9, "q": "Comment identifier la transition Q2 → Q3 en temps réel ?", "a": "1) Sweep complété d'un niveau HTF. 2) MSS (Market Structure Shift) en LTF dans le sens opposé du sweep. 3) FVG formé. Les 3 = début Q3 confirmé = entrée.", "kw": ["Structure", "structure", "Market", "Shift", "Sweep"]}, {"idx": 10, "q": "Sur quel timeframe la QT est-elle la plus tradable ?", "a": "Session (6h) et 1H. Chaque quartier dure respectivement 90min et 15min — assez long pour observer les phases, assez court pour timer des entrées. La 4H est excellente pour le biais.", "kw": ["Session", "session", "biais", "1H", "4H"]}, {"idx": 11, "q": "Macro NY à 15h50 mais tu n'as pas de setup pré-identifié. Que faire ?", "a": "Observer pendant les 10 premières minutes de la macro. Si sweep + MSS → setup potentiel. Si pas de trigger clair → attendre la prochaine macro (16h50). Ne jamais forcer pendant la macro.", "kw": ["Observer", "macro", "setup", "sweep", "MSS"]}, {"idx": 12, "q": "Piège : 'je suis dans la Q3, donc je dois entrer'. Quelle est l'erreur ?", "a": "La Q3 est la DISTRIBUTION — souvent trop tard pour entrer. L'entrée se fait en Q2 (manipulation) ou au TOUT DÉBUT de la Q3. Arriver en milieu de Q3 = acheter en premium/sellen discount = pire prix.", "kw": ["DISTRIBUTION", "distribution", "manipulation", "discount", "Arriver"]}], "GOLDBACH_ARCHITECTURE": [{"idx": 1, "q": "Cite les 5 niveaux fondamentaux du système Goldbach (pourcentages).", "a": "0% (low range), 29% (discount fort), 50% (EQ), 71% (premium fort), 100% (high range). Ces 5 pivots délimitent 4 zones de lecture.", "kw": ["discount", "premium", "range", "100", "29"]}, {"idx": 2, "q": "Dans quelle zone Goldbach acheter sur un biais haussier ?", "a": "Zone 0-29% (discount fort). Entrée idéale au 29% avec SL sous le 0%. TP : 50% (partial) puis 71% ou 100%.", "kw": ["discount", "Zone", "100", "29", "50"]}, {"idx": 3, "q": "Différence entre Goldbach 729 / 243 / 81 ?", "a": "Les 3 étages hiérarchiques : 729 = range majeur (daily/weekly), 243 = range intermédiaire (4H/1H), 81 = range d'exécution (15m/5m). Superposés = confluence maximale.", "kw": ["confluence", "range", "243", "729", "1H"]}, {"idx": 4, "q": "Niveau fib le plus important pour Goldbach et pourquoi ?", "a": "Le 0.5 (EQ — equilibrium). Pivot entre premium et discount. Toutes les lectures Goldbach s'articulent autour du 0.5, pas du 0.618 comme en fib classique.", "kw": ["Goldbach", "discount", "premium", "Toutes", "Pivot"]}, {"idx": 5, "q": "Pourquoi le fib fractal Goldbach est plus fiable que le fib classique ?", "a": "Parce qu'il EMPILE plusieurs niveaux fib à différentes échelles (HTF+MTF+LTF). Une zone où 3 fibs se recoupent = zone à très haute probabilité institutionnelle.", "kw": ["EMPILE", "Parce", "HTF", "LTF", "MTF"]}, {"idx": 6, "q": "Quels sont les niveaux algorithmiques principaux à tracer quotidiennement ?", "a": "PDH/PDL, PWH/PWL, PMH/PML. Plus : Asian H/L, CBDR. Ce sont les niveaux 'connus' de l'IPDA = aimants à prix.", "kw": ["Asian", "CBDR", "IPDA", "PDH", "PDL"]}, {"idx": 7, "q": "Pourquoi les niveaux 'ronds' (4500, 20000) sont-ils algorithmiques ?", "a": "Parce que les retail placent stops et pending orders à ces niveaux = liquidité dense. L'algo cible ces zones pour récolter un maximum de liquidité en un seul mouvement.", "kw": ["Parce"]}, {"idx": 8, "q": "Combien de niveaux afficher sur un chart pour rester efficient ?", "a": "5-7 max : PDH, PDL, PWH/L, Asian H/L. Au-delà = saturation visuelle, paralysie d'analyse. Moins = 80% de l'action couverte.", "kw": ["Asian", "PDH", "PDL", "PWH", "80"]}, {"idx": 9, "q": "Le prix est au-dessus du 50% Goldbach mais sous le 71%. Dans quelle zone ?", "a": "En PREMIUM (au-dessus de l'EQ). Zone de VENTE préférentielle sur biais baissier. Si biais haussier → attendre retour vers discount (sous 50%) avant d'acheter.", "kw": ["discount", "PREMIUM", "premium", "VENTE", "biais"]}, {"idx": 10, "q": "Un niveau HTF et un niveau LTF se chevauchent : lequel prime ?", "a": "Le HTF TOUJOURS. La force d'un niveau est proportionnelle à la TF qui le génère. PDH (HTF) > FVG 15m (LTF). En cas de conflit, le HTF l'emporte.", "kw": ["FVG", "HTF", "LTF", "PDH", "TF"]}, {"idx": 11, "q": "Tu vois un setup parfait en LTF mais il est en plein PREMIUM HTF (70%+). Tu entres long ?", "a": "NON. Acheter en premium HTF = acheter au mauvais prix. Attends que le prix revienne en discount HTF (sous 50%) avant d'exécuter, même si le setup LTF est propre.", "kw": ["discount", "Acheter", "Attends", "premium", "setup"]}, {"idx": 12, "q": "Comment savoir si un niveau algorithmique va tenir ou se faire casser ?", "a": "Observer la RÉACTION : rejet violent (mèche) = niveau défendu, tient. Close au-delà + retest propre = niveau cassé, continuation. Sans réaction = souvent un sweep → reversal imminent.", "kw": ["Observer", "reversal", "Close", "sweep"]}], "PO3_SEQUENCES": [{"idx": 1, "q": "Que signifie PO3 et quelles sont ses 3 phases ?", "a": "Power Of Three. Accumulation (range), Manipulation (sweep liquidité), Distribution (mouvement directionnel). Base de toute session institutionnelle.", "kw": ["Accumulation", "Distribution", "Manipulation", "accumulation", "distribution"]}, {"idx": 2, "q": "Comment reconnaître la phase d'accumulation ?", "a": "Range serré, faible volatilité, bougies petites, pas de direction. Souvent en session asiatique ou début London. Les institutions accumulent sans bouger le prix.", "kw": ["session", "London", "Range", "range"]}, {"idx": 3, "q": "Où entrer dans une séquence PO3 idéale ?", "a": "APRÈS la manipulation (sweep), au DÉBUT de la distribution. Ex : sweep Asian Low → MSS haussier → entrée LONG sur 1er FVG de distribution.", "kw": ["distribution", "manipulation", "Asian", "sweep", "LONG"]}, {"idx": 4, "q": "Tu vois la phase d'accumulation en direct. Que faire ?", "a": "ATTENDRE. Pas d'entrée en accumulation = pas de direction. Préparer ton plan : si sweep low → biais long, si sweep high → biais short. Exécution après la manip.", "kw": ["accumulation", "ATTENDRE", "biais", "sweep"]}, {"idx": 5, "q": "PO3 fractal : comment les 3 phases se répètent-elles ?", "a": "Fractal hiérarchique. 1 PO3 weekly contient 5 PO3 daily. 1 PO3 daily contient 4 PO3 session (6h). 1 PO3 session contient plusieurs PO3 horaires. Imbrication infinie.", "kw": ["Imbrication", "Fractal", "fractal", "session", "PO3"]}, {"idx": 6, "q": "Avantage de la lecture fractale pour l'entrée ?", "a": "Tu cumules les confluences : PO3 4H en Q2 + PO3 1H en Q2 + PO3 15m en Q2 alignés = setup très haute probabilité. Chaque étage fractal valide le précédent.", "kw": ["confluence", "fractal", "setup", "PO3", "1H"]}, {"idx": 7, "q": "Un PO3 échoue (distribution dans le sens du sweep). Interprétation ?", "a": "Ce n'est PLUS un PO3 classique mais un BREAKOUT directionnel. Trend continuation. Adapter : trader le trend dans le sens du breakout, pas le reversal attendu.", "kw": ["BREAKOUT", "breakout", "reversal", "Adapter", "Trend"]}, {"idx": 8, "q": "Différence entre PO3 weekly et PO3 intraday ?", "a": "PO3 weekly = 1 phase par jour (Lundi=accumulation, Mardi-Mercredi=manipulation, Jeudi-Vendredi=distribution). PO3 intraday = phases rapides sur 6h ou 1H. Même logique, durées différentes.", "kw": ["accumulation", "distribution", "manipulation", "Mercredi", "Vendredi"]}, {"idx": 9, "q": "Comment identifier visuellement la fin d'une manipulation ?", "a": "1) Sweep du niveau HTF complété. 2) Bougie d'expansion qui CLOSE dans le sens opposé au sweep. 3) Break d'un swing LTF (MSS). Les 3 = manip finie, distribution démarrée.", "kw": ["distribution", "Bougie", "Break", "CLOSE", "Sweep"]}, {"idx": 10, "q": "Combien de temps dure typiquement chaque phase PO3 en session ?", "a": "Accumulation ~30-40% de la session. Manipulation ~20-30% (courte, violente). Distribution ~30-50% (la plus longue et plus tradable). Varie selon contexte.", "kw": ["Accumulation", "Distribution", "Manipulation", "accumulation", "distribution"]}, {"idx": 11, "q": "Piège classique avec PO3 : trader l'accumulation comme un range ?", "a": "Trader le range en accumulation = perdre contre la manipulation qui arrive. L'accumulation se CASSE systématiquement par une manipulation (sweep). Mieux : attendre, ne pas trader.", "kw": ["accumulation", "manipulation", "Trader", "CASSE", "Mieux"]}], "DEALING_RANGES": [{"idx": 1, "q": "Définis un Dealing Range et ses frontières.", "a": "Range dans lequel le prix oscille, délimité par le dernier swing high ET le dernier swing low MAJEURS. Le 50% divise premium (haut) et discount (bas).", "kw": ["discount", "MAJEURS", "premium", "Range", "range"]}, {"idx": 2, "q": "Où acheter dans un Dealing Range haussier ?", "a": "En DISCOUNT (sous le 50%). Zone optimale : 62%-79% du retracement (OTE). Jamais en premium sauf break confirmé + retest.", "kw": ["retracement", "DISCOUNT", "discount", "premium", "Zone"]}, {"idx": 3, "q": "Le prix casse le haut du Dealing Range puis revient dedans. Signal ?", "a": "Faux breakout = Failure To Launch. Setup SHORT si MSS baissier confirmé. Règle : break + retour dans le range = piège haussier → reversal attendu.", "kw": ["breakout", "reversal", "Failure", "Launch", "SHORT"]}, {"idx": 4, "q": "Qu'est-ce qu'un range fractal ?", "a": "Range qui se retrouve à plusieurs échelles temporelles. Un range 4H contient des ranges 1H, chacun contenant des ranges 15m. Mêmes règles à chaque niveau.", "kw": ["Range", "range", "1H", "4H"]}, {"idx": 5, "q": "Comment trader des ranges imbriqués avec double confluence ?", "a": "1) Identifier le range HTF (4H). 2) Trouver en LTF (15m) un range DANS la moitié discount du HTF → buy. Ou dans la moitié premium → sell. Confluence x2.", "kw": ["Confluence", "Identifier", "confluence", "discount", "Trouver"]}, {"idx": 6, "q": "Un range LTF est cassé mais le HTF reste en range. Piège ou vrai break ?", "a": "Souvent piège. Le HTF domine. Tant que le HTF tient, les breaks LTF sont des opportunités de REVERSE back into range. Attendre invalidation HTF pour trader le break.", "kw": ["invalidation", "Attendre", "REVERSE", "range", "Tant"]}, {"idx": 7, "q": "Cite 3 types de ranges ICT et leurs heures Paris.", "a": "Asian Range (01h-07h), CBDR (Central Bank Dealing Range, 16h-20h), Dealing Range daily (24h).", "kw": ["Central", "Dealing", "Asian", "Range", "range"]}, {"idx": 8, "q": "Comment projeter les targets d'un CBDR ?", "a": "Mesurer le range CBDR = X. Projeter +X, +2X, +3X au-dessus du high et -X, -2X, -3X sous le low. Ces projections deviennent targets ou zones d'invalidation pour J+1.", "kw": ["invalidation", "Projeter", "Mesurer", "range", "CBDR"]}, {"idx": 9, "q": "Le range du jour précédent est-il pertinent pour le suivant ?", "a": "OUI. Le 50% du range précédent est souvent un pivot. Break du high précédent = potentiel continuation. Break du low = potentiel reversal du trend. Niveaux HTF à tracer.", "kw": ["reversal", "Niveaux", "Break", "range", "trend"]}, {"idx": 10, "q": "Pourquoi trader en PREMIUM d'un range fractal est risqué ?", "a": "Parce que le prix a déjà fait 70%+ du mouvement attendu. Peu de potentiel restant + probabilité élevée de retour vers le 50% ou le low. Mauvais R:R.", "kw": ["Mauvais", "Parce", "50", "70"]}], "LIQUIDITE": [{"idx": 1, "q": "Différence entre BSL et SSL ?", "a": "BSL (Buy Side Liquidity) = stops des shorts + pending buys au-dessus des highs. SSL (Sell Side Liquidity) = stops des longs + pending sells sous les lows.", "kw": ["Liquidity", "Sell", "Side", "BSL", "SSL"]}, {"idx": 2, "q": "Liquidité externe vs interne : définis et donne un exemple.", "a": "Externe = visible sur HTF (PDH, PWH, Asian H). Interne = dans un range (50% OB, fin de FVG, milieu de dealing range). Les deux sont cibles institutionnelles.", "kw": ["Externe", "Interne", "Asian", "range", "FVG"]}, {"idx": 3, "q": "Le prix sweep les plus-bas de la session asiatique puis repart fort vers le haut. Lecture ?", "a": "Liquidity sweep classique : SSL prise (stops longs cueillis), institutions accumulent bas. Biais LONG confirmé pour la session suivante.", "kw": ["Liquidity", "session", "Biais", "biais", "sweep"]}, {"idx": 4, "q": "Qu'est-ce que l'inducement en SMC ?", "a": "Mini-liquidité formée AVANT le vrai niveau cible pour attirer les retail. Ex: mini-high sous le PDH réel → retail shortent là → stoppés quand le prix va au PDH.", "kw": ["Mini", "PDH"]}, {"idx": 5, "q": "Comment identifier un inducement sur un chart ?", "a": "Swing mineur (non-significatif en HTF) entre le prix actuel et un niveau HTF majeur. Le prix balaye l'inducement D'ABORD, puis atteint le vrai niveau.", "kw": ["ABORD", "Swing", "HTF"]}, {"idx": 6, "q": "Trader directement un inducement ou attendre le niveau HTF ?", "a": "Attendre le niveau HTF. L'inducement est piège à retail. Le vrai setup se forme APRÈS sweep de l'inducement + atteinte du niveau HTF majeur.", "kw": ["Attendre", "setup", "sweep", "HTF"]}, {"idx": 7, "q": "Comment reconnaître un pool de liquidité visible ?", "a": "1) Plus-hauts/bas clairs (PDH). 2) Equal Highs/Lows (stops cumulés). 3) Niveaux ronds (100.00). 4) Breakout évident où 'tout le monde' met son SL.", "kw": ["Breakout", "breakout", "Niveaux", "Equal", "Highs"]}, {"idx": 8, "q": "Le prix ne touche PAS un pool de liquidité malgré sa proximité. Signal ?", "a": "Faiblesse directionnelle. Si le biais était vraiment long, le prix irait chercher ce BSL. Non → retour probable vers SSL. Réviser le biais.", "kw": ["Faiblesse", "biais", "BSL", "SSL"]}, {"idx": 9, "q": "Equal Highs formés sur 3 touches. Proba break vs sweep ?", "a": "Plus les touches se multiplient, plus le sweep probable. 3+ touches = ~70% sweep (fake break + reversal), 20% consolidation, 10% vrai break.", "kw": ["reversal", "sweep", "10", "20", "70"]}, {"idx": 10, "q": "Tu vois une grande mèche baissière qui reverse violemment. Type de liquidité ?", "a": "Mèche = sweep express de SSL suivi d'un achat institutionnel. Rejection Block bullish formé. Entrée long possible sur retracement avec SL sous la mèche.", "kw": ["retracement", "Rejection", "Block", "sweep", "SSL"]}], "SMC_FONDAMENTAUX": [{"idx": 1, "q": "Qu'est-ce que le Smart Money Concept (SMC) ?", "a": "Méthodologie de lecture basée sur les actions des institutions (Smart Money) vs retail. Identifier accumulation/distribution et surfer le mouvement institutionnel.", "kw": ["accumulation", "distribution", "Identifier", "Money", "Smart"]}, {"idx": 2, "q": "Les 3 piliers fondamentaux du SMC ?", "a": "1) Liquidité (BSL/SSL, chasse aux stops). 2) Imbalance (FVG, zones non-équilibrées). 3) Market Structure (BOS/MSS, swings). Ces 3 couvrent 90% de la méthode.", "kw": ["Imbalance", "Structure", "imbalance", "structure", "Market"]}, {"idx": 3, "q": "Différence entre SMC et ICT ?", "a": "SMC = branche moderne simplifiée de l'ICT. Même école de pensée, vocabulaire similaire. SMC est plus accessible aux débutants, ICT plus profond et cryptique.", "kw": ["ICT", "SMC"]}, {"idx": 4, "q": "Cite les 3 sessions Forex principales et leurs caractéristiques.", "a": "Tokyo (01h-10h Paris) : range serré, volatilité basse. London (07h-16h) : volatilité max sur EUR/GBP. NY (13h-22h) : volatilité USD, overlap London-NY (13h-16h) = meilleur moment.", "kw": ["London", "Paris", "Tokyo", "range", "EUR"]}, {"idx": 5, "q": "Pourquoi les news macro US (NFP, CPI, FOMC) affectent toutes les paires Forex ?", "a": "Parce que l'USD est dans 80%+ des paires majeures. Une news sur l'USD renverse EUR/USD, GBP/USD, USD/JPY simultanément. Calendrier = obligation pour éviter les pièges.", "kw": ["Calendrier", "Parce", "EUR", "GBP", "JPY"]}, {"idx": 6, "q": "Quelle paire Forex choisir pour débuter ?", "a": "EUR/USD. 1) Spread le plus serré. 2) Volume le plus élevé. 3) Moins manipulée que GBP. 4) Documentation la plus abondante.", "kw": ["Documentation", "Spread", "Volume", "EUR", "GBP"]}, {"idx": 7, "q": "Comment lire le Market Structure (MS) en SMC ?", "a": "Série de Higher Highs + Higher Lows = uptrend. Lower Highs + Lower Lows = downtrend. Break of Structure (BOS) = casse du dernier swing dans le sens du trend. MSS = break contre le trend (reversal).", "kw": ["Structure", "structure", "reversal", "Higher", "Break"]}, {"idx": 8, "q": "Qu'est-ce qu'un BOS vs un MSS ?", "a": "BOS (Break of Structure) = continuation du trend. MSS (Market Structure Shift) = changement de trend. Un MSS HTF = biais inversé.", "kw": ["Structure", "structure", "Market", "Break", "Shift"]}, {"idx": 9, "q": "Dans un uptrend, où placer son SL sur un trade long ?", "a": "Sous le dernier Higher Low valide (+buffer 1-3 points). Invalidation : si le prix casse ce HL, le trend est compromis, sortie logique.", "kw": ["Invalidation", "invalidation", "Higher", "trend", "HL"]}, {"idx": 10, "q": "Règle d'or SMC pour débuter ?", "a": "1) Identifier la direction HTF (trend ou range). 2) Attendre un sweep de liquidité. 3) Attendre MSS + FVG en LTF. 4) Entrée avec SL sous le sweep. 5) TP vers la prochaine liquidité.", "kw": ["Identifier", "Attendre", "range", "sweep", "trend"]}], "SESSIONS_KILLZONES": [{"idx": 1, "q": "Cite les 3 killzones principales et leurs heures Paris.", "a": "London KZ : 8h-11h. NY AM KZ : 14h30-16h30. NY PM KZ : 19h-21h. Hors KZ = pas d'edge.", "kw": ["London", "Hors", "AM", "KZ", "NY"]}, {"idx": 2, "q": "Pourquoi trader hors killzone tue l'edge statistique ?", "a": "Hors KZ : volume faible → mouvements artificiels / whipsaw. Algos inactifs → pas de structure institutionnelle. Winrate typique -30% vs en KZ.", "kw": ["structure", "Winrate", "Algos", "Hors", "30"]}, {"idx": 3, "q": "Différence entre 'session' et 'killzone' ?", "a": "Session = période totale d'activité (London 8h-17h Paris). Killzone = plage de volatilité MAXIMALE dans la session (London KZ : 8h-11h). KZ ⊂ Session.", "kw": ["Killzone", "MAXIMALE", "killzone", "Session", "session"]}, {"idx": 4, "q": "Pendant quelle fenêtre la volatilité est-elle maximale ?", "a": "Overlap London-NY : 14h30-16h30 Paris. Les 2 marchés majeurs actifs simultanément. Setups les plus violents et tradables.", "kw": ["Overlap", "London", "Setups", "Paris", "setup"]}, {"idx": 5, "q": "Qu'est-ce qu'une 'macro' ICT ?", "a": "Fenêtre de 20 min où l'algo IPDA repositionne le prix. À NY : 09h50-10h10, 10h50-11h10, 13h10-13h40, 14h50-15h10, 15h50-16h10. Mouvements directionnels concentrés ici.", "kw": ["Mouvements", "IPDA", "20", "NY"]}, {"idx": 6, "q": "Différence entre macro ICT et news économique ?", "a": "Macro = cyclique (chaque heure), prévisible, tradable. News = ponctuelle (NFP, CPI, FOMC), imprévisible, souvent skip obligatoire.", "kw": ["Macro", "macro", "FOMC", "News", "CPI"]}, {"idx": 7, "q": "Trader pendant une news majeure : OUI ou NON ?", "a": "NON (NFP, CPI, FOMC, ECB). Volatilité incontrôlable 5 min avant → 30 min après. Les setups techniques sont invalidés par le bruit news.", "kw": ["setup", "FOMC", "CPI", "ECB", "NFP"]}, {"idx": 8, "q": "Profil hebdomadaire US typique : quels jours privilégier ?", "a": "Mardi-Mercredi-Jeudi = meilleurs jours (mouvements directionnels, news). Lundi = range prudent. Vendredi matin (NFP) = excellent. Vendredi après-midi = piège.", "kw": ["Mercredi", "Vendredi", "Jeudi", "Lundi", "Mardi"]}, {"idx": 9, "q": "Setup A+ à 12h30 (hors KZ). Tu fais quoi ?", "a": "SKIP. Attends 14h30 (NY AM KZ). Quel que soit la qualité du setup, hors KZ l'edge est nul.", "kw": ["Attends", "setup", "Quel", "SKIP", "AM"]}, {"idx": 10, "q": "Règle or pour la discipline horaire ?", "a": "Killzone OR no trade. Jamais d'exception. Après 6 mois de discipline, ton edge stat est prouvé. Céder une seule fois = casser le pattern de discipline.", "kw": ["Killzone", "killzone"]}], "EXECUTION": [{"idx": 1, "q": "Les 4 steps simplifiés d'un entry model ICT ?", "a": "1) Biais HTF. 2) Zone d'intérêt HTF (OB, FVG, liquidité). 3) Liquidity sweep dans cette zone. 4) MSS + FVG LTF → entrée.", "kw": ["Liquidity", "Biais", "biais", "sweep", "Zone"]}, {"idx": 2, "q": "Pourquoi attendre un sweep avant d'entrer ?", "a": "Sans sweep, les institutions n'ont pas pris leur liquidité → elles la prendront → elles bougeront contre toi. Sweep = confirmation de positionnement institutionnel.", "kw": ["Sweep", "sweep"]}, {"idx": 3, "q": "Confluence minimale pour un trade A+ ?", "a": "4 confluences min : 1) Biais HTF. 2) Zone HTF. 3) Killzone. 4) Trigger LTF (MSS + FVG). Bonus : SMT, macro, news.", "kw": ["confluence", "Killzone", "killzone", "Trigger", "Biais"]}, {"idx": 4, "q": "3 types d'entrée principaux ?", "a": "1) Retracement (limit dans OB/FVG). 2) Break + retest (market après MSS). 3) Post-sweep (market après sweep + confirmation).", "kw": ["Retracement", "retracement", "Break", "sweep", "Post"]}, {"idx": 5, "q": "Quelle entrée offre le meilleur R:R ?", "a": "Retracement (limit). SL le plus serré + TP le plus loin = R:R 1:3 ou plus. Inconvénient : le prix peut ne pas revenir.", "kw": ["Retracement", "retracement", "SL", "TP"]}, {"idx": 6, "q": "Market order vs limit order : avantages ?", "a": "Market : instantané, pas de trade manqué. Inconvénient : slippage, prix moins bon. Limit : prix optimal, SL serré. Inconvénient : exécution non garantie.", "kw": ["Market", "Limit", "SL"]}, {"idx": 7, "q": "Un trader exécute 90% de ses setups. Bon ou mauvais ?", "a": "MAUVAIS. Il accepte trop de setups moyens. Un bon trader exécute 20-30% des setups (A+ strictement). 90% = dilution de l'edge, sur-trading.", "kw": ["MAUVAIS", "setup", "20", "30", "90"]}, {"idx": 8, "q": "Comment timer l'exécution pendant une macro ?", "a": "Début macro : observer 5 min. Si sweep + MSS dans la zone → exécution dans les 10 min suivantes. Sinon → attendre la macro suivante.", "kw": ["Sinon", "macro", "sweep", "MSS", "10"]}, {"idx": 9, "q": "2 setups A+ simultanés sur 2 instruments : comment choisir ?", "a": "1) Priorité au plus de confluences HTF. 2) Si égalité : meilleur R:R. 3) Si encore égalité : instrument le mieux maîtrisé.", "kw": ["confluence", "HTF"]}, {"idx": 10, "q": "Entrée validée mais le prix te dépasse de 2 points. Tu chase ou tu skip ?", "a": "SKIP. Chasse = mauvais prix + SL élargi = R:R détruit. Attends la prochaine opportunité. Pas d'entrée en chase = discipline sacrée.", "kw": ["Attends", "Chasse", "SKIP", "SL"]}, {"idx": 11, "q": "Variante scalper la plus rapide ?", "a": "Sweep 1m + MSS 1m + FVG 1m → entrée immédiate. SL ultra-serré (1-3 points NQ). TP = 1re liquidité LTF. R:R 1:1.5 min.", "kw": ["Sweep", "sweep", "FVG", "LTF", "MSS"]}, {"idx": 12, "q": "Pourquoi tu dois écrire ton entry model ?", "a": "Parce qu'un modèle mental = flou, modifiable sous stress. Écrit = mécanique. Tu coches 5 critères → tu entres. 4/5 → skip. Automatisation = élimination de l'émotionnel.", "kw": ["Automatisation", "Parce"]}], "ZONES_PRIX": [{"idx": 1, "q": "Qu'est-ce qu'un FVG et la règle des 3 bougies ?", "a": "Fair Value Gap = déséquilibre entre 3 bougies consécutives où le corps de la bougie centrale crée un gap entre la mèche haute de la 1re et la mèche basse de la 3e (ou inverse).", "kw": ["fair value", "Value", "Fair"]}, {"idx": 2, "q": "Différence BISI vs SIBI ?", "a": "BISI (Buyside Imbalance Sellside Inefficiency) = FVG haussier (ancien 'BC'). SIBI = FVG baissier (ancien 'CB'). TOUJOURS utiliser BISI/SIBI, jamais BC/CB.", "kw": ["Inefficiency", "Imbalance", "imbalance", "Sellside", "Buyside"]}, {"idx": 3, "q": "Où entrer sur un FVG en retracement ?", "a": "Au niveau 50% (CE = Consequent Encroachment). SL sous/au-dessus du FVG complet. TP = liquidité proche dans le sens du biais.", "kw": ["Encroachment", "Consequent", "biais", "FVG", "50"]}, {"idx": 4, "q": "Qu'est-ce qu'un Order Block bullish ?", "a": "Dernière bougie baissière avant un mouvement haussier impulsif qui casse la structure. 3 critères : bougie baissière + impulse haussier + MSS validé.", "kw": ["structure", "MSS"]}, {"idx": 5, "q": "Quelle partie de l'OB utilise-t-on pour l'entrée ?", "a": "Le 50% (mean threshold) par défaut. SL sous le low de l'OB. Certains utilisent le high pour plus de précision.", "kw": ["Certains", "50", "OB", "SL"]}, {"idx": 6, "q": "Qu'est-ce qu'un Breaker Block ?", "a": "OB qui a été cassé puis retesté dans l'autre sens. Ex : OB bullish cassé à la baisse devient un Breaker bearish. Plus puissant que l'OB simple.", "kw": ["Breaker", "breaker", "OB"]}, {"idx": 7, "q": "Qu'est-ce que la CISD et en quoi diffère-t-elle du MSS ?", "a": "CISD = Change In State of Delivery. Signal EARLY de changement institutionnel (close opposé). MSS = break visible sur le chart. CISD précède souvent le MSS.", "kw": ["Delivery", "Change", "Signal", "EARLY", "State"]}, {"idx": 8, "q": "Identifier une CISD haussière sur 1m ?", "a": "Bougie baissière dominante suivie d'une bougie haussière qui CLOSE au-dessus du low de la bougie baissière. Signal early de reversal.", "kw": ["reversal", "Bougie", "Signal", "CLOSE"]}, {"idx": 9, "q": "Avantage d'utiliser la CISD comme trigger ?", "a": "Tu entres AVANT le MSS visible. SL plus serré (sous le low), R:R maximal. Les pros l'utilisent pour les entrées à très haute précision.", "kw": ["MSS", "SL"]}, {"idx": 10, "q": "Qu'est-ce que la Candle Range Theory (CRT) ?", "a": "Méthode de lecture des bougies comme des ranges : chaque bougie a open/close (direction) + high/low (extrêmes) + 50% EQ interne + niveaux Goldbach 29%/71%.", "kw": ["Goldbach", "range", "29", "50", "71"]}, {"idx": 11, "q": "Les 4 zones de prix principales en SMC ?", "a": "1) FVG. 2) Order Block. 3) Breaker. 4) Mitigation Block (OB partiellement mitigé). Toutes zones d'interest institutionnel.", "kw": ["order block", "Mitigation", "mitigation", "Breaker", "breaker"]}, {"idx": 12, "q": "Comment choisir parmi plusieurs zones à proximité ?", "a": "Priorité : 1) HTF avant LTF. 2) Non-mitigée avant mitigée. 3) Avec confluence (FVG + OB superposés). 4) Alignée avec le biais HTF.", "kw": ["confluence", "biais", "FVG", "HTF", "LTF"]}], "ANALYSE_MTF": [{"idx": 1, "q": "Qu'est-ce que l'analyse MTF et pourquoi est-elle indispensable ?", "a": "Multi-timeframe : lire la structure sur plusieurs TF. HTF donne la DIRECTION, LTF donne le TIMING. 80% des mauvais trades = lecture mono-TF.", "kw": ["DIRECTION", "structure", "TIMING", "Multi", "HTF"]}, {"idx": 2, "q": "Ordre de lecture MTF optimal ?", "a": "Du plus GRAND au plus PETIT. Daily → 4H (biais) → 1H (structure) → 15m (zone) → 5m/1m (entrée). Jamais l'inverse.", "kw": ["structure", "Daily", "GRAND", "PETIT", "biais"]}, {"idx": 3, "q": "Setup long 5m mais 4H baissière. Tu entres ?", "a": "NON. La LTF doit CONFIRMER la HTF. Setup contre HTF = piège 70% du temps.", "kw": ["CONFIRMER", "Setup", "setup", "HTF", "LTF"]}, {"idx": 4, "q": "Comment construire un biais daily ?", "a": "1) Close daily précédente (haussière/baissière). 2) Position dans le range (premium/discount). 3) Directive HTF (weekly). 4) Liquidité proche (SSL/BSL imminente).", "kw": ["Directive", "Position", "discount", "premium", "Close"]}, {"idx": 5, "q": "Un biais daily est-il figé toute la journée ?", "a": "NON. Il est valide jusqu'à invalidation claire (break HTF contre le biais). Si invalidé → flat et réévaluation. Biais rigides tuent les comptes.", "kw": ["invalidation", "Biais", "biais", "HTF", "NON"]}, {"idx": 6, "q": "Différence OHLC vs OLHC ?", "a": "OHLC = bougie classique (Open-High-Low-Close). OLHC = Low atteint AVANT le High = signature de manipulation baissière puis distribution haussière = BULLISH.", "kw": ["distribution", "manipulation", "BULLISH", "Close", "High"]}, {"idx": 7, "q": "Pourquoi OLHC = signal haussier ?", "a": "Parce que le prix a d'abord cherché la liquidité en bas (SSL sweep) puis distribué vers le high. Signature claire de manipulation institutionnelle préparant un move haussier.", "kw": ["manipulation", "Signature", "Parce", "sweep", "SSL"]}, {"idx": 8, "q": "Qu'est-ce que le MMXM (Market Maker eXtension Model) ?", "a": "Le MM étend la phase de manipulation pour piéger un maximum de retail avant la distribution. Variation avancée du PO3.", "kw": ["distribution", "manipulation", "Variation", "PO3", "MM"]}, {"idx": 9, "q": "Qu'est-ce que l'ORG et comment l'utiliser ?", "a": "Opening Range Gap = gap entre close de la veille et open du jour. Les algos comblent l'ORG dans 80%+ des cas. Biais = vers la zone ORG = 1er target du jour.", "kw": ["Opening", "Biais", "Range", "biais", "range"]}, {"idx": 10, "q": "Quand ajuster un biais daily en cours de session ?", "a": "Quand 2 signaux contre le biais : 1) sweep du niveau clé opposé + 2) MSS HTF confirmé. 1 signal isolé = attendre.", "kw": ["biais", "sweep", "HTF", "MSS"]}], "PSYCHOLOGIE": [{"idx": 1, "q": "Les 3 émotions les plus dangereuses en trading ?", "a": "1) FOMO (rater un mouvement → entrée en retard). 2) Revenge (se rattraper après perte → cascade). 3) Ego (avoir raison > être profitable).", "kw": ["Revenge", "FOMO"]}, {"idx": 2, "q": "Antidote concret au FOMO ?", "a": "1) Plan écrit avant la session. 2) Seuls les trades pré-identifiés comptent. 3) Setup manqué = noter la leçon, pas entrer en chase.", "kw": ["session", "Setup", "Seuls", "setup", "Plan"]}, {"idx": 3, "q": "Règle anti-revenge après 2 pertes consécutives ?", "a": "STOP JOURNÉE. Fermer le terminal. Impossible de juger objectivement après 2 losses — ton cerveau est biaisé vers la récupération irrationnelle.", "kw": ["Impossible", "Fermer", "biais", "STOP"]}, {"idx": 4, "q": "Comment reconnaître que tu dois faire une pause ?", "a": "Signaux : 3+ pertes consécutives, trades impulsifs, mauvais sommeil, pensées trading 24/7. 2+ signaux = pause 1 semaine min.", "kw": ["Signaux", "24"]}, {"idx": 5, "q": "Qu'est-ce que l'Alter Ego en trading ?", "a": "Version disciplinée de soi-même, adoptée pendant les sessions. Suit le plan, ne négocie pas les règles, accepte les pertes. Détachement de l'ego personnel.", "kw": ["Version", "session", "Suit"]}, {"idx": 6, "q": "Qu'est-ce que l'ascenseur émotionnel ?", "a": "Oscillation entre euphorie (win) et dépression (loss). Plus il monte haut, plus il descend bas. Empêche toute décision rationnelle.", "kw": ["Oscillation"]}, {"idx": 7, "q": "Comment plat l'ascenseur émotionnel ?", "a": "Taille fixe + routine identique + accepter pertes comme coût de business + séparer ego du résultat.", "kw": ["Taille"]}, {"idx": 8, "q": "Tu viens de gagner 3R d'affilée. Danger immédiat ?", "a": "Overconfidence → taille augmentée → trade forcé → perte qui annule tout. L'euphorie précède la chute. Reste à taille fixe, QUOI QU'IL ARRIVE.", "kw": ["Overconfidence", "ARRIVE", "Reste", "QU"]}, {"idx": 9, "q": "Entraîner son mental game quotidiennement : les 4 piliers ?", "a": "1) Journal émotionnel. 2) Méditation 10 min/jour. 3) Routine pré-session identique. 4) Debrief post-session (leçon du jour).", "kw": ["Debrief", "Journal", "Routine", "session", "10"]}, {"idx": 10, "q": "Après grosse perte, combien de temps attendre avant de retrader ?", "a": "Minimum 24h. Idéalement 1 semaine. Le cerveau a besoin de dissocier émotion et décision. Retrader H+1 = revenge garanti.", "kw": ["Retrader", "Minimum"]}, {"idx": 11, "q": "Pourquoi la psycho compte 50%+ du résultat après 6 mois ?", "a": "Parce que la technique se maîtrise en 3-6 mois. Ensuite, 80% du résultat = psycho. Négliger la psycho = plafonner.", "kw": ["Ensuite", "Parce", "80"]}], "GESTION_RISQUE": [{"idx": 1, "q": "Règle d'or du risque par trade ?", "a": "Jamais plus de 1% du capital par trade. 0.5% pour débutants. Avec 1%, il faut 10 pertes consécutives pour -10% du capital = zone sûre.", "kw": ["10"]}, {"idx": 2, "q": "Cite les 8 points non-négociables d'un plan de trading.", "a": "1) Biais directionnel 2) Instrument 3) Timeframes 4) Zone d'intérêt 5) Déclencheur 6) SL 7) TP 8) Invalidation.", "kw": ["Invalidation", "invalidation", "Instrument", "Timeframes", "Biais"]}, {"idx": 3, "q": "Comment définir une invalidation technique ?", "a": "Le SCÉNARIO qui tue ton setup, pas juste un niveau. Ex: 'biais long invalidé si close 15m sous PDL'. Pas 'si le prix touche X'.", "kw": ["biais", "setup", "PDL"]}, {"idx": 4, "q": "Tu vois un setup A+ mais pas de biais défini pré-session. Tu fais quoi ?", "a": "SKIP. Pas de plan → pas de trade. Le biais se décide AVANT la session, jamais dans le feu.", "kw": ["session", "biais", "SKIP"]}, {"idx": 5, "q": "Taille trop grosse : impact psychologique ?", "a": "1) Tu deviens émotionnel. 2) Tu déplaces le SL. 3) Tu coupes tôt les gagnants. 4) Revenge après perte. Règle : si la perte te fait mal, tu es TROP GROS.", "kw": ["Revenge", "GROS", "SL"]}, {"idx": 6, "q": "SL sous swing low. Prix bouge contre toi de 3 pts, tu es tenté de descendre le SL. Bonne idée ?", "a": "MAUVAISE. Le SL ne bouge jamais sauf à breakeven (quand prix a progressé vers TP). Descendre le SL = laisser le risque exploser.", "kw": ["Descendre", "MAUVAISE", "SL", "TP"]}, {"idx": 7, "q": "Étapes d'un protocole complet ?", "a": "1) Analyse HTF weekend. 2) Plan daily matin. 3) Checklist pré-trade. 4) Exécution. 5) Gestion live. 6) Debrief daily. 7) Review weekly.", "kw": ["Checklist", "Analyse", "Debrief", "Gestion", "Review"]}, {"idx": 8, "q": "Pourquoi le protocole doit être IDENTIQUE chaque jour ?", "a": "Variabilité = erreurs. Même checklist + même routine = même exécution. Cerveau fatigue moins, biais émotionnels diminuent. Discipline = protocole invariant.", "kw": ["Discipline", "Cerveau", "biais"]}, {"idx": 9, "q": "Trader qui change de protocole toutes les semaines : résultat ?", "a": "Pertes constantes. Pas de temps pour valider statistiquement. Minimum 6 mois avec un protocole avant d'en changer.", "kw": ["Minimum", "Pertes"]}, {"idx": 10, "q": "Qu'est-ce qu'un Fix Price ?", "a": "Niveau où le prix a été fixé par les institutions pour livrer leur position. Souvent sur PDH/PDL, Asian H/L, EQ de range. Servent de targets ET magnets.", "kw": ["Servent", "Niveau", "Asian", "range", "PDH"]}, {"idx": 11, "q": "Tu vois le prix accélérer vers le PDH. Entrée long ici : bonne idée ?", "a": "MAUVAISE. Tu achètes en plein FIX PRICE = pire prix. Le PDH est un target, pas une entrée. Attends le SWEEP + reversal = setup short.", "kw": ["MAUVAISE", "reversal", "Attends", "PRICE", "SWEEP"]}, {"idx": 12, "q": "Bouger SL à breakeven : quand exactement ?", "a": "Quand le prix a atteint 1R (distance = risque initial). SL -10, TP +20 → BE quand prix +10. Jamais avant (tu coupes trop tôt).", "kw": ["10", "1R", "20", "SL", "TP"]}], "PATTERNS_MODELES": [{"idx": 1, "q": "Les 3 grands types de modèles de marché ?", "a": "1) Trending (tendance directionnelle, HH+HL ou LH+LL). 2) Ranging (oscillation entre 2 extrêmes). 3) Consolidating (compression avant expansion). Chacun = stratégie différente.", "kw": ["Consolidating", "Trending", "Ranging", "Chacun", "trend"]}, {"idx": 2, "q": "Identifier rapidement range vs trend ?", "a": "10 dernières bougies HTF (4H). Plus-hauts/plus-bas croissants = trend. Oscillation 50/50 = range. Petites bougies agglutinées = consolidation.", "kw": ["Oscillation", "Petites", "range", "trend", "HTF"]}, {"idx": 3, "q": "Trader une stratégie de trend sur un marché en range : résultat ?", "a": "Pertes à répétition. Les breakouts échouent. Règle : identifier D'ABORD, trader ENSUITE. La stratégie s'adapte au marché.", "kw": ["breakout", "ENSUITE", "Pertes", "ABORD"]}, {"idx": 4, "q": "3 patterns avancés au-delà des FVG/OB ?", "a": "1) Turtle Soup (sweep + reversal rapide). 2) Unicorn (OB + FVG superposés). 3) Breaker + Mitigation. Tous à très haut taux de réussite quand bien identifiés.", "kw": ["Mitigation", "mitigation", "reversal", "Breaker", "Unicorn"]}, {"idx": 5, "q": "Qu'est-ce que le Turtle Soup ?", "a": "Sweep d'un plus-haut/plus-bas récent SUIVI d'un reversal immédiat. Ex : sweep PDH → MSS bearish → SHORT avec SL au-dessus du sweep.", "kw": ["reversal", "SHORT", "SUIVI", "Sweep", "sweep"]}, {"idx": 6, "q": "Quand privilégier patterns basiques vs avancés ?", "a": "Basiques (FVG/OB) : 80% de tes trades, marché normal. Avancés (Turtle, Unicorn) : 20% restants, contextes spéciaux (fin de range, reversal HTF).", "kw": ["Basiques", "reversal", "Unicorn", "Turtle", "range"]}, {"idx": 7, "q": "Qu'est-ce que l'analyse intermarket ?", "a": "Étude des corrélations : ES/NQ, DXY/EURUSD, gold/silver. Divergence intermarket (SMT) = signal fort de reversal imminent.", "kw": ["Divergence", "reversal", "EURUSD", "DXY", "SMT"]}, {"idx": 8, "q": "Comment lire l'orderflow simple sans DOM ?", "a": "1) Taille des bougies (grosses = conviction). 2) Volume par barre (pics = accumulation). 3) Réaction aux niveaux (rejet fort = zone défendue).", "kw": ["accumulation", "Taille", "Volume"]}, {"idx": 9, "q": "Divergence SMT : NQ fait nouveau high, ES stagne. Lecture ?", "a": "Divergence bearish. NQ en solo = faux mouvement probable. SHORT NQ avec confirmation MSS + FVG.", "kw": ["Divergence", "SHORT", "FVG", "MSS", "NQ"]}, {"idx": 10, "q": "Structurer une étude de cas post-trade ?", "a": "1) Contexte HTF (chart 4H). 2) Setup identifié. 3) Exécution (entry/SL/TP). 4) Résultat. 5) Bien fait. 6) Raté. 7) Leçon.", "kw": ["Contexte", "Setup", "setup", "Bien", "HTF"]}, {"idx": 11, "q": "Faut-il étudier les trades GAGNANTS autant que les perdants ?", "a": "OUI. Gagnants = ce que tu maîtrises (à répéter). Perdants = ce que tu ignores (à corriger). Les 2 = progression équilibrée.", "kw": ["Gagnants", "Perdants", "OUI"]}, {"idx": 12, "q": "Combien d'études de cas par mois minimum ?", "a": "20 études documentées (1 par jour ouvré). 1 étude superficielle = 0 progression. 1 étude profonde = 1 leçon durable.", "kw": ["20"]}]};
+
+// Switch d'onglets
+document.querySelectorAll('.exo-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    var target = tab.getAttribute('data-target');
+    document.querySelectorAll('.exo-tab').forEach(function(t) { t.classList.toggle('active', t === tab); });
+    document.querySelectorAll('.exo-pane').forEach(function(p) {
+      p.style.display = p.getAttribute('data-key') === target ? 'block' : 'none';
+    });
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  });
+});
+
+// Validation quiz
+document.querySelectorAll('.exo-submit').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var theme = btn.getAttribute('data-theme');
+    var pane = document.getElementById('pane-' + theme);
+    var items = pane.querySelectorAll('.exo-item');
+    var data = ALL_DATA[theme];
+
+    // Verifie que tout est rempli
+    var empty = false;
+    items.forEach(function(el) {
+      var ta = el.querySelector('.exo-input');
+      if (!ta.value.trim()) empty = true;
+    });
+    if (empty) {
+      alert('Réponds à TOUS les exercices avant de valider.');
+      return;
+    }
+
+    // Score
+    var correct = 0;
+    items.forEach(function(el, idx) {
+      var ta = el.querySelector('.exo-input');
+      var fb = el.querySelector('.exo-feedback');
+      var user = ta.value.trim().toLowerCase();
+      var ref = data[idx];
+      var matched = 0;
+      ref.kw.forEach(function(k) { if (user.indexOf(k.toLowerCase()) !== -1) matched++; });
+      var ratio = ref.kw.length > 0 ? matched / ref.kw.length : 0;
+      var isOk = ratio >= 0.4;
+      if (isOk) correct++;
+      ta.disabled = true;
+      ta.style.background = isOk ? '#ecfdf5' : '#fef2f2';
+      ta.style.borderColor = isOk ? '#10b981' : '#dc2626';
+      var safeA = ref.a.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      fb.innerHTML =
+        '<div class="result '+(isOk?'ok':'ko')+'">'+
+        (isOk ? '✓ Bonne réponse' : '✗ Partielle / incorrecte')+
+        ' ('+matched+'/'+ref.kw.length+' concepts clés)</div>'+
+        '<div class="ref"><b>Réponse de référence :</b> '+safeA+'</div>';
+      fb.classList.add('show');
+    });
+
+    var pct = Math.round((correct / items.length) * 100);
+    var color = pct >= 80 ? '#10b981' : (pct >= 50 ? '#f59e0b' : '#dc2626');
+    var bg = pct >= 80 ? '#d1fae5' : (pct >= 50 ? '#fef3c7' : '#fee2e2');
+    var msg = pct >= 80 ? '🎯 Excellent ! Tu maîtrises cette thématique.' :
+              (pct >= 50 ? '💪 Correct. Relis les concepts clés pour consolider.' :
+                           '📚 À retravailler. Reprends le module depuis le début.');
+    var scoreDiv = pane.querySelector('.exo-score');
+    scoreDiv.innerHTML =
+      '<div class="big" style="color:'+color+';">'+correct+'/'+items.length+'</div>'+
+      '<div class="pct" style="color:'+color+';">Score : '+pct+'%</div>'+
+      '<div class="msg">'+msg+'</div>';
+    scoreDiv.style.background = bg;
+    scoreDiv.classList.add('show');
+    btn.disabled = true;
+    btn.textContent = '✓ Validé';
+    pane.querySelector('.exo-reset').classList.add('show');
+    scoreDiv.scrollIntoView({behavior:'smooth', block:'center'});
+  });
+});
+
+// Reset quiz
+document.querySelectorAll('.exo-reset').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var theme = btn.getAttribute('data-theme');
+    var pane = document.getElementById('pane-' + theme);
+    pane.querySelectorAll('.exo-input').forEach(function(ta) {
+      ta.value = '';
+      ta.disabled = false;
+      ta.style.background = '';
+      ta.style.borderColor = '';
+    });
+    pane.querySelectorAll('.exo-feedback').forEach(function(fb) {
+      fb.classList.remove('show');
+      fb.innerHTML = '';
+    });
+    pane.querySelector('.exo-score').classList.remove('show');
+    var submit = pane.querySelector('.exo-submit');
+    submit.disabled = false;
+    submit.textContent = 'VALIDER MES RÉPONSES';
+    btn.classList.remove('show');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  });
+});
+</script>
+
+</body>
+</html>
