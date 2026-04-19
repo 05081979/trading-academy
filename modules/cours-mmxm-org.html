@@ -76,8 +76,66 @@ code { font-family:'JetBrains Mono',monospace; background:#f1f5f9; padding:2px 6
 .divider { height:1px; background:#e2e5ea; margin:16px 0; border:none; }
 .primary { color:#ec4899; font-weight:600; }
 </style>
+
+<style id="aa-tabs-css">
+  /* Barre d'onglets sticky */
+  nav.aa-tabs {
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+    display: flex;
+    gap: 0;
+    background: #fff;
+    border-bottom: 2px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    padding: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  nav.aa-tabs button {
+    flex: 1;
+    padding: 14px 20px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-size: 15px;
+    font-weight: 600;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  nav.aa-tabs button:hover { color: #111; background: #f9fafb; }
+  nav.aa-tabs button.active {
+    color: #dc2626;
+    border-bottom-color: #dc2626;
+    background: #fff;
+  }
+  nav.aa-tabs .badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 8px;
+    background: #dc2626;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  /* Panneaux */
+  body[data-aa-tab="cours"] .aa-pane-exercices { display: none; }
+  body[data-aa-tab="exercices"] .aa-pane-cours { display: none; }
+  body[data-aa-tab="exercices"] nav.aa-tabs { border-bottom-color: #dc2626; }
+
+  /* Fix pour eviter que le header du module overlap */
+  .aa-pane-exercices { min-height: calc(100vh - 80px); padding: 20px 0; }
+</style>
 </head>
 <body>
+<nav class="aa-tabs" id="aa-tabs">
+  <button class="aa-tab-btn active" data-tab="cours">📖 Cours</button>
+  <button class="aa-tab-btn" data-tab="exercices">📝 Exercices <span class="badge" id="aa-exo-count">?</span></button>
+</nav>
+<div class="aa-pane-cours">
 <script src="../nav.js"></script>
 
 <div class="hero">
@@ -149,7 +207,7 @@ code { font-family:'JetBrains Mono',monospace; background:#f1f5f9; padding:2px 6
 <script src="../chat.js?v=v20260416"></script>
 
 
-<!-- ═══ EXERCICES INTERACTIFS: ANALYSE_MTF ═══ -->
+</div><div class="aa-pane-exercices"><!-- ═══ EXERCICES INTERACTIFS: ANALYSE_MTF ═══ -->
 <section id="exercices-theme" data-theme="ANALYSE_MTF" style="margin:48px auto;max-width:900px;padding:28px 32px;background:linear-gradient(135deg,rgba(220,38,38,0.05),rgba(220,38,38,0.01));border-left:4px solid #dc2626;border-radius:10px;">
   <div style="font-size:12px;font-weight:700;color:#dc2626;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">Onglet Exercices · Thématique</div>
   <h2 style="margin:0 0 14px;font-size:22px;color:#111;font-weight:700;">📝 Analyse MTF, Daily Bias, OHLC, MMXM</h2>
@@ -229,6 +287,27 @@ code { font-family:'JetBrains Mono',monospace; background:#f1f5f9; padding:2px 6
     scoreDiv.scrollIntoView({behavior:'smooth', block:'center'});
   });
 })();
+</script></div>
+<script id="aa-tabs-js">
+(function() {
+  // Initial : onglet Cours
+  document.body.setAttribute('data-aa-tab', 'cours');
+  var btns = document.querySelectorAll('.aa-tab-btn');
+  btns.forEach(function(b) {
+    b.addEventListener('click', function() {
+      var tab = b.getAttribute('data-tab');
+      document.body.setAttribute('data-aa-tab', tab);
+      btns.forEach(function(x) { x.classList.toggle('active', x === b); });
+      // Scroll top du panneau
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    });
+  });
+  // Compte les exercices pour le badge
+  var cnt = document.querySelectorAll('.aa-pane-exercices .exo-item').length;
+  var badge = document.getElementById('aa-exo-count');
+  if (badge) badge.textContent = cnt || '';
+})();
 </script>
+
 </body>
 </html>
