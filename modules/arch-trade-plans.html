@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html data-tier="premium" lang="fr">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+(function(){
+  try {
+    fetch('../version.txt?_='+Date.now(), {cache:'no-store'})
+      .then(function(r){return r.text();})
+      .then(function(v){
+        v=(v||'').trim(); if(!v) return;
+        var k='aa-v', prev=localStorage.getItem(k);
+        if(prev && prev!==v){ localStorage.setItem(k,v); location.replace(location.pathname+'?_cb='+v+location.hash); }
+        else localStorage.setItem(k,v);
+      }).catch(function(){});
+  } catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="../auth.js?v=v20260417-auth-elgavacho"></script>
+<title>Trade Plans — Architecture — Algorithmic Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../bootcamp-theme.css?v=v20260413a">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background:#f5f7fa !important; color:#1a1a2e !important; font-family:'Inter',sans-serif; line-height:1.65; min-height:100vh; }
+.hero { background:linear-gradient(135deg,#7c3aed 0%,#7c3aeddd 100%); color:#fff; padding:60px 40px 40px; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top right, rgba(255,255,255,0.15) 0%, transparent 60%); pointer-events:none; }
+.hero-inner { max-width:1100px; margin:0 auto; position:relative; z-index:1; }
+.back-link { display:inline-flex; align-items:center; gap:8px; color:rgba(255,255,255,0.88); text-decoration:none; font-size:13px; margin-bottom:24px; }
+.back-link:hover { color:#fff; }
+.tier-badge { display:inline-block; background:rgba(0,0,0,0.2); color:#fff; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:16px; }
+.hero h1 { font-family:'Syne',sans-serif; font-size:clamp(28px,4vw,40px); font-weight:800; letter-spacing:-0.01em; margin-bottom:10px; color:#fff; }
+.hero p { font-size:16px; max-width:720px; opacity:0.95; color:#fff; }
+.container { max-width:1100px; margin:0 auto; padding:40px 24px; }
+.container > * { background:#fff; border-radius:14px; padding:24px 28px; margin-bottom:18px; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid #e2e5ea; }
+.container > *:last-child { margin-bottom:0; }
+h2, h3, h4 { font-family:'Syne',sans-serif; color:#1a1a2e; font-weight:700; }
+h2 { font-size:20px; margin-bottom:14px; display:flex; align-items:center; gap:10px; padding-bottom:8px; border-bottom:2px solid #7c3aed33; }
+h3 { font-size:15px; color:#7c3aed; margin:18px 0 8px; text-transform:uppercase; letter-spacing:0.06em; }
+h4 { font-size:14px; color:#1a1a2e; margin:14px 0 6px; }
+p { margin-bottom:12px; color:#334155; line-height:1.7; }
+strong, b { color:#111827; font-weight:700; }
+ul, ol { margin-left:22px; margin-bottom:12px; }
+li { margin-bottom:6px; color:#334155; line-height:1.65; }
+code { font-family:'JetBrains Mono',monospace; background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:0.9em; color:#0f172a; }
+.section-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:#1a1a2e; margin-bottom:12px; display:flex; align-items:center; gap:10px; padding-bottom:8px; border-bottom:2px solid #7c3aed33; }
+.section-sub { color:#64748b; font-size:14px; margin-bottom:14px; font-style:italic; }
+.info-box { padding:14px 18px; background:rgba(124,58,237,0.06); border-left:4px solid #7c3aed; border-radius:10px; margin:14px 0; color:#334155; font-size:14px; }
+.warn-box { padding:14px 18px; background:#fef3c7; border-left:4px solid #f59e0b; border-radius:10px; margin:14px 0; color:#78350f; font-size:14px; }
+.win-box { padding:14px 18px; background:#ecfdf5; border-left:4px solid #10b981; border-radius:10px; margin:14px 0; color:#065f46; font-size:14px; }
+.card { padding:14px 18px; background:#f8fafc; border:1px solid #e2e5ea; border-radius:10px; margin-bottom:12px; }
+.card-title { font-weight:700; color:#7c3aed; font-size:14px; margin-bottom:6px; font-family:'Syne',sans-serif; }
+.step-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin:12px 0; }
+.step-card { background:#f8fafc; border-left:3px solid #7c3aed; padding:12px 14px; border-radius:0 8px 8px 0; }
+.step-label { font-size:10px; color:#7c3aed; text-transform:uppercase; letter-spacing:0.12em; font-weight:800; }
+.step-content { font-size:13px; margin-top:4px; color:#334155; line-height:1.55; }
+table { border-collapse:collapse; width:100%; margin:12px 0; font-size:13px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid #e2e5ea; }
+th { background:#f5f3ff; color:#7c3aed; font-weight:700; text-transform:uppercase; font-size:11px; letter-spacing:0.08em; }
+tr:hover td { background:#fafbfc; }
+.badge { display:inline-block; padding:3px 10px; border-radius:6px; font-size:11px; font-weight:700; margin:0 4px 4px 0; background:#f1f5f9; color:#475569; }
+.badge.premium { background:#f5f3ff; color:#7c3aed; }
+.badge.green { background:#ecfdf5; color:#047857; }
+.badge.amber { background:#fef3c7; color:#78350f; }
+.level-chip { display:inline-block; background:#f1f5f9; color:#7c3aed; padding:3px 10px; border-radius:4px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; margin:2px 4px 2px 0; }
+.anchor-nav { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+.anchor-nav a { text-decoration:none; font-size:12px; background:#f5f3ff; color:#7c3aed; padding:5px 10px; border-radius:6px; font-weight:600; border:1px solid #e0d4ff; }
+.anchor-nav a:hover { background:#7c3aed; color:#fff; }
+.plan-section { scroll-margin-top:20px; }
+.rr-chip { display:inline-flex; align-items:center; gap:6px; background:#ecfdf5; color:#047857; padding:3px 10px; border-radius:6px; font-size:12px; font-weight:700; }
+.divider { height:1px; background:#e2e5ea; margin:16px 0; border:none; }
+</style>
+</head>
+<body>
+
+<script src="../nav.js"></script>
+
+<div class="hero">
+  <div class="hero-inner">
+    <a href="hub-cours.html" class="back-link">← Retour au hub</a>
+    <div class="tier-badge">Premium</div>
+    <div style="font-size:44px;margin-bottom:14px;">🎯</div>
+    <h1>Trade Plans — 11 Modèles d'Exécution</h1>
+    <p>Plans structurés sur la grille PO3 / Goldbach et les dealing ranges. Chaque plan définit entrée, stop, target et conditions de confluence pour opérer mécaniquement.</p>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- INTRO -->
+<div class="plan-section">
+  <div class="section-title">Vue d'ensemble</div>
+  <div class="section-sub">11 plans couvrant mensuel, hebdomadaire, intraday + setups Goldbach spécifiques</div>
+  <p>Ce module regroupe les 11 trade plans de l'écosystème PO3 / Goldbach. Ils se répartissent en 3 familles :</p>
+  <ul>
+    <li><strong>Plans par horizon</strong> — Look Back (mensuel), OSOK (hebdo), Personal Plan (intraday mar/mer/jeu)</li>
+    <li><strong>Plans HIPPO</strong> — HIPPOPOTAMUS</li>
+    <li><strong>Plans sur niveaux Goldbach</strong> — OB, Breaker, Stop Run, Equilibrium, FVG, Einstein, Hidden OTE</li>
+  </ul>
+  <div class="info-box"><strong>Grille commune :</strong> tous les plans Goldbach se réfèrent à la même partition <code>0 / 3 / 11 / 17 / 29 / 41 / 47 / 50 / 53 / 59 / 71 / 83 / 89 / 97 / 100</code>. Le DR standard de calibration est <strong>81 pips (PO3-1)</strong>.</div>
+  <div class="anchor-nav">
+    <a href="#p1">1. Look Back</a>
+    <a href="#p2">2. HIPPOPOTAMUS</a>
+    <a href="#p3">3. OSOK</a>
+    <a href="#p4">4. Personal Plan ⭐</a>
+    <a href="#p5">5. Hidden OTE</a>
+    <a href="#p6">6. OB</a>
+    <a href="#p7">7. Breaker</a>
+    <a href="#p8">8. Stop Run</a>
+    <a href="#p9">9. Equilibrium</a>
+    <a href="#p10">10. FVG</a>
+    <a href="#p11">11. Einstein</a>
+    <a href="#overview">Récap</a>
+    <a href="#risk">Risk Management</a>
+  </div>
+</div>
+
+<!-- PLAN 1 -->
+<div class="plan-section" id="p1">
+  <h2>1. Look Back Trade Plan <span class="badge">Mensuel</span></h2>
+  <div class="section-sub">A monthly play for hundreds of pips</div>
+  <h3>Contexte</h3>
+  <ul>
+    <li>Utiliser la <strong>look back period</strong> courante</li>
+    <li>Identifier le numéro en jeu</li>
+    <li>Se situer dans le cycle <strong>Manipulation fractal</strong> du cycle Accumulation principal</li>
+  </ul>
+  <h3>Setup</h3>
+  <ul>
+    <li>Chercher les clues de la look back partition : <strong>taille des gaps, wicks, OB, liquidity runs</strong></li>
+  </ul>
+  <h3>Exécution</h3>
+  <div class="card">
+    <p><strong>Stop Loss :</strong> 30 pips (pour absorber un PO3 stop run de 27)</p>
+    <p><strong>Exit :</strong> côté opposé du trade, dans la Manipulation principale, après un PO3 stop run, ou à la clôture du cycle</p>
+  </div>
+</div>
+
+<!-- PLAN 2 -->
+<div class="plan-section" id="p2">
+  <h2>2. HIPPOPOTAMUS <span class="badge premium">HIPPO</span></h2>
+  <div class="section-sub">A trade plan for HIPPO's</div>
+  <p>Acronyme qui décompose l'ensemble du setup :</p>
+  <div class="step-grid">
+    <div class="step-card"><div class="step-label">H.I.P.P.O.</div><div class="step-content">Identifier un <strong>HIPPO</strong> (OB caché entre 2 gaps de même taille)</div></div>
+    <div class="step-card"><div class="step-label">P.O.T.</div><div class="step-content"><strong>Potential trade</strong> : swing high/low juste au-dessus / en-dessous du HIPPO → alerte</div></div>
+    <div class="step-card"><div class="step-label">A.</div><div class="step-content"><strong>Activate</strong> : prix prend la liq du STH/STL <em>et</em> entre dans le HIPPO → entrée</div></div>
+    <div class="step-card"><div class="step-label">M.U.S.</div><div class="step-content"><strong>Must hold</strong> : le FVG sous/sur le HIPPO doit tenir = SL</div></div>
+  </div>
+  <div class="warn-box"><strong>Attention news :</strong> le FVG du SL peut être wické pendant les annonces majeures.</div>
+  <h3>Take Profit</h3>
+  <p>Partiels aux <strong>niveaux Goldbach</strong>.</p>
+</div>
+
+<!-- PLAN 3 -->
+<div class="plan-section" id="p3">
+  <h2>3. OSOK Trade Plan <span class="badge">Hebdomadaire</span></h2>
+  <div class="section-sub">Catch 50 to 75 pips once a week</div>
+  <ol>
+    <li>Capter l'<strong>expansion hebdomadaire</strong></li>
+    <li>Tracer un <strong>AMD cycle hebdo</strong> (market open → market close)</li>
+    <li>Attendre que l'<strong>Accumulation</strong> soit établie</li>
+    <li>Pendant <strong>Manipulation</strong> : PO3 stop run de l'acc, puis retrace dans l'acc OU expansion rapide</li>
+    <li>Attendre une <strong>cassure STH/STL</strong></li>
+    <li>Retrace → <strong>OTE sur un niveau Goldbach</strong> (peut être non-GB)</li>
+  </ol>
+  <div class="win-box">
+    <strong>Take Profit par partiels :</strong> 20 pips → 50 pips → runner 75 pips.<br>
+    Utiliser les niveaux Goldbach comme zones de partiels logiques.
+  </div>
+</div>
+
+<!-- PLAN 4 -->
+<div class="plan-section" id="p4">
+  <h2>4. Personal Trade Plan ⭐ <span class="badge premium">Signature</span></h2>
+  <div class="section-sub">24 pips per week — RR 2.4 — mardi / mercredi / jeudi</div>
+
+  <h3>Structure en 4 étapes</h3>
+  <div class="step-grid">
+    <div class="step-card"><div class="step-label">Step 1</div><div class="step-content">Dans un <strong>cycle M</strong> (ou M fractal)</div></div>
+    <div class="step-card"><div class="step-label">Step 2</div><div class="step-content"><strong>PO3 stop run</strong> sous/sur STH/STL → <em>dans</em> un niveau Goldbach (unfulfilled range)</div></div>
+    <div class="step-card"><div class="step-label">Step 3</div><div class="step-content">Entrée avec <strong>SL 10 pips</strong></div></div>
+    <div class="step-card"><div class="step-label">Step 4</div><div class="step-content">Target <strong>24 pips</strong> dans un Goldbach opposé <span class="rr-chip">RR 2.4</span></div></div>
+  </div>
+  <div class="info-box">Joué principalement sur les <strong>zones larges LV et BR</strong> (qui contiennent les niveaux non-Goldbach stricts).</div>
+
+  <h3>Protocole numérique (exemple PO3 = 243)</h3>
+  <table>
+    <tr><th>Numéro</th><th>Valeur</th><th>Rôle</th></tr>
+    <tr><td>PO3</td><td>243 pips</td><td>Average weekly range</td></tr>
+    <tr><td>PO3-1</td><td>81 pips</td><td>Average daily range = DR Goldbach</td></tr>
+    <tr><td>PO3-2</td><td>27 pips</td><td>Stop run visé</td></tr>
+    <tr><td>PO3-3/4</td><td>9 / 3 pips</td><td>Liquidité visée (gap, block, STH/STL)</td></tr>
+  </table>
+
+  <h3>Séquence d'exécution</h3>
+  <ol>
+    <li><strong>Consolidation PO3-3</strong> pendant la nuit CLS (CE(s)T forex, 18:00 EST indices US)</li>
+    <li><strong>Fake move</strong> hors conso (3 ou 9 pips) → rejeté immédiatement</li>
+    <li>Prix <strong>purge la conso</strong>, retrace brièvement, retouche la conso</li>
+    <li>Anticiper le <strong>PO3-2 stop run (27 pips)</strong> qui clear la liquidité PO3</li>
+    <li><strong>Entrée</strong> : soit directement au touch du niveau Goldbach, soit après <strong>double rejet + retrace</strong></li>
+  </ol>
+
+  <h3>Confirmation par projection daily</h3>
+  <ul>
+    <li>Mesurer depuis l'asset open time</li>
+    <li>La price projection doit former un <strong>pourcentage cible</strong> aligné avec le stop run PO3 + liquidité PO3</li>
+    <li><em>Exemple typique :</em> 0.17%</li>
+  </ul>
+
+  <h3>Confirmation "hors grille"</h3>
+  <p>Tracer un range manuel alignant <strong>3 points</strong> : un wick, un block, un gap.</p>
+  <ul>
+    <li>Wick aux niveaux <span class="level-chip">0 / 100</span> <span class="level-chip">3 / 97</span></li>
+    <li>Block entre <span class="level-chip">3 - 11</span> / <span class="level-chip">97 - 89</span></li>
+    <li>Gap entre <span class="level-chip">11 - 17</span> / <span class="level-chip">89 - 83</span></li>
+  </ul>
+</div>
+
+<hr class="divider">
+
+<!-- PLAN 5 -->
+<div class="plan-section" id="p5">
+  <h2>5. Hidden OTE Trade Plan</h2>
+  <div class="section-sub">OTE entre 2 niveaux Goldbach</div>
+  <ol>
+    <li>Prix s'éloigne d'un niveau Goldbach</li>
+    <li>Il breach le <strong>CE / MT</strong>, et possiblement le niveau suivant</li>
+    <li>Retrace sous CE/MT (<strong>discount</strong> long, <strong>premium</strong> short)</li>
+    <li>Entry à l'OTE : <span class="level-chip">62</span> <span class="level-chip">70.5</span> <span class="level-chip">79</span></li>
+    <li>Target : liquidité opposée ou prochain niveau non-touché</li>
+  </ol>
+  <div class="info-box">Se joue principalement sur zones <strong>LV et BR</strong> (le CE qu'on veut voir casser).</div>
+</div>
+
+<!-- PLAN 6 -->
+<div class="plan-section" id="p6">
+  <h2>6. OB Trade Plan <span class="badge green">24 pips / DR 81</span></h2>
+  <div class="section-sub">Order Block → exit au Breaker</div>
+  <h3>Niveaux</h3>
+  <p><span class="level-chip">3 - 11 - 41</span> (longs) &nbsp;·&nbsp; <span class="level-chip">97 - 89 - 59</span> (shorts)</p>
+  <ol>
+    <li>OB formé entre <strong>3-11</strong> (ou 97-89) ou très proche</li>
+    <li>STH/STL créé, raidé lors de l'expansion away</li>
+    <li>Retrace vers l'OB = <strong>entry</strong></li>
+    <li>TP au <strong>breaker level 41</strong> (ou 59)</li>
+  </ol>
+</div>
+
+<!-- PLAN 7 -->
+<div class="plan-section" id="p7">
+  <h2>7. Breaker Trade Plan <span class="badge green">24 pips / DR 81</span></h2>
+  <div class="section-sub">Breaker → exit au High / Low</div>
+  <h3>Niveaux</h3>
+  <p><span class="level-chip">59 / 71</span> ou <span class="level-chip">41 / 29</span> + <span class="level-chip">0 / 100</span></p>
+  <ol>
+    <li>Breaker formé entre 59-71 (ou 29-41)</li>
+    <li>Expansion away + STH/STL traversé</li>
+    <li>Retrace à <strong>71</strong> (ou 29) = entry</li>
+    <li>Exit au <strong>high/low 100</strong> (ou 0)</li>
+  </ol>
+</div>
+
+<!-- PLAN 8 -->
+<div class="plan-section" id="p8">
+  <h2>8. Stop Run Trade Plan <span class="badge green">24 pips / DR 81</span></h2>
+  <div class="section-sub">DR stop run → aim for the Breaker</div>
+  <h3>Niveaux</h3>
+  <p><span class="level-chip">59 / 71 / 100 / 111</span> ou <span class="level-chip">41 / 29 / 0 / -0.111</span></p>
+  <ol>
+    <li>Prix rejette le HL (ou failed to touch)</li>
+    <li>Breaker formé dans la breaker zone (59-71 / 29-41)</li>
+    <li>Expansion away → raid BSL/SSL → stop au PO3 stop run level (<strong>111 / -0.111</strong>)</li>
+    <li>Rejet + raid STH/STL opposé</li>
+    <li>Retrace → stop à l'extrême <strong>100 / 0</strong> = entry (SL derrière le 111)</li>
+    <li>TP au <strong>liquidity void 71 / 29</strong></li>
+    <li>Monitorer si le breaker devient un "real breaker"</li>
+  </ol>
+</div>
+
+<!-- PLAN 9 -->
+<div class="plan-section" id="p9">
+  <h2>9. Equilibrium Trade Plan <span class="badge green">14 pips / DR 81</span></h2>
+  <div class="section-sub">Mitigation Block &amp; Equilibrium</div>
+  <ol>
+    <li>Prix hovering autour de l'<strong>equilibrium (47 / 53)</strong></li>
+    <li>Buy stops et sell stops clairs entre equilibrium et mitigation block</li>
+    <li>Entry quand prix hit <strong>47</strong> ou <strong>53</strong></li>
+    <li>Exit au mitigation opposé</li>
+  </ol>
+</div>
+
+<!-- PLAN 10 -->
+<div class="plan-section" id="p10">
+  <h2>10. FVG Trade Plan</h2>
+  <div class="section-sub">FVG &amp; Propulsion Block</div>
+  <h3>Niveaux</h3>
+  <p>
+    <span class="level-chip">0 / 100</span> HL &nbsp;·&nbsp;
+    <span class="level-chip">11 / 89</span> OB &nbsp;·&nbsp;
+    <span class="level-chip">17 / 83</span> FVG &nbsp;·&nbsp;
+    <span class="level-chip">41 / 59</span> Breaker
+  </p>
+  <ol>
+    <li>OB créé (peut englober la FVG zone) dans le HL</li>
+    <li>Prix sort de l'OB + FVG zone, puis <strong>revient dans la FVG</strong></li>
+    <li><strong>Propulsion block</strong> formé dans la FVG (max = MT de l'OB)</li>
+    <li>Cassure du propulsion block (buy/sell on stop) → <strong>reprice agressif</strong> vers le breaker</li>
+    <li>Laisse un <strong>liquidity void</strong> (re-traded plus tard)</li>
+  </ol>
+</div>
+
+<!-- PLAN 11 -->
+<div class="plan-section" id="p11">
+  <h2>11. Einstein Trade Plan <span class="badge premium">E = MC²</span></h2>
+  <div class="section-sub">OB, LV et FVG — décryptage physique</div>
+
+  <h3>Décryptage E = MC²</h3>
+  <table>
+    <tr><th>Lettre</th><th>Signification</th></tr>
+    <tr><td><strong>E</strong>quilibrium</td><td>middle of a range</td></tr>
+    <tr><td><strong>M</strong>ean Threshold</td><td>middle of an order block</td></tr>
+    <tr><td><strong>C</strong>onsequent Encroachment</td><td>middle of a gap</td></tr>
+  </table>
+
+  <h3>Vitesse de la lumière → niveaux</h3>
+  <p><strong>299 792 458 m/s</strong> découpé en 3×3 chiffres, divisé par PO3 = 27 :</p>
+  <table>
+    <tr><th>Nombre</th><th>÷ 27</th><th>Niveau</th></tr>
+    <tr><td>299</td><td>11</td><td>Order Block</td></tr>
+    <tr><td>792</td><td>29</td><td>Liquidity Void</td></tr>
+    <tr><td>458</td><td>17</td><td>Fair Value Gap</td></tr>
+  </table>
+
+  <h3>Setup</h3>
+  <ol>
+    <li>OB idéalement formé dans l'OB zone</li>
+    <li>Du niveau <strong>OB 11 / 89</strong>, expansion → <strong>break-away gap</strong></li>
+    <li>Reversal au <strong>LV 29 / 71</strong></li>
+    <li>Retrace dans <strong>FVG 17 / 83</strong> → le MT de la FVG doit tenir</li>
+    <li>Target : <strong>mitigation block 47 / 53</strong></li>
+  </ol>
+  <div class="info-box"><strong>Logique du target :</strong> distance 11 → 29 = 18. On double depuis 29 → <strong>47</strong>.</div>
+</div>
+
+<hr class="divider">
+
+<!-- OVERVIEW -->
+<div class="plan-section" id="overview">
+  <h2>Récapitulatif des 11 plans</h2>
+  <table>
+    <tr>
+      <th>#</th><th>Plan</th><th>Horizon</th><th>SL</th><th>TP</th><th>RR</th>
+    </tr>
+    <tr><td>1</td><td>Look Back</td><td>Mensuel</td><td>30 pips</td><td>100s pips</td><td>élevé</td></tr>
+    <tr><td>2</td><td>HIPPOPOTAMUS</td><td>Intraday</td><td>FVG</td><td>partiels grille</td><td>variable</td></tr>
+    <tr><td>3</td><td>OSOK</td><td>Hebdo</td><td>—</td><td>20 / 50 / 75 pips</td><td>élevé</td></tr>
+    <tr><td>4</td><td>Personal ⭐</td><td>Mar/Mer/Jeu</td><td>10 pips</td><td>24 pips</td><td><span class="rr-chip">2.4</span></td></tr>
+    <tr><td>5</td><td>Hidden OTE</td><td>Intra-DR</td><td>OTE</td><td>niveau opposé</td><td>variable</td></tr>
+    <tr><td>6</td><td>OB</td><td>DR 81</td><td>hors OB</td><td>24 pips</td><td>—</td></tr>
+    <tr><td>7</td><td>Breaker</td><td>DR 81</td><td>breaker</td><td>24 pips</td><td>—</td></tr>
+    <tr><td>8</td><td>Stop Run</td><td>DR 81</td><td>derrière 111</td><td>24 pips</td><td>—</td></tr>
+    <tr><td>9</td><td>Equilibrium</td><td>DR 81</td><td>—</td><td>14 pips</td><td>—</td></tr>
+    <tr><td>10</td><td>FVG</td><td>DR 81</td><td>propulsion</td><td>breaker</td><td>—</td></tr>
+    <tr><td>11</td><td>Einstein</td><td>DR 81</td><td>FVG MT</td><td>47 / 53</td><td>—</td></tr>
+  </table>
+</div>
+
+<!-- RISK MGMT -->
+<div class="plan-section" id="risk">
+  <h2>Risk Management — Compounding asymétrique</h2>
+  <div class="section-sub">3 trades gagnants = phase 1 prop firm passée</div>
+  <p>Basé sur le <strong>Personal Plan</strong> (RR 2.4, SL 10 / TP 24) avec seulement <strong>0.25%</strong> du balance initial par trade. Exemple sur 5000 USD :</p>
+  <table>
+    <tr><th>Trade</th><th>Risk</th><th>Profit</th><th>Logique</th></tr>
+    <tr><td>1</td><td>12.5 USD (0.25%)</td><td>30 USD</td><td>Risk du capital initial</td></tr>
+    <tr><td>2</td><td>42.5 USD (12.5 + 30)</td><td>102 USD</td><td>On ajoute les gains du T1</td></tr>
+    <tr><td>3</td><td>132 USD (30 + 102)</td><td>316.8 USD</td><td>Risk-free : que du house money</td></tr>
+    <tr><th>Total</th><td>—</td><td><strong>448.8 USD</strong></td><td><strong>+8.9%</strong> → Phase 1 passée</td></tr>
+  </table>
+  <div class="win-box">La plupart des prop firms demandent <strong>8% en phase 1</strong>. Donc 3 trades consécutifs gagnants sur le Personal Plan suffisent.</div>
+</div>
+
+<!-- LEVELS -->
+<div class="plan-section" id="levels">
+  <h2>Table des niveaux Goldbach</h2>
+  <div class="section-sub">Grille de référence utilisée par tous les plans</div>
+  <table>
+    <tr><th>Niveau (short)</th><th>Zone</th><th>Niveau (long)</th></tr>
+    <tr><td><span class="level-chip">100 / 111</span></td><td>High / Stop run</td><td><span class="level-chip">0 / -0.111</span></td></tr>
+    <tr><td><span class="level-chip">97</span></td><td>Wick (0/100)</td><td><span class="level-chip">3</span></td></tr>
+    <tr><td><span class="level-chip">89</span></td><td><strong>Order Block</strong></td><td><span class="level-chip">11</span></td></tr>
+    <tr><td><span class="level-chip">83</span></td><td><strong>FVG</strong></td><td><span class="level-chip">17</span></td></tr>
+    <tr><td><span class="level-chip">71</span></td><td><strong>Liquidity Void / Breaker hi</strong></td><td><span class="level-chip">29</span></td></tr>
+    <tr><td><span class="level-chip">59</span></td><td><strong>Breaker lo</strong></td><td><span class="level-chip">41</span></td></tr>
+    <tr><td><span class="level-chip">53</span></td><td><strong>Mitigation / Equilibrium</strong></td><td><span class="level-chip">47</span></td></tr>
+    <tr><td colspan="3" style="text-align:center;color:#7c3aed;font-weight:700;">50 = Equilibrium parfait</td></tr>
+  </table>
+</div>
+
+</div>
+
+<!-- AA_TUTOR_WIDGET -->
+<script src="../chat.js?v=v20260416"></script>
+
+</body>
+</html>

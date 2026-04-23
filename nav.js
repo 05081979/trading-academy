@@ -45,6 +45,7 @@
       { id: 'digital-time-theory',     label: 'Theorie du Temps Numerique' },
       { id: 'sequences-fractales',     label: 'Sequences & Fractales' },
       { id: 'strategie-entree',        label: 'Strategies d\'Entree' },
+      { id: 'arch-trade-plans',        label: 'Trade Plans — 11 Modeles' },
       { id: 'etudes-de-cas',           label: 'Etudes de Cas' },
     ]},
     { name: 'Bibliotheque', link: 'hub-cours.html', id: 'hub-cours' },
