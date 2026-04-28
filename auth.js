@@ -10,13 +10,9 @@
 
   // Tokens révoqués par (username + tier) — bloque tous les tokens d'un user (starter/premium/custom)
   const REVOKED = [
-    { user: 'elgavacho8421', tier: 'premium' },
-    { user: 'elgavacho8421', tier: 'starter' }
   ];
   // Tokens complets révoqués (chaîne exacte AA-X-...) — pour révoquer un Custom précis
   const REVOKED_TOKENS = [
-    // Ancien AA-C- de elgavacho8421 avec 2 modules (architecture-niveaux + niveaux-algorithmiques)
-    'AA-C-ZWxnYXZhY2hvODQyMXxhcmNoaXRlY3R1cmUtbml2ZWF1eCxuaXZlYXV4LWFsZ29yaXRobWlxdWVz'
   ];
   function isRevoked(username, tier) {
     for (var i = 0; i < REVOKED.length; i++) {
@@ -114,7 +110,6 @@
     if (tier !== 'custom') return false;
     var signature = user + '|' + (allow || []).slice().sort().join(',');
     var REVOKED_CUSTOM_SIG = [
-      'elgavacho8421|architecture-niveaux,niveaux-algorithmiques'
     ];
     for (var i = 0; i < REVOKED_CUSTOM_SIG.length; i++) {
       if (REVOKED_CUSTOM_SIG[i] === signature) return true;
