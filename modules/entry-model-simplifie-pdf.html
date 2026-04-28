@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Entry Model Simplifié</title>
+<style>
+  @page { size: A4; margin: 0; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{font-family:'Georgia','Times New Roman',serif;color:#0a0a0a;background:#fff}
+  .page{
+    width:210mm;height:297mm;padding:22mm 20mm;
+    page-break-after:always;display:flex;flex-direction:column;
+    position:relative;background:#fff;
+  }
+  .page:last-child{page-break-after:auto}
+  h1{
+    font-family:'Georgia',serif;font-weight:700;font-size:48pt;
+    line-height:1.05;letter-spacing:-0.01em;color:#0a0a0a;
+    text-align:center;margin-bottom:6mm;
+  }
+  h1.small{font-size:38pt}
+  h1.tiny{font-size:32pt}
+  h2{
+    font-family:'Georgia',serif;font-weight:700;font-size:22pt;
+    text-align:center;margin:8mm 0 4mm;
+  }
+  h3{
+    font-family:'Helvetica',sans-serif;font-weight:700;font-size:13pt;
+    margin-top:5mm;margin-bottom:2mm;color:#0a0a0a;
+  }
+  p{font-family:'Georgia',serif;font-size:13pt;line-height:1.55;margin-bottom:3mm;color:#444}
+  p.body{color:#444;font-weight:600}
+  p.dark{color:#0a0a0a}
+  ul{padding-left:8mm;margin:3mm 0}
+  ul.checklist{padding-left:14mm}
+  ul.checklist li{
+    font-family:'Georgia',serif;font-size:18pt;font-weight:700;
+    margin-bottom:6mm;line-height:1.3;
+  }
+  ul.simple li{
+    font-family:'Helvetica',sans-serif;font-size:13pt;font-weight:700;
+    margin-bottom:4mm;line-height:1.4;
+  }
+  ul.simple li .sub{
+    display:block;font-weight:400;color:#9aa0a8;font-size:10.5pt;
+    margin-top:1mm;letter-spacing:0.02em;
+  }
+  .center{text-align:center}
+  .subtitle{
+    text-align:center;font-size:13pt;color:#666;font-weight:600;
+    margin-top:2mm;
+  }
+  .footer-note{
+    margin-top:auto;padding-top:6mm;font-size:11pt;
+    color:#666;text-align:center;font-style:italic;
+  }
+  .cover{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+  .cover h1{font-size:60pt;line-height:1}
+  .cover .tag{font-size:14pt;color:#888;margin-top:6mm;font-weight:600}
+  .cover .needle{font-size:16pt;color:#444;margin-top:14mm;font-weight:700}
+  .macro-grid{display:grid;grid-template-columns:1fr 1fr;gap:10mm;margin-top:8mm}
+  .macro-col h3{
+    font-family:'Georgia',serif;font-weight:700;font-size:18pt;
+    text-align:center;margin-bottom:5mm;color:#0a0a0a;
+  }
+  .macro-box{
+    background:#fff;border:1px solid #e5e7eb;border-radius:4px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.08);padding:8mm 6mm;
+    text-align:center;min-height:100mm;
+  }
+  .macro-box ul{list-style:none;padding:0}
+  .macro-box li{font-size:14pt;margin-bottom:3.5mm;color:#222;font-family:'Georgia',serif}
+  .key-box{
+    margin-top:6mm;padding:5mm 6mm;background:#f9fafb;border-left:3px solid #0a0a0a;
+  }
+  .key-box h3{margin-top:0;font-size:14pt;text-align:center}
+  .chart-img{
+    width:100%;max-width:170mm;display:block;margin:6mm auto 4mm;
+    border-radius:4px;box-shadow:0 6px 20px rgba(0,0,0,0.12);
+  }
+  ol.numbered{padding-left:0;list-style:none}
+  ol.numbered li{
+    font-family:'Helvetica',sans-serif;font-size:13pt;
+    margin-bottom:6mm;
+  }
+  ol.numbered li .num{font-weight:700;color:#0a0a0a;font-size:13pt}
+  ol.numbered li .desc{
+    display:block;margin-top:1.5mm;font-size:12pt;color:#555;
+    font-weight:400;line-height:1.45;font-family:'Georgia',serif;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============== COUVERTURE ============== -->
+<section class="page cover">
+  <h1>Entry Model<br/>Simplifié</h1>
+  <div class="needle">L'essentiel</div>
+</section>
+
+<!-- ============== CHECKLIST DE TRADE ============== -->
+<section class="page">
+  <h1 class="small" style="margin-top:14mm">Checklist de Trade</h1>
+  <ul class="checklist" style="margin-top:14mm">
+    <li>Biais clair</li>
+    <li>Order Flow HTF M15</li>
+    <li>Niveaux clés importants</li>
+    <li>Macro Time</li>
+    <li>Stop Hunt</li>
+    <li>SMT</li>
+    <li>DOL clair ( ERL )</li>
+    <li>IFVG ou Breaker pour l'entrée</li>
+  </ul>
+  <p class="footer-note">Tout ce qu'il faut pour repérer des setups à haute probabilité</p>
+</section>
+
+<!-- ============== ORDER FLOW ============== -->
+<section class="page">
+  <h1 class="small" style="margin-top:8mm">Qu'est-ce que l'Order Flow</h1>
+  <p class="body" style="margin-top:8mm">
+    L'Order Flow correspond à la façon dont les ordres d'achat et de vente se déplacent sur le marché et influencent le price action. Il permet de comprendre qui contrôle le marché (acheteurs ou vendeurs).
+  </p>
+  <p class="body">
+    Order flow = tendance du marché, mais avec un focus plus profond sur la manière dont le prix bouge et où la liquidité est positionnée.
+  </p>
+
+  <h2 style="margin-top:10mm">Pourquoi l'Order Flow est important ?</h2>
+
+  <h3>Qui contrôle ? (Acheteurs ou Vendeurs)</h3>
+  <p>L'order flow te permet de déterminer qui est aux commandes du marché, ce qui te permet de trader dans le sens de la TENDANCE.</p>
+
+  <h3>Trader avec la tendance</h3>
+  <p>Si tu trades contre l'order flow d'une time frame supérieure, tu te fais broyer la plupart du temps. La HTF dicte la tendance principale.</p>
+
+  <p class="dark" style="margin-top:8mm;font-weight:700">
+    Si le NQ fait des higher highs avec des bougies de displacement propres et des FVG bullish respectées, l'order flow est bullish — et tu cherches des achats sur les niveaux clés (FVG, breakers).
+  </p>
+</section>
+
+<!-- ============== NIVEAUX CLÉS ============== -->
+<section class="page">
+  <h1 class="small" style="margin-top:8mm">Quels sont les Niveaux Clés ?</h1>
+  <p style="margin-top:8mm">Le marché ne bouge pas au hasard.</p>
+  <p>Les niveaux clés sont les zones où les institutions et les gros traders achètent et vendent.</p>
+  <p>Ces niveaux agissent comme support et résistance et influencent les mouvements de prix.</p>
+  <p>Le prix réagit fortement sur ces niveaux clés, ce qui signale des potentiels reversals, des continuations de tendance ou des points de réaction.</p>
+
+  <h2 style="margin-top:10mm">Les seuls niveaux utilisés<br/>pour ce modèle</h2>
+
+  <ul class="simple" style="margin-top:6mm;padding-left:14mm">
+    <li>Order Block <span class="sub">OB et CISD</span></li>
+    <li>Fair Value Gaps (FVG) <span class="sub">SIBI, BISI et IFVG</span></li>
+    <li>Breaker Block</li>
+    <li>New Day Opening Gap</li>
+  </ul>
+</section>
+
+<!-- ============== MACROS ============== -->
+<section class="page">
+  <h1 class="tiny" style="margin-top:8mm">Quelques Macros ICT<br/>(Heure NY)</h1>
+
+  <div class="macro-grid">
+    <div class="macro-col">
+      <h3>Macros AM<br/>haute probabilité</h3>
+      <div class="macro-box">
+        <ul>
+          <li>07:50 - 08:10</li>
+          <li>08:20 - 08:40</li>
+          <li>08:50 - 09:10</li>
+          <li>09:20 - 09:40</li>
+          <li>09:50 - 10:10</li>
+          <li>10:20 - 10:40</li>
+          <li>10:50 - 11:10</li>
+          <li>11:20 - 11:40</li>
+        </ul>
+      </div>
+    </div>
+    <div class="macro-col">
+      <h3>Macros PM<br/>haute probabilité</h3>
+      <div class="macro-box">
+        <ul style="margin-top:30mm">
+          <li>13:20 - 13:40</li>
+          <li>14:50 - 15:10</li>
+          <li>15:15 - 15:45</li>
+          <li>15:50 - 16:10</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:8mm">Les fenêtres macro fournissent des mouvements de prix plus puissants et des confirmations plus fiables.</p>
+  <p>Dans ce modèle, les setups se forment majoritairement dans la fenêtre macro, mais ils peuvent parfois apparaître en dehors.</p>
+</section>
+
+<!-- ============== STOP HUNT ============== -->
+<section class="page">
+  <h1 class="small" style="margin-top:14mm">Qu'est-ce qu'un Stop Hunt</h1>
+  <p style="margin-top:10mm">
+    Un Stop Hunt est un mouvement de prix stratégique — souvent un spike brutal — qui vient cibler les zones où les traders retail placent classiquement leurs stop-loss, juste au-dessus d'une résistance ou en dessous d'un support.
+  </p>
+  <p>
+    Une fois ces stops déclenchés, le prix retourne souvent dans l'autre sens, ce qui montre que le mouvement avait pour but de capturer la liquidité, pas de continuer la tendance.
+  </p>
+  <p>
+    Cette tactique est utilisée par les acteurs institutionnels pour exécuter de gros volumes avec un slippage minimal.
+  </p>
+  <p class="dark center" style="margin-top:10mm;font-weight:700;font-size:14pt">
+    C'est tout simplement un Liquidity Sweep en lower time frame.
+  </p>
+</section>
+
+<!-- ============== DRAW ON LIQUIDITY ============== -->
+<section class="page">
+  <h1 class="small" style="margin-top:8mm">Draw On Liquidity<br/>( DOL )</h1>
+  <p class="center" style="margin-top:6mm;font-style:italic;font-size:12pt">
+    Le Draw on Liquidity (DOL) est le côté du marché que l'algorithme cherche à atteindre — soit la liquidité buy-side, soit la sell-side.
+  </p>
+
+  <h2 style="margin-top:8mm">Comment identifier<br/>le Draw on Liquidity</h2>
+
+  <p style="margin-top:4mm;padding-left:8mm">Regarde :</p>
+  <ul class="simple" style="padding-left:14mm">
+    <li>Relatives equal highs / lows</li>
+    <li>Plus haut / plus bas du jour précédent</li>
+    <li>Plus haut / plus bas des sessions précédentes</li>
+    <li>Major swing highs / lows</li>
+    <li>Imbalances (FVG), OB, BPR</li>
+  </ul>
+
+  <h2 style="margin-top:8mm">Pourquoi c'est important ?</h2>
+  <p class="center" style="margin-top:3mm">
+    Le Draw on Liquidity te donne la cible directionnelle. Tu ne cherches pas juste une entrée — tu vises l'endroit où le Smart Money veut amener le prix.
+  </p>
+
+  <ul class="simple" style="padding-left:14mm;margin-top:6mm">
+    <li>Si le prix est bullish, il vise probablement une poche de liquidité buy-side</li>
+    <li>Si bearish, il vise probablement une poche de liquidité sell-side</li>
+  </ul>
+</section>
+
+<!-- ============== CHECKLIST DÉTAILLÉE ============== -->
+<section class="page">
+  <h1 class="small" style="margin-top:14mm">Checklist</h1>
+  <ol class="numbered" style="margin-top:10mm">
+    <li>
+      <span class="num">1) Alignement Order Flow</span>
+      <span class="desc">L'Order Flow M15 doit aller dans le sens du trade.</span>
+    </li>
+    <li>
+      <span class="num">2) Time</span>
+      <span class="desc">Dans ce modèle, les setups se forment majoritairement dans la fenêtre macro, mais peuvent parfois apparaître en dehors.</span>
+    </li>
+    <li>
+      <span class="num">3) PD Array Premium / Discount</span>
+      <span class="desc">
+        Shorts : le prix doit toucher un PD array Premium.<br/>
+        Longs : le prix doit toucher un PD array Discount.
+      </span>
+    </li>
+    <li>
+      <span class="num">4) Check Stop Hunt / SMT</span>
+      <span class="desc">Repère un stop hunt ou une divergence SMT pour confirmer le balayage de liquidité et un retournement potentiel.</span>
+    </li>
+    <li>
+      <span class="num">5) Points d'entrée / Inversion Setup</span>
+      <span class="desc">Utilise une IFVG ou un Breaker en setup d'inversion, avec une bougie de retournement comme confirmation.</span>
+    </li>
+  </ol>
+</section>
+
+<!-- ============== SCÉNARIO BULLISH ============== -->
+<section class="page">
+  <h1 class="small" style="margin-top:6mm">Scénario Bullish</h1>
+  <img class="chart-img" src="img/entry-model/bullish.png" alt="Schéma bullish"/>
+  <p style="margin-top:4mm">
+    Quand une bougie clôture au-dessus du high de l'IFVG ou du Breaker, attends un retournement sur la bougie suivante.
+  </p>
+  <p>
+    Pas besoin que la deuxième bougie clôture — tu peux exécuter sur la même bougie.
+  </p>
+</section>
+
+<!-- ============== SCÉNARIO BEARISH ============== -->
+<section class="page">
+  <h1 class="small" style="margin-top:6mm">Scénario Bearish</h1>
+  <img class="chart-img" src="img/entry-model/bearish.png" alt="Schéma bearish"/>
+  <p style="margin-top:4mm">
+    Quand une bougie clôture en dessous du low de l'IFVG ou du Breaker, attends un retournement sur la bougie suivante.
+  </p>
+  <p>
+    Pas besoin que la deuxième bougie clôture — tu peux exécuter sur la même bougie.
+  </p>
+</section>
+
+<!-- ============== CONSEILS CLÉS ============== -->
+<section class="page">
+  <h1 class="small" style="margin-top:14mm">Conseils Clés</h1>
+  <ul class="simple" style="margin-top:12mm;padding-left:14mm;font-size:14pt">
+    <li style="font-size:14pt">Vise un ratio risque / récompense de 1:2.</li>
+    <li style="font-size:14pt">Place ton stop sous ou au-dessus de l'IFVG (inversion) ou des highs / lows de la FVG non comblée.</li>
+    <li style="font-size:14pt">Concentre-toi sur 1 ou 2 trades de qualité par jour.</li>
+    <li style="font-size:14pt">Une victoire dans la journée = tu arrêtes. Deux pertes dans la journée = tu arrêtes.</li>
+    <li style="font-size:14pt">Ne précipite rien — attends patiemment que le setup se forme correctement.</li>
+  </ul>
+</section>
+
+</body>
+</html>

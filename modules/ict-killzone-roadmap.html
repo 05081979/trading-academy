@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>ICT Killzone Roadmap</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;
+    color:#1a1d24;background:#fff;line-height:1.5;font-size:11.5pt;
+  }
+  h1{
+    font-size:24pt;font-weight:800;letter-spacing:-0.02em;
+    text-align:center;margin-bottom:4mm;color:#0d1117;
+  }
+  .subtitle{
+    text-align:center;color:#6b7280;font-size:10pt;
+    margin-bottom:8mm;font-style:italic;
+  }
+  h2{
+    font-size:14pt;font-weight:700;margin-top:6mm;margin-bottom:3mm;
+    padding-bottom:2mm;border-bottom:2px solid #e5e7eb;color:#0d1117;
+  }
+  h3{
+    font-size:12pt;font-weight:700;margin-top:4mm;margin-bottom:2mm;
+    color:#0d1117;
+  }
+  p{margin-bottom:2mm}
+  .legend{
+    display:flex;gap:14px;justify-content:center;margin-bottom:6mm;
+    flex-wrap:wrap;
+  }
+  .badge{
+    display:inline-block;padding:4px 14px;border-radius:18px;
+    color:#fff;font-weight:700;font-size:10pt;
+  }
+  .badge-asia{background:linear-gradient(135deg,#8b6914,#c19a3a)}
+  .badge-london{background:linear-gradient(135deg,#0ea5e9,#1e40af)}
+  .badge-ny{background:linear-gradient(135deg,#ef4444,#f97316)}
+  .badge-finish{background:linear-gradient(135deg,#10b981,#059669)}
+  .branch{
+    background:#f9fafb;border-left:4px solid #c19a3a;
+    padding:4mm 5mm;margin-bottom:4mm;border-radius:6px;
+    page-break-inside:avoid;
+  }
+  .branch h3{margin-top:0}
+  .branch-2{border-left-color:#1e40af}
+  .branch-3{border-left-color:#f97316}
+  .flow{
+    background:#fff;border:1px solid #e5e7eb;border-radius:6px;
+    padding:3mm 4mm;margin:2mm 0;font-family:'Consolas','Courier New',monospace;
+    font-size:10pt;color:#374151;
+  }
+  .arrow{color:#3b82f6;font-weight:700}
+  .logic{
+    font-style:italic;color:#6b7280;font-size:10pt;
+    margin-top:2mm;padding-left:3mm;border-left:2px solid #d1d5db;
+  }
+  table{
+    width:100%;border-collapse:collapse;margin-top:3mm;
+    font-size:10.5pt;
+  }
+  th,td{
+    border:1px solid #d1d5db;padding:5px 8px;text-align:left;
+  }
+  th{
+    background:linear-gradient(135deg,#1e293b,#334155);color:#fff;
+    font-weight:700;
+  }
+  tr:nth-child(even){background:#f9fafb}
+  .checkmark{color:#10b981;font-weight:700}
+  .cross{color:#ef4444;font-weight:700}
+  .target{color:#f59e0b;font-weight:700}
+  ul{padding-left:6mm;margin:2mm 0}
+  li{margin-bottom:1mm}
+  .footer{
+    margin-top:8mm;padding-top:3mm;border-top:1px solid #e5e7eb;
+    text-align:center;color:#9ca3af;font-size:9pt;
+  }
+  .key-box{
+    background:linear-gradient(135deg,#fef3c7,#fde68a);
+    border:1px solid #fbbf24;border-radius:6px;
+    padding:3mm 4mm;margin-top:4mm;font-size:10.5pt;
+  }
+  .key-box strong{color:#92400e}
+</style>
+</head>
+<body>
+
+<h1>ICT Killzone Roadmap</h1>
+<p class="subtitle">Carte de décision pour trader les killzones — Asie / Londres / New York</p>
+
+<div class="legend">
+  <span class="badge badge-asia">Asie</span>
+  <span class="badge badge-london">London Open</span>
+  <span class="badge badge-ny">New York</span>
+  <span class="badge badge-finish">Finish Day</span>
+</div>
+
+<h2>Principe</h2>
+<p>
+  L'arbre de décision se lit du <strong>haut vers le bas</strong>. Tu observes ce qu'<strong>Asie</strong> a fait pendant sa session, ça détermine comment tu lis <strong>Londres</strong>, et si nécessaire <strong>New York</strong>. Le but : savoir <em>quelle session jouer</em> et <em>quel modèle</em> appliquer.
+</p>
+
+<h2>Les 3 branches d'Asie</h2>
+
+<div class="branch">
+  <h3>1. Asie = Liquidity Sweep</h3>
+  <p>Asie a déjà sweep une liquidité (pris des stops au-dessus d'un high ou en dessous d'un low).</p>
+  <div class="flow">
+    Asie (Sweep) <span class="arrow">→</span> London = <strong>Continuation</strong> <span class="arrow">→</span> <strong>Finish Day</strong>
+  </div>
+  <p class="logic">
+    Logique : la liquidité est déjà ramassée par Asie, donc Londres pousse dans la direction du déséquilibre. Pas besoin d'attendre NY, la session est jouée tôt.
+  </p>
+</div>
+
+<div class="branch branch-2">
+  <h3>2. Asie = Consolidation</h3>
+  <p>Asie est restée en range, sans sweep clair.</p>
+  <div class="flow">
+    Asie (Range) <span class="arrow">→</span> London = <strong>Manipulation</strong> (Judas swing) <span class="arrow">→</span> <strong>Reversal</strong>
+  </div>
+  <p>Ensuite deux sous-cas selon si Londres atteint le <strong>DOL</strong> (Draw on Liquidity = ta cible logique : PDH / PDL, équilibre, niveau majeur) :</p>
+  <ul>
+    <li><span class="target">DOL Hit</span> → <strong>Finish Day</strong> : la cible est touchée, pas besoin d'attendre NY.</li>
+    <li><span class="cross">No DOL Hit</span> → NY = <strong>Continuation</strong> → <strong>Finish Day</strong> : si Londres n'atteint pas le DOL, NY reprend le mouvement dans la même direction pour aller chercher la cible.</li>
+  </ul>
+  <p class="logic">
+    Logique : c'est le scénario "classique" Judas swing à Londres. Faux mouvement à l'open pour grab la liquidité du range Asie, puis retournement dans la vraie direction.
+  </p>
+</div>
+
+<div class="branch branch-3">
+  <h3>3. Asie = Does Neither</h3>
+  <p>Ni sweep, ni vraie consolidation — contexte sale, pas exploitable.</p>
+  <div class="flow">
+    Asie (Rien de clair) <span class="arrow">→</span> <strong>Skip London</strong> <span class="arrow">→</span> NY = <strong>Manipulation</strong> <span class="arrow">→</span> <strong>Reversal</strong> <span class="arrow">→</span> <strong>Finish Day</strong>
+  </div>
+  <p class="logic">
+    Logique : quand Asie n'a rien donné de net, on attend que NY crée son propre Judas swing avant de reverser. Londres est zappée parce que le contexte est trop flou pour entrer.
+  </p>
+</div>
+
+<h2>Tableau de synthèse</h2>
+<table>
+  <thead>
+    <tr>
+      <th style="width:25%">Asie a fait</th>
+      <th style="width:25%">Tu trades quand</th>
+      <th style="width:50%">Modèle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Liquidity Sweep</td>
+      <td>London Open</td>
+      <td>Continuation</td>
+    </tr>
+    <tr>
+      <td>Consolidation</td>
+      <td>London Open</td>
+      <td>Manipulation → Reversal (jusqu'au DOL)</td>
+    </tr>
+    <tr>
+      <td>Does Neither</td>
+      <td>New York</td>
+      <td>Skip London, jouer la manip NY puis reversal</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="key-box">
+  <strong>À retenir :</strong> c'est essentiellement un <strong>filtre de session</strong>. Le contexte d'Asie te dit quelle session jouer. Le DOL te dit quand sortir. Si tu n'as pas de signal clair d'Asie, tu attends NY plutôt que de forcer un trade à Londres.
+</div>
+
+<div class="footer">
+  ICT Killzone Roadmap — Document personnel
+</div>
+
+</body>
+</html>
