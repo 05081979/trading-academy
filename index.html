@@ -445,7 +445,7 @@ body {
 }
 .events-list li {
   display: grid;
-  grid-template-columns: 36px 1fr auto;
+  grid-template-columns: 32px 1fr auto auto;
   align-items: center;
   gap: 8px;
   padding: 10px 12px;
@@ -453,6 +453,8 @@ body {
   background: var(--bg);
   transition: background var(--transition);
 }
+.events-list li.is-starter { background: rgba(16,185,129,0.08); }
+.events-list li.is-premium { background: rgba(217,119,6,0.08); }
 .events-list li:hover { background: var(--blue-light); }
 .ev-day {
   font-size: 10px;
@@ -472,6 +474,32 @@ body {
   font-family: 'DM Mono', 'Courier New', monospace;
   white-space: nowrap;
 }
+.ev-tier {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.ev-tier.tier-starter { background: rgba(16,185,129,0.12); color: var(--green); }
+.ev-tier.tier-premium { background: rgba(217,119,6,0.12); color: var(--gold); }
+.events-legend {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--text2);
+  flex-wrap: wrap;
+}
+.events-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.events-legend i {
+  width: 10px; height: 10px; border-radius: 999px; display: inline-block;
+}
+.events-legend .dot-starter { background: var(--green); }
+.events-legend .dot-premium { background: var(--gold); }
 .events-meta {
   text-align: center;
   font-size: 13px;
@@ -698,57 +726,61 @@ body {
 <section class="section" id="events">
   <div class="fade-in">
     <h2 class="section-title">Events & Lives</h2>
-    <p class="section-sub">26 lives en direct. Mardi &amp; Jeudi a 15h00 Paris (9h00 NY), 1h15 par session. Du 5 mai au 30 juillet 2026.</p>
+    <p class="section-sub">26 lives en direct. Mardi &amp; Jeudi a 15h00 Paris (9h00 NY), 1h15 par session. Du 5 mai au 30 juillet 2026. <strong>Alternance hebdomadaire</strong> : 1 semaine Starter, 1 semaine Premium.</p>
   </div>
   <div class="events-grid">
 
     <div class="events-month fade-in">
       <h3 class="events-month-title">Mai 2026</h3>
       <ul class="events-list">
-        <li><span class="ev-day">Mar</span><span class="ev-date">05 mai</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Jeu</span><span class="ev-date">07 mai</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Mar</span><span class="ev-date">12 mai</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Jeu</span><span class="ev-date">14 mai</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Mar</span><span class="ev-date">19 mai</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Jeu</span><span class="ev-date">21 mai</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Mar</span><span class="ev-date">26 mai</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Jeu</span><span class="ev-date">28 mai</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
+        <li class="is-starter"><span class="ev-day">Mar</span><span class="ev-date">05 mai</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-starter">Starter</span></li>
+        <li class="is-starter"><span class="ev-day">Jeu</span><span class="ev-date">07 mai</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-starter">Starter</span></li>
+        <li class="is-premium"><span class="ev-day">Mar</span><span class="ev-date">12 mai</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-premium">Premium</span></li>
+        <li class="is-premium"><span class="ev-day">Jeu</span><span class="ev-date">14 mai</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-premium">Premium</span></li>
+        <li class="is-starter"><span class="ev-day">Mar</span><span class="ev-date">19 mai</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-starter">Starter</span></li>
+        <li class="is-starter"><span class="ev-day">Jeu</span><span class="ev-date">21 mai</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-starter">Starter</span></li>
+        <li class="is-premium"><span class="ev-day">Mar</span><span class="ev-date">26 mai</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-premium">Premium</span></li>
+        <li class="is-premium"><span class="ev-day">Jeu</span><span class="ev-date">28 mai</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-premium">Premium</span></li>
       </ul>
     </div>
 
     <div class="events-month fade-in">
       <h3 class="events-month-title">Juin 2026</h3>
       <ul class="events-list">
-        <li><span class="ev-day">Mar</span><span class="ev-date">02 juin</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Jeu</span><span class="ev-date">04 juin</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Mar</span><span class="ev-date">09 juin</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Jeu</span><span class="ev-date">11 juin</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Mar</span><span class="ev-date">16 juin</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Jeu</span><span class="ev-date">18 juin</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Mar</span><span class="ev-date">23 juin</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Jeu</span><span class="ev-date">25 juin</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Mar</span><span class="ev-date">30 juin</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
+        <li class="is-starter"><span class="ev-day">Mar</span><span class="ev-date">02 juin</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-starter">Starter</span></li>
+        <li class="is-starter"><span class="ev-day">Jeu</span><span class="ev-date">04 juin</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-starter">Starter</span></li>
+        <li class="is-premium"><span class="ev-day">Mar</span><span class="ev-date">09 juin</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-premium">Premium</span></li>
+        <li class="is-premium"><span class="ev-day">Jeu</span><span class="ev-date">11 juin</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-premium">Premium</span></li>
+        <li class="is-starter"><span class="ev-day">Mar</span><span class="ev-date">16 juin</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-starter">Starter</span></li>
+        <li class="is-starter"><span class="ev-day">Jeu</span><span class="ev-date">18 juin</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-starter">Starter</span></li>
+        <li class="is-premium"><span class="ev-day">Mar</span><span class="ev-date">23 juin</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-premium">Premium</span></li>
+        <li class="is-premium"><span class="ev-day">Jeu</span><span class="ev-date">25 juin</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-premium">Premium</span></li>
+        <li class="is-starter"><span class="ev-day">Mar</span><span class="ev-date">30 juin</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-starter">Starter</span></li>
       </ul>
     </div>
 
     <div class="events-month fade-in">
       <h3 class="events-month-title">Juillet 2026</h3>
       <ul class="events-list">
-        <li><span class="ev-day">Jeu</span><span class="ev-date">02 juil</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Mar</span><span class="ev-date">07 juil</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Jeu</span><span class="ev-date">09 juil</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Mar</span><span class="ev-date">14 juil</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Jeu</span><span class="ev-date">16 juil</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Mar</span><span class="ev-date">21 juil</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Jeu</span><span class="ev-date">23 juil</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Mar</span><span class="ev-date">28 juil</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
-        <li><span class="ev-day">Jeu</span><span class="ev-date">30 juil</span><span class="ev-time">15h00 &rarr; 16h15</span></li>
+        <li class="is-starter"><span class="ev-day">Jeu</span><span class="ev-date">02 juil</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-starter">Starter</span></li>
+        <li class="is-premium"><span class="ev-day">Mar</span><span class="ev-date">07 juil</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-premium">Premium</span></li>
+        <li class="is-premium"><span class="ev-day">Jeu</span><span class="ev-date">09 juil</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-premium">Premium</span></li>
+        <li class="is-starter"><span class="ev-day">Mar</span><span class="ev-date">14 juil</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-starter">Starter</span></li>
+        <li class="is-starter"><span class="ev-day">Jeu</span><span class="ev-date">16 juil</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-starter">Starter</span></li>
+        <li class="is-premium"><span class="ev-day">Mar</span><span class="ev-date">21 juil</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-premium">Premium</span></li>
+        <li class="is-premium"><span class="ev-day">Jeu</span><span class="ev-date">23 juil</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-premium">Premium</span></li>
+        <li class="is-starter"><span class="ev-day">Mar</span><span class="ev-date">28 juil</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-starter">Starter</span></li>
+        <li class="is-starter"><span class="ev-day">Jeu</span><span class="ev-date">30 juil</span><span class="ev-time">15h00 &rarr; 16h15</span><span class="ev-tier tier-starter">Starter</span></li>
       </ul>
     </div>
 
   </div>
+  <div class="events-legend fade-in">
+    <span><i class="dot-starter"></i> Semaines Starter (14 sessions)</span>
+    <span><i class="dot-premium"></i> Semaines Premium (12 sessions)</span>
+  </div>
   <div class="events-meta fade-in">
-    <strong>26 sessions</strong> &middot; 13 semaines &middot; horaire fixe 15h00 Paris (9h00 NY)
+    <strong>26 sessions</strong> &middot; 13 semaines &middot; horaire fixe 15h00 Paris (9h00 NY) &middot; alternance Starter / Premium
   </div>
 </section>
 
