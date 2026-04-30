@@ -10,6 +10,7 @@
 
   // Tokens révoqués par (username + tier) — bloque tous les tokens d'un user (starter/premium/custom)
   const REVOKED = [
+    { user: 'ShadowWick', tier: 'starter' },
   ];
   // Tokens complets révoqués (chaîne exacte AA-X-...) — pour révoquer un Custom précis
   const REVOKED_TOKENS = [
