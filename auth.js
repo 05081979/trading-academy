@@ -19,6 +19,7 @@
   ];
   // Tokens complets révoqués (chaîne exacte AA-X-...) — pour révoquer un Custom précis
   const REVOKED_TOKENS = [
+    'AA-P-c2FuZ25ldWY=',
   ];
   function _normUser(u) {
     return (u || '').toLowerCase().replace(/[\s_\-]/g, '');
