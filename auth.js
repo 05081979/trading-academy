@@ -9,15 +9,24 @@
   const ALLOW_KEY = 'aa_allow';
 
   // Tokens révoqués par (username + tier) — bloque tous les tokens d'un user (starter/premium/custom)
+  // La comparaison est insensible à la casse, aux espaces, tirets et underscores
+  // donc "Sangneuf" / "sang neuf" / "SANG_NEUF" sont tous bloqués par une seule entrée 'sangneuf'.
   const REVOKED = [
     { user: 'ShadowWick', tier: 'starter' },
+    { user: 'sangneuf', tier: 'premium' },
+    { user: 'sangneuf', tier: 'starter' },
+    { user: 'sangneuf', tier: 'custom' },
   ];
   // Tokens complets révoqués (chaîne exacte AA-X-...) — pour révoquer un Custom précis
   const REVOKED_TOKENS = [
   ];
+  function _normUser(u) {
+    return (u || '').toLowerCase().replace(/[\s_\-]/g, '');
+  }
   function isRevoked(username, tier) {
+    var u = _normUser(username);
     for (var i = 0; i < REVOKED.length; i++) {
-      if (REVOKED[i].user === username && REVOKED[i].tier === tier) return true;
+      if (_normUser(REVOKED[i].user) === u && REVOKED[i].tier === tier) return true;
     }
     return false;
   }
